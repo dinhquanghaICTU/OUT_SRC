@@ -1,0 +1,39 @@
+#ifndef __CONFIG_H__
+#define __CONFIG_H__
+
+
+#define WIFI_CONNECT_TIMEOUT_MS 45000UL
+#define WIFI_CONNECT_MAX_ATTEMPTS 2U
+#define WIFI_RETRY_INTERVAL_MS 15000UL
+#define SAMPLE_INTERVAL_MS 2000
+
+#define BMP180_SDA_PIN 21
+#define BMP180_SCL_PIN 22
+#define BMP180_I2C_ADDRESS 0x77
+#define BMP180_SIMULATE_ON_FAILURE 1
+#define IR_SENSOR_PIN 34
+#define IR_SENSOR_ACTIVE_LEVEL LOW
+
+
+#define PI_WIFI_SSID "ICTU_IOT_AP"
+#define PI_WIFI_PASSWORD "12345678"
+#define UDP_SERVER_IP "192.168.4.1"
+#define UDP_SERVER_PORT 4210
+#define UDP_RECONNECT_INTERVAL_MS 5000UL
+#define DEVICE_TYPE "weather_pressure"
+
+#define PRODUCT_ID "HA-190782"
+#define FIRMWARE_VERSION "1.1.0"
+
+/*
+    ip connect to mqtt server ->raspberry pi 
+
+
+*/
+#define MQTT_BROKER_URI "mqtt://192.168.4.1:1883"  // fallback; runtime se lay gateway cua Pi AP
+#define MQTT_TOPIC_PREFIX "iot/v1/devices/" PRODUCT_ID
+#define MQTT_TELEMETRY_TOPIC MQTT_TOPIC_PREFIX "/telemetry"
+#define MQTT_CONFIG_DESIRED_TOPIC MQTT_TOPIC_PREFIX "/config/desired"
+
+
+#endif //__CONFIG_H__

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>HistoryPage</class>
+ <widget class="QWidget" name="HistoryPage">
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <property name="leftMargin"><number>24</number></property>
+   <property name="topMargin"><number>20</number></property>
+   <property name="rightMargin"><number>24</number></property>
+   <property name="bottomMargin"><number>20</number></property>
+   <property name="spacing"><number>12</number></property>
+   <item><layout class="QHBoxLayout" name="headerLayout">
+    <item><widget class="QLabel" name="titleLabel"><property name="text"><string>LỊCH SỬ THIẾT BỊ</string></property></widget></item>
+    <item><spacer name="headerSpacer"><property name="orientation"><enum>Qt::Horizontal</enum></property><property name="sizeHint" stdset="0"><size><width>40</width><height>20</height></size></property></spacer></item>
+    <item><widget class="QLabel" name="recordCountLabel"><property name="text"><string>0 bản ghi</string></property></widget></item>
+   </layout></item>
+   <item><layout class="QHBoxLayout" name="filterLayout">
+    <item><widget class="QLabel" name="deviceLabel"><property name="text"><string>Thiết bị</string></property></widget></item>
+    <item><widget class="QComboBox" name="deviceCombo"><property name="minimumSize"><size><width>220</width><height>36</height></size></property></widget></item>
+    <item><widget class="QLabel" name="periodLabel"><property name="text"><string>Thống kê theo</string></property></widget></item>
+    <item><widget class="QComboBox" name="periodCombo"><item><property name="text"><string>Ngày</string></property></item><item><property name="text"><string>Tháng</string></property></item><item><property name="text"><string>Năm</string></property></item></widget></item>
+    <item><widget class="QDateEdit" name="dateEdit"><property name="calendarPopup"><bool>true</bool></property><property name="displayFormat"><string>dd/MM/yyyy</string></property></widget></item>
+    <item><widget class="QPushButton" name="searchButton"><property name="text"><string>Tìm kiếm</string></property></widget></item>
+    <item><spacer name="filterSpacer"><property name="orientation"><enum>Qt::Horizontal</enum></property><property name="sizeHint" stdset="0"><size><width>40</width><height>20</height></size></property></spacer></item>
+   </layout></item>
+   <item><widget class="QLabel" name="averagesLabel"><property name="text"><string>Chọn một thiết bị để xem lịch sử và giá trị trung bình.</string></property><property name="wordWrap"><bool>true</bool></property></widget></item>
+   <item><widget class="QTableWidget" name="historyTable"><property name="alternatingRowColors"><bool>true</bool></property><property name="editTriggers"><set>QAbstractItemView::NoEditTriggers</set></property><property name="selectionBehavior"><enum>QAbstractItemView::SelectRows</enum></property><property name="columnCount"><number>1</number></property><property name="rowCount"><number>0</number></property><column><property name="text"><string>Thời gian</string></property></column></widget></item>
+  </layout>
+ </widget>
+ <resources/><connections/>
+</ui>
