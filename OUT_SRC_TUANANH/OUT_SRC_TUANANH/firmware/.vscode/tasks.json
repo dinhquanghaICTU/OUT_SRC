@@ -1,0 +1,78 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "ESP32: Build firmware",
+            "type": "process",
+            "command": "${workspaceFolder}/.tools/arduino-cli",
+            "args": [
+                "compile",
+                "--fqbn",
+                "esp32:esp32:esp32",
+                "--build-path",
+                "${workspaceFolder}/build",
+                "${workspaceFolder}/sketch_aug3a"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": "$gcc",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "presentation": {
+                "clear": true,
+                "reveal": "always",
+                "panel": "dedicated"
+            }
+        },
+        {
+            "label": "ESP32: Upload firmware",
+            "type": "process",
+            "command": "${workspaceFolder}/.tools/arduino-cli",
+            "args": [
+                "upload",
+                "--port",
+                "${input:serialPort}",
+                "--fqbn",
+                "esp32:esp32:esp32",
+                "--input-dir",
+                "${workspaceFolder}/build",
+                "${workspaceFolder}/sketch_aug3a"
+            ],
+            "dependsOn": "ESP32: Build firmware",
+            "problemMatcher": [],
+            "presentation": {
+                "reveal": "always",
+                "panel": "dedicated"
+            }
+        },
+        {
+            "label": "ESP32: Serial Monitor",
+            "type": "process",
+            "command": "${workspaceFolder}/.tools/arduino-cli",
+            "args": [
+                "monitor",
+                "--port",
+                "${input:serialPort}",
+                "--config",
+                "baudrate=115200"
+            ],
+            "problemMatcher": [],
+            "isBackground": true,
+            "presentation": {
+                "reveal": "always",
+                "panel": "dedicated"
+            }
+        }
+    ],
+    "inputs": [
+        {
+            "id": "serialPort",
+            "type": "promptString",
+            "description": "Cổng ESP32 (ví dụ /dev/ttyUSB0 hoặc /dev/ttyACM0)",
+            "default": "/dev/ttyUSB0"
+        }
+    ]
+}

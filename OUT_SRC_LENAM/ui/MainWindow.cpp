@@ -170,7 +170,11 @@ MainWindow::MainWindow(QWidget *parent)
                     statusBar()->showMessage(tr("Server chưa kết nối trong chế độ offline UI"), 3000);
                     return;
                 }
-                QMessageBox::warning(this, tr("Không thể thực hiện"), message);
+                if (message.contains(QStringLiteral("canceled"), Qt::CaseInsensitive)
+                    || message.contains(QStringLiteral("cancelled"), Qt::CaseInsensitive)) {
+                    return;
+                }
+                statusBar()->showMessage(message, 4000);
                 m_apiClient->requestMyDevice();
             });
 

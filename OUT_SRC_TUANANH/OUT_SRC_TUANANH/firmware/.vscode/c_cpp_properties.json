@@ -1,0 +1,39 @@
+{
+    "version": 4,
+    "configurations": [
+        {
+            "name": "ESP32 Arduino 3.3.11",
+            "compilerPath": "/home/quanghaictu/.arduino15/packages/esp32/tools/esp-x32/2601/bin/xtensa-esp32-elf-g++",
+            "compilerArgs": ["-mlongcalls", "-fno-rtti", "-fno-exceptions"],
+            "intelliSenseMode": "linux-gcc-x64",
+            "cStandard": "c17",
+            "cppStandard": "c++17",
+            "defines": [
+                "ARDUINO=10607",
+                "ARDUINO_ARCH_ESP32",
+                "ARDUINO_ESP32_DEV",
+                "ESP32=ESP32",
+                "F_CPU=240000000L",
+                "CORE_DEBUG_LEVEL=0"
+            ],
+            "includePath": [
+                "${workspaceFolder}/sketch_aug3a",
+                "/home/quanghaictu/.arduino15/packages/esp32/hardware/esp32/3.3.11/cores/esp32",
+                "/home/quanghaictu/.arduino15/packages/esp32/hardware/esp32/3.3.11/variants/esp32",
+                "/home/quanghaictu/.arduino15/packages/esp32/hardware/esp32/3.3.11/libraries/**",
+                "/home/quanghaictu/.arduino15/packages/esp32/tools/esp32-libs/3.3.11/include/**",
+                "/home/quanghaictu/.arduino15/packages/esp32/tools/esp32-libs/3.3.11/qio_qspi/include/**"
+            ],
+            "browse": {
+                "limitSymbolsToIncludedHeaders": true,
+                "path": [
+                    "${workspaceFolder}/sketch_aug3a",
+                    "/home/quanghaictu/.arduino15/packages/esp32/hardware/esp32/3.3.11/cores/esp32",
+                    "/home/quanghaictu/.arduino15/packages/esp32/hardware/esp32/3.3.11/variants/esp32",
+                    "/home/quanghaictu/.arduino15/packages/esp32/hardware/esp32/3.3.11/libraries",
+                    "/home/quanghaictu/.arduino15/packages/esp32/tools/esp32-libs/3.3.11/include"
+                ]
+            }
+        }
+    ]
+}

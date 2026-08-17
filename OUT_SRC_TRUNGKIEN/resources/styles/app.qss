@@ -1389,52 +1389,52 @@ QFrame#historyChartCard,
 QFrame#historyStatCard {
     background-color: #ffffff;
     border: 1px solid #d7e2de;
-    border-radius: 18px;
+    border-radius: 8px;
 }
 
 QLabel#historyCardTitle {
     color: #16251f;
-    font-size: 18px;
-    font-weight: 900;
+    font-size: 11px;
+    font-weight: 800;
 }
 
 QLabel#historyChartHint {
     color: #71837b;
-    font-size: 12px;
+    font-size: 9px;
 }
 
 QLabel#historyStatIcon {
     background-color: #e8f6ef;
-    border-radius: 14px;
+    border-radius: 6px;
     color: #15945a;
-    font-size: 28px;
-    min-width: 54px;
-    max-width: 54px;
-    min-height: 54px;
-    max-height: 54px;
+    font-size: 12px;
+    min-width: 24px;
+    max-width: 24px;
+    min-height: 24px;
+    max-height: 24px;
     qproperty-alignment: AlignCenter;
 }
 
 QLabel#historyStatTitle {
-    color: #1d3027;
-    font-size: 14px;
-    font-weight: 800;
+    color: #485c54;
+    font-size: 9px;
+    font-weight: 700;
 }
 
 QLabel#historyStatValue {
     color: #15945a;
-    font-size: 15px;
-    font-weight: 900;
+    font-size: 11px;
+    font-weight: 800;
 }
 
 QLabel#historyRecordBadge {
     background-color: #e4f7ed;
     border: 1px solid #bde9d0;
-    border-radius: 14px;
+    border-radius: 6px;
     color: #138650;
-    font-size: 12px;
-    font-weight: 800;
-    padding: 7px 14px;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 6px;
 }
 
 QChartView#historyChart {
@@ -1445,9 +1445,9 @@ QChartView#historyChart {
 QTableWidget#historyTableSmart {
     background-color: #ffffff;
     border: 1px solid #d7e2de;
-    border-radius: 14px;
+    border-radius: 8px;
     color: #183029;
-    font-size: 12px;
+    font-size: 11px;
     gridline-color: #e1e9e5;
     selection-background-color: #dff2ea;
     selection-color: #143227;
@@ -1458,31 +1458,32 @@ QTableWidget#historyTableSmart QHeaderView::section {
     border: none;
     border-right: 1px solid #d7e2de;
     color: #40545e;
-    font-size: 12px;
-    font-weight: 800;
-    padding: 9px;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 4px 6px;
+    min-height: 24px;
 }
 
 
 QLabel#historyPageTitle {
     background: transparent;
     color: #16251f;
-    font-size: 28px;
-    font-weight: 900;
+    font-size: 15px;
+    font-weight: 800;
 }
 
 QLabel#historyPageSubtitle {
     background: transparent;
     color: #71837b;
-    font-size: 12px;
-    margin-left: 12px;
+    font-size: 11px;
+    margin-left: 8px;
 }
 
 QLabel#historyFilterLabel {
     background: transparent;
     color: #41564e;
-    font-size: 12px;
-    font-weight: 800;
+    font-size: 11px;
+    font-weight: 700;
 }
 
 QComboBox#historyDeviceCombo,
@@ -1490,24 +1491,24 @@ QComboBox#historyPeriodCombo,
 QDateEdit#historyDateEdit {
     background-color: #ffffff;
     border: 1px solid #d3dfda;
-    border-radius: 12px;
+    border-radius: 6px;
     color: #172b22;
-    font-size: 12px;
-    font-weight: 700;
-    min-height: 38px;
-    padding: 0 12px;
+    font-size: 11px;
+    font-weight: 600;
+    min-height: 28px;
+    padding: 0 8px;
 }
 
 QDateEdit#historyDateEdit {
-    min-width: 142px;
-}
-
-QComboBox#historyPeriodCombo {
     min-width: 110px;
 }
 
+QComboBox#historyPeriodCombo {
+    min-width: 80px;
+}
+
 QComboBox#historyDeviceCombo {
-    min-width: 260px;
+    min-width: 160px;
 }
 
 QComboBox#historyDeviceCombo:hover,
@@ -1526,18 +1527,18 @@ QComboBox#historyDeviceCombo::drop-down,
 QComboBox#historyPeriodCombo::drop-down,
 QDateEdit#historyDateEdit::drop-down {
     border: none;
-    width: 28px;
+    width: 20px;
 }
 
 QPushButton#historySearchButton {
     background-color: #15945a;
     border: none;
-    border-radius: 12px;
+    border-radius: 6px;
     color: #ffffff;
-    font-size: 12px;
-    font-weight: 900;
-    min-height: 40px;
-    padding: 0 18px;
+    font-size: 11px;
+    font-weight: 800;
+    min-height: 28px;
+    padding: 0 12px;
 }
 
 QPushButton#historySearchButton:hover {
@@ -1685,3 +1686,1572 @@ QPushButton#userDeviceDetachButton {
     font-weight: 900;
 }
 QPushButton#userDeviceDetachButton:hover { background: #ffe8cf; }
+
+
+/* ================= LeNam distinct visual skin ================= */
+QMainWindow,
+QWidget {
+    font-family: "Inter", "Noto Sans", "DejaVu Sans", sans-serif;
+}
+
+QWidget#LoginPage {
+    background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
+                                stop:0 #0b1020, stop:.42 #111b3d, stop:1 #052b35);
+}
+QFrame#loginCard {
+    background: rgba(12, 20, 42, 235);
+    border: 1px solid rgba(92, 225, 230, 90);
+    border-radius: 30px;
+}
+QLabel#welcomeLabel {
+    color: #effbff;
+    font-size: 27px;
+    font-weight: 900;
+    letter-spacing: .2px;
+}
+QLabel#subtitleLabel,
+QLabel#footerHintLabel {
+    color: #8bd9e5;
+    font-weight: 800;
+}
+QLabel#logoLabel {
+    background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
+                                stop:0 #10234d, stop:1 #0f6b72);
+    border: 1px solid rgba(114, 235, 244, 120);
+    border-radius: 56px;
+}
+QLineEdit#usernameEdit,
+QLineEdit#passwordEdit {
+    background: rgba(255,255,255,22);
+    color: #f4fdff;
+    border: 1.5px solid rgba(139,217,229,115);
+    border-radius: 16px;
+    padding: 0 18px;
+    font-size: 15px;
+    font-weight: 800;
+    selection-background-color: #46d6c9;
+}
+QLineEdit#usernameEdit:focus,
+QLineEdit#passwordEdit:focus {
+    border: 2px solid #5ce1e6;
+    background: rgba(255,255,255,32);
+}
+QCheckBox#rememberAccountCheckBox {
+    color: #b7ecf2;
+    font-weight: 800;
+}
+QPushButton#loginButton {
+    background: qlineargradient(x1:0, y1:0, x2:1, y2:0,
+                                stop:0 #6c63ff, stop:1 #16d9c2);
+    color: white;
+    border: none;
+    border-radius: 16px;
+    font-size: 15px;
+    font-weight: 950;
+}
+QPushButton#loginButton:hover {
+    background: qlineargradient(x1:0, y1:0, x2:1, y2:0,
+                                stop:0 #7d76ff, stop:1 #34ead6);
+}
+
+QWidget#sideBar {
+    background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                                stop:0 #0b1020, stop:.55 #101b38, stop:1 #072b33);
+    border-right: 1px solid rgba(92,225,230,70);
+}
+QWidget#sideBar QPushButton {
+    color: #94b8c8;
+    border: none;
+    border-radius: 14px;
+    min-height: 44px;
+    font-size: 15px;
+    font-weight: 900;
+    text-align: left;
+    padding: 0 14px;
+}
+QWidget#sideBar QPushButton:hover {
+    background: rgba(92,225,230,28);
+    color: #effbff;
+}
+QWidget#sideBar QPushButton:checked {
+    background: rgba(108,99,255,70);
+    color: #ffffff;
+    border-left: 4px solid #5ce1e6;
+}
+QPushButton#sidebarToggleButton {
+    color: #5ce1e6;
+}
+
+QWidget#DashboardPage,
+QWidget#DeviceManagementPage,
+QWidget#HistoryPage,
+QWidget#UserManagementPage,
+QWidget#deviceMainPanel {
+    background: #edf4f8;
+}
+QLabel#dashboardTitle,
+QLabel#devicePageTitle,
+QLabel#historyPageTitle,
+QLabel#usersPageTitle {
+    color: #10172f;
+    font-size: 30px;
+    font-weight: 950;
+}
+QLabel#dashboardSubtitle,
+QLabel#devicePageSubtitle,
+QLabel#historyPageSubtitle {
+    color: #5f7488;
+    font-weight: 700;
+}
+
+QFrame#smartHeroCard,
+QFrame#dashboardModeCard,
+QFrame#environmentPanel,
+QFrame#cameraPanel,
+QFrame#ownedDeviceCard,
+QFrame#historyChartCard,
+QFrame#historyStatCard,
+QFrame#userDetailPanel {
+    background: rgba(255,255,255,245);
+    border: 1px solid #d4e2eb;
+    border-radius: 24px;
+}
+QFrame#ownedDeviceCard {
+    border: 1.5px solid rgba(108,99,255,80);
+    background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
+                                stop:0 #ffffff, stop:1 #eef7ff);
+}
+QFrame#ownedDeviceCard[deviceType="temperature_sound"] {
+    border-color: rgba(108,99,255,120);
+    background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
+                                stop:0 #fbfaff, stop:1 #eef0ff);
+}
+QFrame#ownedDeviceCard[deviceType="environment"] {
+    border-color: rgba(22,217,194,120);
+    background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
+                                stop:0 #f7fffc, stop:1 #e8fbf7);
+}
+QFrame#ownedDeviceCard[deviceType="uv_pressure"] {
+    border-color: rgba(51,144,255,120);
+    background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
+                                stop:0 #f7fbff, stop:1 #eaf4ff);
+}
+QLabel#devicePrimaryMetric {
+    color: #6c63ff;
+    font-size: 27px;
+    font-weight: 950;
+}
+QLabel#deviceSecondaryMetric,
+QLabel#deviceIdText,
+QLabel#deviceTypeText {
+    color: #52677a;
+    font-weight: 800;
+}
+QLabel#onlineBadge,
+QLabel#liveBadge,
+QLabel#historyRecordBadge {
+    background: rgba(22,217,194,35);
+    color: #008675;
+    border: 1px solid rgba(22,217,194,100);
+    border-radius: 13px;
+    padding: 6px 12px;
+    font-weight: 950;
+}
+QPushButton,
+QPushButton#historySearchButton,
+QPushButton#usersAddButton,
+QPushButton#saveDeviceConfigButton,
+QPushButton#userPanelPrimaryButton {
+    background: #151f45;
+    color: #ffffff;
+    border: none;
+    border-radius: 13px;
+    min-height: 38px;
+    padding: 0 16px;
+    font-weight: 950;
+}
+QPushButton:hover,
+QPushButton#historySearchButton:hover,
+QPushButton#usersAddButton:hover {
+    background: #25347a;
+}
+QTableWidget#historyTableSmart,
+QTableWidget#usersTableModern {
+    background: #ffffff;
+    border: 1px solid #d4e2eb;
+    border-radius: 18px;
+    gridline-color: #e6eef3;
+    color: #122033;
+}
+QTableWidget QHeaderView::section {
+    background: #e6f0f7;
+    color: #263b52;
+    border: none;
+    padding: 10px;
+    font-weight: 950;
+}
+QComboBox,
+QDateEdit,
+QSpinBox,
+QDoubleSpinBox,
+QLineEdit {
+    background: #ffffff;
+    border: 1px solid #cbdbe5;
+    border-radius: 12px;
+    min-height: 34px;
+    padding: 0 12px;
+    color: #142033;
+    font-weight: 800;
+}
+QFrame#deviceDrawer {
+    background: #10172f;
+    border-left: 1px solid rgba(92,225,230,80);
+}
+QFrame#deviceDrawer QLabel {
+    color: #effbff;
+}
+QFrame#deviceDrawer QLabel#drawerMetrics {
+    background: rgba(255,255,255,18);
+    border-radius: 14px;
+    padding: 10px;
+    color: #b7ecf2;
+}
+
+
+/* LeNam split login v2 - completely different layout */
+QWidget#LoginPage {
+    background: #f7fbff;
+    border-image: none;
+}
+QFrame#splitLoginCard {
+    background: #ffffff;
+    border: 1px solid rgba(26, 111, 255, 42);
+    border-radius: 6px;
+}
+QFrame#loginArtPanel {
+    background: #ffffff;
+    border-top-left-radius: 6px;
+    border-bottom-left-radius: 6px;
+}
+QLabel#artTopDots {
+    color: #bcd7fb;
+    font-size: 24px;
+    letter-spacing: 6px;
+    border: 1px dashed #9ec2f4;
+    border-radius: 2px;
+    padding: 8px;
+}
+QLabel#illustrationLabel {
+    color: #0c67e8;
+    font-size: 142px;
+    font-weight: 900;
+    background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
+                                stop:0 #edf6ff, stop:1 #d7e9ff);
+    border: 2px dashed #9cc4ff;
+    border-radius: 120px;
+    min-height: 210px;
+}
+QLabel#artTitleLabel {
+    color: #0b5fd7;
+    font-size: 24px;
+    font-weight: 950;
+}
+QLabel#artHintLabel {
+    color: #7a99bd;
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 145%;
+}
+QFrame#loginFormPanel {
+    background: #075feb;
+    border-top-right-radius: 6px;
+    border-bottom-right-radius: 6px;
+}
+QFrame#loginFormPanel QLabel#welcomeLabel {
+    color: white;
+    font-size: 34px;
+    font-weight: 950;
+}
+QFrame#loginFormPanel QLabel#subtitleLabel,
+QFrame#loginFormPanel QLabel#footerHintLabel {
+    color: rgba(255,255,255,170);
+    font-weight: 800;
+}
+QFrame#loginFormPanel QLineEdit#usernameEdit,
+QFrame#loginFormPanel QLineEdit#passwordEdit {
+    background: #ffffff;
+    color: #24609d;
+    border: none;
+    border-radius: 21px;
+    padding: 0 18px;
+    font-size: 13px;
+    font-weight: 800;
+    min-height: 42px;
+}
+QFrame#loginFormPanel QLineEdit#usernameEdit:focus,
+QFrame#loginFormPanel QLineEdit#passwordEdit:focus {
+    border: 2px solid #ffba08;
+    background: #ffffff;
+}
+QFrame#loginFormPanel QCheckBox#rememberAccountCheckBox {
+    color: rgba(255,255,255,210);
+    font-size: 12px;
+    font-weight: 800;
+}
+QPushButton#demoButton {
+    background: #ffb000;
+    color: #ffffff;
+    border: none;
+    border-radius: 21px;
+    font-size: 13px;
+    font-weight: 950;
+}
+QPushButton#demoButton:hover { background: #ffc13b; }
+QPushButton#loginButton {
+    background: transparent;
+    color: white;
+    border: 1.5px solid white;
+    border-radius: 21px;
+    font-size: 13px;
+    font-weight: 950;
+}
+QPushButton#loginButton:hover {
+    background: rgba(255,255,255,38);
+}
+
+/* LeNam dashboard v2 - profile sidebar + card analytics */
+QWidget#LeNamDashboardPage {
+    background: #cfd8e2;
+}
+QFrame#lenamDashboardShell {
+    background: #e8edf3;
+    border: 0;
+}
+QFrame#lenamProfilePanel {
+    background: #123d5d;
+    border: none;
+}
+QLabel#lenamAvatar {
+    min-width: 72px;
+    max-width: 72px;
+    min-height: 72px;
+    max-height: 72px;
+    border-radius: 36px;
+    background: #ffffff;
+    color: #123d5d;
+    font-size: 42px;
+    font-weight: 950;
+}
+QLabel#lenamProfileName {
+    color: #ffffff;
+    font-size: 20px;
+    font-weight: 950;
+}
+QLabel#lenamProfileEmail {
+    color: #b7d1e5;
+    font-size: 10px;
+    font-weight: 700;
+}
+QPushButton#lenamMiniNav {
+    background: transparent;
+    color: #ffffff;
+    border: none;
+    border-radius: 6px;
+    min-height: 28px;
+    text-align: left;
+    padding-left: 8px;
+    font-size: 12px;
+    font-weight: 700;
+}
+QPushButton#lenamMiniNav:hover {
+    background: rgba(255,255,255,35);
+}
+QFrame#lenamDashboardContent {
+    background: #edf1f6;
+}
+QLabel#lenamDashboardHeading {
+    color: #1f2937;
+    font-size: 18px;
+    font-weight: 700;
+}
+QLabel#lenamMenuIcon {
+    color: #4b5563;
+    font-size: 24px;
+    font-weight: 900;
+}
+QFrame#lenamKpiPrimary,
+QFrame#lenamKpiCard,
+QFrame#lenamChartCard,
+QFrame#lenamGaugeCard,
+QFrame#lenamWaveCard,
+QFrame#lenamTableCard {
+    border: none;
+    border-radius: 2px;
+}
+QFrame#lenamKpiPrimary {
+    background: #123d5d;
+}
+QFrame#lenamKpiCard,
+QFrame#lenamChartCard,
+QFrame#lenamGaugeCard,
+QFrame#lenamWaveCard,
+QFrame#lenamTableCard {
+    background: #ffffff;
+}
+QLabel#lenamKpiTitleLight,
+QLabel#lenamKpiIconLight {
+    color: #d7e8f5;
+    font-size: 11px;
+    font-weight: 700;
+}
+QLabel#lenamKpiValueLight {
+    color: white;
+    font-size: 30px;
+    font-weight: 400;
+}
+QLabel#lenamKpiTitle,
+QLabel#lenamKpiIcon {
+    color: #6b7280;
+    font-size: 11px;
+    font-weight: 700;
+}
+QLabel#lenamKpiIcon {
+    color: #ffad18;
+}
+QLabel#lenamKpiValue {
+    color: #111827;
+    font-size: 30px;
+    font-weight: 400;
+}
+QLabel#lenamSectionTitle {
+    color: #5b6574;
+    font-size: 12px;
+    font-weight: 800;
+}
+QPushButton#lenamOrangeButton {
+    background: #ffad18;
+    color: white;
+    border: none;
+    border-radius: 9px;
+    min-height: 22px;
+    padding: 0 12px;
+    font-size: 9px;
+    font-weight: 900;
+}
+QChartView#lenamChartView {
+    background: transparent;
+    border: none;
+}
+QLabel#lenamGaugeValue {
+    min-width: 120px;
+    min-height: 120px;
+    border-radius: 60px;
+    border: 18px solid #ffad18;
+    background: #123d5d;
+    color: white;
+    font-size: 24px;
+    font-weight: 500;
+}
+QLabel#lenamGaugeText {
+    color: #a0a7b2;
+    font-size: 10px;
+    font-weight: 800;
+    qproperty-alignment: AlignCenter;
+}
+QLabel#lenamGaugeLine {
+    color: #9ca3af;
+    border-bottom: 1px solid #e5e7eb;
+    padding-bottom: 5px;
+    font-size: 10px;
+    font-weight: 700;
+}
+QLabel#lenamLegendOrange {
+    color: #ffad18;
+    font-size: 10px;
+    font-weight: 800;
+}
+QLabel#lenamLegendBlue {
+    color: #123d5d;
+    font-size: 10px;
+    font-weight: 800;
+}
+QTableWidget#lenamHistoryTable {
+    background: white;
+    border: none;
+    color: #1f2937;
+    gridline-color: transparent;
+    font-size: 11px;
+}
+QTableWidget#lenamHistoryTable QHeaderView::section {
+    background: #f3f4f6;
+    color: #6b7280;
+    border: none;
+    padding: 8px;
+    font-size: 11px;
+    font-weight: 800;
+}
+
+/* LeNam device list v2 - mobile home style */
+QWidget#DeviceManagementPage,
+QWidget#deviceMainPanel,
+QWidget#devicePageContent {
+    background: qlineargradient(x1:0,y1:0,x2:1,y2:1,
+                                stop:0 #8fc6e8, stop:.48 #d7d5c0, stop:1 #b37a31);
+}
+QScrollArea { background: transparent; border: none; }
+QLabel#devicePageTitle {
+    color: white;
+    font-size: 58px;
+    font-weight: 950;
+    letter-spacing: -2px;
+}
+QLabel#devicePageSubtitle { color: rgba(255,255,255,180); }
+QLabel#deviceSectionTitle {
+    color: white;
+    font-size: 36px;
+    font-weight: 900;
+    margin-top: 18px;
+    margin-bottom: 8px;
+}
+QLabel#deviceSectionHint {
+    color: rgba(255,255,255,180);
+    font-size: 13px;
+    font-weight: 700;
+}
+QLabel#liveBadge,
+QPushButton#refreshDevicesButton {
+    background: rgba(82,99,103,150);
+    color: white;
+    border: none;
+    border-radius: 28px;
+    padding: 10px 18px;
+    font-weight: 900;
+}
+QFrame#ownedDeviceCard,
+QFrame#availableDeviceCard {
+    background: rgba(255,255,255,238);
+    border: none;
+    border-radius: 26px;
+}
+QFrame#ownedDeviceCard[deviceType="temperature_sound"],
+QFrame#availableDeviceCard[deviceType="temperature_sound"] {
+    background: rgba(255,255,255,245);
+}
+QFrame#ownedDeviceCard[deviceType="environment"],
+QFrame#availableDeviceCard[deviceType="environment"] {
+    background: rgba(111,82,39,185);
+}
+QFrame#ownedDeviceCard[deviceType="uv_pressure"],
+QFrame#availableDeviceCard[deviceType="uv_pressure"] {
+    background: rgba(255,255,255,238);
+}
+QFrame#ownedDeviceCard:hover,
+QFrame#availableDeviceCard:hover {
+    background: rgba(255,255,255,255);
+}
+QLabel#deviceTypeIcon,
+QLabel#availableDeviceIcon {
+    min-width: 58px;
+    max-width: 58px;
+    min-height: 58px;
+    max-height: 58px;
+    border-radius: 29px;
+    background: #ffc800;
+    color: white;
+    font-size: 31px;
+    font-weight: 950;
+}
+QLabel#devicePrimaryMetric {
+    color: #111111;
+    font-size: 0px;
+    max-height: 0px;
+}
+QLabel#deviceSecondaryMetric {
+    color: #8c8c8c;
+    font-size: 20px;
+    font-weight: 700;
+}
+QLabel#deviceCardName,
+QLabel#availableDeviceId {
+    color: #111111;
+    font-size: 26px;
+    font-weight: 950;
+}
+QLabel#deviceCardId,
+QLabel#deviceCardType,
+QLabel#availableDeviceHint {
+    color: #8d8d8d;
+    font-size: 17px;
+    font-weight: 700;
+}
+QFrame#ownedDeviceCard[deviceType="environment"] QLabel#deviceCardName,
+QFrame#ownedDeviceCard[deviceType="environment"] QLabel#deviceSecondaryMetric,
+QFrame#ownedDeviceCard[deviceType="environment"] QLabel#deviceCardId,
+QFrame#availableDeviceCard[deviceType="environment"] QLabel {
+    color: white;
+}
+QLabel#onlinePill,
+QLabel#offlinePill {
+    background: rgba(0,0,0,75);
+    color: white;
+    border-radius: 15px;
+    padding: 5px 10px;
+    font-size: 11px;
+    font-weight: 900;
+}
+QPushButton#claimDeviceButton,
+QPushButton#relayToggle {
+    background: rgba(0,0,0,105);
+    color: white;
+    border-radius: 14px;
+    min-height: 26px;
+    font-weight: 900;
+}
+QLabel#irDetectedStatus,
+QLabel#irClearStatus {
+    background: rgba(0,0,0,88);
+    color: white;
+    border-radius: 14px;
+    padding: 5px;
+    font-weight: 900;
+}
+QLabel#deviceEmptyState {
+    background: rgba(255,255,255,155);
+    color: #4e5f63;
+    border: none;
+    border-radius: 22px;
+    padding: 20px;
+    font-weight: 800;
+}
+
+/* LeNam device card horizontal fix */
+QFrame#ownedDeviceCard {
+    min-width: 350px;
+    max-width: 350px;
+    min-height: 112px;
+    max-height: 112px;
+    border-radius: 24px;
+}
+QLabel#deviceCardName {
+    font-size: 22px;
+    font-weight: 950;
+    color: #111111;
+    max-height: 28px;
+}
+QLabel#deviceCardId {
+    font-size: 13px;
+    font-weight: 800;
+    color: #7f8790;
+    max-height: 18px;
+}
+QLabel#deviceSecondaryMetric {
+    font-size: 14px;
+    font-weight: 850;
+    color: #777777;
+    max-height: 20px;
+}
+QLabel#onlinePill,
+QLabel#offlinePill {
+    min-width: 92px;
+    max-width: 92px;
+    min-height: 28px;
+    max-height: 28px;
+    border-radius: 14px;
+    padding: 0;
+}
+QLabel#deviceTypeIcon {
+    min-width: 62px;
+    max-width: 62px;
+    min-height: 62px;
+    max-height: 62px;
+    border-radius: 31px;
+}
+QFrame#ownedDeviceCard[deviceType="environment"] QLabel#deviceCardName,
+QFrame#ownedDeviceCard[deviceType="environment"] QLabel#deviceSecondaryMetric,
+QFrame#ownedDeviceCard[deviceType="environment"] QLabel#deviceCardId {
+    color: #ffffff;
+}
+
+
+/* LeNam wider device cards */
+QFrame#ownedDeviceCard {
+    min-width: 410px;
+    max-width: 410px;
+}
+QLabel#deviceCardName {
+    font-size: 21px;
+}
+QLabel#onlinePill,
+QLabel#offlinePill {
+    min-width: 96px;
+    max-width: 96px;
+}
+
+
+/* LeNam device spacing/color fix */
+QFrame#ownedDeviceCard {
+    min-width: 450px;
+    max-width: 450px;
+    min-height: 122px;
+    max-height: 122px;
+}
+QLabel#deviceCardName {
+    font-size: 22px;
+    max-height: 30px;
+}
+QLabel#deviceCardId {
+    font-size: 13px;
+    max-height: 18px;
+}
+QLabel#deviceSecondaryMetric {
+    font-size: 14px;
+    max-height: 20px;
+}
+QLabel#onlinePill {
+    background: #27c46b;
+    color: white;
+    min-width: 102px;
+    max-width: 102px;
+}
+QLabel#offlinePill {
+    background: #9ca3af;
+    color: white;
+    min-width: 102px;
+    max-width: 102px;
+}
+QLabel#irDetectedStatus {
+    background: #ef4444;
+    color: white;
+    min-width: 150px;
+    max-width: 150px;
+}
+QLabel#irClearStatus {
+    background: #27c46b;
+    color: white;
+    min-width: 150px;
+    max-width: 150px;
+}
+
+
+/* LeNam device typography cleanup */
+QLabel#devicePageTitle {
+    font-size: 46px;
+    letter-spacing: -1px;
+}
+QLabel#deviceSectionTitle {
+    font-size: 30px;
+    margin-top: 14px;
+    margin-bottom: 6px;
+}
+QFrame#availableDeviceCard {
+    min-width: 450px;
+    max-width: 450px;
+    min-height: 122px;
+    max-height: 122px;
+    border-radius: 24px;
+}
+QLabel#availableDeviceId {
+    font-size: 22px;
+    font-weight: 950;
+    color: #111111;
+    max-height: 30px;
+}
+QLabel#deviceCardType {
+    font-size: 14px;
+    font-weight: 850;
+    color: #7f8790;
+    max-height: 20px;
+}
+QLabel#availableDeviceHint {
+    font-size: 14px;
+    font-weight: 850;
+    color: #7f8790;
+    max-height: 20px;
+}
+QLabel#availableDeviceIcon {
+    min-width: 62px;
+    max-width: 62px;
+    min-height: 62px;
+    max-height: 62px;
+    border-radius: 31px;
+}
+QPushButton#claimDeviceButton {
+    background: #27c46b;
+    color: white;
+    border-radius: 16px;
+    font-weight: 950;
+}
+
+/* LeNam smaller device card titles */
+QLabel#deviceCardName,
+QLabel#availableDeviceId {
+    font-size: 18px;
+    font-weight: 900;
+    max-height: 24px;
+}
+QLabel#deviceCardId,
+QLabel#deviceSecondaryMetric,
+QLabel#deviceCardType,
+QLabel#availableDeviceHint {
+    font-size: 12px;
+    max-height: 18px;
+}
+QFrame#ownedDeviceCard,
+QFrame#availableDeviceCard {
+    min-height: 116px;
+    max-height: 116px;
+}
+
+
+/* LeNam device title space fix */
+QLabel#deviceTypeIcon,
+QLabel#availableDeviceIcon {
+    min-width: 54px;
+    max-width: 54px;
+    min-height: 54px;
+    max-height: 54px;
+    border-radius: 27px;
+}
+QLabel#onlinePill,
+QLabel#offlinePill {
+    min-width: 92px;
+    max-width: 92px;
+}
+QLabel#irDetectedStatus,
+QLabel#irClearStatus {
+    min-width: 132px;
+    max-width: 132px;
+}
+QLabel#deviceCardName,
+QLabel#availableDeviceId {
+    font-size: 17px;
+}
+
+
+/* LeNam final card width and relay visibility */
+QFrame#ownedDeviceCard,
+QFrame#availableDeviceCard {
+    min-width: 520px;
+    max-width: 520px;
+}
+QLabel#deviceCardName,
+QLabel#availableDeviceId {
+    font-size: 17px;
+    font-weight: 950;
+}
+QLabel#onlinePill,
+QLabel#offlinePill {
+    min-width: 96px;
+    max-width: 96px;
+}
+QLabel#irDetectedStatus,
+QLabel#irClearStatus {
+    min-width: 150px;
+    max-width: 150px;
+}
+QPushButton#relayToggle {
+    min-width: 150px;
+    max-width: 150px;
+    min-height: 32px;
+    max-height: 32px;
+    padding-left: 12px;
+    padding-right: 12px;
+    text-align: left;
+}
+
+/* LeNam header navigation */
+QWidget#sideBar {
+    background: qlineargradient(x1:0,y1:0,x2:1,y2:0,
+                                stop:0 #0b1020, stop:.55 #123d5d, stop:1 #075feb);
+    border-right: none;
+    border-bottom: 1px solid rgba(255,255,255,45);
+}
+QWidget#sideBar QPushButton {
+    min-width: 112px;
+    max-width: 150px;
+    min-height: 44px;
+    max-height: 44px;
+    border-radius: 22px;
+    padding: 0 18px;
+    text-align: center;
+    color: #d8ecff;
+    background: transparent;
+    font-size: 14px;
+    font-weight: 900;
+}
+QWidget#sideBar QPushButton:hover {
+    background: rgba(255,255,255,32);
+    color: white;
+}
+QWidget#sideBar QPushButton:checked {
+    background: rgba(255,255,255,235);
+    color: #075feb;
+    border-left: none;
+}
+QWidget#sideBar QPushButton#logoutButton {
+    background: rgba(255,255,255,24);
+    color: white;
+}
+QWidget#sideBar QLabel#sideLogo {
+    background: white;
+    border-radius: 26px;
+}
+
+/* LeNam dashboard no inner sidebar */
+QFrame#lenamDashboardContent {
+    border-radius: 0;
+}
+QLabel#lenamDashboardHeading {
+    font-size: 22px;
+    font-weight: 900;
+}
+
+
+/* LeNam IoT admin account page */
+QWidget#UserManagementPage {
+    background: #edf3f8;
+}
+QLabel#usersPageTitle {
+    color: #111827;
+    font-size: 28px;
+    font-weight: 950;
+    qproperty-alignment: AlignCenter;
+}
+QPushButton#usersAddButton {
+    background: #0f7185;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    min-height: 38px;
+    padding: 0 18px;
+    font-weight: 900;
+}
+QFrame#iotUserStatCard,
+QFrame#iotOnlineStatCard,
+QFrame#iotOfflineStatCard {
+    background: white;
+    border: 1px solid #d8e3ea;
+    border-radius: 12px;
+}
+QLabel#iotStatIcon {
+    min-width: 42px;
+    max-width: 42px;
+    min-height: 42px;
+    max-height: 42px;
+    border-radius: 12px;
+    background: #dff6fb;
+    color: #0f7185;
+    font-size: 22px;
+    font-weight: 900;
+}
+QFrame#iotOnlineStatCard QLabel#iotStatIcon {
+    background: #dff8ec;
+    color: #15945a;
+}
+QFrame#iotOfflineStatCard QLabel#iotStatIcon {
+    background: #ffe7e7;
+    color: #c0392b;
+}
+QLabel#iotStatTitle {
+    color: #34495e;
+    font-size: 12px;
+    font-weight: 850;
+}
+QLabel#iotStatValue {
+    color: #111827;
+    font-size: 22px;
+    font-weight: 950;
+}
+QTableWidget#usersTableModern {
+    background: white;
+    border: 1px solid #d8e3ea;
+    border-radius: 14px;
+    gridline-color: #edf2f6;
+    color: #1f2937;
+    font-size: 12px;
+    selection-background-color: #e3f7f6;
+    selection-color: #0b3642;
+}
+QTableWidget#usersTableModern::item {
+    padding: 8px;
+}
+QTableWidget#usersTableModern QHeaderView::section {
+    background: #eef5f7;
+    color: #2f4555;
+    border: none;
+    border-right: 1px solid #dbe8ee;
+    padding: 9px;
+    font-size: 12px;
+    font-weight: 950;
+}
+QFrame#userDetailPanel {
+    background: white;
+    border: 1px solid #d8e3ea;
+    border-radius: 14px;
+}
+QLabel#userDetailIcon {
+    background: #dff6fb;
+    color: #0f7185;
+}
+QLabel#userDetailTitle {
+    color: #111827;
+    font-size: 20px;
+    font-weight: 950;
+}
+QPushButton#userPanelPrimaryButton,
+QPushButton#userDeviceDetachButton {
+    background: #0f7185;
+    color: white;
+    border: none;
+    border-radius: 9px;
+    min-height: 32px;
+    font-weight: 900;
+}
+QPushButton#userPanelDangerButton {
+    background: #fff0f0;
+    color: #c0392b;
+    border: 1px solid #ffcaca;
+    border-radius: 9px;
+    min-height: 32px;
+    font-weight: 900;
+}
+QFrame#userDeviceChip {
+    background: #f4fafb;
+    border: 1px solid #d7ebef;
+    border-radius: 10px;
+}
+
+/* LeNam IoT admin dark relationship layout */
+QWidget#UserManagementPage {
+    background: #061f22;
+}
+QLabel#usersPageTitle {
+    color: #e9f6f3;
+    font-size: 24px;
+    font-weight: 950;
+}
+QFrame#iotRelationshipPanel,
+QFrame#iotCenterPanel,
+QFrame#userDetailPanel,
+QFrame#iotMonitorPanel {
+    background: rgba(8, 48, 51, 235);
+    border: 1px solid rgba(64, 165, 161, 80);
+    border-radius: 14px;
+}
+QLabel#iotPanelTitle {
+    color: #e9f6f3;
+    font-size: 15px;
+    font-weight: 950;
+}
+QFrame#iotUserStatCard,
+QFrame#iotOnlineStatCard,
+QFrame#iotOfflineStatCard {
+    background: rgba(12, 61, 65, 235);
+    border: 1px solid rgba(64, 165, 161, 80);
+    border-radius: 12px;
+}
+QLabel#iotStatTitle {
+    color: #cae4e1;
+    font-size: 12px;
+}
+QLabel#iotStatValue {
+    color: white;
+    font-size: 24px;
+}
+QLabel#iotStatIcon {
+    background: rgba(76, 201, 196, 35);
+    color: #65e4d7;
+}
+QTableWidget#usersTableModern {
+    background: transparent;
+    border: none;
+    color: #e9f6f3;
+    gridline-color: transparent;
+    font-size: 13px;
+    selection-background-color: rgba(48, 137, 132, 120);
+    selection-color: white;
+}
+QTableWidget#usersTableModern::item {
+    background: rgba(13, 68, 72, 190);
+    border-bottom: 8px solid #083033;
+    padding: 10px;
+}
+QTableWidget#usersTableModern QHeaderView::section {
+    background: rgba(7, 39, 42, 245);
+    color: #bde2df;
+    border: none;
+    padding: 8px;
+    font-size: 12px;
+    font-weight: 950;
+}
+QLabel#iotMonitorOnline,
+QLabel#iotMonitorDevice,
+QLabel#iotMonitorEmpty {
+    border-radius: 9px;
+    padding: 10px 12px;
+    font-size: 12px;
+    font-weight: 850;
+    min-height: 42px;
+}
+QLabel#iotMonitorOnline {
+    background: rgba(31, 111, 75, 150);
+    color: #eafff4;
+    border: 1px solid rgba(72, 222, 142, 120);
+}
+QLabel#iotMonitorDevice {
+    background: rgba(18, 75, 92, 160);
+    color: #e8fbff;
+    border: 1px solid rgba(81, 191, 216, 110);
+}
+QLabel#iotMonitorEmpty {
+    background: rgba(113, 49, 58, 150);
+    color: #ffe7ea;
+    border: 1px solid rgba(237, 103, 118, 120);
+}
+QFrame#iotMonitorItem {
+    background: rgba(15, 67, 72, 230);
+    border: 1px solid rgba(87, 201, 197, 95);
+    border-radius: 20px;
+}
+QFrame#iotMonitorItem:hover {
+    background: rgba(20, 88, 94, 245);
+    border: 1px solid rgba(121, 247, 232, 185);
+}
+QFrame#iotMonitorItem[kind="user"] {
+    background: rgba(19, 98, 72, 232);
+    border: 1px solid rgba(76, 222, 142, 130);
+}
+QFrame#iotMonitorItem[kind="device"] {
+    background: rgba(16, 80, 98, 235);
+    border: 1px solid rgba(84, 193, 232, 125);
+}
+QFrame#iotMonitorItem[kind="empty"] {
+    background: rgba(96, 49, 60, 235);
+    border: 1px solid rgba(236, 105, 121, 125);
+}
+QLabel#iotMonitorItemIcon {
+    border-radius: 26px;
+    background: rgba(255, 255, 255, 22);
+    color: #72f0e2;
+    font-size: 23px;
+    font-weight: 950;
+}
+QLabel#iotMonitorItemIcon[kind="user"] {
+    color: #72f0b2;
+}
+QLabel#iotMonitorItemIcon[kind="empty"] {
+    color: #ff9eaa;
+}
+QLabel#iotMonitorItemTitle {
+    color: #ffffff;
+    font-size: 16px;
+    font-weight: 950;
+}
+QLabel#iotMonitorItemSubtitle {
+    color: #bde2df;
+    font-size: 12px;
+    font-weight: 800;
+}
+QLabel#iotMonitorItemState {
+    background: rgba(23, 133, 150, 185);
+    color: #ffffff;
+    border-radius: 12px;
+    padding: 5px 12px;
+    font-size: 11px;
+    font-weight: 950;
+}
+QLabel#iotMonitorItemState[kind="user"] {
+    background: rgba(26, 172, 97, 185);
+}
+QLabel#iotMonitorItemState[kind="empty"] {
+    background: rgba(190, 62, 78, 185);
+}
+QLabel#iotMonitorDeleteHint {
+    color: #ff7785;
+    font-size: 21px;
+    font-weight: 950;
+    min-width: 22px;
+}
+QFrame#iotMonitorItem:hover QLabel#iotMonitorDeleteHint {
+    color: #ff7785;
+}
+QDialog#userActionDialog {
+    background: transparent;
+    border-radius: 28px;
+}
+QFrame#userActionProfilePanel {
+    min-width: 315px;
+    max-width: 315px;
+    background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
+        stop:0 #0f6c68, stop:0.5 #0d4648, stop:1 #062e30);
+    border-top-left-radius: 28px;
+    border-bottom-left-radius: 28px;
+}
+QFrame#userActionFormPanel {
+    background: #ffffff;
+    border-top-right-radius: 28px;
+    border-bottom-right-radius: 28px;
+}
+QLabel#userActionAvatar {
+    background: rgba(230, 250, 250, 235);
+    color: #0f5f5c;
+    border: 8px solid rgba(255, 255, 255, 45);
+    border-radius: 58px;
+    min-width: 116px;
+    min-height: 116px;
+    font-size: 58px;
+    font-weight: 950;
+}
+QLabel#userActionProfileTitle {
+    color: white;
+    font-size: 25px;
+    font-weight: 950;
+}
+QLabel#userActionProfileHint {
+    color: rgba(255, 255, 255, 190);
+    font-size: 15px;
+    font-weight: 750;
+}
+QLabel#userActionStatusTitle {
+    color: white;
+    font-size: 17px;
+    font-weight: 950;
+}
+QLabel#userActionStatusOnline {
+    color: #8ef1bd;
+    font-size: 17px;
+    font-weight: 950;
+}
+QLabel#userActionStatusLocked {
+    color: #ffc06a;
+    font-size: 17px;
+    font-weight: 950;
+}
+QLabel#userActionStatusDevice {
+    color: rgba(255, 255, 255, 190);
+    font-size: 15px;
+    font-weight: 850;
+}
+QLabel#userActionTitle {
+    color: #172128;
+    font-size: 28px;
+    font-weight: 950;
+}
+QLabel#userActionHint {
+    color: #4e5a61;
+    font-size: 15px;
+    font-weight: 650;
+}
+QLabel#userActionSmallHint {
+    color: #526068;
+    font-size: 12px;
+    font-weight: 650;
+}
+QPushButton#userActionCloseButton {
+    background: transparent;
+    color: #3f464a;
+    border: none;
+    border-radius: 19px;
+    font-size: 30px;
+    font-weight: 900;
+}
+QPushButton#userActionCloseButton:hover {
+    background: #f2f5f5;
+    color: #d84a5c;
+}
+QLineEdit#userActionInput,
+QComboBox#userActionCombo {
+    background: #f4f6f9;
+    color: #1d282e;
+    border: 1px solid #ccd3da;
+    border-radius: 12px;
+    padding: 8px 14px;
+    min-height: 38px;
+    font-size: 14px;
+    font-weight: 800;
+}
+QLineEdit#userActionInput:focus,
+QComboBox#userActionCombo:focus {
+    border: 2px solid #1495a0;
+    background: white;
+}
+QCheckBox#userActionCheck {
+    color: #28333a;
+    font-size: 13px;
+    font-weight: 800;
+    spacing: 8px;
+    min-height: 26px;
+}
+QLabel#userActionDeviceTitle {
+    color: #172128;
+    font-size: 16px;
+    font-weight: 950;
+    margin-top: 6px;
+}
+QLabel#userActionDeviceEmpty {
+    background: #f4f6f7;
+    color: #68757c;
+    border-radius: 12px;
+    padding: 10px 12px;
+}
+QFrame#userActionDeviceChip {
+    background: #f1f7f8;
+    border: 1px solid #cfe2e4;
+    border-radius: 13px;
+    min-height: 42px;
+}
+QLabel#userActionDeviceId {
+    color: #143b40;
+    font-size: 14px;
+    font-weight: 950;
+}
+QLabel#userDetailTitle,
+QLabel#userDetailSectionTitle {
+    color: #e9f6f3;
+    font-size: 20px;
+    font-weight: 950;
+}
+QLabel#userDetailHint,
+QLabel#userDeviceIdLabel {
+    color: #bde2df;
+    font-size: 12px;
+    font-weight: 850;
+}
+QLabel#userDetailStat,
+QFrame#userDeviceChip {
+    background: rgba(9, 69, 72, 235);
+    border: 1px solid rgba(64, 201, 195, 95);
+    border-radius: 12px;
+    color: #e9f6f3;
+    padding: 9px 12px;
+    font-size: 13px;
+    font-weight: 950;
+}
+QPushButton#usersAddButton,
+QPushButton#userPanelPrimaryButton,
+QPushButton#userDeviceDetachButton {
+    background: #1597a8;
+    color: white;
+    border-radius: 10px;
+    border: none;
+    min-height: 38px;
+    font-size: 13px;
+    font-weight: 950;
+    padding-left: 14px;
+    padding-right: 14px;
+}
+QPushButton#userPanelPrimaryButton:hover,
+QPushButton#userDeviceDetachButton:hover {
+    background: #1fb3c5;
+}
+QPushButton#userPanelSecondaryButton {
+    background: #eef2f5;
+    color: #18252c;
+    border: 1px solid #cbd3da;
+    border-radius: 10px;
+    min-height: 38px;
+    font-size: 13px;
+    font-weight: 950;
+    padding-left: 16px;
+    padding-right: 16px;
+}
+QPushButton#userPanelSecondaryButton:hover {
+    background: #e2e8ed;
+    border: 1px solid #b7c2ca;
+}
+QPushButton#userPanelDangerButton {
+    background: rgba(180, 47, 64, 60);
+    color: #ff909d;
+    border: 1px solid rgba(255, 100, 116, 90);
+    border-radius: 10px;
+    min-height: 38px;
+    font-size: 13px;
+    font-weight: 950;
+    padding-left: 16px;
+    padding-right: 16px;
+}
+QPushButton#userPanelDangerButton:hover {
+    background: rgba(220, 64, 82, 90);
+}
+
+QDialog#confirmDeviceDialog {
+    background: transparent;
+}
+QFrame#confirmDeviceProfilePanel {
+    min-width: 315px;
+    max-width: 315px;
+    background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
+        stop:0 #0f6c68, stop:0.5 #0d4648, stop:1 #062e30);
+    border-top-left-radius: 28px;
+    border-bottom-left-radius: 28px;
+}
+QFrame#confirmDeviceFormPanel {
+    background: #ffffff;
+    border-top-right-radius: 28px;
+    border-bottom-right-radius: 28px;
+}
+QLabel#confirmDeviceIcon {
+    background: rgba(230, 250, 250, 220);
+    color: #0f5f5c;
+    border-radius: 44px;
+    min-width: 88px;
+    min-height: 88px;
+    font-size: 48px;
+    font-weight: 950;
+}
+QLabel#confirmDeviceProfileTitle {
+    color: white;
+    font-size: 26px;
+    font-weight: 950;
+}
+QLabel#confirmDeviceProfileHint {
+    color: rgba(255, 255, 255, 190);
+    font-size: 15px;
+    font-weight: 750;
+}
+QLabel#confirmDeviceInfo {
+    color: #ffffff;
+    font-size: 16px;
+    font-weight: 900;
+    line-height: 130%;
+}
+QLabel#confirmDeviceWarning {
+    color: rgba(255, 255, 255, 220);
+    font-size: 14px;
+    font-weight: 750;
+}
+QLabel#confirmDeviceTitle {
+    color: #172128;
+    font-size: 27px;
+    font-weight: 950;
+}
+QLabel#confirmDeviceHint {
+    color: #4e5a61;
+    font-size: 16px;
+    font-weight: 650;
+}
+QPushButton#confirmDeviceCloseButton {
+    background: transparent;
+    color: #3f464a;
+    border: none;
+    border-radius: 20px;
+    font-size: 30px;
+    font-weight: 900;
+}
+QPushButton#confirmDeviceCloseButton:hover {
+    background: #f2f5f5;
+    color: #d84a5c;
+}
+QLineEdit#confirmDeviceInput,
+QComboBox#confirmDeviceCombo {
+    background: #f4f6f9;
+    color: #1d282e;
+    border: 1px solid #ccd3da;
+    border-radius: 12px;
+    padding: 8px 14px;
+    min-height: 38px;
+    min-width: 350px;
+    font-size: 15px;
+    font-weight: 800;
+}
+QLabel#confirmDeviceQuestion {
+    background: #f0f2f6;
+    color: #111a20;
+    border: 1px solid #ccd3da;
+    border-radius: 14px;
+    padding: 22px 24px;
+    font-size: 24px;
+    font-weight: 950;
+}
+QPushButton#confirmDevicePrimaryButton {
+    background: #075245;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    min-height: 48px;
+    min-width: 170px;
+    font-size: 17px;
+    font-weight: 950;
+}
+QPushButton#confirmDevicePrimaryButton:hover {
+    background: #08705f;
+}
+QPushButton#confirmDeviceCancelButton {
+    background: transparent;
+    color: #075245;
+    border: none;
+    border-radius: 12px;
+    min-height: 48px;
+    min-width: 120px;
+    font-size: 17px;
+    font-weight: 950;
+}
+QPushButton#confirmDeviceCancelButton:hover {
+    background: #eef5f3;
+}
+
+/* LeNam analytics dashboard override */
+QWidget#HistoryPage {
+    background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
+        stop:0 #f7f4ff, stop:0.48 #f7fbff, stop:1 #eefcf7);
+}
+QFrame#historyChartCard {
+    background: #ffffff;
+    border: 1px solid rgba(124, 92, 255, 45);
+    border-radius: 24px;
+}
+QFrame#historyStatCard {
+    background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
+        stop:0 #ffffff, stop:1 #f4f7ff);
+    border: 1px solid rgba(124, 92, 255, 45);
+    border-radius: 22px;
+}
+QLabel#historyCardTitle {
+    color: #17153b;
+    font-size: 19px;
+    font-weight: 950;
+}
+QLabel#historyChartHint {
+    color: #718096;
+    font-size: 12px;
+    font-weight: 750;
+}
+QLabel#historyStatIcon {
+    background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
+        stop:0 #ede8ff, stop:1 #e3fff6);
+    color: #7c5cff;
+    border-radius: 16px;
+    font-size: 28px;
+    min-width: 58px;
+    max-width: 58px;
+    min-height: 58px;
+    max-height: 58px;
+}
+QLabel#historyStatTitle {
+    color: #17153b;
+    font-size: 14px;
+    font-weight: 950;
+}
+QLabel#historyStatValue {
+    color: #009f78;
+    font-size: 16px;
+    font-weight: 950;
+}
+QChartView#historyChart {
+    background: transparent;
+    border: none;
+}
+QChartView#historyMiniChart {
+    background: #ffffff;
+    border: 1px solid rgba(124, 92, 255, 35);
+    border-radius: 16px;
+}
+QLabel#historyChartEmpty {
+    background: #ffffff;
+    color: #718096;
+    border: 1px dashed rgba(124, 92, 255, 55);
+    border-radius: 16px;
+    min-height: 160px;
+    font-size: 14px;
+    font-weight: 850;
+}

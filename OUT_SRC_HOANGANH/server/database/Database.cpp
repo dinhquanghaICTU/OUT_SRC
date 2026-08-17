@@ -492,6 +492,12 @@ bool Database::claimDevice(const QString &username, const QString &deviceId, con
 {
     if (errorCode)
         errorCode->clear();
+    const QString normalizedId = deviceId.trimmed();
+    if (normalizedId.compare(QStringLiteral("HA-190782"), Qt::CaseInsensitive) != 0) {
+        if (errorCode) *errorCode = QStringLiteral("invalid_device");
+        if (error) *error = QStringLiteral("Chỉ cho phép thêm thiết bị ID 'HA-190782' (Firmware Hoàng Anh)");
+        return false;
+    }
     if (!m_db.transaction()) {
         if (errorCode) *errorCode = QStringLiteral("database_error");
         if (error) *error = m_db.lastError().text();
@@ -640,6 +646,8 @@ bool Database::recordDevicePresence(const QString &deviceId, bool online,
     const QString normalizedId = deviceId.trimmed();
     if (normalizedId.isEmpty() || normalizedId.size() > 64)
         return false;
+    if (normalizedId.compare(QStringLiteral("HA-190782"), Qt::CaseInsensitive) != 0)
+        return false;
     const QString now = QDateTime::currentDateTimeUtc().toString(Qt::ISODateWithMs);
     QString deviceType = QStringLiteral("generic");
     if (normalizedId.compare(QStringLiteral("son-190782"), Qt::CaseInsensitive) == 0
@@ -684,7 +692,10 @@ bool Database::recordDevicePresence(const QString &deviceId, bool online,
 bool Database::recordTelemetry(const QString &deviceId, const QJsonObject &metrics,
                                const QString &recordedAt, QString *error)
 {
-    if (deviceId.trimmed().isEmpty() || metrics.isEmpty())
+    const QString normalizedId = deviceId.trimmed();
+    if (normalizedId.isEmpty() || metrics.isEmpty())
+        return false;
+    if (normalizedId.compare(QStringLiteral("HA-190782"), Qt::CaseInsensitive) != 0)
         return false;
     QSqlQuery query(m_db);
     query.prepare(QStringLiteral(
@@ -852,7 +863,7 @@ QJsonArray Database::availableDevices(int onlineWindowSeconds, QString *error) c
     query.prepare(QStringLiteral(
         "SELECT d.device_id,d.last_seen_at,d.device_type,d.metrics_json "
         "FROM discovered_devices d "
-        "WHERE d.online=1 AND d.last_seen_at>=? "
+        "WHERE d.online=1 AND d.last_seen_at>=? AND d.device_id='HA-190782' COLLATE NOCASE "
         "AND NOT EXISTS(SELECT 1 FROM devices c WHERE c.device_id=d.device_id COLLATE NOCASE) "
         "ORDER BY d.last_seen_at DESC"));
     query.addBindValue(cutoff);

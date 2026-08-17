@@ -1,4 +1,5 @@
 #include "LoginPage.h"
+#include "VirtualKeyboard.h"
 
 #include "ui_LoginPage.h"
 
@@ -48,6 +49,8 @@ LoginPage::LoginPage(QWidget *parent)
     } else {
         ui->usernameEdit->setFocus();
     }
+    VirtualKeyboardDialog::attachToLineEdit(ui->usernameEdit, tr("Nhập tên tài khoản"));
+    VirtualKeyboardDialog::attachToLineEdit(ui->passwordEdit, tr("Nhập mật khẩu"));
 
     auto *passwordVisibilityAction = new QAction(makePasswordVisibilityIcon(false),
                                                   tr("Hiện mật khẩu"),

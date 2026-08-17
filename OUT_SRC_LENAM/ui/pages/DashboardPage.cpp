@@ -40,8 +40,8 @@ QFrame *kpiCard(const QString &title, QLabel **value, const QString &icon, bool 
 {
     auto *card = frame(primary ? "lenamKpiPrimary" : "lenamKpiCard");
     auto *layout = new QVBoxLayout(card);
-    layout->setContentsMargins(18, 14, 18, 14);
-    layout->setSpacing(8);
+    layout->setContentsMargins(12, 8, 12, 8);
+    layout->setSpacing(4);
     auto *head = new QHBoxLayout;
     head->addWidget(textLabel(title, primary ? "lenamKpiTitleLight" : "lenamKpiTitle"));
     head->addStretch();
@@ -112,8 +112,8 @@ DashboardPage::DashboardPage(QWidget *parent)
     auto *content = new QFrame(shell);
     content->setObjectName(QStringLiteral("lenamDashboardContent"));
     auto *contentLayout = new QVBoxLayout(content);
-    contentLayout->setContentsMargins(26, 18, 26, 24);
-    contentLayout->setSpacing(18);
+    contentLayout->setContentsMargins(14, 8, 14, 10);
+    contentLayout->setSpacing(8);
     shellLayout->addWidget(content, 1);
 
     auto *top = new QHBoxLayout;
@@ -126,8 +126,8 @@ DashboardPage::DashboardPage(QWidget *parent)
 
     auto *grid = new QGridLayout;
     grid->setContentsMargins(0, 0, 0, 0);
-    grid->setHorizontalSpacing(20);
-    grid->setVerticalSpacing(18);
+    grid->setHorizontalSpacing(10);
+    grid->setVerticalSpacing(8);
     contentLayout->addLayout(grid, 1);
 
     QLabel *earningValue = nullptr;

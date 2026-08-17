@@ -19,6 +19,8 @@ find_package(Qt6 REQUIRED COMPONENTS
 
 qt_add_executable(OUT_SRC_LENAM
     main.cpp
+    VirtualKeyboard.h
+    VirtualKeyboard.cpp
     EmbeddedServer.cpp
     EmbeddedServer.h
     server/api/ApiServer.cpp

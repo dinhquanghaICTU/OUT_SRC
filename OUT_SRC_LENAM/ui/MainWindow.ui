@@ -2,8 +2,8 @@
 <ui version="4.0">
  <class>MainWindow</class>
  <widget class="QMainWindow" name="MainWindow">
-  <property name="geometry"><rect><x>0</x><y>0</y><width>1080</width><height>680</height></rect></property>
-  <property name="minimumSize"><size><width>840</width><height>480</height></size></property>
+  <property name="geometry"><rect><x>0</x><y>0</y><width>800</width><height>480</height></rect></property>
+  <property name="minimumSize"><size><width>480</width><height>320</height></size></property>
   <property name="windowTitle"><string>LeNam Control Center</string></property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QVBoxLayout" name="mainLayout">
@@ -14,15 +14,15 @@
     <property name="bottomMargin"><number>0</number></property>
     <item>
      <widget class="QWidget" name="sideBar">
-      <property name="minimumSize"><size><width>0</width><height>76</height></size></property>
-      <property name="maximumSize"><size><width>16777215</width><height>76</height></size></property>
+      <property name="minimumSize"><size><width>0</width><height>50</height></size></property>
+      <property name="maximumSize"><size><width>16777215</width><height>50</height></size></property>
       <layout class="QHBoxLayout" name="sideBarLayout">
-       <property name="spacing"><number>12</number></property>
-       <property name="leftMargin"><number>18</number></property>
-       <property name="topMargin"><number>10</number></property>
-       <property name="rightMargin"><number>18</number></property>
-       <property name="bottomMargin"><number>10</number></property>
-       <item><widget class="QLabel" name="sideLogo"><property name="minimumSize"><size><width>52</width><height>52</height></size></property><property name="maximumSize"><size><width>52</width><height>52</height></size></property><property name="pixmap"><pixmap resource="../resources/resources.qrc">:/images/logo_ictu.png</pixmap></property><property name="scaledContents"><bool>true</bool></property></widget></item>
+       <property name="spacing"><number>8</number></property>
+       <property name="leftMargin"><number>12</number></property>
+       <property name="topMargin"><number>4</number></property>
+       <property name="rightMargin"><number>12</number></property>
+       <property name="bottomMargin"><number>4</number></property>
+       <item><widget class="QLabel" name="sideLogo"><property name="minimumSize"><size><width>38</width><height>38</height></size></property><property name="maximumSize"><size><width>38</width><height>38</height></size></property><property name="pixmap"><pixmap resource="../resources/resources.qrc">:/images/logo_ictu.png</pixmap></property><property name="scaledContents"><bool>true</bool></property></widget></item>
        <item><widget class="QPushButton" name="dashboardButton"><property name="toolTip"><string>Trang chủ</string></property><property name="text"><string>⌂  Trang chủ</string></property><property name="checkable"><bool>true</bool></property><property name="autoExclusive"><bool>true</bool></property></widget></item>
        <item><widget class="QPushButton" name="devicesButton"><property name="toolTip"><string>Quản lý thiết bị</string></property><property name="text"><string>◆  Thiết bị</string></property><property name="checkable"><bool>true</bool></property><property name="autoExclusive"><bool>true</bool></property></widget></item>
        <item><widget class="QPushButton" name="historyButton"><property name="toolTip"><string>Lịch sử dữ liệu</string></property><property name="text"><string>▤  Lịch sử</string></property><property name="checkable"><bool>true</bool></property><property name="autoExclusive"><bool>true</bool></property></widget></item>

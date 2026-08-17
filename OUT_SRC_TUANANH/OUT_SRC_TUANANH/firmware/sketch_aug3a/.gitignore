@@ -1,0 +1,4 @@
+Secrets.h
+*.bin
+*.elf
+*.map

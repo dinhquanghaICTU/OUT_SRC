@@ -1,0 +1,12 @@
+<RCC>
+ <qresource prefix="/">
+  <file alias="styles/app.qss">styles/app.qss</file>
+  <file alias="images/logo_ictu.png">image/logo_ictu.png</file>
+  <file alias="images/login_hero.png">image/login_hero.png</file>
+  <file alias="images/login_hero.svg">image/login_hero.svg</file>
+  <file alias="images/hero_building_bg.png">image/hero_building_bg.png</file>
+  <file alias="images/google_icon.png">image/google_icon.png</file>
+  <file alias="images/fb_icon.png">image/fb_icon.png</file>
+  <file alias="images/x_icon.png">image/x_icon.png</file>
+ </qresource>
+</RCC>

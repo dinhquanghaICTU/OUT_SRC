@@ -1,0 +1,21 @@
+{
+    "C_Cpp.default.configurationProvider": "",
+    "C_Cpp.errorSquiggles": "enabled",
+    "C_Cpp.intelliSenseEngine": "default",
+    "C_Cpp.clang_format_path": "/home/quanghaictu/.vscode/extensions/ms-vscode.cpptools-1.32.2-linux-x64/LLVM/bin/clang-format",
+    "editor.formatOnSave": true,
+    "[c]": {
+        "editor.defaultFormatter": "ms-vscode.cpptools"
+    },
+    "[cpp]": {
+        "editor.defaultFormatter": "ms-vscode.cpptools"
+    },
+    "files.autoSave": "afterDelay",
+    "files.autoSaveDelay": 500,
+    "files.associations": {
+        "*.ino": "cpp",
+        "Arduino.h": "cpp",
+        "WiFi.h": "cpp",
+        "Wire.h": "cpp"
+    }
+}

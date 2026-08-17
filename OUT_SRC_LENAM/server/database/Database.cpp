@@ -492,6 +492,12 @@ bool Database::claimDevice(const QString &username, const QString &deviceId, con
 {
     if (errorCode)
         errorCode->clear();
+    const QString normalizedId = deviceId.trimmed();
+    if (normalizedId.compare(QStringLiteral("190782"), Qt::CaseInsensitive) != 0) {
+        if (errorCode) *errorCode = QStringLiteral("invalid_device");
+        if (error) *error = QStringLiteral("Chỉ cho phép thêm thiết bị ID '190782' (Firmware Lê Nam)");
+        return false;
+    }
     if (!m_db.transaction()) {
         if (errorCode) *errorCode = QStringLiteral("database_error");
         if (error) *error = m_db.lastError().text();
@@ -852,7 +858,7 @@ QJsonArray Database::availableDevices(int onlineWindowSeconds, QString *error) c
     query.prepare(QStringLiteral(
         "SELECT d.device_id,d.last_seen_at,d.device_type,d.metrics_json "
         "FROM discovered_devices d "
-        "WHERE d.online=1 AND d.last_seen_at>=? "
+        "WHERE d.online=1 AND d.last_seen_at>=? AND d.device_id='190782' COLLATE NOCASE "
         "AND NOT EXISTS(SELECT 1 FROM devices c WHERE c.device_id=d.device_id COLLATE NOCASE) "
         "ORDER BY d.last_seen_at DESC"));
     query.addBindValue(cutoff);

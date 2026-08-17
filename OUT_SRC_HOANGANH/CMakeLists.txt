@@ -15,6 +15,8 @@ qt_add_executable(OUT_SRC_HOANGANH
     mainwindow.cpp
     mainwindow.h
     mainwindow.ui
+    VirtualKeyboard.cpp
+    VirtualKeyboard.h
     EmbeddedServer.cpp
     EmbeddedServer.h
     server/api/ApiServer.cpp

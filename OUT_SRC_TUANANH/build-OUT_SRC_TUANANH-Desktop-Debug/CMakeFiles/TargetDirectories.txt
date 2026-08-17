@@ -1,0 +1,9 @@
+/home/quanghaictu/OUT_SRC/OUT_SRC_TUANANH/build-OUT_SRC_TUANANH-Desktop-Debug/CMakeFiles/OUT_SRC_TUANANH.dir
+/home/quanghaictu/OUT_SRC/OUT_SRC_TUANANH/build-OUT_SRC_TUANANH-Desktop-Debug/CMakeFiles/edit_cache.dir
+/home/quanghaictu/OUT_SRC/OUT_SRC_TUANANH/build-OUT_SRC_TUANANH-Desktop-Debug/CMakeFiles/rebuild_cache.dir
+/home/quanghaictu/OUT_SRC/OUT_SRC_TUANANH/build-OUT_SRC_TUANANH-Desktop-Debug/CMakeFiles/list_install_components.dir
+/home/quanghaictu/OUT_SRC/OUT_SRC_TUANANH/build-OUT_SRC_TUANANH-Desktop-Debug/CMakeFiles/install.dir
+/home/quanghaictu/OUT_SRC/OUT_SRC_TUANANH/build-OUT_SRC_TUANANH-Desktop-Debug/CMakeFiles/install/local.dir
+/home/quanghaictu/OUT_SRC/OUT_SRC_TUANANH/build-OUT_SRC_TUANANH-Desktop-Debug/CMakeFiles/install/strip.dir
+/home/quanghaictu/OUT_SRC/OUT_SRC_TUANANH/build-OUT_SRC_TUANANH-Desktop-Debug/CMakeFiles/OUT_SRC_TUANANH_autogen_timestamp_deps.dir
+/home/quanghaictu/OUT_SRC/OUT_SRC_TUANANH/build-OUT_SRC_TUANANH-Desktop-Debug/CMakeFiles/OUT_SRC_TUANANH_autogen.dir

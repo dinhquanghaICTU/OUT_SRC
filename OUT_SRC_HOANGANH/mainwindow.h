@@ -9,6 +9,7 @@
 class QChart;
 class QChartView;
 class QComboBox;
+class QButtonGroup;
 class QFrame;
 class QGridLayout;
 class QLabel;
@@ -17,6 +18,7 @@ class QPushButton;
 class QStackedWidget;
 class QTableWidget;
 class QTimer;
+class VirtualKeyboard;
 
 class MainWindow : public QMainWindow
 {
@@ -40,6 +42,7 @@ private:
     void buildHistory();
     void buildUsers();
     void setPage(int index);
+    void logout();
     void refreshAll();
     void refreshDevices();
     void refreshAvailable();
@@ -54,10 +57,14 @@ private:
     void toggleRelay(const QString &deviceId, bool nextState);
     void createUserDialog();
     void editUserDialog(const QJsonObject &user);
+    void openClaimDeviceDialog(const QJsonObject &device);
     void openDeviceConfigDialog(const QJsonObject &device);
     void updateDeviceConfig(const QString &deviceId, const QJsonObject &config);
 
+    void showChartZoomDialog(const QString &key);
+
     QWidget *m_loginPage = nullptr;
+    VirtualKeyboard *m_loginKeyboard = nullptr;
     QWidget *m_shellPage = nullptr;
     QStackedWidget *m_root = nullptr;
     QStackedWidget *m_pages = nullptr;
@@ -71,9 +78,11 @@ private:
     QGridLayout *m_availableGrid = nullptr;
     QComboBox *m_historyDevice = nullptr;
     QComboBox *m_historyPeriod = nullptr;
+    QStackedWidget *m_historyStack = nullptr;
     QGridLayout *m_historyCharts = nullptr;
     QTableWidget *m_historyTable = nullptr;
     QTableWidget *m_usersTable = nullptr;
+    QButtonGroup *m_navGroup = nullptr;
 
     QNetworkAccessManager m_net;
     QString m_baseUrl = QStringLiteral("http://127.0.0.1:8080");
@@ -83,7 +92,8 @@ private:
     QJsonArray m_devices;
     QJsonArray m_available;
     QJsonArray m_users;
+    QJsonObject m_lastHistory;
     QTimer *m_timer = nullptr;
 };
 
-#endif
+#endif // MAINWINDOW_H

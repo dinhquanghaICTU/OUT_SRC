@@ -1,0 +1,14 @@
+[Unit]
+Description=ICTU Environment Server
+After=network-online.target mosquitto.service
+Wants=network-online.target mosquitto.service
+
+[Service]
+Type=simple
+ExecStart=/usr/local/bin/OUT_SRC_TRUNGKIEN-SERVER --port 8080 --database /var/lib/ictu-environment/environment.db --mqtt-host 127.0.0.1 --mqtt-port 1883
+Restart=always
+RestartSec=3
+WorkingDirectory=/var/lib/ictu-environment
+
+[Install]
+WantedBy=multi-user.target

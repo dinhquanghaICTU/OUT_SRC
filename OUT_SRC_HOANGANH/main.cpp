@@ -10,6 +10,7 @@
 
 int main(int argc, char *argv[])
 {
+    qputenv("QT_IM_MODULE", "qtvirtualkeyboard");
     QApplication app(argc, argv);
     QApplication::setApplicationName(QStringLiteral("HoangAnh IoT Command Center"));
     QApplication::setApplicationVersion(QStringLiteral("1.0.0"));
