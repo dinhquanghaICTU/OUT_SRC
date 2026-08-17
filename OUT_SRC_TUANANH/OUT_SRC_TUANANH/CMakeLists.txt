@@ -8,6 +8,18 @@ set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 
+if(NOT CMAKE_BUILD_TYPE)
+    set(CMAKE_BUILD_TYPE "Debug" CACHE STRING "Build type" FORCE)
+endif()
+
+# Auto-detect local Qt6 installation paths
+if(EXISTS "/home/quanghaictu/Qt6Cross/qt6/host")
+    list(APPEND CMAKE_PREFIX_PATH "/home/quanghaictu/Qt6Cross/qt6/host")
+endif()
+if(EXISTS "/home/quanghaictu/Qt6Cross/qt6/pi")
+    list(APPEND CMAKE_PREFIX_PATH "/home/quanghaictu/Qt6Cross/qt6/pi")
+endif()
+
 find_package(Qt6 REQUIRED COMPONENTS
     Core
     Widgets
@@ -53,6 +65,10 @@ qt_add_executable(OUT_SRC_TUANANH
 
     ui/dialogs/ErrorDialog.h
     ui/dialogs/ErrorDialog.cpp
+    ui/dialogs/SensorDetailDialog.h
+    ui/dialogs/SensorDetailDialog.cpp
+    ui/dialogs/SelectOnlineDeviceDialog.h
+    ui/dialogs/SelectOnlineDeviceDialog.cpp
 
     ui/pages/LoginPage.h
     ui/pages/LoginPage.cpp
@@ -60,30 +76,11 @@ qt_add_executable(OUT_SRC_TUANANH
     ui/pages/DashboardPage.h
     ui/pages/DashboardPage.cpp
     ui/pages/DashboardPage.ui
-    ui/pages/DeviceManagementPage.h
-    ui/pages/DeviceManagementPage.cpp
-    ui/pages/HistoryPage.h
-    ui/pages/HistoryPage.cpp
-    ui/pages/HistoryPage.ui
-    ui/pages/AlertPage.h
-    ui/pages/AlertPage.cpp
-    ui/pages/AlertPage.ui
     ui/pages/UserManagementPage.h
     ui/pages/UserManagementPage.cpp
     ui/pages/UserManagementPage.ui
 
-    ui/widgets/PressureCard.h
-    ui/widgets/PressureCard.cpp
-    ui/widgets/DistanceCard.h
-    ui/widgets/DistanceCard.cpp
-
     resources/resources.qrc
-
-)
-
-target_include_directories(OUT_SRC_TUANANH PRIVATE
-    ${CMAKE_CURRENT_SOURCE_DIR}
-    ${CMAKE_CURRENT_SOURCE_DIR}/server
 )
 
 target_link_libraries(OUT_SRC_TUANANH PRIVATE
@@ -95,6 +92,12 @@ target_link_libraries(OUT_SRC_TUANANH PRIVATE
     Qt6::Charts
 )
 
+target_include_directories(OUT_SRC_TUANANH PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}
+    ${CMAKE_CURRENT_SOURCE_DIR}/server
+)
+
+include(GNUInstallDirs)
 install(TARGETS OUT_SRC_TUANANH
     BUNDLE DESTINATION .
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}

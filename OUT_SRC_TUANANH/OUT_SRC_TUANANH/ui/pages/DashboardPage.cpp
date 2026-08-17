@@ -1,372 +1,216 @@
 #include "DashboardPage.h"
 #include "ui_DashboardPage.h"
 
-#include <QChart>
-#include <QChartView>
-#include <QDate>
-#include <QDateTime>
 #include <QFrame>
 #include <QGridLayout>
-#include <QHeaderView>
+#include <QHBoxLayout>
 #include <QLabel>
-#include <QLineEdit>
-#include <QLineSeries>
-#include <QLocale>
 #include <QPainter>
+#include <QPainterPath>
+#include <QPaintEvent>
 #include <QPushButton>
-#include <QScrollArea>
-#include <QStyle>
-#include <QTableWidget>
-#include <QValueAxis>
+#include <QStackedWidget>
+#include <QTimer>
 #include <QVBoxLayout>
+#include <QtMath>
 
-namespace {
-
-QLabel *label(const QString &text, const char *name = nullptr)
+// ============================================================================
+// 1. VerticalLuxBarWidget (Segmented LED Power Tube)
+// ============================================================================
+VerticalLuxBarWidget::VerticalLuxBarWidget(QWidget *parent) : QWidget(parent)
 {
-    auto *result = new QLabel(text);
-    if (name)
-        result->setObjectName(QString::fromLatin1(name));
-    result->setWordWrap(true);
-    return result;
+    setFixedWidth(24);
+    setMinimumHeight(140);
 }
 
-QFrame *card(const char *name = "dashboardSmartCard")
+void VerticalLuxBarWidget::setValue(double val, double maxVal)
 {
-    auto *result = new QFrame;
-    result->setObjectName(QString::fromLatin1(name));
-    result->setFrameShape(QFrame::NoFrame);
-    result->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-    return result;
+    m_value = val;
+    m_max = maxVal;
+    update();
 }
 
-QLabel *chip(const QString &text, const QString &icon)
+void VerticalLuxBarWidget::paintEvent(QPaintEvent *event)
 {
-    auto *result = label(icon + QStringLiteral("  ") + text, "dashboardWeatherChip");
-    result->setAlignment(Qt::AlignCenter);
-    result->setMinimumHeight(42);
-    return result;
+    Q_UNUSED(event);
+    QPainter p(this);
+    p.setRenderHint(QPainter::Antialiasing, true);
+
+    const int totalSegments = 16;
+    const double pct = (m_value > 0) ? qBound(0.0, m_value / m_max, 1.0) : 0.0;
+    const int activeSegments = static_cast<int>(pct * totalSegments);
+    const int segH = (height() - 4) / totalSegments;
+
+    // Draw bezel container
+    p.setPen(QPen(QColor(QStringLiteral("#1e293b")), 1));
+    p.setBrush(QColor(QStringLiteral("#070b10")));
+    p.drawRoundedRect(rect().adjusted(1, 1, -1, -1), 4, 4);
+
+    for (int i = 0; i < totalSegments; ++i) {
+        int segIdxFromBottom = totalSegments - 1 - i;
+        int y = 2 + i * segH;
+        QRect segRect(3, y + 1, width() - 6, segH - 2);
+
+        if (segIdxFromBottom < activeSegments) {
+            // Gradient from Cyber Emerald to Cyan to Amber Warning at top
+            QColor c;
+            if (segIdxFromBottom > 12) c = QColor(QStringLiteral("#f59e0b")); // high
+            else if (segIdxFromBottom > 6) c = QColor(QStringLiteral("#00f0ff")); // mid
+            else c = QColor(QStringLiteral("#10b981")); // low
+
+            p.setBrush(c);
+            p.setPen(Qt::NoPen);
+            p.drawRoundedRect(segRect, 1, 1);
+        } else {
+            p.setBrush(QColor(QStringLiteral("#111827")));
+            p.setPen(Qt::NoPen);
+            p.drawRoundedRect(segRect, 1, 1);
+        }
+    }
 }
 
-QPushButton *tabButton(const QString &text, bool active)
+// ============================================================================
+// 2. TacticalRadarWidget (360 Sci-Fi Radar Scope)
+// ============================================================================
+TacticalRadarWidget::TacticalRadarWidget(QWidget *parent) : QWidget(parent)
 {
-    auto *button = new QPushButton(text);
-    button->setObjectName(active ? QStringLiteral("dashboardTabActive")
-                                 : QStringLiteral("dashboardTab"));
-    button->setCursor(Qt::PointingHandCursor);
-    button->setCheckable(true);
-    button->setChecked(active);
-    return button;
+    setMinimumSize(150, 150);
 }
 
-QPushButton *sceneButton(const QString &icon, const QString &text, const QString &type)
+void TacticalRadarWidget::setDetected(bool detected)
 {
-    auto *button = new QPushButton(icon + QStringLiteral("  ") + text);
-    button->setObjectName(QStringLiteral("dashboardScene_%1").arg(type));
-    button->setCursor(Qt::PointingHandCursor);
-    button->setCheckable(true);
-    button->setMinimumHeight(48);
-    return button;
+    m_detected = detected;
+    update();
 }
 
-QChartView *chartView(QLineSeries *series, const QString &accent, double minimum, double maximum)
+void TacticalRadarWidget::paintEvent(QPaintEvent *event)
 {
-    auto *chart = new QChart;
-    chart->addSeries(series);
-    chart->legend()->hide();
-    chart->setBackgroundVisible(false);
-    chart->setMargins(QMargins(0, 0, 0, 0));
+    Q_UNUSED(event);
+    QPainter p(this);
+    p.setRenderHint(QPainter::Antialiasing, true);
 
-    auto *axisX = new QValueAxis(chart);
-    axisX->setRange(0, 20);
-    axisX->setTickCount(5);
-    axisX->setLabelFormat(QStringLiteral("%d"));
-    axisX->setGridLineVisible(false);
-    axisX->setLabelsColor(QColor(QStringLiteral("#83918b")));
+    const int side = qMin(width(), height()) - 8;
+    const int cx = width() / 2;
+    const int cy = height() / 2;
+    const QRectF scopeRect(cx - side/2, cy - side/2, side, side);
 
-    auto *axisY = new QValueAxis(chart);
-    axisY->setRange(minimum, maximum);
-    axisY->setTickCount(4);
-    axisY->setGridLineColor(QColor(QStringLiteral("#e4ebe7")));
-    axisY->setLabelsColor(QColor(QStringLiteral("#83918b")));
+    // Background dark scope
+    QRadialGradient scopeGrad(cx, cy, side/2);
+    scopeGrad.setColorAt(0.0, QColor(QStringLiteral("#0b171c")));
+    scopeGrad.setColorAt(1.0, QColor(QStringLiteral("#04080a")));
+    p.setBrush(scopeGrad);
+    p.setPen(QPen(QColor(QStringLiteral("#164e63")), 1.5));
+    p.drawEllipse(scopeRect);
 
-    chart->addAxis(axisX, Qt::AlignBottom);
-    chart->addAxis(axisY, Qt::AlignLeft);
-    series->attachAxis(axisX);
-    series->attachAxis(axisY);
-    series->setPen(QPen(QColor(accent), 2.8));
+    // Concentric grid rings
+    p.setBrush(Qt::NoBrush);
+    p.setPen(QPen(QColor(QStringLiteral("#0e7490")), 1, Qt::DotLine));
+    p.drawEllipse(QPointF(cx, cy), side * 0.35, side * 0.35);
+    p.drawEllipse(QPointF(cx, cy), side * 0.20, side * 0.20);
 
-    auto *view = new QChartView(chart);
-    view->setRenderHint(QPainter::Antialiasing);
-    view->setStyleSheet(QStringLiteral("background: transparent; border: none;"));
-    return view;
+    // Tactical crosshairs & angles
+    p.setPen(QPen(QColor(QStringLiteral("#155e75")), 1, Qt::SolidLine));
+    p.drawLine(cx - side/2, cy, cx + side/2, cy);
+    p.drawLine(cx, cy - side/2, cx, cy + side/2);
+
+    // Compass markings
+    p.setPen(QColor(QStringLiteral("#06b6d4")));
+    QFont f = p.font();
+    f.setPointSize(6);
+    f.setBold(true);
+    p.setFont(f);
+    p.drawText(cx - 10, cy - side/2 + 10, 20, 10, Qt::AlignCenter, QStringLiteral("N"));
+    p.drawText(cx - 10, cy + side/2 - 14, 20, 10, Qt::AlignCenter, QStringLiteral("S"));
+    p.drawText(cx + side/2 - 14, cy - 5, 10, 10, Qt::AlignCenter, QStringLiteral("E"));
+    p.drawText(cx - side/2 + 4, cy - 5, 10, 10, Qt::AlignCenter, QStringLiteral("W"));
+
+    if (m_detected) {
+        // Target Locked Pulse
+        p.setBrush(QColor(16, 185, 129, 60));
+        p.setPen(QPen(QColor(QStringLiteral("#10b981")), 2));
+        p.drawEllipse(QPointF(cx + 20, cy - 15), 18, 18);
+
+        p.setBrush(QColor(QStringLiteral("#10b981")));
+        p.setPen(Qt::NoPen);
+        p.drawEllipse(QPointF(cx + 20, cy - 15), 5, 5);
+
+        // Target Label
+        p.setPen(QColor(QStringLiteral("#10b981")));
+        QFont tf = p.font();
+        tf.setPointSize(7);
+        tf.setBold(true);
+        p.setFont(tf);
+        p.drawText(cx + 28, cy - 20, QStringLiteral("TARGET [PIR]"));
+    } else {
+        // Standby sweep line
+        p.setPen(QPen(QColor(6, 182, 212, 100), 1.5));
+        p.drawLine(cx, cy, cx + side * 0.4 * qCos(1.2), cy - side * 0.4 * qSin(1.2));
+    }
 }
 
-QWidget *metricPill(const QString &title, QLabel **valueLabel, const QString &unit)
+// ============================================================================
+// 3. CyberWaveformWidget (Oscilloscope Strip)
+// ============================================================================
+CyberWaveformWidget::CyberWaveformWidget(QWidget *parent) : QWidget(parent)
 {
-    auto *pill = new QFrame;
-    pill->setObjectName(QStringLiteral("dashboardMetricPill"));
-    auto *layout = new QVBoxLayout(pill);
-    layout->setContentsMargins(14, 10, 14, 10);
-    layout->setSpacing(3);
-    layout->addWidget(label(title, "dashboardHint"));
-    auto *row = new QHBoxLayout;
-    row->setContentsMargins(0, 0, 0, 0);
-    row->setSpacing(4);
-    *valueLabel = label(QStringLiteral("--"), "dashboardMetricSmallValue");
-    row->addWidget(*valueLabel);
-    row->addWidget(label(unit, "dashboardMetricSmallUnit"), 0, Qt::AlignBottom);
-    row->addStretch();
-    layout->addLayout(row);
-    return pill;
+    setMinimumHeight(44);
 }
 
-} // namespace
+void CyberWaveformWidget::addSample(double val)
+{
+    m_samples.append(val);
+    if (m_samples.size() > 30) m_samples.removeFirst();
+    update();
+}
 
+void CyberWaveformWidget::paintEvent(QPaintEvent *event)
+{
+    Q_UNUSED(event);
+    QPainter p(this);
+    p.setRenderHint(QPainter::Antialiasing, true);
+
+    const int w = width();
+    const int h = height();
+
+    // Background
+    p.setBrush(QColor(QStringLiteral("#070b10")));
+    p.setPen(QPen(QColor(QStringLiteral("#1e293b")), 1));
+    p.drawRoundedRect(rect().adjusted(1, 1, -1, -1), 4, 4);
+
+    if (m_samples.size() < 2) return;
+
+    QPainterPath path;
+    const double stepX = static_cast<double>(w - 8) / (m_samples.size() - 1);
+
+    for (int i = 0; i < m_samples.size(); ++i) {
+        double px = 4 + i * stepX;
+        double py = (h - 6) - (qBound(0.0, m_samples[i], 1000.0) / 1000.0) * (h - 12);
+        if (i == 0) path.moveTo(px, py);
+        else path.lineTo(px, py);
+    }
+
+    p.setPen(QPen(QColor(QStringLiteral("#00f0ff")), 1.8, Qt::SolidLine, Qt::RoundCap));
+    p.drawPath(path);
+}
+
+// ============================================================================
+// 4. DashboardPage HUD Main Implementation
+// ============================================================================
 DashboardPage::DashboardPage(QWidget *parent)
-    : QWidget(parent),
-      ui(new Ui::DashboardPage),
-      m_pressureSeries(new QLineSeries(this)),
-      m_distanceSeries(new QLineSeries(this))
+    : QWidget(parent), ui(new Ui::DashboardPage)
 {
     ui->setupUi(this);
+    setStyleSheet("background-color: #06090e; color: #e2e8f0; font-family: 'Segoe UI', 'Roboto', sans-serif;");
 
-    auto *header = new QHBoxLayout;
-    header->setContentsMargins(0, 0, 0, 0);
-    header->setSpacing(12);
-    auto *titleBlock = new QVBoxLayout;
-    titleBlock->setContentsMargins(0, 0, 0, 0);
-    titleBlock->setSpacing(6);
-    m_titleLabel = label(tr("Nhà của bạn"), "dashboardTitle");
-    titleBlock->addWidget(m_titleLabel);
-    titleBlock->addWidget(label(tr("Tổng quan hệ thống môi trường ICTU"), "dashboardSubtitle"));
-    header->addLayout(titleBlock);
-    header->addStretch();
-    m_updatedAt = label(tr("Chưa có dữ liệu"), "dashboardUpdatedAt");
-    header->addWidget(m_updatedAt, 0, Qt::AlignTop);
-    ui->verticalLayout->addLayout(header);
-
-    auto *tabs = new QHBoxLayout;
-    tabs->setContentsMargins(0, 0, 0, 4);
-    tabs->setSpacing(8);
-    auto *tabOverview = tabButton(tr("Tổng hợp"), true);
-    auto *tabFavorite = tabButton(tr("Yêu thích"), false);
-    auto *tabHistory = tabButton(tr("Lịch sử"), false);
-    const auto fakeTabClick = [tabOverview, tabFavorite, tabHistory](QPushButton *active) {
-        for (QPushButton *button : {tabOverview, tabFavorite, tabHistory})
-            button->setChecked(button == active);
-    };
-    connect(tabOverview, &QPushButton::clicked, this, [=] { fakeTabClick(tabOverview); });
-    connect(tabFavorite, &QPushButton::clicked, this, [=] { fakeTabClick(tabFavorite); });
-    connect(tabHistory, &QPushButton::clicked, this, [=] { fakeTabClick(tabHistory); });
-    tabs->addWidget(tabOverview);
-    tabs->addWidget(tabFavorite);
-    tabs->addWidget(tabHistory);
-    tabs->addStretch();
-    ui->verticalLayout->addLayout(tabs);
-
-    auto *grid = new QGridLayout;
-    grid->setContentsMargins(0, 0, 0, 0);
-    grid->setHorizontalSpacing(16);
-    grid->setVerticalSpacing(16);
-    grid->setColumnStretch(0, 1);
-    grid->setColumnStretch(1, 1);
-
-    auto *weather = card("dashboardWeatherCard");
-    m_weatherCard = weather;
-    auto *weatherLayout = new QVBoxLayout(weather);
-    weatherLayout->setContentsMargins(14, 12, 14, 12);
-    weatherLayout->setSpacing(8);
-    auto *weatherTop = new QHBoxLayout;
-    weatherTop->setContentsMargins(0, 0, 0, 0);
-    auto *weatherIcon = label(QStringLiteral("☁"), "dashboardWeatherIcon");
-    weatherIcon->setAlignment(Qt::AlignCenter);
-    weatherTop->addWidget(weatherIcon);
-    weatherTop->addStretch();
-    m_temperatureChip = chip(tr("-- °C"), QStringLiteral("◊"));
-    m_pressureChip = chip(tr("-- hPa"), QStringLiteral("●"));
-    m_distanceChip = chip(tr("-- cm"), QStringLiteral("▲"));
-    weatherTop->addWidget(m_temperatureChip);
-    weatherTop->addWidget(m_pressureChip);
-    weatherTop->addWidget(m_distanceChip);
-    weatherLayout->addLayout(weatherTop);
-    m_clockValue = label(QDateTime::currentDateTime().toString(QStringLiteral("H:mm")),
-                         "dashboardClock");
-    m_dateValue = label(QLocale(QLocale::Vietnamese, QLocale::Vietnam)
-                            .toString(QDate::currentDate(), QStringLiteral("dddd, dd/MM/yyyy")),
-                        "dashboardDate");
-    weatherLayout->addWidget(m_clockValue);
-    weatherLayout->addWidget(m_dateValue);
-    grid->addWidget(weather, 0, 0);
-
-    auto *scenes = card("dashboardSceneCard");
-    m_scenesCard = scenes;
-    auto *scenesLayout = new QGridLayout(scenes);
-    scenesLayout->setContentsMargins(10, 10, 10, 10);
-    scenesLayout->setHorizontalSpacing(8);
-    scenesLayout->setVerticalSpacing(8);
-    auto *sleepScene = sceneButton(QStringLiteral("◐"), tr("Đi ngủ"), QStringLiteral("sleep"));
-    auto *autoScene = sceneButton(QStringLiteral("◈"), tr("Tự động"), QStringLiteral("auto"));
-    auto *securityScene = sceneButton(QStringLiteral("!"), tr("An ninh"), QStringLiteral("security"));
-    auto *travelScene = sceneButton(QStringLiteral("▰"), tr("Du lịch"), QStringLiteral("travel"));
-    auto *rainScene = sceneButton(QStringLiteral("☔"), tr("Ngày mưa"), QStringLiteral("rain"));
-    auto *readScene = sceneButton(QStringLiteral("▣"), tr("Đọc sách"), QStringLiteral("read"));
-    autoScene->setChecked(true);
-    scenesLayout->addWidget(sleepScene, 0, 0);
-    scenesLayout->addWidget(autoScene, 0, 1);
-    scenesLayout->addWidget(securityScene, 1, 0);
-    scenesLayout->addWidget(travelScene, 1, 1);
-    scenesLayout->addWidget(rainScene, 2, 0);
-    scenesLayout->addWidget(readScene, 2, 1);
-    grid->addWidget(scenes, 0, 1);
-
-    auto *media = card("dashboardMediaCard");
-    m_mediaCard = media;
-    auto *mediaLayout = new QVBoxLayout(media);
-    mediaLayout->setContentsMargins(12, 10, 12, 10);
-    mediaLayout->setSpacing(6);
-    auto *mediaHeader = new QHBoxLayout;
-    auto *cover = label(QStringLiteral("↯"), "dashboardCoverArt");
-    cover->setAlignment(Qt::AlignCenter);
-    mediaHeader->addWidget(cover);
-    auto *mediaText = new QVBoxLayout;
-    mediaText->addWidget(label(tr("Giám sát môi trường"), "dashboardCardTitle"));
-    mediaText->addWidget(label(tr("Dữ liệu realtime từ cảm biến"), "dashboardHint"));
-    mediaHeader->addLayout(mediaText, 1);
-    mediaLayout->addLayout(mediaHeader);
-    auto *metricRow = new QHBoxLayout;
-    metricRow->setSpacing(10);
-    metricRow->addWidget(metricPill(tr("Áp suất"), &m_pressureValue, tr("hPa")));
-    metricRow->addWidget(metricPill(tr("Khoảng cách"), &m_distanceValue, tr("cm")));
-    mediaLayout->addLayout(metricRow);
-    auto *chartRow = new QHBoxLayout;
-    chartRow->setContentsMargins(0, 0, 0, 0);
-    chartRow->setSpacing(8);
-    chartRow->addWidget(chartView(m_pressureSeries, QStringLiteral("#3566c5"), 985, 1035), 1);
-    chartRow->addWidget(chartView(m_distanceSeries, QStringLiteral("#15945a"), 0, 100), 1);
-    mediaLayout->addLayout(chartRow, 1);
-    grid->addWidget(media, 1, 0);
-
-    auto *camera = card("dashboardCameraCard");
-    m_cameraCard = camera;
-    auto *cameraLayout = new QVBoxLayout(camera);
-    cameraLayout->setContentsMargins(12, 10, 12, 10);
-    cameraLayout->setSpacing(6);
-    auto *cameraHead = new QHBoxLayout;
-    cameraHead->addWidget(label(QStringLiteral("←  ") + tr("Phòng thiết bị"), "dashboardCameraTitle"));
-    cameraHead->addStretch();
-    cameraHead->addWidget(label(QStringLiteral("LIVE"), "dashboardLiveBadge"));
-    cameraLayout->addLayout(cameraHead);
-    cameraLayout->addStretch();
-    m_alertValue = label(tr("Hệ thống ổn định"), "dashboardCameraStatus");
-    cameraLayout->addWidget(m_alertValue);
-    auto *cameraActions = new QHBoxLayout;
-    cameraActions->addStretch();
-    auto *deviceDemo = tabButton(tr("Thiết bị"), true);
-    auto *cameraDemo = tabButton(tr("Cameras"), false);
-    connect(deviceDemo, &QPushButton::clicked, this, [=] {
-        deviceDemo->setChecked(true);
-        cameraDemo->setChecked(false);
-        m_alertValue->setText(tr("Hệ thống ổn định"));
+    m_relayPendingTimer = new QTimer(this);
+    m_relayPendingTimer->setSingleShot(true);
+    connect(m_relayPendingTimer, &QTimer::timeout, this, [this] {
+        m_isRelayPending = false;
+        updateHudState();
     });
-    connect(cameraDemo, &QPushButton::clicked, this, [=] {
-        deviceDemo->setChecked(false);
-        cameraDemo->setChecked(true);
-        m_alertValue->setText(tr("Camera demo đang sẵn sàng"));
-    });
-    cameraActions->addWidget(deviceDemo);
-    cameraActions->addWidget(cameraDemo);
-    cameraLayout->addLayout(cameraActions);
-    grid->addWidget(camera, 1, 1);
 
-    auto *historyCard = card("dashboardHistoryCard");
-    m_historyCard = historyCard;
-    auto *historyLayout = new QVBoxLayout(historyCard);
-    historyLayout->setContentsMargins(12, 10, 12, 10);
-    historyLayout->setSpacing(6);
-    auto *historyHeader = new QHBoxLayout;
-    historyHeader->addWidget(label(tr("Lịch sử dữ liệu"), "dashboardCardTitle"));
-    historyHeader->addStretch();
-    auto *search = new QLineEdit;
-    search->setObjectName(QStringLiteral("dashboardSearch"));
-    search->setPlaceholderText(tr("⌕  Tìm dữ liệu"));
-    historyHeader->addWidget(search);
-    historyLayout->addLayout(historyHeader);
-    m_history = new QTableWidget(0, 3);
-    m_history->setObjectName(QStringLiteral("dashboardHistory"));
-    m_history->setHorizontalHeaderLabels({tr("Thời gian"), tr("Áp suất"), tr("Khoảng cách")});
-    m_history->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
-    m_history->verticalHeader()->hide();
-    m_history->setShowGrid(false);
-    m_history->setSelectionMode(QAbstractItemView::NoSelection);
-    historyLayout->addWidget(m_history, 1);
-    grid->addWidget(historyCard, 2, 0, 1, 2);
-
-    m_contentGrid = grid;
-    // Wrap grid in QScrollArea để cuộn được trên màn 7 inch 480px
-    auto *scrollContent = new QWidget;
-    scrollContent->setObjectName(QStringLiteral("dashboardScrollContent"));
-    scrollContent->setLayout(grid);
-    auto *scrollArea = new QScrollArea;
-    scrollArea->setObjectName(QStringLiteral("dashboardScrollArea"));
-    scrollArea->setWidgetResizable(true);
-    scrollArea->setFrameShape(QFrame::NoFrame);
-    scrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    scrollArea->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
-    scrollArea->setWidget(scrollContent);
-    ui->verticalLayout->addWidget(scrollArea, 1);
-    applyResponsiveLayout();
-
-    const QList<QPair<double, double>> demo = {
-        {1008,25},{1016,31},{1005,28},{1010,29},{1008,24},{1015,30},
-        {1021,38},{1017,33},{1024,33},{1014,39},{1012,35},{1017,44},{1011,39}
-    };
-    for (const auto &point : demo) {
-        m_pressureSeries->append(m_sampleIndex, point.first);
-        m_distanceSeries->append(m_sampleIndex, point.second);
-        ++m_sampleIndex;
-    }
-
-    m_updatedAt->setText(tr("Cập nhật: %1").arg(
-        QLocale(QLocale::Vietnamese, QLocale::Vietnam)
-            .toString(QDateTime::currentDateTime(), QStringLiteral("HH:mm, dddd, dd/MM/yyyy"))));
-}
-
-void DashboardPage::resizeEvent(QResizeEvent *event)
-{
-    QWidget::resizeEvent(event);
-    applyResponsiveLayout();
-}
-
-void DashboardPage::applyResponsiveLayout()
-{
-    if (!m_contentGrid)
-        return;
-
-    while (QLayoutItem *item = m_contentGrid->takeAt(0))
-        delete item;
-
-    const bool compact = width() <= 700;
-    m_contentGrid->setHorizontalSpacing(compact ? 8 : 10);
-    m_contentGrid->setVerticalSpacing(compact ? 8 : 10);
-    if (compact) {
-        m_contentGrid->addWidget(m_weatherCard, 0, 0);
-        m_contentGrid->addWidget(m_scenesCard, 1, 0);
-        m_contentGrid->addWidget(m_mediaCard, 2, 0);
-        m_contentGrid->addWidget(m_cameraCard, 3, 0);
-        m_contentGrid->addWidget(m_historyCard, 4, 0);
-        m_contentGrid->setColumnStretch(0, 1);
-        m_contentGrid->setColumnStretch(1, 0);
-        return;
-    }
-
-    m_contentGrid->addWidget(m_weatherCard, 0, 0);
-    m_contentGrid->addWidget(m_scenesCard, 0, 1);
-    m_contentGrid->addWidget(m_mediaCard, 1, 0);
-    m_contentGrid->addWidget(m_cameraCard, 1, 1);
-    m_contentGrid->addWidget(m_historyCard, 2, 0, 1, 2);
-    m_contentGrid->setColumnStretch(0, 1);
-    m_contentGrid->setColumnStretch(1, 1);
+    setupHudDashboard();
+    updateHudState();
 }
 
 DashboardPage::~DashboardPage()
@@ -376,85 +220,407 @@ DashboardPage::~DashboardPage()
 
 void DashboardPage::setUsername(const QString &username)
 {
-    const QString displayName = username.trimmed().isEmpty() ? tr("bạn") : username.trimmed();
-    m_titleLabel->setText(tr("Nhà của %1").arg(displayName));
+    m_username = username;
 }
 
-void DashboardPage::appendSeriesPoint(QLineSeries *series, double value,
-                                      double fallbackMin, double fallbackMax)
+void DashboardPage::setDeviceId(const QString &deviceId)
 {
-    series->append(m_sampleIndex, value);
-    while (series->count() > 24)
-        series->remove(0);
+    m_deviceId = deviceId;
+    m_hasDevice = !deviceId.isEmpty();
+    updateHudState();
+}
 
-    if (auto *axisX = qobject_cast<QValueAxis *>(series->chart()->axes(Qt::Horizontal).value(0)))
-        axisX->setRange(qMax(0, m_sampleIndex - 23), qMax(23, m_sampleIndex));
-
-    if (auto *axisY = qobject_cast<QValueAxis *>(series->chart()->axes(Qt::Vertical).value(0))) {
-        double minValue = value;
-        double maxValue = value;
-        const auto points = series->points();
-        for (const QPointF &point : points) {
-            minValue = qMin(minValue, point.y());
-            maxValue = qMax(maxValue, point.y());
-        }
-        if (qFuzzyCompare(minValue, maxValue)) {
-            minValue = fallbackMin;
-            maxValue = fallbackMax;
-        } else {
-            const double pad = qMax(1.0, (maxValue - minValue) * 0.18);
-            minValue -= pad;
-            maxValue += pad;
-        }
-        axisY->setRange(minValue, maxValue);
+void DashboardPage::setAvailableDevices(const QJsonArray &devices)
+{
+    m_availableDevices = devices;
+    if (m_currentSelectDialog) {
+        m_currentSelectDialog->updateAvailableDevices(devices);
     }
+}
+
+void DashboardPage::setOwnedDevices(const QJsonArray &devices)
+{
+    if (!devices.isEmpty()) {
+        const auto first = devices.first().toObject();
+        m_deviceId = first.value(QStringLiteral("device_id")).toString();
+        m_deviceName = first.value(QStringLiteral("name")).toString(m_deviceId);
+        m_isOnline = first.value(QStringLiteral("is_online")).toBool(true);
+        m_hasDevice = true;
+
+        if (first.contains(QStringLiteral("state"))) {
+            const auto st = first.value(QStringLiteral("state")).toObject();
+            if (st.contains(QStringLiteral("relay"))) {
+                m_relayState = st.value(QStringLiteral("relay")).toBool();
+            }
+        }
+        if (first.contains(QStringLiteral("metrics"))) {
+            updateDeviceMetrics(first.value(QStringLiteral("metrics")).toObject());
+        }
+    } else {
+        m_hasDevice = false;
+        m_deviceId = "";
+        m_curLux = 0.0;
+        m_curMotion = false;
+    }
+    updateHudState();
 }
 
 void DashboardPage::updateReading(const SensorReading &reading)
 {
-    const QDateTime measured = reading.measuredAt.isValid()
-        ? reading.measuredAt.toLocalTime()
-        : QDateTime::currentDateTime();
-
-    m_clockValue->setText(measured.toString(QStringLiteral("H:mm")));
-    m_dateValue->setText(QLocale(QLocale::Vietnamese, QLocale::Vietnam)
-                             .toString(measured.date(), QStringLiteral("dddd, dd/MM/yyyy")));
-    m_pressureChip->setText(QStringLiteral("●  %1 hPa").arg(reading.pressureHpa, 0, 'f', 1));
-    m_distanceChip->setText(QStringLiteral("▲  %1 cm").arg(reading.distanceCm, 0, 'f', 1));
-    m_temperatureChip->setText(QStringLiteral("◊  %1 °C").arg(reading.temperatureC, 0, 'f', 1));
-    m_pressureValue->setText(QString::number(reading.pressureHpa, 'f', 1));
-    m_distanceValue->setText(QString::number(reading.distanceCm, 'f', 1));
-    m_updatedAt->setText(tr("Cập nhật: %1").arg(
-        QLocale(QLocale::Vietnamese, QLocale::Vietnam)
-            .toString(measured, QStringLiteral("HH:mm, dddd, dd/MM/yyyy"))));
-
-    const bool warning = reading.pressureHpa < 990.0 || reading.pressureHpa > 1030.0
-        || reading.distanceCm < 20.0;
-    m_alertValue->setText(warning ? tr("Có cảnh báo cần kiểm tra")
-                                  : tr("Hệ thống ổn định"));
-    m_alertValue->setProperty("warning", warning);
-    m_alertValue->style()->unpolish(m_alertValue);
-    m_alertValue->style()->polish(m_alertValue);
-
-    appendSeriesPoint(m_pressureSeries, reading.pressureHpa, 985, 1035);
-    appendSeriesPoint(m_distanceSeries, reading.distanceCm, 0, 100);
-    ++m_sampleIndex;
-    addHistory(reading);
+    if (reading.pressureHpa > 0) m_curLux = reading.pressureHpa;
+    if (m_luxBar) m_luxBar->setValue(m_curLux, 2000.0);
+    if (m_waveWidget) m_waveWidget->addSample(m_curLux);
 }
 
-void DashboardPage::addHistory(const SensorReading &reading)
+void DashboardPage::updateDeviceMetrics(const QJsonObject &metrics)
 {
-    const QDateTime measured = reading.measuredAt.isValid()
-        ? reading.measuredAt.toLocalTime()
-        : QDateTime::currentDateTime();
+    double valLux = 0.0;
+    if (metrics.contains(QStringLiteral("light_lux"))) {
+        valLux = metrics.value(QStringLiteral("light_lux")).toDouble();
+    } else if (metrics.contains(QStringLiteral("lux")) && metrics.value(QStringLiteral("lux")).toDouble() > 0) {
+        valLux = metrics.value(QStringLiteral("lux")).toDouble();
+    } else if (metrics.contains(QStringLiteral("detech")) && metrics.value(QStringLiteral("detech")).toDouble() > 1.0) {
+        // Firmware telemetry assigned lux reading to "detech"
+        valLux = metrics.value(QStringLiteral("detech")).toDouble();
+    }
+    if (valLux > 0) m_curLux = valLux;
 
-    m_history->insertRow(0);
-    m_history->setItem(0, 0, new QTableWidgetItem(
-        measured.toString(QStringLiteral("yyyy-MM-dd HH:mm:ss"))));
-    m_history->setItem(0, 1, new QTableWidgetItem(
-        QString::number(reading.pressureHpa, 'f', 1) + QStringLiteral(" hPa")));
-    m_history->setItem(0, 2, new QTableWidgetItem(
-        QString::number(reading.distanceCm, 'f', 1) + QStringLiteral(" cm")));
-    while (m_history->rowCount() > 5)
-        m_history->removeRow(m_history->rowCount() - 1);
+    if (metrics.contains(QStringLiteral("motion_detected"))) {
+        m_curMotion = metrics.value(QStringLiteral("motion_detected")).toBool();
+    } else if (metrics.contains(QStringLiteral("pir"))) {
+        m_curMotion = (metrics.value(QStringLiteral("pir")).toDouble() > 0.5 || metrics.value(QStringLiteral("pir")).toBool());
+    } else if (metrics.contains(QStringLiteral("detech")) && metrics.value(QStringLiteral("detech")).toDouble() <= 1.0) {
+        m_curMotion = (metrics.value(QStringLiteral("detech")).toDouble() > 0.5);
+    }
+
+    if (metrics.contains(QStringLiteral("relay_on"))) {
+        const bool serverRelay = metrics.value(QStringLiteral("relay_on")).toBool();
+        m_relayState = serverRelay;
+        if (m_isRelayPending && serverRelay == m_pendingRelayState) {
+            m_isRelayPending = false;
+            m_relayPendingTimer->stop();
+        }
+    }
+
+    const QDateTime now = QDateTime::currentDateTime();
+    if (m_curLux > 0) m_luxHistory.append({now, m_curLux});
+    if (m_luxHistory.size() > 100) m_luxHistory.removeFirst();
+
+    if (m_luxBar) m_luxBar->setValue(m_curLux, 2000.0);
+    if (m_waveWidget) m_waveWidget->addSample(m_curLux);
+    if (m_radarWidget) m_radarWidget->setDetected(m_curMotion);
+
+    updateHudState();
+}
+
+void DashboardPage::openLuxDetail()
+{
+    SensorDetailDialog dlg(QStringLiteral("BH1750 Ambient Light Sensor"),
+                           QStringLiteral("Lux"),
+                           QStringLiteral("#00f0ff"),
+                           m_luxHistory,
+                           this,
+                           50.0, 500.0);
+    dlg.exec();
+}
+
+void DashboardPage::openAddDeviceDialog()
+{
+    emit refreshDevicesRequested();
+    auto *dlg = new SelectOnlineDeviceDialog(m_availableDevices, this);
+    m_currentSelectDialog = dlg;
+
+    connect(dlg, &SelectOnlineDeviceDialog::refreshRequested, this, &DashboardPage::refreshDevicesRequested);
+    connect(dlg, &SelectOnlineDeviceDialog::deviceSelected, this, [this](const QString &devId, const QString &devName) {
+        emit claimDeviceRequested(devId, devName);
+    });
+    dlg->exec();
+    delete dlg;
+}
+
+void DashboardPage::updateHudState()
+{
+    if (m_luxValueLbl) {
+        if (!m_hasDevice || m_curLux <= 0) {
+            m_luxValueLbl->setText(QStringLiteral("--.-"));
+            m_luxValueLbl->setStyleSheet("color: #475569; font-size: 28px; font-weight: 900; font-family: monospace;");
+        } else {
+            m_luxValueLbl->setText(QString::number(m_curLux, 'f', 1));
+            m_luxValueLbl->setStyleSheet("color: #00f0ff; font-size: 28px; font-weight: 900; font-family: monospace;");
+        }
+    }
+
+    if (m_luxStatusBadge) {
+        if (!m_hasDevice || m_curLux <= 0) {
+            m_luxStatusBadge->setText(QStringLiteral("🔴 OFFLINE / UNLINKED"));
+            m_luxStatusBadge->setStyleSheet("color: #f87171; background: #3f151e; border: 1px solid #7f1d1d; border-radius: 4px; padding: 2px 6px; font-size: 8px; font-weight: 900;");
+        } else if (m_curLux < 150) {
+            m_luxStatusBadge->setText(QStringLiteral("🌙 NIGHT / DARKNESS"));
+            m_luxStatusBadge->setStyleSheet("color: #fbbf24; background: #3c2a10; border: 1px solid #92400e; border-radius: 4px; padding: 2px 6px; font-size: 8px; font-weight: 900;");
+        } else {
+            m_luxStatusBadge->setText(QStringLiteral("☀️ DAYLIGHT NORMAL"));
+            m_luxStatusBadge->setStyleSheet("color: #10b981; background: #0f3728; border: 1px solid #065f46; border-radius: 4px; padding: 2px 6px; font-size: 8px; font-weight: 900;");
+        }
+    }
+
+    if (m_motionStatusBadge) {
+        if (m_curMotion) {
+            m_motionStatusBadge->setText(QStringLiteral("🚨 MOTION DETECTED [SECTOR 1]"));
+            m_motionStatusBadge->setStyleSheet("color: #ffffff; background: #10b981; border: 1px solid #34d399; border-radius: 4px; padding: 3px 8px; font-size: 9px; font-weight: 900;");
+            if (m_motionDetailLbl) m_motionDetailLbl->setText(QStringLiteral("Cảm biến PIR kích hoạt - Có người hiện diện"));
+        } else {
+            m_motionStatusBadge->setText(QStringLiteral("🛡️ PERIMETER SECURE"));
+            m_motionStatusBadge->setStyleSheet("color: #94a3b8; background: #111827; border: 1px solid #1f2937; border-radius: 4px; padding: 3px 8px; font-size: 9px; font-weight: 800;");
+            if (m_motionDetailLbl) m_motionDetailLbl->setText(QStringLiteral("Khu vực yên tĩnh - Đang quét an ninh"));
+        }
+    }
+
+    if (m_lightSwitchBtn) {
+        if (m_isRelayPending) {
+            if (m_pendingRelayState) {
+                m_lightSwitchBtn->setText(QStringLiteral("⏳ ĐANG BẬT ĐÈN..."));
+                m_lightSwitchBtn->setStyleSheet(
+                    "QPushButton { background: qlineargradient(x1:0, y1:0, x2:1, y2:0, stop:0 #d97706, stop:1 #00f0ff); color: #000000; border: 2px solid #38bdf8; border-radius: 6px; font-weight: 900; font-size: 10px; padding: 10px; }"
+                );
+            } else {
+                m_lightSwitchBtn->setText(QStringLiteral("⏳ ĐANG TẮT ĐÈN..."));
+                m_lightSwitchBtn->setStyleSheet(
+                    "QPushButton { background: #261608; color: #fbbf24; border: 1.5px solid #d97706; border-radius: 6px; font-weight: 900; font-size: 10px; padding: 10px; }"
+                );
+            }
+        } else {
+            m_lightSwitchBtn->setText(m_relayState ? QStringLiteral("💡 MAIN LIGHT: ON") : QStringLiteral("🌑 MAIN LIGHT: OFF"));
+            m_lightSwitchBtn->setStyleSheet(m_relayState
+                ? "QPushButton { background: qlineargradient(x1:0, y1:0, x2:1, y2:0, stop:0 #00f0ff, stop:1 #10b981); color: #000000; border: none; border-radius: 6px; font-weight: 900; font-size: 11px; padding: 10px; } QPushButton:hover { background: #38bdf8; }"
+                : "QPushButton { background: #111c24; color: #64748b; border: 1.5px solid #1e293b; border-radius: 6px; font-weight: 900; font-size: 11px; padding: 10px; } QPushButton:hover { background: #1a2a38; color: #ffffff; }");
+        }
+    }
+
+    if (m_devPodTitle) {
+        m_devPodTitle->setText(m_hasDevice ? QStringLiteral("POD: %1").arg(m_deviceId) : QStringLiteral("HARDWARE POD: UNLINKED"));
+    }
+
+    if (m_devStatusBadge) {
+        m_devStatusBadge->setText(m_hasDevice ? (m_isOnline ? QStringLiteral("🟢 ARMED & ONLINE") : QStringLiteral("🔴 LINK OFFLINE")) : QStringLiteral("⚪ NO HARDWARE"));
+        m_devStatusBadge->setStyleSheet(m_hasDevice
+            ? (m_isOnline ? "color: #10b981; font-size: 9px; font-weight: 900;" : "color: #ef4444; font-size: 9px; font-weight: 900;")
+            : "color: #64748b; font-size: 9px; font-weight: 700;");
+    }
+
+    if (m_devActionBtn) {
+        if (!m_hasDevice) {
+            m_devActionBtn->setText(QStringLiteral("＋ CONNECT LINK"));
+            m_devActionBtn->setStyleSheet("QPushButton { background: #0284c7; color: #ffffff; border: none; border-radius: 5px; font-size: 10px; font-weight: 900; padding: 6px; } QPushButton:hover { background: #0369a1; }");
+        } else {
+            m_devActionBtn->setText(QStringLiteral("✕ DISCONNECT"));
+            m_devActionBtn->setStyleSheet("QPushButton { background: #3b1424; color: #f87171; border: 1px solid #7f1d1d; border-radius: 5px; font-size: 9px; font-weight: 800; padding: 5px; } QPushButton:hover { background: #dc2626; color: #fff; }");
+        }
+    }
+}
+
+void DashboardPage::setupHudDashboard()
+{
+    while (QLayoutItem *item = ui->verticalLayout->takeAt(0)) {
+        if (item->widget()) delete item->widget();
+        delete item;
+    }
+
+    auto *mainLayout = ui->verticalLayout;
+    mainLayout->setContentsMargins(10, 8, 10, 8);
+    mainLayout->setSpacing(8);
+
+    auto makeHudPod = [](const QString &tag) {
+        auto *pod = new QFrame;
+        pod->setStyleSheet(
+            "QFrame { "
+            "  background-color: #0c1218; "
+            "  border: 1px solid #162430; "
+            "  border-radius: 8px; "
+            "} "
+            "QFrame:hover { "
+            "  border-color: #00f0ff; "
+            "}"
+        );
+        auto *l = new QVBoxLayout(pod);
+        l->setContentsMargins(10, 8, 10, 8);
+        l->setSpacing(6);
+
+        auto *hRow = new QHBoxLayout;
+        auto *tagLbl = new QLabel(QStringLiteral("⬢ %1").arg(tag));
+        tagLbl->setStyleSheet("color: #00f0ff; font-size: 9px; font-weight: 900; letter-spacing: 0.5px; background: transparent;");
+        auto *hudDot = new QLabel(QStringLiteral("●"));
+        hudDot->setStyleSheet("color: #10b981; font-size: 8px; background: transparent;");
+        hRow->addWidget(tagLbl);
+        hRow->addStretch();
+        hRow->addWidget(hudDot);
+        l->addLayout(hRow);
+
+        return qMakePair(pod, l);
+    };
+
+    struct ClickFilter : public QObject {
+        std::function<void()> fn;
+        ClickFilter(QObject *p, std::function<void()> cb) : QObject(p), fn(cb) {}
+        bool eventFilter(QObject *w, QEvent *e) override {
+            if (e->type() == QEvent::MouseButtonRelease) {
+                if (fn) fn();
+                return true;
+            }
+            return QObject::eventFilter(w, e);
+        }
+    };
+
+    auto *hudRow = new QHBoxLayout;
+    hudRow->setSpacing(8);
+
+    // ========================================================================
+    // ZONE 1: MASTER LUX SENSOR HUD (Left 28%)
+    // ========================================================================
+    auto z1 = makeHudPod("CORE SENSOR // BH1750");
+    z1.first->setCursor(Qt::PointingHandCursor);
+
+    auto *luxContent = new QHBoxLayout;
+    luxContent->setSpacing(10);
+
+    m_luxBar = new VerticalLuxBarWidget;
+    luxContent->addWidget(m_luxBar);
+
+    auto *luxDataCol = new QVBoxLayout;
+    luxDataCol->setSpacing(4);
+
+    m_luxValueLbl = new QLabel(QStringLiteral("--.-"));
+    m_luxValueLbl->setStyleSheet("color: #00f0ff; font-size: 28px; font-weight: 900; font-family: monospace;");
+    luxDataCol->addWidget(m_luxValueLbl);
+
+    auto *unitLbl = new QLabel(QStringLiteral("LUX (LUMEN / M²)"));
+    unitLbl->setStyleSheet("color: #64748b; font-size: 8px; font-weight: 800;");
+    luxDataCol->addWidget(unitLbl);
+
+    m_luxStatusBadge = new QLabel(QStringLiteral("🔴 OFFLINE"));
+    m_luxStatusBadge->setStyleSheet("color: #f87171; background: #3f151e; border: 1px solid #7f1d1d; border-radius: 4px; padding: 2px 6px; font-size: 8px; font-weight: 900;");
+    luxDataCol->addWidget(m_luxStatusBadge);
+
+    luxDataCol->addSpacing(4);
+    auto *waveTitle = new QLabel(QStringLiteral("REALTIME OSCILLOSCOPE:"));
+    waveTitle->setStyleSheet("color: #475569; font-size: 7px; font-weight: 800;");
+    luxDataCol->addWidget(waveTitle);
+
+    m_waveWidget = new CyberWaveformWidget;
+    luxDataCol->addWidget(m_waveWidget);
+
+    luxContent->addLayout(luxDataCol, 1);
+    z1.second->addLayout(luxContent);
+
+    z1.first->installEventFilter(new ClickFilter(z1.first, [this] { openLuxDetail(); }));
+    hudRow->addWidget(z1.first, 28);
+
+    // ========================================================================
+    // ZONE 2: TACTICAL RADAR & DUAL SWITCHES (Center 46%)
+    // ========================================================================
+    auto z2 = makeHudPod("TACTICAL DEFENSE // PIR SENSOR & CONTROLS");
+
+    auto *radarRow = new QHBoxLayout;
+    radarRow->setSpacing(8);
+
+    m_radarWidget = new TacticalRadarWidget;
+    radarRow->addWidget(m_radarWidget, 0, Qt::AlignCenter);
+
+    auto *radarInfoCol = new QVBoxLayout;
+    radarInfoCol->setSpacing(4);
+    radarInfoCol->setAlignment(Qt::AlignVCenter);
+
+    m_motionStatusBadge = new QLabel(QStringLiteral("🛡️ PERIMETER SECURE"));
+    m_motionStatusBadge->setStyleSheet("color: #94a3b8; background: #111827; border: 1px solid #1f2937; border-radius: 4px; padding: 3px 8px; font-size: 9px; font-weight: 800;");
+    radarInfoCol->addWidget(m_motionStatusBadge);
+
+    m_motionDetailLbl = new QLabel(QStringLiteral("Khu vực an toàn - Quét 360°"));
+    m_motionDetailLbl->setStyleSheet("color: #64748b; font-size: 8px;");
+    radarInfoCol->addWidget(m_motionDetailLbl);
+
+    radarRow->addLayout(radarInfoCol);
+    z2.second->addLayout(radarRow);
+
+    // Dual Tactical Switch Console
+    auto *switchGrid = new QHBoxLayout;
+    switchGrid->setSpacing(6);
+
+    m_lightSwitchBtn = new QPushButton(QStringLiteral("💡 MAIN LIGHT: OFF"));
+    m_lightSwitchBtn->setCursor(Qt::PointingHandCursor);
+    m_lightSwitchBtn->setStyleSheet("QPushButton { background: #111c24; color: #64748b; border: 1.5px solid #1e293b; border-radius: 6px; font-weight: 900; font-size: 11px; padding: 10px; }");
+    connect(m_lightSwitchBtn, &QPushButton::clicked, this, [this] {
+        if (!m_deviceId.isEmpty()) {
+            m_isRelayPending = true;
+            m_pendingRelayState = !m_relayState;
+            m_relayPendingTimer->start(3500);
+            updateHudState();
+            emit relayControlRequested(m_deviceId, m_pendingRelayState);
+        }
+    });
+    switchGrid->addWidget(m_lightSwitchBtn, 1);
+
+    m_autoModeBtn = new QPushButton(QStringLiteral("🤖 AUTO TRIGGER: ON"));
+    m_autoModeBtn->setCursor(Qt::PointingHandCursor);
+    m_autoModeBtn->setStyleSheet("QPushButton { background: #153229; color: #34d399; border: 1px solid #065f46; border-radius: 6px; font-weight: 900; font-size: 10px; padding: 10px; }");
+    connect(m_autoModeBtn, &QPushButton::clicked, this, [this] {
+        m_autoModeActive = !m_autoModeActive;
+        m_autoModeBtn->setText(m_autoModeActive ? QStringLiteral("🤖 AUTO TRIGGER: ON") : QStringLiteral("🤖 AUTO TRIGGER: OFF"));
+        m_autoModeBtn->setStyleSheet(m_autoModeActive
+            ? "QPushButton { background: #153229; color: #34d399; border: 1px solid #065f46; border-radius: 6px; font-weight: 900; font-size: 10px; padding: 10px; }"
+            : "QPushButton { background: #1c1917; color: #78716c; border: 1px solid #292524; border-radius: 6px; font-weight: 900; font-size: 10px; padding: 10px; }");
+    });
+    switchGrid->addWidget(m_autoModeBtn, 1);
+
+    z2.second->addLayout(switchGrid);
+    hudRow->addWidget(z2.first, 46);
+
+    // ========================================================================
+    // ZONE 3: HARDWARE LINK POD & TELEMETRY (Right 26%)
+    // ========================================================================
+    auto z3 = makeHudPod("HARDWARE POD // ESP32");
+
+    m_devPodTitle = new QLabel(QStringLiteral("POD: 150808"));
+    m_devPodTitle->setStyleSheet("color: #ffffff; font-size: 11px; font-weight: 900;");
+    z3.second->addWidget(m_devPodTitle);
+
+    m_devStatusBadge = new QLabel(QStringLiteral("⚪ NO HARDWARE"));
+    m_devStatusBadge->setStyleSheet("color: #64748b; font-size: 9px; font-weight: 700;");
+    z3.second->addWidget(m_devStatusBadge);
+
+    // Telemetry lines
+    auto *diagBox = new QFrame;
+    diagBox->setStyleSheet("background: #080c10; border: 1px solid #141f29; border-radius: 4px; padding: 4px;");
+    auto *diagL = new QVBoxLayout(diagBox);
+    diagL->setContentsMargins(4, 4, 4, 4);
+    diagL->setSpacing(2);
+
+    auto makeDiagRow = [](const QString &k, const QString &v, const QString &c = "#94a3b8") {
+        auto *r = new QHBoxLayout;
+        auto *kLbl = new QLabel(k);
+        kLbl->setStyleSheet("color: #475569; font-size: 8px; font-weight: 700; background: transparent;");
+        auto *vLbl = new QLabel(v);
+        vLbl->setStyleSheet(QStringLiteral("color: %1; font-size: 8px; font-weight: 900; background: transparent;").arg(c));
+        r->addWidget(kLbl);
+        r->addStretch();
+        r->addWidget(vLbl);
+        return r;
+    };
+
+    diagL->addLayout(makeDiagRow("MQTT PROTOCOL", "v3.1.1", "#00f0ff"));
+    diagL->addLayout(makeDiagRow("SAMPLE RATE", "2000 ms", "#38bdf8"));
+    diagL->addLayout(makeDiagRow("SECURITY MESH", "ONLINE", "#10b981"));
+    z3.second->addWidget(diagBox);
+
+    z3.second->addStretch();
+
+    m_devActionBtn = new QPushButton(QStringLiteral("＋ CONNECT LINK"));
+    m_devActionBtn->setCursor(Qt::PointingHandCursor);
+    connect(m_devActionBtn, &QPushButton::clicked, this, [this] {
+        if (!m_hasDevice) openAddDeviceDialog();
+        else emit releaseDeviceRequested(m_deviceId);
+    });
+    z3.second->addWidget(m_devActionBtn);
+
+    hudRow->addWidget(z3.first, 26);
+
+    mainLayout->addLayout(hudRow, 1);
 }

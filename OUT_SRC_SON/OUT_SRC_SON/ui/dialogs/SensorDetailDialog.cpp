@@ -29,7 +29,8 @@ SensorDetailDialog::SensorDetailDialog(const QString &sensorName,
     : QDialog(parent)
 {
     setWindowTitle(QStringLiteral("Chi tiết & Cài đặt ngưỡng: %1").arg(sensorName));
-    resize(740, 440);
+    resize(700, 390);
+    setMinimumSize(480, 300);
     setStyleSheet(
         "QDialog { background-color: #070d1e; color: #ecf2ff; font-family: sans-serif; } "
         "QLabel { color: #f1f5f9; } "
@@ -37,9 +38,9 @@ SensorDetailDialog::SensorDetailDialog(const QString &sensorName,
         "QTableWidget { background-color: #0c1630; color: #ffffff; gridline-color: #1c2b54; border: 1px solid #1c2b54; border-radius: 8px; font-size: 12px; } "
         "QTableWidget::item { padding: 4px; } "
         "QTableWidget::item:selected { background-color: #1e3a8a; color: #ffffff; } "
-        "QDoubleSpinBox, QSpinBox { background-color: #0f1c3f; color: #ffffff; border: 1.5px solid #233870; border-radius: 8px; font-size: 13px; font-weight: 700; padding: 4px 8px; min-height: 32px; } "
+        "QDoubleSpinBox, QSpinBox { background-color: #0f1c3f; color: #ffffff; border: 1.5px solid #233870; border-radius: 8px; font-size: 13px; font-weight: 700; padding: 4px 8px; min-height: 28px; } "
         "QDoubleSpinBox:focus, QSpinBox:focus { border: 2px solid #38bdf8; background-color: #162447; } "
-        "QCheckBox { color: #cbd5e1; font-size: 12px; font-weight: 700; spacing: 8px; }"
+        "QCheckBox { color: #cbd5e1; font-size: 11px; font-weight: 700; spacing: 8px; }"
     );
 
     setupUI(sensorName, unit, accentColor, minThreshold, maxThreshold);
@@ -50,13 +51,13 @@ void SensorDetailDialog::setupUI(const QString &sensorName, const QString &unit,
                                 double minThreshold, double maxThreshold)
 {
     auto *mainLayout = new QVBoxLayout(this);
-    mainLayout->setContentsMargins(16, 14, 16, 14);
-    mainLayout->setSpacing(10);
+    mainLayout->setContentsMargins(12, 10, 12, 10);
+    mainLayout->setSpacing(8);
 
     // --- Header Row ---
     auto *headerRow = new QHBoxLayout;
     auto *titleLbl = new QLabel(QStringLiteral("Cảm biến: %1 (%2)").arg(sensorName, unit));
-    titleLbl->setStyleSheet(QStringLiteral("color: %1; font-size: 16px; font-weight: 900;").arg(accentColor));
+    titleLbl->setStyleSheet(QStringLiteral("color: %1; font-size: 14px; font-weight: 900;").arg(accentColor));
     headerRow->addWidget(titleLbl);
     headerRow->addStretch();
 
@@ -70,7 +71,7 @@ void SensorDetailDialog::setupUI(const QString &sensorName, const QString &unit,
     m_chartModeBtn->setChecked(true);
 
     const QString btnStyle =
-        "QPushButton { background: #131d3d; color: #94a3b8; border: 1px solid #233565; border-radius: 6px; padding: 5px 12px; font-size: 11px; font-weight: 800; } "
+        "QPushButton { background: #131d3d; color: #94a3b8; border: 1px solid #233565; border-radius: 6px; padding: 5px 10px; font-size: 10px; font-weight: 800; } "
         "QPushButton:checked { background: #10b981; color: #ffffff; border: 1px solid #34d399; font-weight: 900; } "
         "QPushButton:hover { background: #1c2b54; color: #ffffff; }";
 
@@ -82,9 +83,9 @@ void SensorDetailDialog::setupUI(const QString &sensorName, const QString &unit,
     headerRow->addWidget(m_tableModeBtn);
     headerRow->addWidget(m_thresholdModeBtn);
 
-    auto *closeBtn = new QPushButton(QStringLiteral("✕"));
-    closeBtn->setFixedSize(28, 28);
-    closeBtn->setStyleSheet("background: #1f293d; color: #ef4444; border: 1px solid #334155; border-radius: 14px; font-weight: 900; font-size: 12px;");
+    auto *closeBtn = new QPushButton(QStringLiteral("✕ ĐÓNG"));
+    closeBtn->setCursor(Qt::PointingHandCursor);
+    closeBtn->setStyleSheet("QPushButton { background: #dc2626; color: #ffffff; border: none; border-radius: 5px; font-weight: 900; font-size: 10px; padding: 5px 12px; } QPushButton:hover { background: #b91c1c; }");
     connect(closeBtn, &QPushButton::clicked, this, &QDialog::accept);
     headerRow->addWidget(closeBtn);
 

@@ -1,17 +1,16 @@
 {
-	"BUILD_DIR" : "/home/quanghaictu/OUT_SRC/OUT_SRC_TUANANH/build-OUT_SRC_TUANANH-Desktop-Debug/OUT_SRC_TUANANH_autogen",
-	"CMAKE_BINARY_DIR" : "/home/quanghaictu/OUT_SRC/OUT_SRC_TUANANH/build-OUT_SRC_TUANANH-Desktop-Debug",
-	"CMAKE_CURRENT_BINARY_DIR" : "/home/quanghaictu/OUT_SRC/OUT_SRC_TUANANH/build-OUT_SRC_TUANANH-Desktop-Debug",
-	"CMAKE_CURRENT_SOURCE_DIR" : "/home/quanghaictu/OUT_SRC/OUT_SRC_TUANANH/OUT_SRC_TUANANH",
+	"BUILD_DIR" : "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_TUANANH/build-OUT_SRC_TUANANH-Desktop-Debug/OUT_SRC_TUANANH_autogen",
+	"CMAKE_BINARY_DIR" : "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_TUANANH/build-OUT_SRC_TUANANH-Desktop-Debug",
+	"CMAKE_CURRENT_BINARY_DIR" : "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_TUANANH/build-OUT_SRC_TUANANH-Desktop-Debug",
+	"CMAKE_CURRENT_SOURCE_DIR" : "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_TUANANH/OUT_SRC_TUANANH",
 	"CMAKE_EXECUTABLE" : "/usr/local/bin/cmake",
 	"CMAKE_LIST_FILES" : 
 	[
-		"/home/quanghaictu/OUT_SRC/OUT_SRC_TUANANH/OUT_SRC_TUANANH/CMakeLists.txt",
-		"/home/quanghaictu/OUT_SRC/OUT_SRC_TUANANH/build-OUT_SRC_TUANANH-Desktop-Debug/.qtc/package-manager/auto-setup.cmake",
-		"/home/quanghaictu/OUT_SRC/OUT_SRC_TUANANH/build-OUT_SRC_TUANANH-Desktop-Debug/CMakeFiles/4.3.20260523-g753b5a3/CMakeSystem.cmake",
+		"/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_TUANANH/OUT_SRC_TUANANH/CMakeLists.txt",
+		"/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_TUANANH/build-OUT_SRC_TUANANH-Desktop-Debug/CMakeFiles/4.3.20260523-g753b5a3/CMakeSystem.cmake",
 		"/usr/local/share/cmake-4.3/Modules/CMakeSystemSpecificInitialize.cmake",
 		"/usr/local/share/cmake-4.3/Modules/Platform/Linux-Initialize.cmake",
-		"/home/quanghaictu/OUT_SRC/OUT_SRC_TUANANH/build-OUT_SRC_TUANANH-Desktop-Debug/CMakeFiles/4.3.20260523-g753b5a3/CMakeCXXCompiler.cmake",
+		"/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_TUANANH/build-OUT_SRC_TUANANH-Desktop-Debug/CMakeFiles/4.3.20260523-g753b5a3/CMakeCXXCompiler.cmake",
 		"/usr/local/share/cmake-4.3/Modules/CMakeSystemSpecificInformation.cmake",
 		"/usr/local/share/cmake-4.3/Modules/CMakeGenericSystem.cmake",
 		"/usr/local/share/cmake-4.3/Modules/CMakeInitializeConfigs.cmake",
@@ -362,162 +361,145 @@
 		"/home/quanghaictu/Qt6Cross/qt6/host/lib/cmake/Qt6Charts/Qt6ChartsTargets-release.cmake",
 		"/home/quanghaictu/Qt6Cross/qt6/host/lib/cmake/Qt6Charts/Qt6ChartsAdditionalTargetInfo.cmake",
 		"/home/quanghaictu/Qt6Cross/qt6/host/lib/cmake/Qt6Charts/Qt6ChartsVersionlessTargets.cmake",
-		"/home/quanghaictu/OUT_SRC/OUT_SRC_TUANANH/OUT_SRC_TUANANH/resources/resources.qrc"
+		"/usr/local/share/cmake-4.3/Modules/GNUInstallDirs.cmake",
+		"/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_TUANANH/OUT_SRC_TUANANH/resources/resources.qrc"
 	],
-	"CMAKE_SOURCE_DIR" : "/home/quanghaictu/OUT_SRC/OUT_SRC_TUANANH/OUT_SRC_TUANANH",
+	"CMAKE_SOURCE_DIR" : "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_TUANANH/OUT_SRC_TUANANH",
 	"CROSS_CONFIG" : false,
-	"DEP_FILE" : "/home/quanghaictu/OUT_SRC/OUT_SRC_TUANANH/build-OUT_SRC_TUANANH-Desktop-Debug/OUT_SRC_TUANANH_autogen/deps",
+	"DEP_FILE" : "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_TUANANH/build-OUT_SRC_TUANANH-Desktop-Debug/OUT_SRC_TUANANH_autogen/deps",
 	"DEP_FILE_RULE_NAME" : "OUT_SRC_TUANANH_autogen/timestamp",
 	"HEADERS" : 
 	[
 		[
-			"/home/quanghaictu/OUT_SRC/OUT_SRC_TUANANH/OUT_SRC_TUANANH/EmbeddedServer.h",
+			"/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_TUANANH/OUT_SRC_TUANANH/EmbeddedServer.h",
 			"MU",
 			"EWIEGA46WW/moc_EmbeddedServer.cpp",
 			null
 		],
 		[
-			"/home/quanghaictu/OUT_SRC/OUT_SRC_TUANANH/OUT_SRC_TUANANH/VirtualKeyboard.h",
+			"/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_TUANANH/OUT_SRC_TUANANH/VirtualKeyboard.h",
 			"MU",
 			"EWIEGA46WW/moc_VirtualKeyboard.cpp",
 			null
 		],
 		[
-			"/home/quanghaictu/OUT_SRC/OUT_SRC_TUANANH/OUT_SRC_TUANANH/api/ApiClient.h",
+			"/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_TUANANH/OUT_SRC_TUANANH/api/ApiClient.h",
 			"MU",
 			"JH45IGJHDZ/moc_ApiClient.cpp",
 			null
 		],
 		[
-			"/home/quanghaictu/OUT_SRC/OUT_SRC_TUANANH/OUT_SRC_TUANANH/config/AppConfig.h",
+			"/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_TUANANH/OUT_SRC_TUANANH/config/AppConfig.h",
 			"MU",
 			"IJHAR2IVER/moc_AppConfig.cpp",
 			null
 		],
 		[
-			"/home/quanghaictu/OUT_SRC/OUT_SRC_TUANANH/OUT_SRC_TUANANH/models/Alert.h",
+			"/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_TUANANH/OUT_SRC_TUANANH/models/Alert.h",
 			"MU",
 			"IVK4DJNV27/moc_Alert.cpp",
 			null
 		],
 		[
-			"/home/quanghaictu/OUT_SRC/OUT_SRC_TUANANH/OUT_SRC_TUANANH/models/DeviceConfig.h",
+			"/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_TUANANH/OUT_SRC_TUANANH/models/DeviceConfig.h",
 			"MU",
 			"IVK4DJNV27/moc_DeviceConfig.cpp",
 			null
 		],
 		[
-			"/home/quanghaictu/OUT_SRC/OUT_SRC_TUANANH/OUT_SRC_TUANANH/models/SensorReading.h",
+			"/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_TUANANH/OUT_SRC_TUANANH/models/SensorReading.h",
 			"MU",
 			"IVK4DJNV27/moc_SensorReading.cpp",
 			null
 		],
 		[
-			"/home/quanghaictu/OUT_SRC/OUT_SRC_TUANANH/OUT_SRC_TUANANH/models/User.h",
+			"/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_TUANANH/OUT_SRC_TUANANH/models/User.h",
 			"MU",
 			"IVK4DJNV27/moc_User.cpp",
 			null
 		],
 		[
-			"/home/quanghaictu/OUT_SRC/OUT_SRC_TUANANH/OUT_SRC_TUANANH/server/api/ApiServer.h",
+			"/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_TUANANH/OUT_SRC_TUANANH/server/api/ApiServer.h",
 			"MU",
 			"EG4V6WMW7F/moc_ApiServer.cpp",
 			null
 		],
 		[
-			"/home/quanghaictu/OUT_SRC/OUT_SRC_TUANANH/OUT_SRC_TUANANH/server/database/Database.h",
+			"/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_TUANANH/OUT_SRC_TUANANH/server/database/Database.h",
 			"MU",
 			"I2HNX657TI/moc_Database.cpp",
 			null
 		],
 		[
-			"/home/quanghaictu/OUT_SRC/OUT_SRC_TUANANH/OUT_SRC_TUANANH/server/mqtt/MqttDiscoveryService.h",
+			"/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_TUANANH/OUT_SRC_TUANANH/server/mqtt/MqttDiscoveryService.h",
 			"MU",
 			"QMA23EUNQU/moc_MqttDiscoveryService.cpp",
 			null
 		],
 		[
-			"/home/quanghaictu/OUT_SRC/OUT_SRC_TUANANH/OUT_SRC_TUANANH/server/system/HotspotManager.h",
+			"/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_TUANANH/OUT_SRC_TUANANH/server/system/HotspotManager.h",
 			"MU",
 			"BUIV6BVTQU/moc_HotspotManager.cpp",
 			null
 		],
 		[
-			"/home/quanghaictu/OUT_SRC/OUT_SRC_TUANANH/OUT_SRC_TUANANH/services/AuthService.h",
+			"/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_TUANANH/OUT_SRC_TUANANH/services/AuthService.h",
 			"MU",
 			"3BYFHCGL5U/moc_AuthService.cpp",
 			null
 		],
 		[
-			"/home/quanghaictu/OUT_SRC/OUT_SRC_TUANANH/OUT_SRC_TUANANH/services/SensorService.h",
+			"/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_TUANANH/OUT_SRC_TUANANH/services/SensorService.h",
 			"MU",
 			"3BYFHCGL5U/moc_SensorService.cpp",
 			null
 		],
 		[
-			"/home/quanghaictu/OUT_SRC/OUT_SRC_TUANANH/OUT_SRC_TUANANH/ui/MainWindow.h",
+			"/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_TUANANH/OUT_SRC_TUANANH/ui/MainWindow.h",
 			"MU",
 			"UYX5XTB5RZ/moc_MainWindow.cpp",
 			null
 		],
 		[
-			"/home/quanghaictu/OUT_SRC/OUT_SRC_TUANANH/OUT_SRC_TUANANH/ui/dialogs/ErrorDialog.h",
+			"/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_TUANANH/OUT_SRC_TUANANH/ui/dialogs/ErrorDialog.h",
 			"MU",
 			"ZB24L4LU7T/moc_ErrorDialog.cpp",
 			null
 		],
 		[
-			"/home/quanghaictu/OUT_SRC/OUT_SRC_TUANANH/OUT_SRC_TUANANH/ui/pages/AlertPage.h",
+			"/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_TUANANH/OUT_SRC_TUANANH/ui/dialogs/SelectOnlineDeviceDialog.h",
 			"MU",
-			"PELACIV4JL/moc_AlertPage.cpp",
+			"ZB24L4LU7T/moc_SelectOnlineDeviceDialog.cpp",
 			null
 		],
 		[
-			"/home/quanghaictu/OUT_SRC/OUT_SRC_TUANANH/OUT_SRC_TUANANH/ui/pages/DashboardPage.h",
+			"/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_TUANANH/OUT_SRC_TUANANH/ui/dialogs/SensorDetailDialog.h",
+			"MU",
+			"ZB24L4LU7T/moc_SensorDetailDialog.cpp",
+			null
+		],
+		[
+			"/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_TUANANH/OUT_SRC_TUANANH/ui/pages/DashboardPage.h",
 			"MU",
 			"PELACIV4JL/moc_DashboardPage.cpp",
 			null
 		],
 		[
-			"/home/quanghaictu/OUT_SRC/OUT_SRC_TUANANH/OUT_SRC_TUANANH/ui/pages/DeviceManagementPage.h",
-			"MU",
-			"PELACIV4JL/moc_DeviceManagementPage.cpp",
-			null
-		],
-		[
-			"/home/quanghaictu/OUT_SRC/OUT_SRC_TUANANH/OUT_SRC_TUANANH/ui/pages/HistoryPage.h",
-			"MU",
-			"PELACIV4JL/moc_HistoryPage.cpp",
-			null
-		],
-		[
-			"/home/quanghaictu/OUT_SRC/OUT_SRC_TUANANH/OUT_SRC_TUANANH/ui/pages/LoginPage.h",
+			"/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_TUANANH/OUT_SRC_TUANANH/ui/pages/LoginPage.h",
 			"MU",
 			"PELACIV4JL/moc_LoginPage.cpp",
 			null
 		],
 		[
-			"/home/quanghaictu/OUT_SRC/OUT_SRC_TUANANH/OUT_SRC_TUANANH/ui/pages/UserManagementPage.h",
+			"/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_TUANANH/OUT_SRC_TUANANH/ui/pages/UserManagementPage.h",
 			"MU",
 			"PELACIV4JL/moc_UserManagementPage.cpp",
-			null
-		],
-		[
-			"/home/quanghaictu/OUT_SRC/OUT_SRC_TUANANH/OUT_SRC_TUANANH/ui/widgets/DistanceCard.h",
-			"MU",
-			"NJHUVPU35C/moc_DistanceCard.cpp",
-			null
-		],
-		[
-			"/home/quanghaictu/OUT_SRC/OUT_SRC_TUANANH/OUT_SRC_TUANANH/ui/widgets/PressureCard.h",
-			"MU",
-			"NJHUVPU35C/moc_PressureCard.cpp",
 			null
 		]
 	],
 	"HEADER_EXTENSIONS" : [ "h", "hh", "h++", "hm", "hpp", "hxx", "in", "txx" ],
-	"INCLUDE_DIR" : "/home/quanghaictu/OUT_SRC/OUT_SRC_TUANANH/build-OUT_SRC_TUANANH-Desktop-Debug/OUT_SRC_TUANANH_autogen/include",
-	"MOC_COMPILATION_FILE" : "/home/quanghaictu/OUT_SRC/OUT_SRC_TUANANH/build-OUT_SRC_TUANANH-Desktop-Debug/OUT_SRC_TUANANH_autogen/mocs_compilation.cpp",
+	"INCLUDE_DIR" : "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_TUANANH/build-OUT_SRC_TUANANH-Desktop-Debug/OUT_SRC_TUANANH_autogen/include",
+	"MOC_COMPILATION_FILE" : "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_TUANANH/build-OUT_SRC_TUANANH-Desktop-Debug/OUT_SRC_TUANANH_autogen/mocs_compilation.cpp",
 	"MOC_DEFINITIONS" : 
 	[
 		"QT_CHARTS_LIB",
@@ -539,8 +521,8 @@
 	],
 	"MOC_INCLUDES" : 
 	[
-		"/home/quanghaictu/OUT_SRC/OUT_SRC_TUANANH/OUT_SRC_TUANANH",
-		"/home/quanghaictu/OUT_SRC/OUT_SRC_TUANANH/OUT_SRC_TUANANH/server",
+		"/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_TUANANH/OUT_SRC_TUANANH",
+		"/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_TUANANH/OUT_SRC_TUANANH/server",
 		"/home/quanghaictu/Qt6Cross/qt6/host/include/QtCore",
 		"/home/quanghaictu/Qt6Cross/qt6/host/include",
 		"/home/quanghaictu/Qt6Cross/qt6/host/mkspecs/linux-g++",
@@ -572,123 +554,108 @@
 	"MOC_PATH_PREFIX" : false,
 	"MOC_PREDEFS_CMD" : 
 	[
-		"/bin/g++",
+		"/usr/bin/c++",
 		"-std=gnu++17",
 		"-w",
 		"-dM",
 		"-E",
 		"/usr/local/share/cmake-4.3/Modules/CMakeCXXCompilerABI.cpp"
 	],
-	"MOC_PREDEFS_FILE" : "/home/quanghaictu/OUT_SRC/OUT_SRC_TUANANH/build-OUT_SRC_TUANANH-Desktop-Debug/OUT_SRC_TUANANH_autogen/moc_predefs.h",
+	"MOC_PREDEFS_FILE" : "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_TUANANH/build-OUT_SRC_TUANANH-Desktop-Debug/OUT_SRC_TUANANH_autogen/moc_predefs.h",
 	"MOC_RELAXED_MODE" : false,
 	"MOC_SKIP" : [],
 	"MULTI_CONFIG" : false,
 	"PARALLEL" : 6,
-	"PARSE_CACHE_FILE" : "/home/quanghaictu/OUT_SRC/OUT_SRC_TUANANH/build-OUT_SRC_TUANANH-Desktop-Debug/CMakeFiles/OUT_SRC_TUANANH_autogen.dir/ParseCache.txt",
+	"PARSE_CACHE_FILE" : "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_TUANANH/build-OUT_SRC_TUANANH-Desktop-Debug/CMakeFiles/OUT_SRC_TUANANH_autogen.dir/ParseCache.txt",
 	"QT_MOC_EXECUTABLE" : "/home/quanghaictu/Qt6Cross/qt6/host/./libexec/moc",
 	"QT_UIC_EXECUTABLE" : "/home/quanghaictu/Qt6Cross/qt6/host/./libexec/uic",
 	"QT_VERSION_MAJOR" : 6,
 	"QT_VERSION_MINOR" : 5,
-	"SETTINGS_FILE" : "/home/quanghaictu/OUT_SRC/OUT_SRC_TUANANH/build-OUT_SRC_TUANANH-Desktop-Debug/CMakeFiles/OUT_SRC_TUANANH_autogen.dir/AutogenUsed.txt",
+	"SETTINGS_FILE" : "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_TUANANH/build-OUT_SRC_TUANANH-Desktop-Debug/CMakeFiles/OUT_SRC_TUANANH_autogen.dir/AutogenUsed.txt",
 	"SOURCES" : 
 	[
 		[
-			"/home/quanghaictu/OUT_SRC/OUT_SRC_TUANANH/OUT_SRC_TUANANH/EmbeddedServer.cpp",
+			"/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_TUANANH/OUT_SRC_TUANANH/EmbeddedServer.cpp",
 			"MU",
 			null
 		],
 		[
-			"/home/quanghaictu/OUT_SRC/OUT_SRC_TUANANH/OUT_SRC_TUANANH/VirtualKeyboard.cpp",
+			"/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_TUANANH/OUT_SRC_TUANANH/VirtualKeyboard.cpp",
 			"MU",
 			null
 		],
 		[
-			"/home/quanghaictu/OUT_SRC/OUT_SRC_TUANANH/OUT_SRC_TUANANH/api/ApiClient.cpp",
+			"/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_TUANANH/OUT_SRC_TUANANH/api/ApiClient.cpp",
 			"MU",
 			null
 		],
 		[
-			"/home/quanghaictu/OUT_SRC/OUT_SRC_TUANANH/OUT_SRC_TUANANH/main.cpp",
+			"/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_TUANANH/OUT_SRC_TUANANH/main.cpp",
 			"MU",
 			null
 		],
 		[
-			"/home/quanghaictu/OUT_SRC/OUT_SRC_TUANANH/OUT_SRC_TUANANH/server/api/ApiServer.cpp",
+			"/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_TUANANH/OUT_SRC_TUANANH/server/api/ApiServer.cpp",
 			"MU",
 			null
 		],
 		[
-			"/home/quanghaictu/OUT_SRC/OUT_SRC_TUANANH/OUT_SRC_TUANANH/server/database/Database.cpp",
+			"/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_TUANANH/OUT_SRC_TUANANH/server/database/Database.cpp",
 			"MU",
 			null
 		],
 		[
-			"/home/quanghaictu/OUT_SRC/OUT_SRC_TUANANH/OUT_SRC_TUANANH/server/mqtt/MqttDiscoveryService.cpp",
+			"/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_TUANANH/OUT_SRC_TUANANH/server/mqtt/MqttDiscoveryService.cpp",
 			"MU",
 			null
 		],
 		[
-			"/home/quanghaictu/OUT_SRC/OUT_SRC_TUANANH/OUT_SRC_TUANANH/server/system/HotspotManager.cpp",
+			"/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_TUANANH/OUT_SRC_TUANANH/server/system/HotspotManager.cpp",
 			"MU",
 			null
 		],
 		[
-			"/home/quanghaictu/OUT_SRC/OUT_SRC_TUANANH/OUT_SRC_TUANANH/services/AuthService.cpp",
+			"/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_TUANANH/OUT_SRC_TUANANH/services/AuthService.cpp",
 			"MU",
 			null
 		],
 		[
-			"/home/quanghaictu/OUT_SRC/OUT_SRC_TUANANH/OUT_SRC_TUANANH/services/SensorService.cpp",
+			"/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_TUANANH/OUT_SRC_TUANANH/services/SensorService.cpp",
 			"MU",
 			null
 		],
 		[
-			"/home/quanghaictu/OUT_SRC/OUT_SRC_TUANANH/OUT_SRC_TUANANH/ui/MainWindow.cpp",
+			"/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_TUANANH/OUT_SRC_TUANANH/ui/MainWindow.cpp",
 			"MU",
 			null
 		],
 		[
-			"/home/quanghaictu/OUT_SRC/OUT_SRC_TUANANH/OUT_SRC_TUANANH/ui/dialogs/ErrorDialog.cpp",
+			"/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_TUANANH/OUT_SRC_TUANANH/ui/dialogs/ErrorDialog.cpp",
 			"MU",
 			null
 		],
 		[
-			"/home/quanghaictu/OUT_SRC/OUT_SRC_TUANANH/OUT_SRC_TUANANH/ui/pages/AlertPage.cpp",
+			"/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_TUANANH/OUT_SRC_TUANANH/ui/dialogs/SelectOnlineDeviceDialog.cpp",
 			"MU",
 			null
 		],
 		[
-			"/home/quanghaictu/OUT_SRC/OUT_SRC_TUANANH/OUT_SRC_TUANANH/ui/pages/DashboardPage.cpp",
+			"/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_TUANANH/OUT_SRC_TUANANH/ui/dialogs/SensorDetailDialog.cpp",
 			"MU",
 			null
 		],
 		[
-			"/home/quanghaictu/OUT_SRC/OUT_SRC_TUANANH/OUT_SRC_TUANANH/ui/pages/DeviceManagementPage.cpp",
+			"/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_TUANANH/OUT_SRC_TUANANH/ui/pages/DashboardPage.cpp",
 			"MU",
 			null
 		],
 		[
-			"/home/quanghaictu/OUT_SRC/OUT_SRC_TUANANH/OUT_SRC_TUANANH/ui/pages/HistoryPage.cpp",
+			"/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_TUANANH/OUT_SRC_TUANANH/ui/pages/LoginPage.cpp",
 			"MU",
 			null
 		],
 		[
-			"/home/quanghaictu/OUT_SRC/OUT_SRC_TUANANH/OUT_SRC_TUANANH/ui/pages/LoginPage.cpp",
-			"MU",
-			null
-		],
-		[
-			"/home/quanghaictu/OUT_SRC/OUT_SRC_TUANANH/OUT_SRC_TUANANH/ui/pages/UserManagementPage.cpp",
-			"MU",
-			null
-		],
-		[
-			"/home/quanghaictu/OUT_SRC/OUT_SRC_TUANANH/OUT_SRC_TUANANH/ui/widgets/DistanceCard.cpp",
-			"MU",
-			null
-		],
-		[
-			"/home/quanghaictu/OUT_SRC/OUT_SRC_TUANANH/OUT_SRC_TUANANH/ui/widgets/PressureCard.cpp",
+			"/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_TUANANH/OUT_SRC_TUANANH/ui/pages/UserManagementPage.cpp",
 			"MU",
 			null
 		]

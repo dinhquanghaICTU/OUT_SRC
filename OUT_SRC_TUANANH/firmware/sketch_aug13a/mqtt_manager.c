@@ -239,7 +239,7 @@ bool mqtt_manager_is_connected(void)
     return mqtt_connected;
 }
 
-bool mqtt_manager_publish_sensor(bool detech, float luxx)
+bool mqtt_manager_publish_sensor(bool detech, float luxx, bool relay_state)
 {
     char payload[384];
     int length;
@@ -258,8 +258,12 @@ bool mqtt_manager_publish_sensor(bool detech, float luxx)
                       "\"uptime_ms\":%" PRIu64 ","
                       "\"firmware_version\":\"%s\","
                       "\"metrics\":{"
-                      "\"detech\":%.2f,"
-                      "\"lux\":%.3f}}",
+                      "\"motion_detected\":%s,"
+                      "\"detech\":%s,"
+                      "\"light_lux\":%.2f,"
+                      "\"lux\":%.2f,"
+                      "\"relay_on\":%s,"
+                      "\"relay\":%s}}",
                       PRODUCT_ID,
                       PRODUCT_ID,
                       mqtt_boot_id,
@@ -267,8 +271,12 @@ bool mqtt_manager_publish_sensor(bool detech, float luxx)
                       sequence,
                       uptime_ms,
                       FIRMWARE_VERSION,
-                      detech, 
-                      luxx
+                      detech ? "true" : "false",
+                      detech ? "true" : "false",
+                      luxx,
+                      luxx,
+                      relay_state ? "true" : "false",
+                      relay_state ? "true" : "false"
                     );
 
     if (length <= 0 || length >= (int)sizeof(payload))

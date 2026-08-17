@@ -2,26 +2,245 @@
 <ui version="4.0">
  <class>MainWindow</class>
  <widget class="QMainWindow" name="MainWindow">
-  <property name="geometry"><rect><x>0</x><y>0</y><width>800</width><height>480</height></rect></property>
-  <property name="minimumSize"><size><width>480</width><height>320</height></size></property>
-  <property name="maximumSize"><size><width>16777215</width><height>16777215</height></size></property>
-  <property name="windowTitle"><string>ICTU Environmental Monitor</string></property>
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>800</width>
+    <height>480</height>
+   </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>320</width>
+    <height>240</height>
+   </size>
+  </property>
+  <property name="windowTitle">
+   <string>TUANANH - Tactical Cyber-Light &amp; Security Mesh</string>
+  </property>
   <widget class="QWidget" name="centralWidget">
-   <layout class="QHBoxLayout" name="mainLayout">
-    <property name="spacing"><number>0</number></property><property name="leftMargin"><number>0</number></property><property name="topMargin"><number>0</number></property><property name="rightMargin"><number>0</number></property><property name="bottomMargin"><number>0</number></property>
-    <item><widget class="QWidget" name="sideBar"><property name="minimumSize"><size><width>66</width><height>0</height></size></property><property name="maximumSize"><size><width>66</width><height>16777215</height></size></property><layout class="QVBoxLayout" name="sideBarLayout"><property name="spacing"><number>8</number></property><property name="leftMargin"><number>8</number></property><property name="topMargin"><number>12</number></property><property name="rightMargin"><number>8</number></property><property name="bottomMargin"><number>12</number></property>
-     <item><widget class="QLabel" name="sideLogo"><property name="minimumSize"><size><width>46</width><height>46</height></size></property><property name="maximumSize"><size><width>46</width><height>46</height></size></property><property name="pixmap"><pixmap resource="../resources/resources.qrc">:/images/logo_ictu.png</pixmap></property><property name="scaledContents"><bool>true</bool></property></widget></item>
-     <item><widget class="QPushButton" name="dashboardButton"><property name="toolTip"><string>Trang chủ</string></property><property name="text"><string>⌂</string></property><property name="checkable"><bool>true</bool></property><property name="autoExclusive"><bool>true</bool></property></widget></item>
-     <item><widget class="QPushButton" name="devicesButton"><property name="toolTip"><string>Quản lý thiết bị</string></property><property name="text"><string>◆</string></property><property name="checkable"><bool>true</bool></property><property name="autoExclusive"><bool>true</bool></property></widget></item>
-     <item><widget class="QPushButton" name="historyButton"><property name="toolTip"><string>Lịch sử dữ liệu</string></property><property name="text"><string>▤</string></property><property name="checkable"><bool>true</bool></property><property name="autoExclusive"><bool>true</bool></property></widget></item>
-     <item><widget class="QPushButton" name="usersButton"><property name="toolTip"><string>Quản lý tài khoản</string></property><property name="text"><string>♟</string></property><property name="checkable"><bool>true</bool></property><property name="autoExclusive"><bool>true</bool></property></widget></item>
-     <item><spacer name="navSpacer"><property name="orientation"><enum>Qt::Vertical</enum></property><property name="sizeHint" stdset="0"><size><width>20</width><height>80</height></size></property></spacer></item>
-     <item><widget class="QPushButton" name="logoutButton"><property name="toolTip"><string>Đăng xuất</string></property><property name="text"><string>↪</string></property></widget></item>
-    </layout></widget></item>
-    <item><widget class="QStackedWidget" name="pages"/></item>
+   <layout class="QVBoxLayout" name="mainLayout">
+    <property name="spacing">
+     <number>0</number>
+    </property>
+    <property name="leftMargin">
+     <number>0</number>
+    </property>
+    <property name="topMargin">
+     <number>0</number>
+    </property>
+    <property name="rightMargin">
+     <number>0</number>
+    </property>
+    <property name="bottomMargin">
+     <number>0</number>
+    </property>
+    <item>
+     <widget class="QFrame" name="topHeaderBar">
+      <property name="minimumSize">
+       <size>
+        <width>0</width>
+        <height>44</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>44</height>
+       </size>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QFrame#topHeaderBar {
+  background: qlineargradient(x1:0, y1:0, x2:1, y2:0, stop:0 #0a1016, stop:0.5 #0c141c, stop:1 #06090e);
+  border-bottom: 1.5px solid #162432;
+}</string>
+      </property>
+      <layout class="QHBoxLayout" name="headerLayout">
+       <property name="leftMargin">
+        <number>12</number>
+       </property>
+       <property name="topMargin">
+        <number>4</number>
+       </property>
+       <property name="rightMargin">
+        <number>12</number>
+       </property>
+       <property name="bottomMargin">
+        <number>4</number>
+       </property>
+       <property name="spacing">
+        <number>10</number>
+       </property>
+       <item>
+        <widget class="QLabel" name="systemTitleLabel">
+         <property name="text">
+          <string>⬢ TUANANH // CYBER-LIGHT &amp; PIR MESH</string>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">color: #00f0ff; font-size: 11px; font-weight: 900; letter-spacing: 0.8px;</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <spacer name="headerLeftSpacer">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeType">
+          <enum>QSizePolicy::Fixed</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>16</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item>
+        <widget class="QPushButton" name="dashboardButton">
+         <property name="cursor">
+          <cursorShape>PointingHandCursor</cursorShape>
+         </property>
+         <property name="text">
+          <string>⬡ TACTICAL HUD</string>
+         </property>
+         <property name="checkable">
+          <bool>true</bool>
+         </property>
+         <property name="checked">
+          <bool>true</bool>
+         </property>
+         <property name="autoExclusive">
+          <bool>true</bool>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">QPushButton {
+  background: transparent;
+  color: #64748b;
+  border: 1px solid transparent;
+  border-radius: 5px;
+  padding: 4px 12px;
+  font-size: 10px;
+  font-weight: 800;
+}
+QPushButton:hover {
+  background: #111c26;
+  color: #ffffff;
+}
+QPushButton:checked {
+  background: #0284c7;
+  color: #ffffff;
+  border: 1px solid #38bdf8;
+  font-weight: 900;
+}</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="usersButton">
+         <property name="cursor">
+          <cursorShape>PointingHandCursor</cursorShape>
+         </property>
+         <property name="text">
+          <string>⬡ ACCESS CONTROL</string>
+         </property>
+         <property name="checkable">
+          <bool>true</bool>
+         </property>
+         <property name="autoExclusive">
+          <bool>true</bool>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">QPushButton {
+  background: transparent;
+  color: #64748b;
+  border: 1px solid transparent;
+  border-radius: 5px;
+  padding: 4px 12px;
+  font-size: 10px;
+  font-weight: 800;
+}
+QPushButton:hover {
+  background: #111c26;
+  color: #ffffff;
+}
+QPushButton:checked {
+  background: #0284c7;
+  color: #ffffff;
+  border: 1px solid #38bdf8;
+  font-weight: 900;
+}</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <spacer name="headerSpacer">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item>
+        <widget class="QLabel" name="roleBadgeLabel">
+         <property name="text">
+          <string>👑 ROOT ADMIN</string>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">background: rgba(2, 132, 199, 0.18);
+color: #38bdf8;
+border: 1px solid #0284c7;
+border-radius: 4px;
+padding: 2px 7px;
+font-size: 9px;
+font-weight: 800;</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="logoutButton">
+         <property name="cursor">
+          <cursorShape>PointingHandCursor</cursorShape>
+         </property>
+         <property name="text">
+          <string>LOGOUT ↪</string>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">QPushButton {
+  background: #2b1118;
+  color: #f87171;
+  border: 1px solid #7f1d1d;
+  border-radius: 5px;
+  padding: 3px 8px;
+  font-size: 9px;
+  font-weight: 800;
+}
+QPushButton:hover {
+  background: #dc2626;
+  color: #ffffff;
+}</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item>
+     <widget class="QStackedWidget" name="pages"/>
+    </item>
    </layout>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
  </widget>
- <resources><include location="../resources/resources.qrc"/></resources><connections/>
+ <resources>
+  <include location="../resources/resources.qrc"/>
+ </resources>
+ <connections/>
 </ui>

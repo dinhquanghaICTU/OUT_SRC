@@ -62,8 +62,7 @@ void loop()
 
         if (wifi_manager_get_state() == WIFI_MANAGER_CONNECTED && mqtt_manager_is_connected())
         {
-            mqtt_manager_publish_sensor(detech,luxx);
-            
+            mqtt_manager_publish_sensor(detech, luxx, relay_get_state());
         }
     }
     wifi_manager_update();

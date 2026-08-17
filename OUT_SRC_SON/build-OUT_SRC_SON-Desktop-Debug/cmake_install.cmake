@@ -1,4 +1,4 @@
-# Install script for directory: /home/quanghaictu/OUT_SRC/OUT_SRC_SON/OUT_SRC_SON
+# Install script for directory: /media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_SON/OUT_SRC_SON
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -39,7 +39,7 @@ endif()
 
 # Set path to fallback-tool for dependency-resolution.
 if(NOT DEFINED CMAKE_OBJDUMP)
-  set(CMAKE_OBJDUMP "/bin/objdump")
+  set(CMAKE_OBJDUMP "/usr/bin/objdump")
 endif()
 
 if(CMAKE_INSTALL_COMPONENT STREQUAL "Unspecified" OR NOT CMAKE_INSTALL_COMPONENT)
@@ -49,7 +49,7 @@ if(CMAKE_INSTALL_COMPONENT STREQUAL "Unspecified" OR NOT CMAKE_INSTALL_COMPONENT
          FILE "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/bin/OUT_SRC_SON"
          RPATH "")
   endif()
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/bin" TYPE EXECUTABLE FILES "/home/quanghaictu/OUT_SRC/OUT_SRC_SON/build-OUT_SRC_SON-Desktop-Debug/OUT_SRC_SON")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/bin" TYPE EXECUTABLE FILES "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_SON/build-OUT_SRC_SON-Desktop-Debug/OUT_SRC_SON")
   if(EXISTS "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/bin/OUT_SRC_SON" AND
      NOT IS_SYMLINK "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/bin/OUT_SRC_SON")
     file(RPATH_CHANGE
@@ -57,7 +57,7 @@ if(CMAKE_INSTALL_COMPONENT STREQUAL "Unspecified" OR NOT CMAKE_INSTALL_COMPONENT
          OLD_RPATH "/home/quanghaictu/Qt6Cross/qt6/host/lib:"
          NEW_RPATH "")
     if(CMAKE_INSTALL_DO_STRIP)
-      execute_process(COMMAND "/bin/strip" "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/bin/OUT_SRC_SON")
+      execute_process(COMMAND "/usr/bin/strip" "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/bin/OUT_SRC_SON")
     endif()
   endif()
 endif()
@@ -65,7 +65,7 @@ endif()
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
 if(CMAKE_INSTALL_LOCAL_ONLY)
-  file(WRITE "/home/quanghaictu/OUT_SRC/OUT_SRC_SON/build-OUT_SRC_SON-Desktop-Debug/install_local_manifest.txt"
+  file(WRITE "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_SON/build-OUT_SRC_SON-Desktop-Debug/install_local_manifest.txt"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")
 endif()
 if(CMAKE_INSTALL_COMPONENT)
@@ -81,6 +81,6 @@ else()
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
-  file(WRITE "/home/quanghaictu/OUT_SRC/OUT_SRC_SON/build-OUT_SRC_SON-Desktop-Debug/${CMAKE_INSTALL_MANIFEST}"
+  file(WRITE "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_SON/build-OUT_SRC_SON-Desktop-Debug/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")
 endif()

@@ -8,6 +8,18 @@ set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 
+if(NOT CMAKE_BUILD_TYPE)
+    set(CMAKE_BUILD_TYPE "Debug" CACHE STRING "Build type" FORCE)
+endif()
+
+# Auto-detect local Qt6 installation paths
+if(EXISTS "/home/quanghaictu/Qt6Cross/qt6/host")
+    list(APPEND CMAKE_PREFIX_PATH "/home/quanghaictu/Qt6Cross/qt6/host")
+endif()
+if(EXISTS "/home/quanghaictu/Qt6Cross/qt6/pi")
+    list(APPEND CMAKE_PREFIX_PATH "/home/quanghaictu/Qt6Cross/qt6/pi")
+endif()
+
 find_package(Qt6 REQUIRED COMPONENTS
     Core
     Widgets
@@ -101,6 +113,7 @@ target_link_libraries(OUT_SRC_SON PRIVATE
     Qt6::Charts
 )
 
+include(GNUInstallDirs)
 install(TARGETS OUT_SRC_SON
     BUNDLE DESTINATION .
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}

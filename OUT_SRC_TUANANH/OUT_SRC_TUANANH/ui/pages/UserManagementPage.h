@@ -5,25 +5,24 @@
 #include <QWidget>
 
 namespace Ui { class UserManagementPage; }
-class QFrame;
-class QVBoxLayout;
-class QResizeEvent;
+
+class QLabel;
+class QPushButton;
+class QGridLayout;
+class QScrollArea;
 
 class UserManagementPage : public QWidget
 {
     Q_OBJECT
+
 public:
     explicit UserManagementPage(QWidget *parent = nullptr);
     ~UserManagementPage() override;
     void setUsers(const QJsonArray &users);
     void setAdminEnabled(bool enabled);
 
-protected:
-    void resizeEvent(QResizeEvent *event) override;
-
 signals:
-    void createUserRequested(const QString &username, const QString &password,
-                             const QString &role);
+    void createUserRequested(const QString &username, const QString &password, const QString &role);
     void updateUserRequested(const QString &oldUsername, const QString &username,
                              const QString &password, const QString &role, bool enabled);
     void deleteUserRequested(const QString &username);
@@ -31,16 +30,23 @@ signals:
     void refreshRequested();
 
 private:
-    void showUserDetails(const QJsonObject &user);
-    void clearUserDetails();
-    void applyResponsiveLayout();
-    void openEditDialog(const QJsonObject &user);
+    void setupCustomUI();
+    void renderUserGrid();
+    void openEditDialog(const QJsonObject &user = QJsonObject());
     void confirmDeleteUser(const QJsonObject &user);
 
     Ui::UserManagementPage *ui;
+
     QJsonArray m_users;
-    QJsonObject m_selectedUser;
-    QFrame *m_detailPanel = nullptr;
-    QVBoxLayout *m_detailLayout = nullptr;
     bool m_adminEnabled = false;
+    QString m_currentFilter = "all"; // all, admin, user
+
+    // Filter Buttons
+    QPushButton *m_filterAllBtn = nullptr;
+    QPushButton *m_filterAdminBtn = nullptr;
+    QPushButton *m_filterUserBtn = nullptr;
+
+    // Grid Container
+    QGridLayout *m_gridLayout = nullptr;
+    QLabel *m_emptyLabel = nullptr;
 };

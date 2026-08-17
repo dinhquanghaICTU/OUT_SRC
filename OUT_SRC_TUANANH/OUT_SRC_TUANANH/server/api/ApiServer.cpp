@@ -313,11 +313,11 @@ void ApiServer::registerRoutes()
                              tr("Nội dung JSON không hợp lệ"));
         const QString username = body.value(QStringLiteral("username")).toString().trimmed();
         const QString password = body.value(QStringLiteral("password")).toString();
-        const QString role = body.value(QStringLiteral("role")).toString(QStringLiteral("viewer"));
-        static const QRegularExpression validUsername(QStringLiteral("^[A-Za-z0-9_.-]{3,32}$"));
-        if (!validUsername.match(username).hasMatch() || password.size() < 8
-            || password.size() > 128
-            || (role != QStringLiteral("viewer") && role != QStringLiteral("admin")))
+        QString role = body.value(QStringLiteral("role")).toString(QStringLiteral("user")).toLower();
+        if (role == QStringLiteral("viewer")) role = QStringLiteral("user");
+        static const QRegularExpression validUsername(QStringLiteral("^[A-Za-z0-9_.-]{1,32}$"));
+        if (!validUsername.match(username).hasMatch() || password.isEmpty() || password.size() > 128
+            || (role != QStringLiteral("user") && role != QStringLiteral("admin")))
             return jsonError(Status::BadRequest, QStringLiteral("validation_error"),
                              tr("Tài khoản, mật khẩu hoặc quyền không hợp lệ"));
 
@@ -350,12 +350,13 @@ void ApiServer::registerRoutes()
 
         const QString username = body.value(QStringLiteral("username")).toString().trimmed();
         const QString password = body.value(QStringLiteral("password")).toString();
-        const QString role = body.value(QStringLiteral("role")).toString(QStringLiteral("viewer"));
+        QString role = body.value(QStringLiteral("role")).toString(QStringLiteral("user")).toLower();
+        if (role == QStringLiteral("viewer")) role = QStringLiteral("user");
         const bool enabled = body.value(QStringLiteral("enabled")).toBool(true);
-        static const QRegularExpression validUsername(QStringLiteral("^[A-Za-z0-9_.-]{3,32}$"));
+        static const QRegularExpression validUsername(QStringLiteral("^[A-Za-z0-9_.-]{1,32}$"));
         if (!validUsername.match(username).hasMatch()
-            || (!password.isEmpty() && (password.size() < 8 || password.size() > 128))
-            || (role != QStringLiteral("viewer") && role != QStringLiteral("admin")))
+            || (!password.isEmpty() && password.size() > 128)
+            || (role != QStringLiteral("user") && role != QStringLiteral("admin")))
             return jsonError(Status::BadRequest, QStringLiteral("validation_error"),
                              tr("Tài khoản, mật khẩu hoặc quyền không hợp lệ"));
 
