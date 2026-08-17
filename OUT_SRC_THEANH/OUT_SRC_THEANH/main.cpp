@@ -22,8 +22,8 @@ int main(int argc, char *argv[])
     }
 
     MainWindow window;
-    window.setMinimumSize(800, 480);
+    window.setMinimumSize(320, 240);
     window.resize(800, 480);
-    window.showFullScreen();
+    window.show();
     return app.exec();
 }

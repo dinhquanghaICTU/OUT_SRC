@@ -10,10 +10,10 @@
 SelectOnlineDeviceDialog::SelectOnlineDeviceDialog(const QJsonArray &availableDevices, QWidget *parent)
     : QDialog(parent)
 {
-    setWindowTitle(QStringLiteral("Chọn thiết bị ESP32"));
-    resize(440, 260);
+    setWindowTitle(QStringLiteral("Chọn thiết bị ESP32 Online"));
+    resize(460, 280);
     setStyleSheet(
-        "QDialog { background-color: #070d1e; color: #ecf2ff; font-family: sans-serif; } "
+        "QDialog { background-color: #0d0a26; color: #ecf2ff; font-family: sans-serif; } "
         "QLabel { color: #f1f5f9; } "
         "QScrollArea { border: none; background: transparent; }"
     );
@@ -26,15 +26,27 @@ SelectOnlineDeviceDialog::SelectOnlineDeviceDialog(const QJsonArray &availableDe
     auto *headerRow = new QHBoxLayout;
     auto *titleIcon = new QLabel(QStringLiteral("📡"));
     titleIcon->setStyleSheet("font-size: 14px;");
-    auto *titleLbl = new QLabel(QStringLiteral("Chọn Thiết Bị Online"));
+    auto *titleLbl = new QLabel(QStringLiteral("Danh Sách Thiết Bị Online"));
     titleLbl->setStyleSheet("color: #38bdf8; font-size: 13px; font-weight: 900;");
     headerRow->addWidget(titleIcon);
     headerRow->addWidget(titleLbl);
     headerRow->addStretch();
 
+    auto *refreshBtn = new QPushButton(QStringLiteral("🔄 Làm Mới"));
+    refreshBtn->setCursor(Qt::PointingHandCursor);
+    refreshBtn->setStyleSheet(
+        "QPushButton { background: #1e184a; color: #38bdf8; border: 1px solid #2b235c; border-radius: 6px; padding: 4px 10px; font-size: 10px; font-weight: 800; } "
+        "QPushButton:hover { background: #2a225e; color: #ffffff; }"
+    );
+    connect(refreshBtn, &QPushButton::clicked, this, [this] {
+        if (m_emptyLabel) m_emptyLabel->setText(QStringLiteral("Đang quét thiết bị ESP32..."));
+        emit refreshRequested();
+    });
+    headerRow->addWidget(refreshBtn);
+
     auto *closeBtn = new QPushButton(QStringLiteral("✕"));
     closeBtn->setFixedSize(22, 22);
-    closeBtn->setStyleSheet("background: #1e293b; color: #ef4444; border: 1px solid #334155; border-radius: 11px; font-weight: 900; font-size: 10px;");
+    closeBtn->setStyleSheet("background: #1e1435; color: #ef4444; border: 1px solid #3c2055; border-radius: 11px; font-weight: 900; font-size: 10px;");
     connect(closeBtn, &QPushButton::clicked, this, &QDialog::reject);
     headerRow->addWidget(closeBtn);
     mainLayout->addLayout(headerRow);
@@ -50,8 +62,8 @@ SelectOnlineDeviceDialog::SelectOnlineDeviceDialog(const QJsonArray &availableDe
     m_listLayout->setContentsMargins(0, 0, 0, 0);
     m_listLayout->setSpacing(6);
 
-    m_emptyLabel = new QLabel(QStringLiteral("Đang quét thiết bị ESP32..."));
-    m_emptyLabel->setStyleSheet("color: #64748b; font-size: 11px; font-style: italic; padding: 16px;");
+    m_emptyLabel = new QLabel(QStringLiteral("Chưa phát hiện thiết bị online nào.\nVui lòng bật nguồn ESP32 và đảm bảo kết nối WiFi/MQTT."));
+    m_emptyLabel->setStyleSheet("color: #94a3b8; font-size: 11px; font-style: italic; padding: 24px;");
     m_emptyLabel->setAlignment(Qt::AlignCenter);
     m_listLayout->addWidget(m_emptyLabel);
 
@@ -86,9 +98,9 @@ void SelectOnlineDeviceDialog::populateDeviceList(const QJsonArray &devices)
         const QString fwVer = dev.value(QStringLiteral("firmware_version")).toString(QStringLiteral("1.0.0"));
         const bool isOnline = dev.value(QStringLiteral("is_online")).toBool(true);
 
-        // Strict filter for Son devices: son-190782 or 150304
-        if (devId.compare(QStringLiteral("son-190782"), Qt::CaseInsensitive) != 0 &&
-            devId.compare(QStringLiteral("150304"), Qt::CaseInsensitive) != 0) {
+        // Strict filter: only Theanh-190782 or 190782 or online devices for THEANH
+        if (devId.compare(QStringLiteral("Theanh-190782"), Qt::CaseInsensitive) != 0 &&
+            devId.compare(QStringLiteral("190782"), Qt::CaseInsensitive) != 0) {
             continue;
         }
 
@@ -96,13 +108,13 @@ void SelectOnlineDeviceDialog::populateDeviceList(const QJsonArray &devices)
         auto *card = new QFrame;
         card->setStyleSheet(
             "QFrame { "
-            "  background-color: #0d1733; "
-            "  border: 1px solid #1c2b54; "
+            "  background-color: #161238; "
+            "  border: 1px solid #2b235c; "
             "  border-radius: 8px; "
             "} "
             "QFrame:hover { "
             "  border-color: #10b981; "
-            "  background-color: #111e42; "
+            "  background-color: #1e184a; "
             "}"
         );
 
@@ -153,36 +165,9 @@ void SelectOnlineDeviceDialog::populateDeviceList(const QJsonArray &devices)
     }
 
     if (count == 0) {
-        // Fallback card for Son device
-        auto *card = new QFrame;
-        card->setStyleSheet("background-color: #0d1733; border: 1px solid #22c55e; border-radius: 8px;");
-        auto *cardLayout = new QHBoxLayout(card);
-        cardLayout->setContentsMargins(8, 6, 8, 6);
-        cardLayout->setSpacing(8);
-
-        auto *iconLbl = new QLabel(QStringLiteral("🖲"));
-        iconLbl->setStyleSheet("font-size: 16px; border: none; background: transparent;");
-        cardLayout->addWidget(iconLbl);
-
-        auto *infoCol = new QVBoxLayout;
-        infoCol->setSpacing(1);
-        auto *nameLbl = new QLabel(QStringLiteral("son-190782 (Firmware Sơn)"));
-        nameLbl->setStyleSheet("color: #ffffff; font-size: 11px; font-weight: 800;");
-        auto *subInfo = new QLabel(QStringLiteral("ID: <b style='color: #38bdf8;'>son-190782</b> | Sẵn sàng kết nối"));
-        subInfo->setStyleSheet("color: #94a3b8; font-size: 9px;");
-        infoCol->addWidget(nameLbl);
-        infoCol->addWidget(subInfo);
-        cardLayout->addLayout(infoCol, 1);
-
-        auto *selectBtn = new QPushButton(QStringLiteral("+ Kết Nối"));
-        selectBtn->setCursor(Qt::PointingHandCursor);
-        selectBtn->setFixedSize(68, 26);
-        selectBtn->setStyleSheet("QPushButton { background: #10b981; color: #ffffff; border: none; border-radius: 5px; font-size: 10px; font-weight: 900; } QPushButton:hover { background: #059669; }");
-        connect(selectBtn, &QPushButton::clicked, this, [this] {
-            emit deviceSelected(QStringLiteral("son-190782"), QStringLiteral("son-190782"));
-            accept();
-        });
-        cardLayout->addWidget(selectBtn);
-        m_listLayout->addWidget(card);
+        m_emptyLabel->show();
+        m_listLayout->addWidget(m_emptyLabel);
+    } else {
+        m_emptyLabel->hide();
     }
 }

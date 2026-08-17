@@ -5,6 +5,8 @@
 namespace Ui { class LoginPage; }
 
 class VirtualKeyboard;
+class QPaintEvent;
+class QHideEvent;
 
 class LoginPage : public QWidget
 {
@@ -18,6 +20,7 @@ signals:
     void loginRequested(const QString &username, const QString &password);
 
 protected:
+    void paintEvent(QPaintEvent *event) override;
     void hideEvent(QHideEvent *event) override;
 
 private:

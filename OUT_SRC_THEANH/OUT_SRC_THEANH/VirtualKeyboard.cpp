@@ -14,11 +14,51 @@
 VirtualKeyboard::VirtualKeyboard(QWidget *parent) : QWidget(parent)
 {
     setObjectName("virtualKeyboard");
+    setStyleSheet(
+        "QWidget#virtualKeyboard { "
+        "  background-color: rgba(15, 23, 42, 0.96); "
+        "  border-top: 2px solid #277d8c; "
+        "  border-radius: 8px 8px 0 0; "
+        "} "
+        "QPushButton { "
+        "  background-color: #1e293b; "
+        "  color: #f8fafc; "
+        "  border: 1px solid #334155; "
+        "  border-radius: 5px; "
+        "  font-size: 13px; "
+        "  font-weight: 700; "
+        "  font-family: monospace, sans-serif; "
+        "} "
+        "QPushButton:hover { "
+        "  background-color: #334155; "
+        "  border-color: #38bdf8; "
+        "} "
+        "QPushButton:pressed { "
+        "  background-color: #f15a24; "
+        "  color: #ffffff; "
+        "} "
+        "QPushButton#kbKeyEnter { "
+        "  background-color: #f15a24; "
+        "  color: #ffffff; "
+        "  border: none; "
+        "  font-weight: 900; "
+        "} "
+        "QPushButton#kbKeyEnter:hover { background-color: #d94814; } "
+        "QPushButton#kbKeyAction, QPushButton#kbKeyMode { "
+        "  background-color: #0f172a; "
+        "  color: #38bdf8; "
+        "  border-color: #1e293b; "
+        "} "
+        "QPushButton#kbKeyShiftActive { "
+        "  background-color: #38bdf8; "
+        "  color: #0f172a; "
+        "}"
+    );
     m_grid = new QGridLayout(this);
-    m_grid->setSpacing(2);
-    m_grid->setContentsMargins(4, 4, 4, 4);
+    m_grid->setSpacing(3);
+    m_grid->setContentsMargins(6, 6, 6, 6);
     rebuildLayout();
-    setFixedHeight(145);
+    setFixedHeight(180);
 }
 
 void VirtualKeyboard::attachTo(QLineEdit *target)
@@ -33,7 +73,7 @@ void VirtualKeyboard::createKey(int row, int col, int span, const QString &text,
     btn->setCursor(Qt::PointingHandCursor);
     btn->setFocusPolicy(Qt::NoFocus);
     btn->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-    btn->setMinimumHeight(28);
+    btn->setMinimumHeight(30);
     m_grid->addWidget(btn, row, col, 1, span);
 
     if (text == "⇧") {

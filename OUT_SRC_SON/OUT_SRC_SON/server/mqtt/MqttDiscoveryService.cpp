@@ -206,6 +206,10 @@ void MqttDiscoveryService::processPublish(quint8 flags, const QByteArray &body)
         || parts.at(1) != QStringLiteral("v1") || parts.at(2) != QStringLiteral("devices"))
         return;
     const QString deviceId = parts.at(3);
+    if (deviceId.compare(QStringLiteral("son-190782"), Qt::CaseInsensitive) != 0 &&
+        deviceId.compare(QStringLiteral("150304"), Qt::CaseInsensitive) != 0) {
+        return;
+    }
     const QString channel = parts.at(4);
     bool online = true;
     QJsonObject metrics;

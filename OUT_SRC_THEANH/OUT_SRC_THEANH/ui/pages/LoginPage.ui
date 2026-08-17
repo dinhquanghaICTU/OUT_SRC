@@ -2,101 +2,191 @@
 <ui version="4.0">
  <class>LoginPage</class>
  <widget class="QWidget" name="LoginPage">
-  <layout class="QGridLayout" name="pageLayout">
-   <property name="leftMargin"><number>20</number></property>
-   <property name="topMargin"><number>12</number></property>
-   <property name="rightMargin"><number>20</number></property>
-   <property name="bottomMargin"><number>12</number></property>
-   <property name="horizontalSpacing"><number>0</number></property>
-   <property name="verticalSpacing"><number>0</number></property>
-   <item row="0" column="0">
-    <spacer name="topSpacer"><property name="orientation"><enum>Qt::Vertical</enum></property><property name="sizeHint" stdset="0"><size><width>20</width><height>40</height></size></property></spacer>
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>480</width>
+    <height>800</height>
+   </rect>
+  </property>
+  <layout class="QVBoxLayout" name="pageLayout">
+   <property name="leftMargin"><number>0</number></property>
+   <property name="topMargin"><number>20</number></property>
+   <property name="rightMargin"><number>0</number></property>
+   <property name="bottomMargin"><number>0</number></property>
+   <property name="spacing"><number>0</number></property>
+
+   <item>
+    <spacer name="topSpacer">
+     <property name="orientation"><enum>Qt::Vertical</enum></property>
+     <property name="sizeHint" stdset="0"><size><width>20</width><height>20</height></size></property>
+    </spacer>
    </item>
-   <item row="1" column="0" alignment="Qt::AlignCenter">
-    <widget class="QFrame" name="loginCard">
-     <property name="minimumSize"><size><width>0</width><height>0</height></size></property>
-     <property name="maximumSize"><size><width>320</width><height>16777215</height></size></property>
-     <layout class="QVBoxLayout" name="loginFormLayout">
-      <property name="leftMargin"><number>20</number></property>
-      <property name="topMargin"><number>14</number></property>
-      <property name="rightMargin"><number>20</number></property>
-      <property name="bottomMargin"><number>14</number></property>
-      <property name="spacing"><number>6</number></property>
+
+   <item alignment="Qt::AlignHCenter">
+    <widget class="QLabel" name="myAccountLabel">
+     <property name="text"><string>My Account</string></property>
+     <property name="alignment"><set>Qt::AlignCenter</set></property>
+     <property name="styleSheet">
+      <string notr="true">color: #ffffff; font-size: 22px; font-weight: 600; letter-spacing: 0.5px; background: transparent; padding-bottom: 12px;</string>
+     </property>
+    </widget>
+   </item>
+
+   <item alignment="Qt::AlignHCenter">
+    <widget class="QWidget" name="cardWrapper" native="true">
+     <property name="minimumSize"><size><width>310</width><height>340</height></size></property>
+     <property name="maximumSize"><size><width>330</width><height>360</height></size></property>
+     <layout class="QVBoxLayout" name="wrapperLayout">
+      <property name="leftMargin"><number>0</number></property>
+      <property name="topMargin"><number>0</number></property>
+      <property name="rightMargin"><number>0</number></property>
+      <property name="bottomMargin"><number>0</number></property>
+      <property name="spacing"><number>0</number></property>
+
+      <!-- Circular Avatar overlapping at top -->
       <item alignment="Qt::AlignHCenter">
-       <widget class="QLabel" name="logoLabel">
-        <property name="minimumSize"><size><width>56</width><height>56</height></size></property>
-        <property name="maximumSize"><size><width>56</width><height>56</height></size></property>
-        <property name="pixmap"><pixmap resource="../../resources/resources.qrc">:/images/logo_ictu.png</pixmap></property>
-        <property name="scaledContents"><bool>true</bool></property>
+       <widget class="QLabel" name="avatarBadge">
+        <property name="minimumSize"><size><width>64</width><height>64</height></size></property>
+        <property name="maximumSize"><size><width>64</width><height>64</height></size></property>
+        <property name="styleSheet">
+         <string notr="true">background-color: #1e3243; border: 4px solid #ffffff; border-radius: 32px; color: #ffffff; font-size: 26px;</string>
+        </property>
+        <property name="text"><string>👤</string></property>
         <property name="alignment"><set>Qt::AlignCenter</set></property>
        </widget>
       </item>
-      <item alignment="Qt::AlignHCenter">
-       <widget class="QLabel" name="welcomeLabel">
-        <property name="text"><string>Đăng nhập hệ thống</string></property>
-        <property name="alignment"><set>Qt::AlignCenter</set></property>
-       </widget>
-      </item>
-      <item alignment="Qt::AlignHCenter">
-       <widget class="QLabel" name="subtitleLabel">
-        <property name="text"><string>ICTU Environmental Monitor</string></property>
-        <property name="alignment"><set>Qt::AlignCenter</set></property>
-       </widget>
-      </item>
+
+      <!-- Main White Card -->
       <item>
-       <spacer name="formGap"><property name="orientation"><enum>Qt::Vertical</enum></property><property name="sizeHint" stdset="0"><size><width>20</width><height>8</height></size></property></spacer>
-      </item>
-      <item>
-       <widget class="QLineEdit" name="usernameEdit">
-        <property name="minimumSize"><size><width>0</width><height>40</height></size></property>
-        <property name="placeholderText"><string>Tài khoản</string></property>
-        <property name="clearButtonEnabled"><bool>true</bool></property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLineEdit" name="passwordEdit">
-        <property name="minimumSize"><size><width>0</width><height>40</height></size></property>
-        <property name="placeholderText"><string>Mật khẩu</string></property>
-        <property name="echoMode"><enum>QLineEdit::Password</enum></property>
-       </widget>
-      </item>
-      <item>
-       <layout class="QHBoxLayout" name="optionsLayout">
-        <property name="leftMargin"><number>2</number></property>
-        <property name="rightMargin"><number>2</number></property>
-        <item>
-         <widget class="QCheckBox" name="rememberAccountCheckBox">
-          <property name="cursor"><cursorShape>PointingHandCursor</cursorShape></property>
-          <property name="text"><string>Ghi nhớ tài khoản</string></property>
-         </widget>
-        </item>
-        <item>
-         <spacer name="optionSpacer"><property name="orientation"><enum>Qt::Horizontal</enum></property><property name="sizeHint" stdset="0"><size><width>40</width><height>20</height></size></property></spacer>
-        </item>
-       </layout>
-      </item>
-      <item>
-       <widget class="QPushButton" name="loginButton">
-        <property name="minimumSize"><size><width>0</width><height>38</height></size></property>
-        <property name="cursor"><cursorShape>PointingHandCursor</cursorShape></property>
-        <property name="text"><string>ĐĂNG NHẬP</string></property>
-        <property name="default"><bool>true</bool></property>
-       </widget>
-      </item>
-      <item alignment="Qt::AlignHCenter">
-       <widget class="QLabel" name="footerHintLabel">
-        <property name="text"><string>Nhấn Enter để đăng nhập nhanh</string></property>
-        <property name="alignment"><set>Qt::AlignCenter</set></property>
+       <widget class="QFrame" name="loginCard">
+        <property name="styleSheet">
+         <string notr="true">QFrame#loginCard { background-color: #ffffff; border-radius: 12px; margin-top: -32px; padding-top: 30px; }</string>
+        </property>
+        <layout class="QVBoxLayout" name="loginFormLayout">
+         <property name="leftMargin"><number>20</number></property>
+         <property name="topMargin"><number>32</number></property>
+         <property name="rightMargin"><number>20</number></property>
+         <property name="bottomMargin"><number>24</number></property>
+         <property name="spacing"><number>14</number></property>
+
+         <!-- Username Field -->
+         <item>
+          <layout class="QHBoxLayout" name="userRow">
+           <property name="spacing"><number>8</number></property>
+           <item>
+            <widget class="QLabel" name="userIcon">
+             <property name="text"><string>👤</string></property>
+             <property name="styleSheet"><string notr="true">color: #94a3b8; font-size: 15px; background: transparent; padding-bottom: 2px;</string></property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="usernameEdit">
+             <property name="minimumSize"><size><width>0</width><height>34</height></size></property>
+             <property name="placeholderText"><string>Login</string></property>
+             <property name="styleSheet">
+              <string notr="true">QLineEdit { background: transparent; border: none; border-bottom: 1.5px solid #cbd5e1; color: #1e293b; font-size: 14px; font-weight: 500; padding: 2px 4px; } QLineEdit:focus { border-bottom: 2px solid #f15a24; }</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+
+         <!-- Password Field -->
+         <item>
+          <layout class="QHBoxLayout" name="passRow">
+           <property name="spacing"><number>8</number></property>
+           <item>
+            <widget class="QLabel" name="passIcon">
+             <property name="text"><string>🔒</string></property>
+             <property name="styleSheet"><string notr="true">color: #94a3b8; font-size: 15px; background: transparent; padding-bottom: 2px;</string></property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="passwordEdit">
+             <property name="minimumSize"><size><width>0</width><height>34</height></size></property>
+             <property name="placeholderText"><string>Password</string></property>
+             <property name="echoMode"><enum>QLineEdit::Password</enum></property>
+             <property name="styleSheet">
+              <string notr="true">QLineEdit { background: transparent; border: none; border-bottom: 1.5px solid #cbd5e1; color: #1e293b; font-size: 14px; font-weight: 500; padding: 2px 4px; } QLineEdit:focus { border-bottom: 2px solid #f15a24; }</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="toggleVisibilityBtn">
+             <property name="minimumSize"><size><width>34</width><height>18</height></size></property>
+             <property name="maximumSize"><size><width>34</width><height>18</height></size></property>
+             <property name="cursor"><cursorShape>PointingHandCursor</cursorShape></property>
+             <property name="checkable"><bool>true</bool></property>
+             <property name="text"><string></string></property>
+             <property name="styleSheet">
+              <string notr="true">QPushButton { background-color: #cbd5e1; border: none; border-radius: 9px; } QPushButton:checked { background-color: #2e4354; }</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+
+         <!-- Forgot Password Link -->
+         <item alignment="Qt::AlignRight">
+          <widget class="QLabel" name="forgotPasswordLabel">
+           <property name="cursor"><cursorShape>PointingHandCursor</cursorShape></property>
+           <property name="text"><string>Forgot password ?</string></property>
+           <property name="styleSheet">
+            <string notr="true">color: #8898aa; font-size: 11px; background: transparent;</string>
+           </property>
+          </widget>
+         </item>
+
+         <!-- Hidden rememberAccount checkbox for API compatibility -->
+         <item>
+          <widget class="QCheckBox" name="rememberAccountCheckBox">
+           <property name="visible"><bool>false</bool></property>
+           <property name="checked"><bool>true</bool></property>
+           <property name="text"><string>Remember</string></property>
+          </widget>
+         </item>
+
+         <!-- Sign In Button -->
+         <item>
+          <widget class="QPushButton" name="loginButton">
+           <property name="minimumSize"><size><width>0</width><height>42</height></size></property>
+           <property name="cursor"><cursorShape>PointingHandCursor</cursorShape></property>
+           <property name="text"><string>Sign in</string></property>
+           <property name="default"><bool>true</bool></property>
+           <property name="styleSheet">
+            <string notr="true">QPushButton#loginButton { background-color: #f15a24; color: #ffffff; border: none; border-radius: 6px; font-size: 15px; font-weight: 600; } QPushButton#loginButton:hover { background-color: #d94814; } QPushButton#loginButton:pressed { background-color: #bf3e12; }</string>
+           </property>
+          </widget>
+         </item>
+
+        </layout>
        </widget>
       </item>
      </layout>
     </widget>
    </item>
-   <item row="2" column="0">
-    <spacer name="bottomSpacer"><property name="orientation"><enum>Qt::Vertical</enum></property><property name="sizeHint" stdset="0"><size><width>20</width><height>40</height></size></property></spacer>
+
+   <item>
+    <spacer name="bottomSpacer">
+     <property name="orientation"><enum>Qt::Vertical</enum></property>
+     <property name="sizeHint" stdset="0"><size><width>20</width><height>20</height></size></property>
+    </spacer>
    </item>
+
+   <!-- Bottom Docked Layout for Virtual Keyboard -->
+   <item>
+    <layout class="QHBoxLayout" name="keyboardContainerLayout">
+     <property name="leftMargin"><number>0</number></property>
+     <property name="topMargin"><number>0</number></property>
+     <property name="rightMargin"><number>0</number></property>
+     <property name="bottomMargin"><number>0</number></property>
+    </layout>
+   </item>
+
   </layout>
  </widget>
- <resources><include location="../../resources/resources.qrc"/></resources>
+ <resources/>
  <connections/>
 </ui>

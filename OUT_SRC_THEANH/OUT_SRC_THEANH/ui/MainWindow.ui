@@ -2,26 +2,198 @@
 <ui version="4.0">
  <class>MainWindow</class>
  <widget class="QMainWindow" name="MainWindow">
-  <property name="geometry"><rect><x>0</x><y>0</y><width>800</width><height>480</height></rect></property>
-  <property name="minimumSize"><size><width>480</width><height>320</height></size></property>
-  <property name="maximumSize"><size><width>16777215</width><height>16777215</height></size></property>
-  <property name="windowTitle"><string>ICTU Environmental Monitor</string></property>
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>800</width>
+    <height>480</height>
+   </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>320</width>
+    <height>240</height>
+   </size>
+  </property>
+  <property name="windowTitle">
+   <string>THEANH IoT Hub - Power &amp; Environment Monitor</string>
+  </property>
   <widget class="QWidget" name="centralWidget">
-   <layout class="QHBoxLayout" name="mainLayout">
-    <property name="spacing"><number>0</number></property><property name="leftMargin"><number>0</number></property><property name="topMargin"><number>0</number></property><property name="rightMargin"><number>0</number></property><property name="bottomMargin"><number>0</number></property>
-    <item><widget class="QWidget" name="sideBar"><property name="minimumSize"><size><width>66</width><height>0</height></size></property><property name="maximumSize"><size><width>66</width><height>16777215</height></size></property><layout class="QVBoxLayout" name="sideBarLayout"><property name="spacing"><number>8</number></property><property name="leftMargin"><number>8</number></property><property name="topMargin"><number>12</number></property><property name="rightMargin"><number>8</number></property><property name="bottomMargin"><number>12</number></property>
-     <item><widget class="QLabel" name="sideLogo"><property name="minimumSize"><size><width>46</width><height>46</height></size></property><property name="maximumSize"><size><width>46</width><height>46</height></size></property><property name="pixmap"><pixmap resource="../resources/resources.qrc">:/images/logo_ictu.png</pixmap></property><property name="scaledContents"><bool>true</bool></property></widget></item>
-     <item><widget class="QPushButton" name="dashboardButton"><property name="toolTip"><string>Trang chủ</string></property><property name="text"><string>⌂</string></property><property name="checkable"><bool>true</bool></property><property name="autoExclusive"><bool>true</bool></property></widget></item>
-     <item><widget class="QPushButton" name="devicesButton"><property name="toolTip"><string>Quản lý thiết bị</string></property><property name="text"><string>◆</string></property><property name="checkable"><bool>true</bool></property><property name="autoExclusive"><bool>true</bool></property></widget></item>
-     <item><widget class="QPushButton" name="historyButton"><property name="toolTip"><string>Lịch sử dữ liệu</string></property><property name="text"><string>▤</string></property><property name="checkable"><bool>true</bool></property><property name="autoExclusive"><bool>true</bool></property></widget></item>
-     <item><widget class="QPushButton" name="usersButton"><property name="toolTip"><string>Quản lý tài khoản</string></property><property name="text"><string>♟</string></property><property name="checkable"><bool>true</bool></property><property name="autoExclusive"><bool>true</bool></property></widget></item>
-     <item><spacer name="navSpacer"><property name="orientation"><enum>Qt::Vertical</enum></property><property name="sizeHint" stdset="0"><size><width>20</width><height>80</height></size></property></spacer></item>
-     <item><widget class="QPushButton" name="logoutButton"><property name="toolTip"><string>Đăng xuất</string></property><property name="text"><string>↪</string></property></widget></item>
-    </layout></widget></item>
-    <item><widget class="QStackedWidget" name="pages"/></item>
+   <layout class="QVBoxLayout" name="mainLayout">
+    <property name="spacing">
+     <number>0</number>
+    </property>
+    <property name="leftMargin">
+     <number>0</number>
+    </property>
+    <property name="topMargin">
+     <number>0</number>
+    </property>
+    <property name="rightMargin">
+     <number>0</number>
+    </property>
+    <property name="bottomMargin">
+     <number>0</number>
+    </property>
+
+    <!-- TOP HEADER NAVBAR -->
+    <item>
+     <widget class="QFrame" name="topHeaderBar">
+      <property name="minimumSize">
+       <size>
+        <width>0</width>
+        <height>44</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>44</height>
+       </size>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QFrame#topHeaderBar { background-color: #171333; border-bottom: 1.5px solid #2b235c; } QLabel#appLogoText { color: #38bdf8; font-size: 13px; font-weight: 900; } QPushButton#topNavBtn { background: transparent; color: #94a3b8; border: none; font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 6px; } QPushButton#topNavBtn:hover { color: #ffffff; background: #221c4b; } QPushButton#topNavBtn:checked { color: #ffffff; background: #2a225e; border-bottom: 2px solid #38bdf8; } QPushButton#topLogoutBtn { background: #3b1424; color: #f87171; border: 1px solid #7f1d1d; border-radius: 5px; font-size: 10px; font-weight: 800; padding: 3px 8px; } QPushButton#topLogoutBtn:hover { background: #dc2626; color: #ffffff; }</string>
+      </property>
+      <layout class="QHBoxLayout" name="headerLayout">
+       <property name="leftMargin">
+        <number>12</number>
+       </property>
+       <property name="topMargin">
+        <number>4</number>
+       </property>
+       <property name="rightMargin">
+        <number>12</number>
+       </property>
+       <property name="bottomMargin">
+        <number>4</number>
+       </property>
+       <property name="spacing">
+        <number>8</number>
+       </property>
+
+       <!-- Brand Logo -->
+       <item>
+        <widget class="QLabel" name="appLogoText">
+         <property name="text">
+          <string>⚡ THEANH IOT</string>
+         </property>
+        </widget>
+       </item>
+
+       <item>
+        <spacer name="headerLeftSpacer">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>16</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+
+       <!-- Horizontal Nav Tabs -->
+       <item>
+        <widget class="QPushButton" name="dashboardButton">
+         <property name="objectName">
+          <string>topNavBtn</string>
+         </property>
+         <property name="text">
+          <string>⌂ Trang chủ</string>
+         </property>
+         <property name="checkable">
+          <bool>true</bool>
+         </property>
+         <property name="checked">
+          <bool>true</bool>
+         </property>
+         <property name="autoExclusive">
+          <bool>true</bool>
+         </property>
+         <property name="cursor">
+          <cursorShape>PointingHandCursor</cursorShape>
+         </property>
+        </widget>
+       </item>
+
+
+
+       <item>
+        <widget class="QPushButton" name="usersButton">
+         <property name="objectName">
+          <string>topNavBtn</string>
+         </property>
+         <property name="text">
+          <string>♟ Tài khoản</string>
+         </property>
+         <property name="checkable">
+          <bool>true</bool>
+         </property>
+         <property name="autoExclusive">
+          <bool>true</bool>
+         </property>
+         <property name="cursor">
+          <cursorShape>PointingHandCursor</cursorShape>
+         </property>
+        </widget>
+       </item>
+
+       <item>
+        <spacer name="headerRightSpacer">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+
+       <!-- Right User Badge & Logout -->
+       <item>
+        <widget class="QLabel" name="currentUserBadge">
+         <property name="text">
+          <string>👑 Admin</string>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">color: #fbbf24; font-size: 10px; font-weight: 800; background: rgba(251, 191, 36, 0.12); border-radius: 4px; padding: 2px 6px;</string>
+         </property>
+        </widget>
+       </item>
+
+       <item>
+        <widget class="QPushButton" name="logoutButton">
+         <property name="objectName">
+          <string>topLogoutBtn</string>
+         </property>
+         <property name="text">
+          <string>Đăng xuất ↪</string>
+         </property>
+         <property name="cursor">
+          <cursorShape>PointingHandCursor</cursorShape>
+         </property>
+        </widget>
+       </item>
+
+      </layout>
+     </widget>
+    </item>
+
+    <!-- Central Page View -->
+    <item>
+     <widget class="QStackedWidget" name="pages"/>
+    </item>
+
    </layout>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
  </widget>
- <resources><include location="../resources/resources.qrc"/></resources><connections/>
+ <resources/>
+ <connections/>
 </ui>

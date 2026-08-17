@@ -53,6 +53,10 @@ qt_add_executable(OUT_SRC_THEANH
 
     ui/dialogs/ErrorDialog.h
     ui/dialogs/ErrorDialog.cpp
+    ui/dialogs/SensorDetailDialog.h
+    ui/dialogs/SensorDetailDialog.cpp
+    ui/dialogs/SelectOnlineDeviceDialog.h
+    ui/dialogs/SelectOnlineDeviceDialog.cpp
 
     ui/pages/LoginPage.h
     ui/pages/LoginPage.cpp

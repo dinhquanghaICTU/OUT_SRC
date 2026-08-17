@@ -1,103 +1,91 @@
-QMainWindow,
-QWidget#LoginPage {
+QMainWindow {
     background-color: #f3f8f6;
     font-family: "Noto Sans", "DejaVu Sans", sans-serif;
 }
 
 QWidget#LoginPage {
-    background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
-                                stop:0 #f8fcfa, stop:.48 #eef8f3, stop:1 #e4f1ee);
+    background: transparent;
+    font-family: "Noto Sans", "DejaVu Sans", sans-serif;
+}
+
+QLabel#myAccountLabel {
+    color: #ffffff;
+    font-size: 24px;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    background: transparent;
+}
+
+QLabel#avatarBadge {
+    background-color: #1e3243;
+    border: 4px solid #ffffff;
+    border-radius: 34px;
+    color: #ffffff;
+    font-size: 28px;
 }
 
 QFrame#loginCard {
-    background: rgba(255, 255, 255, 245);
-    border: 1px solid #cfe3dc;
-    border-radius: 28px;
-}
-
-QLabel#welcomeLabel {
-    background: transparent;
-    color: #0d2d3d;
-    font-size: 25px;
-    font-weight: 900;
-    letter-spacing: .4px;
-    text-transform: none;
-}
-
-QLabel#subtitleLabel {
-    background: transparent;
-    color: #6e8491;
-    font-size: 13px;
-    font-weight: 700;
-}
-
-QLabel#footerHintLabel {
-    background: transparent;
-    color: #8aa0ac;
-    font-size: 12px;
-    font-weight: 600;
-}
-
-QLabel#logoLabel {
-    background: #ffffff;
-    border: 1px solid #d5e9f5;
-    border-radius: 56px;
-}
-
-QLineEdit#usernameEdit,
-QLineEdit#passwordEdit {
-    background-color: #f8fbfa;
-    border: 1.5px solid #c8d8d2;
-    border-radius: 14px;
-    color: #172033;
-    font-size: 15px;
-    font-weight: 700;
-    padding: 0 16px;
-    selection-background-color: #10935f;
-}
-
-QLineEdit#usernameEdit:hover,
-QLineEdit#passwordEdit:hover {
-    border-color: #8cc7ac;
     background-color: #ffffff;
+    border-radius: 12px;
 }
 
-QLineEdit#usernameEdit:focus,
-QLineEdit#passwordEdit:focus {
-    border: 2px solid #10935f;
-    background-color: #ffffff;
-}
-
-QCheckBox#rememberAccountCheckBox {
+QWidget#LoginPage QLineEdit#usernameEdit,
+QWidget#LoginPage QLineEdit#passwordEdit {
     background: transparent;
-    color: #526b76;
-    font-family: "Noto Sans", "DejaVu Sans", sans-serif;
-    font-size: 13px;
-    font-weight: 700;
-    spacing: 8px;
-}
-
-QPushButton#loginButton {
-    background-color: #10935f;
     border: none;
-    border-radius: 15px;
+    border-bottom: 1.5px solid #cbd5e1;
+    color: #1e293b;
+    font-size: 14px;
+    font-weight: 500;
+    padding: 4px 6px;
+    selection-background-color: #f15a24;
+}
+
+QWidget#LoginPage QLineEdit#usernameEdit:focus,
+QWidget#LoginPage QLineEdit#passwordEdit:focus {
+    border-bottom: 2px solid #f15a24;
+}
+
+QWidget#LoginPage QPushButton#toggleVisibilityBtn {
+    background-color: #cbd5e1;
+    border: none;
+    border-radius: 10px;
+}
+
+QWidget#LoginPage QPushButton#toggleVisibilityBtn:checked {
+    background-color: #2e4354;
+}
+
+QWidget#LoginPage QLabel#forgotPasswordLabel {
+    color: #8898aa;
+    font-size: 12px;
+    background: transparent;
+}
+
+QWidget#LoginPage QLabel#forgotPasswordLabel:hover {
+    color: #4a5568;
+}
+
+QWidget#LoginPage QPushButton#loginButton {
+    background-color: #f15a24;
+    border: none;
+    border-radius: 6px;
     color: #ffffff;
     font-size: 15px;
-    font-weight: 900;
+    font-weight: 600;
     padding: 0 18px;
 }
 
-QPushButton#loginButton:hover {
-    background-color: #0b7d50;
+QWidget#LoginPage QPushButton#loginButton:hover {
+    background-color: #d94814;
 }
 
-QPushButton#loginButton:pressed {
-    background-color: #086a44;
+QWidget#LoginPage QPushButton#loginButton:pressed {
+    background-color: #bf3e12;
 }
 
-QPushButton#loginButton:disabled {
-    background-color: #a9c8bc;
-    border-color: #a9c8bc;
+QWidget#LoginPage QPushButton#loginButton:disabled {
+    background-color: #fdba74;
 }
 
 QWidget#errorCard {
