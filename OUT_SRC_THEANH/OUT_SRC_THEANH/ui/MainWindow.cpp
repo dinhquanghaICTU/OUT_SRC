@@ -6,6 +6,8 @@
 #include "ui/dialogs/ErrorDialog.h"
 #include "ui_MainWindow.h"
 #include "ui/pages/DashboardPage.h"
+#include "ui/pages/DeviceManagementPage.h"
+#include "ui/pages/HistoryPage.h"
 #include "ui/pages/LoginPage.h"
 #include "ui/pages/UserManagementPage.h"
 
@@ -24,12 +26,16 @@ MainWindow::MainWindow(QWidget *parent)
       m_sensorService(new SensorService(m_apiClient, this)),
       m_loginPage(new LoginPage(this)),
       m_dashboardPage(new DashboardPage(this)),
+      m_deviceManagementPage(new DeviceManagementPage(this)),
+      m_historyPage(new HistoryPage(this)),
       m_userManagementPage(new UserManagementPage(this))
 {
     ui->setupUi(this);
 
     ui->pages->addWidget(m_loginPage);
     ui->pages->addWidget(m_dashboardPage);
+    ui->pages->addWidget(m_deviceManagementPage);
+    ui->pages->addWidget(m_historyPage);
     ui->pages->addWidget(m_userManagementPage);
     ui->pages->setCurrentWidget(m_loginPage);
     ui->topHeaderBar->hide();
@@ -44,10 +50,13 @@ MainWindow::MainWindow(QWidget *parent)
                 ? QStringLiteral("👑 %1 (Admin)").arg(m_authService->currentUsername())
                 : QStringLiteral("👤 %1").arg(m_authService->currentUsername()));
         m_dashboardPage->setUsername(m_authService->currentUsername());
+        m_deviceManagementPage->setCurrentUser(m_authService->currentUsername(), m_authService->isAdmin());
         ui->usersButton->setVisible(m_authService->isAdmin());
         m_userManagementPage->setAdminEnabled(m_authService->isAdmin());
         ui->pages->setCurrentWidget(m_dashboardPage);
         ui->dashboardButton->setChecked(true);
+
+        m_sensorService->start();
 
         if (m_authService->isOfflineMode()) {
             statusBar()->showMessage(
@@ -81,8 +90,15 @@ MainWindow::MainWindow(QWidget *parent)
 
     connect(m_apiClient, &ApiClient::availableDevicesReceived,
             m_dashboardPage, &DashboardPage::setAvailableDevices);
+    connect(m_apiClient, &ApiClient::availableDevicesReceived,
+            m_deviceManagementPage, &DeviceManagementPage::setAvailableDevices);
+
     connect(m_apiClient, &ApiClient::devicesReceived,
             m_dashboardPage, &DashboardPage::setOwnedDevices);
+    connect(m_apiClient, &ApiClient::devicesReceived,
+            m_deviceManagementPage, &DeviceManagementPage::setOwnedDevices);
+    connect(m_apiClient, &ApiClient::devicesReceived,
+            m_historyPage, &HistoryPage::setDevices);
 
     connect(m_apiClient, &ApiClient::deviceClaimed, this,
             [this](const QJsonObject &) {
@@ -108,7 +124,32 @@ MainWindow::MainWindow(QWidget *parent)
                 QTimer::singleShot(450, m_apiClient, &ApiClient::requestMyDevice);
             });
 
-    // User Management
+    // Device Management Page Connections
+    connect(m_deviceManagementPage, &DeviceManagementPage::claimDeviceRequested,
+            m_apiClient, &ApiClient::claimDevice);
+    connect(m_deviceManagementPage, &DeviceManagementPage::releaseDeviceRequested,
+            m_apiClient, &ApiClient::releaseDevice);
+    connect(m_deviceManagementPage, &DeviceManagementPage::relayControlRequested,
+            m_apiClient, &ApiClient::setRelayState);
+    connect(m_deviceManagementPage, &DeviceManagementPage::deviceConfigRequested,
+            m_apiClient, &ApiClient::updatePerDeviceConfig);
+    connect(m_deviceManagementPage, &DeviceManagementPage::refreshRequested, this,
+            [this] {
+                if (m_authService->isOfflineMode())
+                    return;
+                m_apiClient->requestMyDevice();
+                m_apiClient->requestAvailableDevices();
+            });
+    connect(m_apiClient, &ApiClient::deviceConfigSaved,
+            m_deviceManagementPage, &DeviceManagementPage::configSaved);
+
+    // History Page Connections
+    connect(m_historyPage, &HistoryPage::historyRequested,
+            m_apiClient, &ApiClient::requestDeviceHistory);
+    connect(m_apiClient, &ApiClient::deviceHistoryReceived,
+            m_historyPage, &HistoryPage::setHistory);
+
+    // User Management Connections
     connect(m_userManagementPage, &UserManagementPage::createUserRequested,
             m_apiClient, &ApiClient::createUser);
     connect(m_userManagementPage, &UserManagementPage::updateUserRequested,
@@ -164,6 +205,21 @@ MainWindow::MainWindow(QWidget *parent)
     // Top Header Navigation Tab Buttons
     connect(ui->dashboardButton, &QPushButton::clicked, this,
             [this] { ui->pages->setCurrentWidget(m_dashboardPage); });
+    connect(ui->devicesButton, &QPushButton::clicked, this,
+            [this] {
+                ui->pages->setCurrentWidget(m_deviceManagementPage);
+                if (m_authService->isOfflineMode())
+                    return;
+                m_apiClient->requestMyDevice();
+                m_apiClient->requestAvailableDevices();
+            });
+    connect(ui->historyButton, &QPushButton::clicked, this,
+            [this] {
+                ui->pages->setCurrentWidget(m_historyPage);
+                if (m_authService->isOfflineMode())
+                    return;
+                m_apiClient->requestMyDevice();
+            });
     connect(ui->usersButton, &QPushButton::clicked, this,
             [this] {
                 ui->pages->setCurrentWidget(m_userManagementPage);

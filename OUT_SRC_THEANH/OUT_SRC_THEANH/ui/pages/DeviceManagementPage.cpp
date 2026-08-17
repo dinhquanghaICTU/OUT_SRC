@@ -1006,61 +1006,52 @@ void DeviceManagementPage::clearGrid(QGridLayout *layout)
 
 QString DeviceManagementPage::deviceIcon(const QString &type)
 {
+    if (type == QStringLiteral("power_monitor") || type == QStringLiteral("electric_power")) return QStringLiteral("⚡");
     if (type == QStringLiteral("uv_pressure")) return QStringLiteral("☀");
     if (type == QStringLiteral("temperature_sound")) return QStringLiteral("♫");
     if (type == QStringLiteral("weather_pressure")) return QStringLiteral("☁");
-    if (type == QStringLiteral("electric_power")) return QStringLiteral("⚡");
     if (type == QStringLiteral("pump_distance")) return QStringLiteral("💧");
     if (type == QStringLiteral("water_flow_pump")) return QStringLiteral("🚰");
-    return QStringLiteral("◆");
+    return QStringLiteral("⚡");
 }
 
 QString DeviceManagementPage::deviceTypeName(const QString &type)
 {
+    if (type == QStringLiteral("power_monitor") || type == QStringLiteral("electric_power")) return tr("Đo AC RMS & Công suất tải");
     if (type == QStringLiteral("uv_pressure")) return tr("Cảm biến UV & áp suất");
     if (type == QStringLiteral("temperature_sound")) return tr("Nhiệt độ & âm thanh");
     if (type == QStringLiteral("weather_pressure")) return tr("Cảm biến môi trường");
-    if (type == QStringLiteral("electric_power")) return tr("Đo điện áp & dòng điện");
     if (type == QStringLiteral("pump_distance")) return tr("Bơm nước & khoảng cách");
     if (type == QStringLiteral("water_flow_pump")) return tr("Bơm & lưu lượng nước");
-    return tr("Thiết bị IoT");
+    return tr("Giám sát điện năng");
 }
 
 QString DeviceManagementPage::metricsSummary(const QJsonObject &metrics)
 {
     QStringList values;
+    if (metrics.contains(QStringLiteral("voltage_v")))
+        values << tr("Điện áp %1 V").arg(
+            metrics.value(QStringLiteral("voltage_v")).toDouble(), 0, 'f', 1);
+    if (metrics.contains(QStringLiteral("current_a")))
+        values << tr("Dòng tải %1 A").arg(
+            metrics.value(QStringLiteral("current_a")).toDouble(), 0, 'f', 2);
+    if (metrics.contains(QStringLiteral("power_w")))
+        values << tr("Công suất %1 W").arg(
+            metrics.value(QStringLiteral("power_w")).toDouble(), 0, 'f', 1);
+    if (metrics.contains(QStringLiteral("frequency_hz")))
+        values << tr("Tần số %1 Hz").arg(
+            metrics.value(QStringLiteral("frequency_hz")).toDouble(), 0, 'f', 2);
     if (metrics.contains(QStringLiteral("uv_index")))
         values << tr("UV %1").arg(metrics.value(QStringLiteral("uv_index")).toDouble(), 0, 'f', 2);
-    if (metrics.contains(QStringLiteral("uv_voltage")))
-        values << tr("UV %1 V").arg(metrics.value(QStringLiteral("uv_voltage")).toDouble(), 0, 'f', 3);
     if (metrics.contains(QStringLiteral("pressure_hpa")))
         values << tr("Áp suất %1 hPa").arg(
             metrics.value(QStringLiteral("pressure_hpa")).toDouble(), 0, 'f', 1);
     if (metrics.contains(QStringLiteral("temperature_c")))
         values << tr("Nhiệt độ %1 °C").arg(
             metrics.value(QStringLiteral("temperature_c")).toDouble(), 0, 'f', 1);
-    if (metrics.contains(QStringLiteral("sound_vpp")))
-        values << tr("Âm thanh %1 Vpp").arg(
-            metrics.value(QStringLiteral("sound_vpp")).toDouble(), 0, 'f', 3);
-    if (metrics.contains(QStringLiteral("flow_l_min")))
-        values << tr("Lưu lượng %1 L/min").arg(
-            metrics.value(QStringLiteral("flow_l_min")).toDouble(), 0, 'f', 2);
-    if (metrics.contains(QStringLiteral("total_liters")))
-        values << tr("Tổng %1 L").arg(
-            metrics.value(QStringLiteral("total_liters")).toDouble(), 0, 'f', 2);
     if (metrics.contains(QStringLiteral("distance_cm")))
         values << tr("Khoảng cách %1 cm").arg(
             metrics.value(QStringLiteral("distance_cm")).toDouble(), 0, 'f', 1);
-    if (metrics.contains(QStringLiteral("pump_on")))
-        values << (metrics.value(QStringLiteral("pump_on")).toBool()
-                       ? tr("Bơm đang bật")
-                       : tr("Bơm đang tắt"));
-    if (metrics.contains(QStringLiteral("current_a")))
-        values << tr("Dòng %1 A").arg(
-            metrics.value(QStringLiteral("current_a")).toDouble(), 0, 'f', 3);
-    if (metrics.contains(QStringLiteral("voltage_v")))
-        values << tr("Áp %1 V").arg(
-            metrics.value(QStringLiteral("voltage_v")).toDouble(), 0, 'f', 1);
     return values.isEmpty() ? tr("Đang chờ dữ liệu cảm biến")
                             : values.join(QStringLiteral("  •  "));
 }

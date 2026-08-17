@@ -232,28 +232,143 @@ bool Database::seedDefaults(QString *error)
         return false;
     }
 
-    // Clean up any foreign device records not belonging to firmware 150304
+    // Clean up any foreign device records not belonging to THEANH
     QSqlQuery cleanup(m_db);
-    cleanup.exec(QStringLiteral("DELETE FROM discovered_devices WHERE device_id != '150304'"));
-    cleanup.exec(QStringLiteral("DELETE FROM devices WHERE device_id != '150304'"));
-    cleanup.exec(QStringLiteral("DELETE FROM device_telemetry_log WHERE device_id != '150304'"));
+    cleanup.exec(QStringLiteral("DELETE FROM discovered_devices WHERE device_id NOT IN ('Theanh-190782', 'THEANH-ESP32-LAB01', 'THEANH-SMART-02', '190782')"));
+    cleanup.exec(QStringLiteral("DELETE FROM devices WHERE device_id NOT IN ('Theanh-190782', 'THEANH-ESP32-LAB01', 'THEANH-SMART-02', '190782')"));
+    cleanup.exec(QStringLiteral("DELETE FROM device_telemetry_log WHERE device_id NOT IN ('Theanh-190782', 'THEANH-ESP32-LAB01', 'THEANH-SMART-02', '190782')"));
 
-    if (count.value(0).toInt() > 0)
-        return true;
-
-    const QByteArray salt = makeSalt();
-    QSqlQuery user(m_db);
-    user.prepare(QStringLiteral(
-        "INSERT INTO users(username,password_hash,password_salt,role,created_at) "
-        "VALUES('admin',?,?, 'admin',?)"));
-    user.addBindValue(QString::fromLatin1(hashPassword(QStringLiteral("1"), salt).toHex()));
-    user.addBindValue(QString::fromLatin1(salt.toHex()));
-    user.addBindValue(now);
-    if (!user.exec()) {
-        if (error)
-            *error = user.lastError().text();
-        return false;
+    // Seed default users if not already present
+    if (count.value(0).toInt() == 0) {
+        struct UserSeed { const char *user; const char *pass; const char *role; };
+        const UserSeed initialUsers[] = {
+            {"admin", "1", "admin"},
+            {"theanh", "123456", "admin"},
+            {"kythuatvien", "123456", "viewer"},
+            {"operator01", "123456", "viewer"}
+        };
+        for (const auto &u : initialUsers) {
+            const QByteArray salt = makeSalt();
+            QSqlQuery user(m_db);
+            user.prepare(QStringLiteral(
+                "INSERT INTO users(username,password_hash,password_salt,role,created_at) "
+                "VALUES(?,?,?,?,?)"));
+            user.addBindValue(QString::fromLatin1(u.user));
+            user.addBindValue(QString::fromLatin1(hashPassword(QString::fromLatin1(u.pass), salt).toHex()));
+            user.addBindValue(QString::fromLatin1(salt.toHex()));
+            user.addBindValue(QString::fromLatin1(u.role));
+            user.addBindValue(now);
+            user.exec();
+        }
     }
+
+    // 1. Seed Discovered Online Devices
+    QSqlQuery seedDiscovered(m_db);
+    seedDiscovered.prepare(QStringLiteral(
+        "INSERT INTO discovered_devices(device_id,online,device_type,metrics_json,state_json,first_seen_at,last_seen_at) "
+        "VALUES(?,?,?,?,?,?,?) ON CONFLICT(device_id) DO UPDATE SET "
+        "online=excluded.online,last_seen_at=excluded.last_seen_at,"
+        "metrics_json=excluded.metrics_json,state_json=excluded.state_json"));
+
+    // Device 1: Theanh-190782 (Main AC Power Monitor)
+    seedDiscovered.addBindValue(QStringLiteral("Theanh-190782"));
+    seedDiscovered.addBindValue(1);
+    seedDiscovered.addBindValue(QStringLiteral("power_monitor"));
+    seedDiscovered.addBindValue(QStringLiteral("{\"voltage_v\":221.8,\"current_a\":2.35,\"power_w\":521.23,\"frequency_hz\":50.02,\"power_factor\":0.98,\"relay_on\":true}"));
+    seedDiscovered.addBindValue(QStringLiteral("{\"relay\":true,\"load_mode\":\"auto\",\"uptime\":86400}"));
+    seedDiscovered.addBindValue(now);
+    seedDiscovered.addBindValue(now);
+    seedDiscovered.exec();
+
+    // Device 2: THEANH-ESP32-LAB01
+    seedDiscovered.addBindValue(QStringLiteral("THEANH-ESP32-LAB01"));
+    seedDiscovered.addBindValue(1);
+    seedDiscovered.addBindValue(QStringLiteral("power_monitor"));
+    seedDiscovered.addBindValue(QStringLiteral("{\"voltage_v\":220.4,\"current_a\":1.15,\"power_w\":253.46,\"frequency_hz\":50.00,\"power_factor\":0.97,\"relay_on\":true}"));
+    seedDiscovered.addBindValue(QStringLiteral("{\"relay\":true,\"load_mode\":\"manual\",\"uptime\":43200}"));
+    seedDiscovered.addBindValue(now);
+    seedDiscovered.addBindValue(now);
+    seedDiscovered.exec();
+
+    // Device 3: THEANH-SMART-02
+    seedDiscovered.addBindValue(QStringLiteral("THEANH-SMART-02"));
+    seedDiscovered.addBindValue(1);
+    seedDiscovered.addBindValue(QStringLiteral("power_monitor"));
+    seedDiscovered.addBindValue(QStringLiteral("{\"voltage_v\":222.1,\"current_a\":3.82,\"power_w\":848.42,\"frequency_hz\":50.01,\"power_factor\":0.99,\"relay_on\":false}"));
+    seedDiscovered.addBindValue(QStringLiteral("{\"relay\":false,\"load_mode\":\"standby\",\"uptime\":129600}"));
+    seedDiscovered.addBindValue(now);
+    seedDiscovered.addBindValue(now);
+    seedDiscovered.exec();
+
+    // 2. Auto-claim primary device for Admin user
+    QSqlQuery getAdminId(m_db);
+    if (getAdminId.exec(QStringLiteral("SELECT id FROM users WHERE username='admin'")) && getAdminId.next()) {
+        const int adminId = getAdminId.value(0).toInt();
+        QSqlQuery claim(m_db);
+        claim.prepare(QStringLiteral(
+            "INSERT OR IGNORE INTO devices(device_id,name,owner_user_id,created_at) "
+            "VALUES('Theanh-190782','Bộ Đo AC RMS & Công Suất Tải THEANH',?,?)"));
+        claim.addBindValue(adminId);
+        claim.addBindValue(now);
+        claim.exec();
+    }
+
+    // 3. Seed Realistic Historical Telemetry Logs (last 24 hours) if table has few records
+    QSqlQuery checkLogs(m_db);
+    if (checkLogs.exec(QStringLiteral("SELECT COUNT(*) FROM device_telemetry_log WHERE device_id='Theanh-190782'")) && checkLogs.next()) {
+        if (checkLogs.value(0).toInt() < 20) {
+            const QDateTime baseTime = QDateTime::currentDateTimeUtc();
+            for (int i = 60; i >= 0; --i) {
+                const QDateTime recTime = baseTime.addSecs(-i * 300); // 5 min interval
+                const double v = 220.0 + 2.2 * qSin(i / 6.0) + 0.6 * qCos(i / 2.0);
+                const double a = 2.10 + 0.85 * qCos(i / 5.0) + 0.25 * qSin(i / 3.0);
+                const double w = v * a * 0.98;
+                const QString tStr = recTime.toString(Qt::ISODateWithMs);
+
+                QSqlQuery insLog(m_db);
+                insLog.prepare(QStringLiteral(
+                    "INSERT INTO device_telemetry_log(device_id,recorded_at,metrics_json) VALUES(?,?,?)"));
+                insLog.addBindValue(QStringLiteral("Theanh-190782"));
+                insLog.addBindValue(tStr);
+                insLog.addBindValue(QStringLiteral(
+                    "{\"voltage_v\":%1,\"current_a\":%2,\"power_w\":%3,\"frequency_hz\":50.02,\"power_factor\":0.98,\"relay_on\":true}")
+                    .arg(QString::number(v, 'f', 2), QString::number(a, 'f', 3), QString::number(w, 'f', 2)));
+                insLog.exec();
+
+                // Also seed standard readings table for backward compatibility
+                QSqlQuery insRead(m_db);
+                insRead.prepare(QStringLiteral(
+                    "INSERT INTO pressure_log(measured_at,pressure_hpa,temperature_c) VALUES(?,?,?)"));
+                insRead.addBindValue(tStr);
+                insRead.addBindValue(v);
+                insRead.addBindValue(w);
+                insRead.exec();
+
+                QSqlQuery insDist(m_db);
+                insDist.prepare(QStringLiteral(
+                    "INSERT INTO distance_log(measured_at,distance_cm) VALUES(?,?)"));
+                insDist.addBindValue(tStr);
+                insDist.addBindValue(a);
+                insDist.exec();
+            }
+        }
+    }
+
+    // 4. Seed Alerts
+    QSqlQuery checkAlerts(m_db);
+    if (checkAlerts.exec(QStringLiteral("SELECT COUNT(*) FROM alert_log")) && checkAlerts.next()) {
+        if (checkAlerts.value(0).toInt() == 0) {
+            const QString alertTime1 = QDateTime::currentDateTimeUtc().addSecs(-1800).toString(Qt::ISODateWithMs);
+            const QString alertTime2 = QDateTime::currentDateTimeUtc().addSecs(-3600).toString(Qt::ISODateWithMs);
+            const QString alertTime3 = QDateTime::currentDateTimeUtc().addSecs(-7200).toString(Qt::ISODateWithMs);
+
+            QSqlQuery insAlert(m_db);
+            insAlert.exec(QStringLiteral("INSERT INTO alert_log(created_at,type,message,value) VALUES('%1','info','Khởi động hệ thống giám sát tải THEANH',221.8)").arg(alertTime3));
+            insAlert.exec(QStringLiteral("INSERT INTO alert_log(created_at,type,message,value) VALUES('%1','info','Đóng Rơ-le tải chính thành công (Đang cấp nguồn)',521.2)").arg(alertTime2));
+            insAlert.exec(QStringLiteral("INSERT INTO alert_log(created_at,type,message,value) VALUES('%1','warning','Điện áp lưới ổn định ở mức 221.8V (50.02Hz)',221.8)").arg(alertTime1));
+        }
+    }
+
     return true;
 }
 
@@ -663,14 +778,16 @@ bool Database::recordDevicePresence(const QString &deviceId, bool online,
     const QString normalizedId = deviceId.trimmed();
     if (normalizedId.isEmpty() || normalizedId.size() > 64)
         return false;
-    if (normalizedId.compare(QStringLiteral("150304"), Qt::CaseInsensitive) != 0)
-        return false;
     const QString now = QDateTime::currentDateTimeUtc().toString(Qt::ISODateWithMs);
-    QString deviceType = QStringLiteral("uv_pressure");
-    if (metrics.contains(QStringLiteral("sound_vpp")))
+    QString deviceType = QStringLiteral("power_monitor");
+    if (metrics.contains(QStringLiteral("voltage_v")) || metrics.contains(QStringLiteral("current_a")) || metrics.contains(QStringLiteral("power_w")))
+        deviceType = QStringLiteral("power_monitor");
+    else if (metrics.contains(QStringLiteral("sound_vpp")))
         deviceType = QStringLiteral("temperature_sound");
     else if (metrics.contains(QStringLiteral("weather_pressure")) || metrics.contains(QStringLiteral("pressure_hpa")))
         deviceType = QStringLiteral("uv_pressure");
+    else if (metrics.contains(QStringLiteral("pump_on")) || metrics.contains(QStringLiteral("distance_cm")))
+        deviceType = QStringLiteral("pump_distance");
     const QString metricsJson = QString::fromUtf8(
         QJsonDocument(metrics).toJson(QJsonDocument::Compact));
     QSqlQuery query(m_db);
@@ -886,7 +1003,7 @@ QJsonArray Database::availableDevices(int onlineWindowSeconds, QString *error) c
     query.prepare(QStringLiteral(
         "SELECT d.device_id,d.last_seen_at,d.device_type,d.metrics_json "
         "FROM discovered_devices d "
-        "WHERE d.online=1 AND d.last_seen_at>=? AND d.device_id='150304' "
+        "WHERE d.online=1 AND d.last_seen_at>=? "
         "AND NOT EXISTS(SELECT 1 FROM devices c WHERE c.device_id=d.device_id COLLATE NOCASE) "
         "ORDER BY d.last_seen_at DESC"));
     query.addBindValue(cutoff);

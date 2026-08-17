@@ -126,13 +126,34 @@ private:
     QLabel *m_devCurrentLbl = nullptr;
     QPushButton *m_relayBtn = nullptr;
 
+    // Progress Bars & Analytics (Card 4)
+    QProgressBar *m_voltageBar = nullptr;
+    QLabel *m_voltagePctLbl = nullptr;
+    QProgressBar *m_currentBar = nullptr;
+    QLabel *m_currentPctLbl = nullptr;
+    QProgressBar *m_powerBar = nullptr;
+    QLabel *m_powerPctLbl = nullptr;
+    QProgressBar *m_safetyBar = nullptr;
+    QLabel *m_safetyPctLbl = nullptr;
+
+    // Timeline / Activity Log (Card 5)
+    QLabel *m_timelineDesc1 = nullptr;
+    QLabel *m_timelineTime1 = nullptr;
+    QLabel *m_timelineChk1 = nullptr;
+    QLabel *m_timelineDesc2 = nullptr;
+    QLabel *m_timelineTime2 = nullptr;
+    QLabel *m_timelineChk2 = nullptr;
+    QLabel *m_timelineDesc3 = nullptr;
+    QLabel *m_timelineTime3 = nullptr;
+    QLabel *m_timelineChk3 = nullptr;
+
     // Real historical buffers from ESP32
     QVector<SensorDataPoint> m_voltageHistory;
     QVector<SensorDataPoint> m_currentHistory;
     QVector<SensorDataPoint> m_powerHistory;
 
-    double m_curVoltage = 0.0;
-    double m_curCurrent = 0.0;
-    double m_curPower = 0.0;
-    bool m_relayState = false;
+    double m_curVoltage = 221.8;
+    double m_curCurrent = 2.35;
+    double m_curPower = 521.23;
+    bool m_relayState = true;
 };

@@ -6,6 +6,8 @@ namespace Ui { class MainWindow; }
 class ApiClient;
 class AuthService;
 class DashboardPage;
+class DeviceManagementPage;
+class HistoryPage;
 class LoginPage;
 class SensorService;
 class UserManagementPage;
@@ -25,5 +27,7 @@ private:
     SensorService *m_sensorService;
     LoginPage *m_loginPage;
     DashboardPage *m_dashboardPage;
+    DeviceManagementPage *m_deviceManagementPage;
+    HistoryPage *m_historyPage;
     UserManagementPage *m_userManagementPage;
 };

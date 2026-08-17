@@ -586,10 +586,12 @@ QString HistoryPage::currentDeviceType() const
 QString HistoryPage::metricTitle(const QString &key)
 {
     static const QHash<QString, QString> names{
+        {"voltage_v", tr("Điện áp RMS (V)")}, {"current_a", tr("Dòng điện tải (A)")},
+        {"power_w", tr("Công suất (W)")}, {"frequency_hz", tr("Tần số (Hz)")},
+        {"power_factor", tr("Hệ số cosφ")},
         {"temperature_c", tr("Nhiệt độ (°C)")}, {"humidity_percent", tr("Độ ẩm (%)")},
         {"pressure_hpa", tr("Áp suất (hPa)")}, {"uv_index", tr("UV Index")},
         {"uv_voltage", tr("Điện áp UV (V)")}, {"sound_vpp", tr("Âm thanh (Vpp)")},
-        {"current_a", tr("Dòng điện (A)")}, {"voltage_v", tr("Điện áp (V)")},
         {"distance_cm", tr("Khoảng cách (cm)")}, {"lux", tr("Độ sáng (Lux)")},
         {"flow_l_min", tr("Lưu lượng (L/m)")}, {"total_liters", tr("Tổng nước (L)")},
         {"ir_detected", tr("IR")}};
@@ -599,10 +601,12 @@ QString HistoryPage::metricTitle(const QString &key)
 QString HistoryPage::compactMetricTitle(const QString &key)
 {
     static const QHash<QString, QString> names{
+        {"voltage_v", tr("V")}, {"current_a", tr("A")},
+        {"power_w", tr("W")}, {"frequency_hz", tr("Hz")},
+        {"power_factor", tr("cosφ")},
         {"temperature_c", tr("°C")}, {"humidity_percent", tr("%")},
         {"pressure_hpa", tr("hPa")}, {"uv_index", tr("UV")},
         {"uv_voltage", tr("V")}, {"sound_vpp", tr("Vpp")},
-        {"current_a", tr("A")}, {"voltage_v", tr("V")},
         {"distance_cm", tr("cm")}, {"lux", tr("Lux")},
         {"flow_l_min", tr("L/m")}, {"total_liters", tr("L")},
         {"ir_detected", tr("IR")}};

@@ -94,15 +94,11 @@ void SelectOnlineDeviceDialog::populateDeviceList(const QJsonArray &devices)
     for (const auto &val : devices) {
         const auto dev = val.toObject();
         const QString devId = dev.value(QStringLiteral("device_id")).toString();
+        if (devId.isEmpty())
+            continue;
         const QString name = dev.value(QStringLiteral("name")).toString(devId);
         const QString fwVer = dev.value(QStringLiteral("firmware_version")).toString(QStringLiteral("1.0.0"));
-        const bool isOnline = dev.value(QStringLiteral("is_online")).toBool(true);
-
-        // Strict filter: only Theanh-190782 or 190782 or online devices for THEANH
-        if (devId.compare(QStringLiteral("Theanh-190782"), Qt::CaseInsensitive) != 0 &&
-            devId.compare(QStringLiteral("190782"), Qt::CaseInsensitive) != 0) {
-            continue;
-        }
+        const bool isOnline = dev.value(QStringLiteral("online")).toBool(dev.value(QStringLiteral("is_online")).toBool(true));
 
         count++;
         auto *card = new QFrame;

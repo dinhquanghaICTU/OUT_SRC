@@ -119,7 +119,45 @@
         </widget>
        </item>
 
+       <item>
+        <widget class="QPushButton" name="devicesButton">
+         <property name="objectName">
+          <string>topNavBtn</string>
+         </property>
+         <property name="text">
+          <string>📡 Thiết bị</string>
+         </property>
+         <property name="checkable">
+          <bool>true</bool>
+         </property>
+         <property name="autoExclusive">
+          <bool>true</bool>
+         </property>
+         <property name="cursor">
+          <cursorShape>PointingHandCursor</cursorShape>
+         </property>
+        </widget>
+       </item>
 
+       <item>
+        <widget class="QPushButton" name="historyButton">
+         <property name="objectName">
+          <string>topNavBtn</string>
+         </property>
+         <property name="text">
+          <string>📈 Lịch sử</string>
+         </property>
+         <property name="checkable">
+          <bool>true</bool>
+         </property>
+         <property name="autoExclusive">
+          <bool>true</bool>
+         </property>
+         <property name="cursor">
+          <cursorShape>PointingHandCursor</cursorShape>
+         </property>
+        </widget>
+       </item>
 
        <item>
         <widget class="QPushButton" name="usersButton">
