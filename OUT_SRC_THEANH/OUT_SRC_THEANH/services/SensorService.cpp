@@ -29,8 +29,6 @@ SensorService::SensorService(ApiClient *apiClient, QObject *parent)
             emit readingUpdated(generateRealisticReading());
         } else {
             m_apiClient->requestLatestReading();
-            // Emit realistic dynamic reading for live responsive UI simulation
-            emit readingUpdated(generateRealisticReading());
         }
     });
 

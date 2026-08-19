@@ -313,46 +313,7 @@ bool Database::seedDefaults(QString *error)
         claim.exec();
     }
 
-    // 3. Seed Realistic Historical Telemetry Logs (last 24 hours) if table has few records
-    QSqlQuery checkLogs(m_db);
-    if (checkLogs.exec(QStringLiteral("SELECT COUNT(*) FROM device_telemetry_log WHERE device_id='Theanh-190782'")) && checkLogs.next()) {
-        if (checkLogs.value(0).toInt() < 20) {
-            const QDateTime baseTime = QDateTime::currentDateTimeUtc();
-            for (int i = 60; i >= 0; --i) {
-                const QDateTime recTime = baseTime.addSecs(-i * 300); // 5 min interval
-                const double v = 220.0 + 2.2 * qSin(i / 6.0) + 0.6 * qCos(i / 2.0);
-                const double a = 2.10 + 0.85 * qCos(i / 5.0) + 0.25 * qSin(i / 3.0);
-                const double w = v * a * 0.98;
-                const QString tStr = recTime.toString(Qt::ISODateWithMs);
 
-                QSqlQuery insLog(m_db);
-                insLog.prepare(QStringLiteral(
-                    "INSERT INTO device_telemetry_log(device_id,recorded_at,metrics_json) VALUES(?,?,?)"));
-                insLog.addBindValue(QStringLiteral("Theanh-190782"));
-                insLog.addBindValue(tStr);
-                insLog.addBindValue(QStringLiteral(
-                    "{\"voltage_v\":%1,\"current_a\":%2,\"power_w\":%3,\"frequency_hz\":50.02,\"power_factor\":0.98,\"relay_on\":true}")
-                    .arg(QString::number(v, 'f', 2), QString::number(a, 'f', 3), QString::number(w, 'f', 2)));
-                insLog.exec();
-
-                // Also seed standard readings table for backward compatibility
-                QSqlQuery insRead(m_db);
-                insRead.prepare(QStringLiteral(
-                    "INSERT INTO pressure_log(measured_at,pressure_hpa,temperature_c) VALUES(?,?,?)"));
-                insRead.addBindValue(tStr);
-                insRead.addBindValue(v);
-                insRead.addBindValue(w);
-                insRead.exec();
-
-                QSqlQuery insDist(m_db);
-                insDist.prepare(QStringLiteral(
-                    "INSERT INTO distance_log(measured_at,distance_cm) VALUES(?,?)"));
-                insDist.addBindValue(tStr);
-                insDist.addBindValue(a);
-                insDist.exec();
-            }
-        }
-    }
 
     // 4. Seed Alerts
     QSqlQuery checkAlerts(m_db);
@@ -828,6 +789,29 @@ bool Database::recordTelemetry(const QString &deviceId, const QJsonObject &metri
         if (error) *error = query.lastError().text();
         return false;
     }
+
+    const double voltage = metrics.value(QStringLiteral("voltage_v")).toDouble(
+        metrics.value(QStringLiteral("pressure_hpa")).toDouble(0.0));
+    const double current = metrics.value(QStringLiteral("current_a")).toDouble(
+        metrics.value(QStringLiteral("distance_cm")).toDouble(0.0));
+    const double power = metrics.value(QStringLiteral("power_w")).toDouble(
+        metrics.value(QStringLiteral("temperature_c")).toDouble(voltage * current));
+
+    QSqlQuery insP(m_db);
+    insP.prepare(QStringLiteral(
+        "INSERT INTO pressure_log(measured_at,pressure_hpa,temperature_c) VALUES(?,?,?)"));
+    insP.addBindValue(recordedAt);
+    insP.addBindValue(voltage);
+    insP.addBindValue(power);
+    insP.exec();
+
+    QSqlQuery insD(m_db);
+    insD.prepare(QStringLiteral(
+        "INSERT INTO distance_log(measured_at,distance_cm) VALUES(?,?)"));
+    insD.addBindValue(recordedAt);
+    insD.addBindValue(current);
+    insD.exec();
+
     return true;
 }
 
@@ -1076,6 +1060,39 @@ bool Database::insertReading(double pressure, double distance, double temperatur
 QJsonObject Database::latestReading(QString *error) const
 {
     QSqlQuery query(m_db);
+    if (query.exec(QStringLiteral(
+            "SELECT metrics_json, recorded_at FROM device_telemetry_log "
+            "ORDER BY id DESC LIMIT 1")) && query.next()) {
+        const QJsonObject metrics = QJsonDocument::fromJson(query.value(0).toString().toUtf8()).object();
+        double voltage = 0.0;
+        if (metrics.contains(QStringLiteral("voltage_v")))
+            voltage = metrics.value(QStringLiteral("voltage_v")).toDouble();
+        else if (metrics.contains(QStringLiteral("pressure_hpa")))
+            voltage = metrics.value(QStringLiteral("pressure_hpa")).toDouble();
+
+        double current = 0.0;
+        if (metrics.contains(QStringLiteral("current_a")))
+            current = metrics.value(QStringLiteral("current_a")).toDouble();
+        else if (metrics.contains(QStringLiteral("distance_cm")))
+            current = metrics.value(QStringLiteral("distance_cm")).toDouble();
+
+        double power = 0.0;
+        if (metrics.contains(QStringLiteral("power_w")))
+            power = metrics.value(QStringLiteral("power_w")).toDouble();
+        else if (metrics.contains(QStringLiteral("temperature_c")))
+            power = metrics.value(QStringLiteral("temperature_c")).toDouble();
+        else
+            power = voltage * current;
+
+        return {{QStringLiteral("pressure_hpa"), voltage},
+                {QStringLiteral("voltage_v"), voltage},
+                {QStringLiteral("distance_cm"), current},
+                {QStringLiteral("current_a"), current},
+                {QStringLiteral("temperature_c"), power},
+                {QStringLiteral("power_w"), power},
+                {QStringLiteral("measured_at"), query.value(1).toString()}};
+    }
+
     if (!query.exec(QStringLiteral(
             "SELECT p.pressure_hpa,p.temperature_c,d.distance_cm,p.measured_at "
             "FROM pressure_log p JOIN distance_log d ON d.measured_at=p.measured_at "

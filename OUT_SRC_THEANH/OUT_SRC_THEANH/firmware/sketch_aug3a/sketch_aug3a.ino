@@ -77,28 +77,11 @@ void loop()
             Serial.println("[HX710B] Timeout doc cam bien - giu gia tri truoc.");
         }
 
-        /*
-        
-            float voltageUV = 0.0;
-            float voltageUV_toindex = 0.0;
-        
-        */
-        if((uvVoltage == 0) && (uvIndex == 0)){
-            voltageUV = fakeUvVoltage();
-            voltageUV_toindex = fakeUvIndex();
-            Serial.printf("[UV]  voltage=%.3fV -> UV Index=%.2f\n", voltageUV, voltageUV_toindex);
-            if (wifi_manager_get_state() == WIFI_MANAGER_CONNECTED && mqtt_manager_is_connected())
-            {
-                mqtt_manager_publish_sensor(voltageUV, voltageUV_toindex, pressureHpa);
-            }
-        }else{
-            Serial.printf("[UV]  voltage=%.3fV -> UV Index=%.2f\n", uvVoltage, uvIndex);
+        Serial.printf("[UV]  voltage=%.3fV -> UV Index=%.2f\n", uvVoltage, uvIndex);
 
-            if (wifi_manager_get_state() == WIFI_MANAGER_CONNECTED && mqtt_manager_is_connected())
-            {
-                mqtt_manager_publish_sensor(uvVoltage, uvIndex, pressureHpa);
-            }
-
+        if (wifi_manager_get_state() == WIFI_MANAGER_CONNECTED && mqtt_manager_is_connected())
+        {
+            mqtt_manager_publish_sensor(uvVoltage, uvIndex, pressureHpa);
         }
         
     }

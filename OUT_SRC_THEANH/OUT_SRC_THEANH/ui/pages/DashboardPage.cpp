@@ -592,20 +592,6 @@ void DashboardPage::setupCustomDashboard()
     grid->setHorizontalSpacing(6);
     grid->setVerticalSpacing(6);
 
-    // Pre-populate realistic historical baseline data
-    const QDateTime now = QDateTime::currentDateTime();
-    if (m_voltageHistory.isEmpty()) {
-        for (int i = 20; i >= 0; --i) {
-            const double v = 220.0 + 1.8 * qSin(i / 3.0) + 0.4 * qCos(i / 2.0);
-            const double a = 2.35 + 0.55 * qCos(i / 2.5) + 0.20 * qSin(i / 1.5);
-            const double p = v * a * 0.98;
-            const QDateTime ptTime = now.addSecs(-i * 2);
-            m_voltageHistory.append({ptTime, v});
-            m_currentHistory.append({ptTime, a});
-            m_powerHistory.append({ptTime, p});
-        }
-    }
-
     // --- CARD 1 (Top Left): Voltage Circle Gauge ---
     auto c1 = makeCard("Điện Áp ZMPT101B (Xem Chi Tiết)");
     m_circularGauge = new CircularGaugeWidget;
@@ -708,6 +694,7 @@ void DashboardPage::setupCustomDashboard()
         c5.second->addLayout(row);
     };
 
+    const QDateTime now = QDateTime::currentDateTime();
     addTimelineItem("Đóng Rơ-le Tải chính", "📍 GC   🕒 Đang BẬT", true, m_timelineDesc1, m_timelineTime1, m_timelineChk1);
     addTimelineItem("Điện áp RMS: 221.8 V (50Hz)", QStringLiteral("📍 Lưới AC   🕒 %1").arg(now.toString("HH:mm:ss")), true, m_timelineDesc2, m_timelineTime2, m_timelineChk2);
     addTimelineItem("ESP32 Theanh-190782 Trực tuyến", "📍 MQTT Broker   🕒 Vừa xong", true, m_timelineDesc3, m_timelineTime3, m_timelineChk3);
