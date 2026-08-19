@@ -129,13 +129,14 @@ void DashboardPage::setDeviceId(const QString &deviceId)
         m_deviceId = deviceId;
 }
 
-void DashboardPage::setHasDevice(bool hasDevice, const QString &deviceId, const QString &deviceName)
+void DashboardPage::setHasDevice(bool hasDevice, const QString &deviceId, const QString &deviceName, bool isOnline)
 {
     m_hasDevice = hasDevice;
     if (!deviceId.isEmpty())
         m_deviceId = deviceId;
     if (!deviceName.isEmpty())
         m_deviceName = deviceName;
+    m_isOnline = isOnline;
 
     if (m_pumpCardStack) {
         m_pumpCardStack->setCurrentIndex(hasDevice ? 1 : 0);
@@ -145,6 +146,12 @@ void DashboardPage::setHasDevice(bool hasDevice, const QString &deviceId, const 
         m_pumpDeviceNameLbl->setText(m_deviceName);
     }
 
+    updateDisplays();
+}
+
+void DashboardPage::setDeviceOnline(bool online)
+{
+    m_isOnline = online;
     updateDisplays();
 }
 
@@ -445,29 +452,44 @@ void DashboardPage::setupDashboardLayout()
     pumpLayout->setContentsMargins(12, 8, 12, 8);
     pumpLayout->setSpacing(5);
 
-    // Status Row with Device Name, Auto Config and Change Device Button
+    // Status Row with Device Name, Online Badge, Status Badge, Auto Config, Add and Unbind Button
     auto *statusRow = new QHBoxLayout;
     statusRow->setSpacing(4);
     m_pumpDeviceNameLbl = new QLabel(QStringLiteral("son-190782"));
     m_pumpDeviceNameLbl->setStyleSheet("color: #38bdf8; font-size: 11px; font-weight: 800;");
+
+    m_pumpOnlineBadge = new QLabel(QStringLiteral("🟢 ONLINE"));
+    m_pumpOnlineBadge->setStyleSheet("color: #10b981; font-size: 9px; font-weight: 900; background: rgba(16, 185, 129, 0.15); border-radius: 4px; padding: 2px 6px;");
+
     m_pumpStatusBadge = new QLabel(QStringLiteral("ĐANG TẮT [OFF]"));
-    m_pumpStatusBadge->setStyleSheet("color: #ef4444; font-size: 10px; font-weight: 900; background: rgba(239, 68, 68, 0.15); border-radius: 4px; padding: 1px 5px;");
+    m_pumpStatusBadge->setStyleSheet("color: #ef4444; font-size: 9px; font-weight: 900; background: rgba(239, 68, 68, 0.15); border-radius: 4px; padding: 2px 6px;");
 
     auto *autoConfigBtn = new QPushButton(QStringLiteral("⚙ Tự Động"));
     autoConfigBtn->setCursor(Qt::PointingHandCursor);
     autoConfigBtn->setStyleSheet("background: #1e3a8a; color: #38bdf8; border: 1px solid #2563eb; border-radius: 4px; font-size: 9px; font-weight: 800; padding: 2px 6px;");
     connect(autoConfigBtn, &QPushButton::clicked, this, &DashboardPage::openPumpAutoConfig);
 
-    auto *changeDevBtn = new QPushButton(QStringLiteral("⇄ Đổi"));
-    changeDevBtn->setCursor(Qt::PointingHandCursor);
-    changeDevBtn->setStyleSheet("background: #1e293b; color: #94a3b8; border: 1px solid #334155; border-radius: 4px; font-size: 9px; font-weight: 700; padding: 2px 6px;");
-    connect(changeDevBtn, &QPushButton::clicked, this, &DashboardPage::addDeviceRequested);
+    auto *addDevBtn = new QPushButton(QStringLiteral("+ Thêm"));
+    addDevBtn->setCursor(Qt::PointingHandCursor);
+    addDevBtn->setStyleSheet("background: #065f46; color: #6ee7b7; border: 1px solid #059669; border-radius: 4px; font-size: 9px; font-weight: 800; padding: 2px 6px;");
+    connect(addDevBtn, &QPushButton::clicked, this, &DashboardPage::addDeviceRequested);
+
+    auto *unbindBtn = new QPushButton(QStringLiteral("✕ Gỡ"));
+    unbindBtn->setCursor(Qt::PointingHandCursor);
+    unbindBtn->setStyleSheet("background: #7f1d1d; color: #fca5a5; border: 1px solid #991b1b; border-radius: 4px; font-size: 9px; font-weight: 800; padding: 2px 6px;");
+    connect(unbindBtn, &QPushButton::clicked, this, [this] {
+        if (!m_deviceId.isEmpty()) {
+            emit releaseDeviceRequested(m_deviceId);
+        }
+    });
 
     statusRow->addWidget(m_pumpDeviceNameLbl);
+    statusRow->addWidget(m_pumpOnlineBadge);
     statusRow->addWidget(m_pumpStatusBadge);
     statusRow->addStretch();
     statusRow->addWidget(autoConfigBtn);
-    statusRow->addWidget(changeDevBtn);
+    statusRow->addWidget(addDevBtn);
+    statusRow->addWidget(unbindBtn);
     pumpLayout->addLayout(statusRow);
 
     // Big Toggle Button
@@ -585,6 +607,13 @@ void DashboardPage::updateDisplays()
         m_heroFanValue->setText(m_pumpOn ? QStringLiteral("BƠM: ON") : QStringLiteral("BƠM: OFF"));
 
     // Update Pump Control Card
+    if (m_pumpOnlineBadge) {
+        m_pumpOnlineBadge->setText(m_isOnline ? QStringLiteral("🟢 ONLINE") : QStringLiteral("🔴 OFFLINE"));
+        m_pumpOnlineBadge->setStyleSheet(m_isOnline
+            ? "color: #10b981; font-size: 9px; font-weight: 900; background: rgba(16, 185, 129, 0.15); border-radius: 4px; padding: 2px 6px;"
+            : "color: #ef4444; font-size: 9px; font-weight: 900; background: rgba(239, 68, 68, 0.15); border-radius: 4px; padding: 2px 6px;");
+    }
+
     if (m_pumpStatusBadge) {
         m_pumpStatusBadge->setText(m_pumpOn ? QStringLiteral("ĐANG BẬT [ON]") : QStringLiteral("ĐANG TẮT [OFF]"));
         m_pumpStatusBadge->setStyleSheet(m_pumpOn

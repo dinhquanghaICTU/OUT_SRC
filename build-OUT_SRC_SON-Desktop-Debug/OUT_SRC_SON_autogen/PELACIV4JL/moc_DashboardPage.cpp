@@ -56,11 +56,14 @@ static constexpr auto qt_meta_stringdata_CLASSDashboardPageENDCLASS = QtMocHelpe
     "setHasDevice",
     "hasDevice",
     "deviceName",
+    "isOnline",
+    "setDeviceOnline",
+    "online",
     "openPumpAutoConfig"
 );
 #else  // !QT_MOC_HAS_STRING_DATA
 struct qt_meta_stringdata_CLASSDashboardPageENDCLASS_t {
-    uint offsetsAndSizes[38];
+    uint offsetsAndSizes[44];
     char stringdata0[14];
     char stringdata1[22];
     char stringdata2[1];
@@ -79,7 +82,10 @@ struct qt_meta_stringdata_CLASSDashboardPageENDCLASS_t {
     char stringdata15[13];
     char stringdata16[10];
     char stringdata17[11];
-    char stringdata18[19];
+    char stringdata18[9];
+    char stringdata19[16];
+    char stringdata20[7];
+    char stringdata21[19];
 };
 #define QT_MOC_LITERAL(ofs, len) \
     uint(sizeof(qt_meta_stringdata_CLASSDashboardPageENDCLASS_t::offsetsAndSizes) + ofs), len 
@@ -103,7 +109,10 @@ Q_CONSTINIT static const qt_meta_stringdata_CLASSDashboardPageENDCLASS_t qt_meta
         QT_MOC_LITERAL(199, 12),  // "setHasDevice"
         QT_MOC_LITERAL(212, 9),  // "hasDevice"
         QT_MOC_LITERAL(222, 10),  // "deviceName"
-        QT_MOC_LITERAL(233, 18)   // "openPumpAutoConfig"
+        QT_MOC_LITERAL(233, 8),  // "isOnline"
+        QT_MOC_LITERAL(242, 15),  // "setDeviceOnline"
+        QT_MOC_LITERAL(258, 6),  // "online"
+        QT_MOC_LITERAL(265, 18)   // "openPumpAutoConfig"
     },
     "DashboardPage",
     "relayControlRequested",
@@ -123,6 +132,9 @@ Q_CONSTINIT static const qt_meta_stringdata_CLASSDashboardPageENDCLASS_t qt_meta
     "setHasDevice",
     "hasDevice",
     "deviceName",
+    "isOnline",
+    "setDeviceOnline",
+    "online",
     "openPumpAutoConfig"
 };
 #undef QT_MOC_LITERAL
@@ -135,7 +147,7 @@ Q_CONSTINIT static const uint qt_meta_data_CLASSDashboardPageENDCLASS[] = {
       11,       // revision
        0,       // classname
        0,    0, // classinfo
-      11,   14, // methods
+      13,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -143,19 +155,21 @@ Q_CONSTINIT static const uint qt_meta_data_CLASSDashboardPageENDCLASS[] = {
        4,       // signalCount
 
  // signals: name, argc, parameters, tag, flags, initial metatype offsets
-       1,    2,   80,    2, 0x06,    1 /* Public */,
-       5,    2,   85,    2, 0x06,    4 /* Public */,
-       7,    0,   90,    2, 0x06,    7 /* Public */,
-       8,    1,   91,    2, 0x06,    8 /* Public */,
+       1,    2,   92,    2, 0x06,    1 /* Public */,
+       5,    2,   97,    2, 0x06,    4 /* Public */,
+       7,    0,  102,    2, 0x06,    7 /* Public */,
+       8,    1,  103,    2, 0x06,    8 /* Public */,
 
  // slots: name, argc, parameters, tag, flags, initial metatype offsets
-       9,    1,   94,    2, 0x0a,   10 /* Public */,
-      12,    1,   97,    2, 0x0a,   12 /* Public */,
-      14,    1,  100,    2, 0x0a,   14 /* Public */,
-      15,    3,  103,    2, 0x0a,   16 /* Public */,
-      15,    2,  110,    2, 0x2a,   20 /* Public | MethodCloned */,
-      15,    1,  115,    2, 0x2a,   23 /* Public | MethodCloned */,
-      18,    0,  118,    2, 0x0a,   25 /* Public */,
+       9,    1,  106,    2, 0x0a,   10 /* Public */,
+      12,    1,  109,    2, 0x0a,   12 /* Public */,
+      14,    1,  112,    2, 0x0a,   14 /* Public */,
+      15,    4,  115,    2, 0x0a,   16 /* Public */,
+      15,    3,  124,    2, 0x2a,   21 /* Public | MethodCloned */,
+      15,    2,  131,    2, 0x2a,   25 /* Public | MethodCloned */,
+      15,    1,  136,    2, 0x2a,   28 /* Public | MethodCloned */,
+      19,    1,  139,    2, 0x0a,   30 /* Public */,
+      21,    0,  142,    2, 0x0a,   32 /* Public */,
 
  // signals: parameters
     QMetaType::Void, QMetaType::QString, QMetaType::Bool,    3,    4,
@@ -167,9 +181,11 @@ Q_CONSTINIT static const uint qt_meta_data_CLASSDashboardPageENDCLASS[] = {
     QMetaType::Void, 0x80000000 | 10,   11,
     QMetaType::Void, QMetaType::QJsonObject,   13,
     QMetaType::Void, QMetaType::QString,    3,
+    QMetaType::Void, QMetaType::Bool, QMetaType::QString, QMetaType::QString, QMetaType::Bool,   16,    3,   17,   18,
     QMetaType::Void, QMetaType::Bool, QMetaType::QString, QMetaType::QString,   16,    3,   17,
     QMetaType::Void, QMetaType::Bool, QMetaType::QString,   16,    3,
     QMetaType::Void, QMetaType::Bool,   16,
+    QMetaType::Void, QMetaType::Bool,   20,
     QMetaType::Void,
 
        0        // eod
@@ -211,11 +227,20 @@ Q_CONSTINIT const QMetaObject DashboardPage::staticMetaObject = { {
         QtPrivate::TypeAndForceComplete<bool, std::false_type>,
         QtPrivate::TypeAndForceComplete<const QString &, std::false_type>,
         QtPrivate::TypeAndForceComplete<const QString &, std::false_type>,
+        QtPrivate::TypeAndForceComplete<bool, std::false_type>,
+        // method 'setHasDevice'
+        QtPrivate::TypeAndForceComplete<void, std::false_type>,
+        QtPrivate::TypeAndForceComplete<bool, std::false_type>,
+        QtPrivate::TypeAndForceComplete<const QString &, std::false_type>,
+        QtPrivate::TypeAndForceComplete<const QString &, std::false_type>,
         // method 'setHasDevice'
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
         QtPrivate::TypeAndForceComplete<bool, std::false_type>,
         QtPrivate::TypeAndForceComplete<const QString &, std::false_type>,
         // method 'setHasDevice'
+        QtPrivate::TypeAndForceComplete<void, std::false_type>,
+        QtPrivate::TypeAndForceComplete<bool, std::false_type>,
+        // method 'setDeviceOnline'
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
         QtPrivate::TypeAndForceComplete<bool, std::false_type>,
         // method 'openPumpAutoConfig'
@@ -237,10 +262,12 @@ void DashboardPage::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _i
         case 4: _t->updateReading((*reinterpret_cast< std::add_pointer_t<SensorReading>>(_a[1]))); break;
         case 5: _t->updateDeviceMetrics((*reinterpret_cast< std::add_pointer_t<QJsonObject>>(_a[1]))); break;
         case 6: _t->setDeviceId((*reinterpret_cast< std::add_pointer_t<QString>>(_a[1]))); break;
-        case 7: _t->setHasDevice((*reinterpret_cast< std::add_pointer_t<bool>>(_a[1])),(*reinterpret_cast< std::add_pointer_t<QString>>(_a[2])),(*reinterpret_cast< std::add_pointer_t<QString>>(_a[3]))); break;
-        case 8: _t->setHasDevice((*reinterpret_cast< std::add_pointer_t<bool>>(_a[1])),(*reinterpret_cast< std::add_pointer_t<QString>>(_a[2]))); break;
-        case 9: _t->setHasDevice((*reinterpret_cast< std::add_pointer_t<bool>>(_a[1]))); break;
-        case 10: _t->openPumpAutoConfig(); break;
+        case 7: _t->setHasDevice((*reinterpret_cast< std::add_pointer_t<bool>>(_a[1])),(*reinterpret_cast< std::add_pointer_t<QString>>(_a[2])),(*reinterpret_cast< std::add_pointer_t<QString>>(_a[3])),(*reinterpret_cast< std::add_pointer_t<bool>>(_a[4]))); break;
+        case 8: _t->setHasDevice((*reinterpret_cast< std::add_pointer_t<bool>>(_a[1])),(*reinterpret_cast< std::add_pointer_t<QString>>(_a[2])),(*reinterpret_cast< std::add_pointer_t<QString>>(_a[3]))); break;
+        case 9: _t->setHasDevice((*reinterpret_cast< std::add_pointer_t<bool>>(_a[1])),(*reinterpret_cast< std::add_pointer_t<QString>>(_a[2]))); break;
+        case 10: _t->setHasDevice((*reinterpret_cast< std::add_pointer_t<bool>>(_a[1]))); break;
+        case 11: _t->setDeviceOnline((*reinterpret_cast< std::add_pointer_t<bool>>(_a[1]))); break;
+        case 12: _t->openPumpAutoConfig(); break;
         default: ;
         }
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
@@ -306,13 +333,13 @@ int DashboardPage::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 11)
+        if (_id < 13)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 11;
+        _id -= 13;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 11)
+        if (_id < 13)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 11;
+        _id -= 13;
     }
     return _id;
 }

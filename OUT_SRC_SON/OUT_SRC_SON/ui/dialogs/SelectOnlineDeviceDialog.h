@@ -18,6 +18,7 @@ public:
 
 signals:
     void deviceSelected(const QString &deviceId, const QString &deviceName);
+    void refreshRequested();
 
 private:
     void populateDeviceList(const QJsonArray &devices);

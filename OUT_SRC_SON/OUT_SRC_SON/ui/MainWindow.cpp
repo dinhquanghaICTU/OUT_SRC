@@ -88,6 +88,8 @@ MainWindow::MainWindow(QWidget *parent)
             m_apiClient, &ApiClient::updatePerDeviceConfig);
     connect(m_dashboardPage, &DashboardPage::deviceConfigRequested,
             m_apiClient, &ApiClient::updatePerDeviceConfig);
+    connect(m_dashboardPage, &DashboardPage::releaseDeviceRequested,
+            m_apiClient, &ApiClient::releaseDevice);
     connect(m_deviceManagementPage, &DeviceManagementPage::releaseDeviceRequested,
             m_apiClient, &ApiClient::releaseDevice);
 
@@ -104,7 +106,8 @@ MainWindow::MainWindow(QWidget *parent)
             const auto firstDev = devices.first().toObject();
             const QString devId = firstDev.value(QStringLiteral("device_id")).toString();
             const QString name = firstDev.value(QStringLiteral("name")).toString(devId);
-            m_dashboardPage->setHasDevice(true, devId, name);
+            const bool isOnline = firstDev.value(QStringLiteral("online")).toBool(firstDev.value(QStringLiteral("is_online")).toBool(true));
+            m_dashboardPage->setHasDevice(true, devId, name, isOnline);
         } else {
             m_dashboardPage->setHasDevice(false);
         }
@@ -116,6 +119,8 @@ MainWindow::MainWindow(QWidget *parent)
             const QString devId = dev.value(QStringLiteral("device_id")).toString();
             if (!devId.isEmpty()) {
                 m_dashboardPage->setDeviceId(devId);
+                const bool isOnline = dev.value(QStringLiteral("online")).toBool(dev.value(QStringLiteral("is_online")).toBool(true));
+                m_dashboardPage->setDeviceOnline(isOnline);
             }
             const auto metrics = dev.value(QStringLiteral("metrics")).toObject();
             if (!metrics.isEmpty()) {
@@ -249,6 +254,12 @@ MainWindow::~MainWindow()
 void MainWindow::openSelectDeviceDialog()
 {
     SelectOnlineDeviceDialog dlg(m_availableDevices, this);
+    connect(&dlg, &SelectOnlineDeviceDialog::refreshRequested, this, [this] {
+        if (m_apiClient && !m_authService->isOfflineMode()) {
+            m_apiClient->requestAvailableDevices();
+        }
+    });
+    connect(m_apiClient, &ApiClient::availableDevicesReceived, &dlg, &SelectOnlineDeviceDialog::updateAvailableDevices);
     connect(&dlg, &SelectOnlineDeviceDialog::deviceSelected, this, [this](const QString &deviceId, const QString &name) {
         if (!m_authService->isOfflineMode()) {
             m_apiClient->claimDevice(deviceId, name);
@@ -256,6 +267,9 @@ void MainWindow::openSelectDeviceDialog()
             m_dashboardPage->setHasDevice(true, deviceId, name);
         }
     });
+    if (m_apiClient && !m_authService->isOfflineMode()) {
+        m_apiClient->requestAvailableDevices();
+    }
     dlg.exec();
 }
 

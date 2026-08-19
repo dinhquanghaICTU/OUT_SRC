@@ -34,7 +34,8 @@ public slots:
     void updateReading(const SensorReading &reading);
     void updateDeviceMetrics(const QJsonObject &metrics);
     void setDeviceId(const QString &deviceId);
-    void setHasDevice(bool hasDevice, const QString &deviceId = QString(), const QString &deviceName = QString());
+    void setHasDevice(bool hasDevice, const QString &deviceId = QString(), const QString &deviceName = QString(), bool isOnline = true);
+    void setDeviceOnline(bool online);
     void openPumpAutoConfig();
 
 private:
@@ -50,6 +51,7 @@ private:
     QString m_deviceId;
     QString m_deviceName;
     bool m_hasDevice = false;
+    bool m_isOnline = true;
 
     // Auto Pump Config
     bool m_autoPumpMode = false;
@@ -76,6 +78,7 @@ private:
     // Pump Control UI Widgets (Stack: 0 = Add Device +, 1 = Active Pump Control)
     QStackedWidget *m_pumpCardStack = nullptr;
     QLabel *m_pumpDeviceNameLbl = nullptr;
+    QLabel *m_pumpOnlineBadge = nullptr;
     QLabel *m_pumpStatusBadge = nullptr;
     QLabel *m_pumpFlowValue = nullptr;
     QLabel *m_pumpTotalValue = nullptr;
