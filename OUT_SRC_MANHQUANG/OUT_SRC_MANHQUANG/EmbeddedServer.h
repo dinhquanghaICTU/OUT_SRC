@@ -20,9 +20,9 @@ public:
         quint16 mqttPort = 1883;
 
         bool enableHotspot = false;
-        QString hotspotInterface = QStringLiteral("wlan0");
-        QString hotspotName = QStringLiteral("MANHQUANG-AP");
-        QString hotspotSsid = QStringLiteral("MANHQUANG-AP");
+        QString hotspotInterface = QStringLiteral("wlan1");
+        QString hotspotName = QStringLiteral("MyHotspot");
+        QString hotspotSsid = QStringLiteral("ICTU_MANHQUANG_AP");
         QString hotspotPassword = QStringLiteral("12345678");
         QString hotspotAddressCidr = QStringLiteral("192.168.4.1/24");
     };
