@@ -1,0 +1,4 @@
+# Hashes of file build rules.
+f64b3d34594648f224d24ce43bfa2c46 CMakeFiles/OUT_SRC_TRUNGKIEN_autogen
+3d99fc880dbdb2725a309ffe26808a73 OUT_SRC_TRUNGKIEN_autogen/3YJK5W5UP7/qrc_resources.cpp
+38c5cf53f1f5d239cfd5f1d748187af4 OUT_SRC_TRUNGKIEN_autogen/timestamp

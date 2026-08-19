@@ -234,9 +234,9 @@ bool Database::seedDefaults(QString *error)
 
     // Clean up any foreign device records not belonging to THEANH
     QSqlQuery cleanup(m_db);
-    cleanup.exec(QStringLiteral("DELETE FROM discovered_devices WHERE device_id NOT IN ('Theanh-190782', 'THEANH-ESP32-LAB01', 'THEANH-SMART-02', '190782')"));
-    cleanup.exec(QStringLiteral("DELETE FROM devices WHERE device_id NOT IN ('Theanh-190782', 'THEANH-ESP32-LAB01', 'THEANH-SMART-02', '190782')"));
-    cleanup.exec(QStringLiteral("DELETE FROM device_telemetry_log WHERE device_id NOT IN ('Theanh-190782', 'THEANH-ESP32-LAB01', 'THEANH-SMART-02', '190782')"));
+    cleanup.exec(QStringLiteral("DELETE FROM discovered_devices WHERE device_id != 'Theanh-190782'"));
+    cleanup.exec(QStringLiteral("DELETE FROM devices WHERE device_id != 'Theanh-190782'"));
+    cleanup.exec(QStringLiteral("DELETE FROM device_telemetry_log WHERE device_id != 'Theanh-190782'"));
 
     // Seed default users if not already present
     if (count.value(0).toInt() == 0) {
@@ -575,6 +575,12 @@ bool Database::claimDevice(const QString &username, const QString &deviceId, con
 {
     if (errorCode)
         errorCode->clear();
+    const QString normalizedId = deviceId.trimmed();
+    if (normalizedId.compare(QStringLiteral("Theanh-190782"), Qt::CaseInsensitive) != 0) {
+        if (errorCode) *errorCode = QStringLiteral("invalid_device");
+        if (error) *error = QStringLiteral("Chỉ cho phép thêm thiết bị ID 'Theanh-190782' (Firmware Thế Anh)");
+        return false;
+    }
     if (!m_db.transaction()) {
         if (errorCode) *errorCode = QStringLiteral("database_error");
         if (error) *error = m_db.lastError().text();
@@ -737,6 +743,8 @@ bool Database::recordDevicePresence(const QString &deviceId, bool online,
                                     const QJsonObject &metrics, QString *error)
 {
     const QString normalizedId = deviceId.trimmed();
+    if (normalizedId.compare(QStringLiteral("Theanh-190782"), Qt::CaseInsensitive) != 0)
+        return false;
     if (normalizedId.isEmpty() || normalizedId.size() > 64)
         return false;
     const QString now = QDateTime::currentDateTimeUtc().toString(Qt::ISODateWithMs);
@@ -777,6 +785,8 @@ bool Database::recordTelemetry(const QString &deviceId, const QJsonObject &metri
                                const QString &recordedAt, QString *error)
 {
     const QString normalizedId = deviceId.trimmed();
+    if (normalizedId.compare(QStringLiteral("Theanh-190782"), Qt::CaseInsensitive) != 0)
+        return false;
     if (normalizedId.isEmpty() || metrics.isEmpty())
         return false;
     QSqlQuery query(m_db);
@@ -987,7 +997,7 @@ QJsonArray Database::availableDevices(int onlineWindowSeconds, QString *error) c
     query.prepare(QStringLiteral(
         "SELECT d.device_id,d.last_seen_at,d.device_type,d.metrics_json "
         "FROM discovered_devices d "
-        "WHERE d.online=1 AND d.last_seen_at>=? "
+        "WHERE d.online=1 AND d.last_seen_at>=? AND d.device_id='Theanh-190782' COLLATE NOCASE "
         "AND NOT EXISTS(SELECT 1 FROM devices c WHERE c.device_id=d.device_id COLLATE NOCASE) "
         "ORDER BY d.last_seen_at DESC"));
     query.addBindValue(cutoff);

@@ -322,7 +322,7 @@ void DashboardPage::setOwnedDevices(const QJsonArray &devices)
 void DashboardPage::updateReading(const SensorReading &reading)
 {
     if (reading.pressureHpa > 0) m_curVoltage = reading.pressureHpa;
-    if (reading.distanceCm >= 0) m_curCurrent = m_relayState ? reading.distanceCm : 0.0;
+    if (reading.distanceCm >= 0) m_curCurrent = reading.distanceCm;
     m_curPower = m_curVoltage * m_curCurrent;
 
     const QDateTime now = QDateTime::currentDateTime();
@@ -365,8 +365,8 @@ void DashboardPage::updateReading(const SensorReading &reading)
 
     // Update Activity Log (Card 5)
     const QString curTimeStr = now.toString(QStringLiteral("HH:mm:ss"));
-    if (m_timelineDesc1) m_timelineDesc1->setText(m_relayState ? QStringLiteral("Đóng Rơ-le Tải chính") : QStringLiteral("Ngắt Rơ-le Tải chính"));
-    if (m_timelineTime1) m_timelineTime1->setText(QStringLiteral("📍 GC   🕒 %1").arg(m_relayState ? QStringLiteral("Đang BẬT") : QStringLiteral("Đang TẮT")));
+    if (m_timelineDesc1) m_timelineDesc1->setText(QStringLiteral("Hệ thống đo AC RMS & Dòng tải"));
+    if (m_timelineTime1) m_timelineTime1->setText(QStringLiteral("📍 Hoạt động   🕒 %1").arg(curTimeStr));
     if (m_timelineDesc2) m_timelineDesc2->setText(QStringLiteral("Điện áp RMS: %1 V (50Hz)").arg(QString::number(m_curVoltage, 'f', 1)));
     if (m_timelineTime2) m_timelineTime2->setText(QStringLiteral("📍 Lưới AC   🕒 %1").arg(curTimeStr));
 
@@ -419,18 +419,12 @@ void DashboardPage::updateDeviceMetrics(const QJsonObject &metrics)
 
     if (m_devVoltageLbl) m_devVoltageLbl->setText(QStringLiteral("⚡ Điện áp: <b>%1 V</b>").arg(QString::number(m_curVoltage, 'f', 1)));
     if (m_devCurrentLbl) m_devCurrentLbl->setText(QStringLiteral("💡 Dòng tải: <b>%1 A</b>").arg(QString::number(m_curCurrent, 'f', 2)));
-    if (m_relayBtn) {
-        m_relayBtn->setText(m_relayState ? QStringLiteral("🔌 RƠ-LE: BẬT") : QStringLiteral("🔌 RƠ-LE: TẮT"));
-        m_relayBtn->setStyleSheet(m_relayState
-            ? "QPushButton { background: #10b981; color: #ffffff; border: none; border-radius: 6px; font-weight: 900; font-size: 11px; padding: 6px 12px; } QPushButton:hover { background: #059669; }"
-            : "QPushButton { background: #374151; color: #9ca3af; border: 1px solid #4b5563; border-radius: 6px; font-weight: 800; font-size: 11px; padding: 6px 12px; } QPushButton:hover { background: #4b5563; }");
-    }
 
     // Update Progress Bars & Analytics (Card 4)
     const int vPct = qBound(0, static_cast<int>((m_curVoltage / 260.0) * 100.0), 100);
     const int aPct = qBound(0, static_cast<int>((m_curCurrent / 10.0) * 100.0), 100);
     const int pPct = qBound(0, static_cast<int>((m_curPower / 2000.0) * 100.0), 100);
-    const int sPct = m_relayState ? 98 : 100;
+    const int sPct = 100;
 
     if (m_voltageBar) m_voltageBar->setValue(vPct);
     if (m_voltagePctLbl) m_voltagePctLbl->setText(QStringLiteral("%1%").arg(vPct));
@@ -443,8 +437,8 @@ void DashboardPage::updateDeviceMetrics(const QJsonObject &metrics)
 
     // Update Activity Log (Card 5)
     const QString curTimeStr = now.toString(QStringLiteral("HH:mm:ss"));
-    if (m_timelineDesc1) m_timelineDesc1->setText(m_relayState ? QStringLiteral("Đóng Rơ-le Tải chính") : QStringLiteral("Ngắt Rơ-le Tải chính"));
-    if (m_timelineTime1) m_timelineTime1->setText(QStringLiteral("📍 GC   🕒 %1").arg(m_relayState ? QStringLiteral("Đang BẬT") : QStringLiteral("Đang TẮT")));
+    if (m_timelineDesc1) m_timelineDesc1->setText(QStringLiteral("Hệ thống đo AC RMS & Dòng tải"));
+    if (m_timelineTime1) m_timelineTime1->setText(QStringLiteral("📍 Hoạt động   🕒 %1").arg(curTimeStr));
     if (m_timelineDesc2) m_timelineDesc2->setText(QStringLiteral("Điện áp RMS: %1 V (50Hz)").arg(QString::number(m_curVoltage, 'f', 1)));
     if (m_timelineTime2) m_timelineTime2->setText(QStringLiteral("📍 Lưới AC   🕒 %1").arg(curTimeStr));
 
@@ -695,7 +689,7 @@ void DashboardPage::setupCustomDashboard()
     };
 
     const QDateTime now = QDateTime::currentDateTime();
-    addTimelineItem("Đóng Rơ-le Tải chính", "📍 GC   🕒 Đang BẬT", true, m_timelineDesc1, m_timelineTime1, m_timelineChk1);
+    addTimelineItem("Hệ thống đo AC RMS & Dòng tải", "📍 Hoạt động   🕒 Vừa xong", true, m_timelineDesc1, m_timelineTime1, m_timelineChk1);
     addTimelineItem("Điện áp RMS: 221.8 V (50Hz)", QStringLiteral("📍 Lưới AC   🕒 %1").arg(now.toString("HH:mm:ss")), true, m_timelineDesc2, m_timelineTime2, m_timelineChk2);
     addTimelineItem("ESP32 Theanh-190782 Trực tuyến", "📍 MQTT Broker   🕒 Vừa xong", true, m_timelineDesc3, m_timelineTime3, m_timelineChk3);
     grid->addWidget(c5.first, 2, 0, 1, 1);
@@ -802,30 +796,7 @@ void DashboardPage::setupCustomDashboard()
 
     hasDevLayout->addWidget(m_devVoltageLbl);
     hasDevLayout->addWidget(m_devCurrentLbl);
-
-    m_relayBtn = new QPushButton(QStringLiteral("🔌 RƠ-LE: BẬT"));
-    m_relayBtn->setCursor(Qt::PointingHandCursor);
-    m_relayBtn->setStyleSheet("QPushButton { background: #10b981; color: #ffffff; border: none; border-radius: 6px; font-weight: 900; font-size: 11px; padding: 6px 12px; } QPushButton:hover { background: #059669; }");
-    connect(m_relayBtn, &QPushButton::clicked, this, [this] {
-        if (!m_deviceId.isEmpty()) {
-            m_relayState = !m_relayState;
-            if (!m_relayState) {
-                m_curCurrent = 0.0;
-                m_curPower = 0.0;
-            } else {
-                m_curCurrent = 2.35;
-                m_curPower = m_curVoltage * m_curCurrent;
-            }
-            updateDeviceMetrics(QJsonObject{
-                {"voltage_v", m_curVoltage},
-                {"current_a", m_curCurrent},
-                {"power_w", m_curPower},
-                {"relay_on", m_relayState}
-            });
-            emit relayControlRequested(m_deviceId, m_relayState);
-        }
-    });
-    hasDevLayout->addWidget(m_relayBtn);
+    hasDevLayout->addSpacing(8);
 
     auto *actionsRow = new QHBoxLayout;
     auto *unbindBtn = new QPushButton(QStringLiteral("✕ Gỡ bỏ"));

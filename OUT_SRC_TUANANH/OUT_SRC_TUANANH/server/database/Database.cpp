@@ -234,9 +234,9 @@ bool Database::seedDefaults(QString *error)
 
     // Clean up any foreign device records not belonging to firmware 150808 or Tuananh-150808
     QSqlQuery cleanup(m_db);
-    cleanup.exec(QStringLiteral("DELETE FROM discovered_devices WHERE device_id != '150808' AND device_id != 'Tuananh-150808'"));
-    cleanup.exec(QStringLiteral("DELETE FROM devices WHERE device_id != '150808' AND device_id != 'Tuananh-150808'"));
-    cleanup.exec(QStringLiteral("DELETE FROM device_telemetry_log WHERE device_id != '150808' AND device_id != 'Tuananh-150808'"));
+    cleanup.exec(QStringLiteral("DELETE FROM discovered_devices WHERE device_id != '150808' AND device_id != 'Tuananh-150808' AND device_id != 'Tuananh-150304'"));
+    cleanup.exec(QStringLiteral("DELETE FROM devices WHERE device_id != '150808' AND device_id != 'Tuananh-150808' AND device_id != 'Tuananh-150304'"));
+    cleanup.exec(QStringLiteral("DELETE FROM device_telemetry_log WHERE device_id != '150808' AND device_id != 'Tuananh-150808' AND device_id != 'Tuananh-150304'"));
 
     if (count.value(0).toInt() > 0)
         return true;
@@ -664,7 +664,8 @@ bool Database::recordDevicePresence(const QString &deviceId, bool online,
     if (normalizedId.isEmpty() || normalizedId.size() > 64)
         return false;
     if (normalizedId.compare(QStringLiteral("150808"), Qt::CaseInsensitive) != 0 &&
-        normalizedId.compare(QStringLiteral("Tuananh-150808"), Qt::CaseInsensitive) != 0)
+        normalizedId.compare(QStringLiteral("Tuananh-150808"), Qt::CaseInsensitive) != 0 &&
+        normalizedId.compare(QStringLiteral("Tuananh-150304"), Qt::CaseInsensitive) != 0)
         return false;
     const QString now = QDateTime::currentDateTimeUtc().toString(Qt::ISODateWithMs);
     QString deviceType = QStringLiteral("uv_pressure");
@@ -887,7 +888,7 @@ QJsonArray Database::availableDevices(int onlineWindowSeconds, QString *error) c
     query.prepare(QStringLiteral(
         "SELECT d.device_id,d.last_seen_at,d.device_type,d.metrics_json "
         "FROM discovered_devices d "
-        "WHERE d.online=1 AND d.last_seen_at>=? AND (d.device_id='150808' OR d.device_id='Tuananh-150808') "
+        "WHERE d.online=1 AND d.last_seen_at>=? AND (d.device_id='150808' OR d.device_id='Tuananh-150808' OR d.device_id='Tuananh-150304') "
         "AND NOT EXISTS(SELECT 1 FROM devices c WHERE c.device_id=d.device_id COLLATE NOCASE) "
         "ORDER BY d.last_seen_at DESC"));
     query.addBindValue(cutoff);

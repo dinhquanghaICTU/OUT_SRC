@@ -100,7 +100,8 @@ void SelectOnlineDeviceDialog::populateDeviceList(const QJsonArray &devices)
 
         // Filter for TUANANH firmware ID: 150808 or Tuananh-150808
         if (devId.compare(QStringLiteral("150808"), Qt::CaseInsensitive) != 0 &&
-            devId.compare(QStringLiteral("Tuananh-150808"), Qt::CaseInsensitive) != 0) {
+            devId.compare(QStringLiteral("Tuananh-150808"), Qt::CaseInsensitive) != 0 &&
+            devId.compare(QStringLiteral("Tuananh-150304"), Qt::CaseInsensitive) != 0) {
             continue;
         }
 

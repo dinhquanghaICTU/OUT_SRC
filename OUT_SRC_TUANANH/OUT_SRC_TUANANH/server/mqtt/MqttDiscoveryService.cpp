@@ -207,7 +207,8 @@ void MqttDiscoveryService::processPublish(quint8 flags, const QByteArray &body)
         return;
     const QString deviceId = parts.at(3);
     if (deviceId.compare(QStringLiteral("150808"), Qt::CaseInsensitive) != 0 &&
-        deviceId.compare(QStringLiteral("Tuananh-150808"), Qt::CaseInsensitive) != 0) {
+        deviceId.compare(QStringLiteral("Tuananh-150808"), Qt::CaseInsensitive) != 0 &&
+        deviceId.compare(QStringLiteral("Tuananh-150304"), Qt::CaseInsensitive) != 0) {
         return;
     }
     const QString channel = parts.at(4);
