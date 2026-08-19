@@ -1,0 +1,26 @@
+{
+	"BUILD_DIR" : "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/build-OUT_SRC_TRUNGKIEN-Desktop-Debug/OUT_SRC_TRUNGKIEN_autogen",
+	"CMAKE_BINARY_DIR" : "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/build-OUT_SRC_TRUNGKIEN-Desktop-Debug",
+	"CMAKE_CURRENT_BINARY_DIR" : "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/build-OUT_SRC_TRUNGKIEN-Desktop-Debug",
+	"CMAKE_CURRENT_SOURCE_DIR" : "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_TRUNGKIEN",
+	"CMAKE_SOURCE_DIR" : "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_TRUNGKIEN",
+	"CROSS_CONFIG" : false,
+	"GENERATOR" : "Unix Makefiles",
+	"INCLUDE_DIR" : "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/build-OUT_SRC_TRUNGKIEN-Desktop-Debug/OUT_SRC_TRUNGKIEN_autogen/include",
+	"INPUTS" : 
+	[
+		"/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_TRUNGKIEN/resources/image/logo_ictu.png",
+		"/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_TRUNGKIEN/resources/styles/app.qss"
+	],
+	"LOCK_FILE" : "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/build-OUT_SRC_TRUNGKIEN-Desktop-Debug/CMakeFiles/OUT_SRC_TRUNGKIEN_autogen.dir/AutoRcc_resources_3YJK5W5UP7_Lock.lock",
+	"MULTI_CONFIG" : false,
+	"OPTIONS" : [ "--no-zstd", "-name", "resources" ],
+	"OUTPUT_CHECKSUM" : "3YJK5W5UP7",
+	"OUTPUT_NAME" : "qrc_resources.cpp",
+	"RCC_EXECUTABLE" : "/home/quanghaictu/Qt6Cross/qt6/host/./libexec/rcc",
+	"RCC_LIST_OPTIONS" : [ "--list" ],
+	"SETTINGS_FILE" : "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/build-OUT_SRC_TRUNGKIEN-Desktop-Debug/CMakeFiles/OUT_SRC_TRUNGKIEN_autogen.dir/AutoRcc_resources_3YJK5W5UP7_Used.txt",
+	"SOURCE" : "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_TRUNGKIEN/resources/resources.qrc",
+	"USE_BETTER_GRAPH" : false,
+	"VERBOSITY" : 0
+}
