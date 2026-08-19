@@ -37,9 +37,13 @@ SelectOnlineDeviceDialog::SelectOnlineDeviceDialog(const QJsonArray &devices, QW
         "QListWidget::item { padding: 8px; border-radius: 6px; } "
         "QListWidget::item:selected { background-color: #0284c7; color: white; }"));
 
+    const QString allowedId = QStringLiteral("manhquang-190782");
     for (const auto &val : devices) {
         const QJsonObject dev = val.toObject();
         const QString id = dev.value(QStringLiteral("device_id")).toString();
+        // Chỉ cho phép thêm thiết bị theo ID firmware manhquang-190782
+        if (id.compare(allowedId, Qt::CaseInsensitive) != 0)
+            continue;
         const QString name = dev.value(QStringLiteral("name")).toString(id);
         const bool online = dev.value(QStringLiteral("online")).toBool(true);
         auto *item = new QListWidgetItem(QStringLiteral("%1  [%2] - %3").arg(

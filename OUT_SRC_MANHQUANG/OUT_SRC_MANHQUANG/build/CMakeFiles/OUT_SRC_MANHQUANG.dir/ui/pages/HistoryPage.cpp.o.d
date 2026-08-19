@@ -1,7 +1,7 @@
 CMakeFiles/OUT_SRC_MANHQUANG.dir/ui/pages/HistoryPage.cpp.o: \
- /media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/ui/pages/HistoryPage.cpp \
+ /home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/ui/pages/HistoryPage.cpp \
  /usr/include/stdc-predef.h \
- /media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/ui/pages/HistoryPage.h \
+ /home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/ui/pages/HistoryPage.h \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtCore/QJsonArray \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtCore/qjsonarray.h \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtCore/qjsonvalue.h \
@@ -368,7 +368,7 @@ CMakeFiles/OUT_SRC_MANHQUANG.dir/ui/pages/HistoryPage.cpp.o: \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtWidgets/qsizepolicy.h \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtGui/qcursor.h \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtGui/qbitmap.h \
- /media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/OUT_SRC_MANHQUANG_autogen/include/ui_HistoryPage.h \
+ /home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/OUT_SRC_MANHQUANG_autogen/include/ui_HistoryPage.h \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtCore/QVariant \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtCore/qvariant.h \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtWidgets/QApplication \

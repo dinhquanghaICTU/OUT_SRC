@@ -5,7 +5,7 @@
 namespace AppConfig {
 
 inline constexpr bool DemoMode = false;
-inline constexpr int RefreshIntervalMs = 800;
+inline constexpr int RefreshIntervalMs = 250;
 
 inline const QString DefaultApiHost = QStringLiteral("127.0.0.1");
 inline constexpr quint16 DefaultApiPort = 8080;
@@ -13,6 +13,6 @@ inline constexpr quint16 DefaultApiPort = 8080;
 inline const QString DefaultMqttHost = QStringLiteral("127.0.0.1");
 inline constexpr quint16 DefaultMqttPort = 1883;
 
-inline const QString TargetDeviceId = QStringLiteral("Manhquang-150304");
+inline const QString TargetDeviceId = QStringLiteral("manhquang-190782");
 
 } // namespace AppConfig

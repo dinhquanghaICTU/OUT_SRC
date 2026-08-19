@@ -1,7 +1,7 @@
 CMakeFiles/OUT_SRC_MANHQUANG.dir/server/mqtt/MqttDiscoveryService.cpp.o: \
- /media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/server/mqtt/MqttDiscoveryService.cpp \
+ /home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/server/mqtt/MqttDiscoveryService.cpp \
  /usr/include/stdc-predef.h \
- /media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/server/mqtt/MqttDiscoveryService.h \
+ /home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/server/mqtt/MqttDiscoveryService.h \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtCore/QByteArray \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtCore/qbytearray.h \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtCore/qrefcount.h \
@@ -348,7 +348,7 @@ CMakeFiles/OUT_SRC_MANHQUANG.dir/server/mqtt/MqttDiscoveryService.cpp.o: \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtCore/QTimer \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtCore/qtimer.h \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtCore/qbasictimer.h \
- /media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/server/database/Database.h \
+ /home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/server/database/Database.h \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtCore/QJsonArray \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtCore/qjsonarray.h \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtSql/QSqlDatabase \

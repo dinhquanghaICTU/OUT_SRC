@@ -1,7 +1,7 @@
 CMakeFiles/OUT_SRC_MANHQUANG.dir/server/api/ApiServer.cpp.o: \
- /media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/server/api/ApiServer.cpp \
+ /home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/server/api/ApiServer.cpp \
  /usr/include/stdc-predef.h \
- /media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/server/api/ApiServer.h \
+ /home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/server/api/ApiServer.h \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtCore/QHash \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtCore/qhash.h \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtCore/qalgorithms.h \
@@ -378,7 +378,7 @@ CMakeFiles/OUT_SRC_MANHQUANG.dir/server/api/ApiServer.cpp.o: \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtCore/quuid.h \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtCore/QObject \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtCore/qobject.h \
- /media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/server/database/Database.h \
+ /home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/server/database/Database.h \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtCore/QJsonArray \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtCore/qjsonarray.h \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtSql/QSqlDatabase \
@@ -388,7 +388,7 @@ CMakeFiles/OUT_SRC_MANHQUANG.dir/server/api/ApiServer.cpp.o: \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtSql/qtsqlexports.h \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtCore/QString \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtCore/qstring.h \
- /media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/server/mqtt/MqttDiscoveryService.h \
+ /home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/server/mqtt/MqttDiscoveryService.h \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtCore/QByteArray \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtCore/qbytearray.h \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtNetwork/QTcpSocket \

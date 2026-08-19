@@ -263,7 +263,7 @@ events:
       Compilation of the CXX compiler identification source "CMakeCXXCompilerId.cpp" produced "a.out"
       
       The CXX compiler identification is GNU, found in:
-        /media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/4.3.20260523-g753b5a3/CompilerIdCXX/a.out
+        /home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/4.3.20260523-g753b5a3/CompilerIdCXX/a.out
       
   -
     kind: "find-v1"
@@ -1029,8 +1029,8 @@ events:
     checks:
       - "Detecting CXX compiler ABI info"
     directories:
-      source: "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/CMakeScratch/TryCompile-yAPkBQ"
-      binary: "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/CMakeScratch/TryCompile-yAPkBQ"
+      source: "/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/CMakeScratch/TryCompile-mGA2MK"
+      binary: "/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/CMakeScratch/TryCompile-mGA2MK"
     cmakeVariables:
       CMAKE_CXX_FLAGS: ""
       CMAKE_CXX_FLAGS_DEBUG: "-g"
@@ -1041,13 +1041,13 @@ events:
       variable: "CMAKE_CXX_ABI_COMPILED"
       cached: true
       stdout: |
-        Change Dir: '/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/CMakeScratch/TryCompile-yAPkBQ'
+        Change Dir: '/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/CMakeScratch/TryCompile-mGA2MK'
         
-        Run Build Command(s): /usr/local/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_e3106/fast
-        /usr/bin/gmake  -f CMakeFiles/cmTC_e3106.dir/build.make CMakeFiles/cmTC_e3106.dir/build
-        gmake[1]: Entering directory '/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/CMakeScratch/TryCompile-yAPkBQ'
-        Building CXX object CMakeFiles/cmTC_e3106.dir/CMakeCXXCompilerABI.cpp.o
-        /usr/bin/c++   -v -o CMakeFiles/cmTC_e3106.dir/CMakeCXXCompilerABI.cpp.o -c /usr/local/share/cmake-4.3/Modules/CMakeCXXCompilerABI.cpp
+        Run Build Command(s): /usr/local/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_387fe/fast
+        /usr/bin/gmake  -f CMakeFiles/cmTC_387fe.dir/build.make CMakeFiles/cmTC_387fe.dir/build
+        gmake[1]: Entering directory '/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/CMakeScratch/TryCompile-mGA2MK'
+        Building CXX object CMakeFiles/cmTC_387fe.dir/CMakeCXXCompilerABI.cpp.o
+        /usr/bin/c++   -v -o CMakeFiles/cmTC_387fe.dir/CMakeCXXCompilerABI.cpp.o -c /usr/local/share/cmake-4.3/Modules/CMakeCXXCompilerABI.cpp
         Using built-in specs.
         COLLECT_GCC=/usr/bin/c++
         OFFLOAD_TARGET_NAMES=nvptx-none:amdgcn-amdhsa
@@ -1057,8 +1057,8 @@ events:
         Thread model: posix
         Supported LTO compression algorithms: zlib zstd
         gcc version 11.4.0 (Ubuntu 11.4.0-1ubuntu1~22.04.3) 
-        COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_e3106.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64' '-dumpdir' 'CMakeFiles/cmTC_e3106.dir/'
-         /usr/lib/gcc/x86_64-linux-gnu/11/cc1plus -quiet -v -imultiarch x86_64-linux-gnu -D_GNU_SOURCE /usr/local/share/cmake-4.3/Modules/CMakeCXXCompilerABI.cpp -quiet -dumpdir CMakeFiles/cmTC_e3106.dir/ -dumpbase CMakeCXXCompilerABI.cpp.cpp -dumpbase-ext .cpp -mtune=generic -march=x86-64 -version -fasynchronous-unwind-tables -fstack-protector-strong -Wformat -Wformat-security -fstack-clash-protection -fcf-protection -o /tmp/ccnNOMU1.s
+        COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_387fe.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64' '-dumpdir' 'CMakeFiles/cmTC_387fe.dir/'
+         /usr/lib/gcc/x86_64-linux-gnu/11/cc1plus -quiet -v -imultiarch x86_64-linux-gnu -D_GNU_SOURCE /usr/local/share/cmake-4.3/Modules/CMakeCXXCompilerABI.cpp -quiet -dumpdir CMakeFiles/cmTC_387fe.dir/ -dumpbase CMakeCXXCompilerABI.cpp.cpp -dumpbase-ext .cpp -mtune=generic -march=x86-64 -version -fasynchronous-unwind-tables -fstack-protector-strong -Wformat -Wformat-security -fstack-clash-protection -fcf-protection -o /tmp/ccq6pLyB.s
         GNU C++17 (Ubuntu 11.4.0-1ubuntu1~22.04.3) version 11.4.0 (x86_64-linux-gnu)
         	compiled by GNU C version 11.4.0, GMP version 6.2.1, MPFR version 4.1.0, MPC version 1.2.1, isl version isl-0.24-GMP
         
@@ -1082,14 +1082,14 @@ events:
         
         GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072
         Compiler executable checksum: ac7fa628ee459f217e6fdb88b3db0bde
-        COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_e3106.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64' '-dumpdir' 'CMakeFiles/cmTC_e3106.dir/'
-         as -v --64 -o CMakeFiles/cmTC_e3106.dir/CMakeCXXCompilerABI.cpp.o /tmp/ccnNOMU1.s
+        COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_387fe.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64' '-dumpdir' 'CMakeFiles/cmTC_387fe.dir/'
+         as -v --64 -o CMakeFiles/cmTC_387fe.dir/CMakeCXXCompilerABI.cpp.o /tmp/ccq6pLyB.s
         GNU assembler version 2.38 (x86_64-linux-gnu) using BFD version (GNU Binutils for Ubuntu) 2.38
         COMPILER_PATH=/usr/lib/gcc/x86_64-linux-gnu/11/:/usr/lib/gcc/x86_64-linux-gnu/11/:/usr/lib/gcc/x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/11/:/usr/lib/gcc/x86_64-linux-gnu/
         LIBRARY_PATH=/usr/lib/gcc/x86_64-linux-gnu/11/:/usr/lib/gcc/x86_64-linux-gnu/11/../../../x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/11/../../../../lib/:/lib/x86_64-linux-gnu/:/lib/../lib/:/usr/lib/x86_64-linux-gnu/:/usr/lib/../lib/:/usr/lib/gcc/x86_64-linux-gnu/11/../../../:/lib/:/usr/lib/
-        COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_e3106.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64' '-dumpdir' 'CMakeFiles/cmTC_e3106.dir/CMakeCXXCompilerABI.cpp.'
-        Linking CXX executable cmTC_e3106
-        /usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_e3106.dir/link.txt --verbose=1
+        COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_387fe.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64' '-dumpdir' 'CMakeFiles/cmTC_387fe.dir/CMakeCXXCompilerABI.cpp.'
+        Linking CXX executable cmTC_387fe
+        /usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_387fe.dir/link.txt --verbose=1
         Using built-in specs.
         COLLECT_GCC=/usr/bin/c++
         COLLECT_LTO_WRAPPER=/usr/lib/gcc/x86_64-linux-gnu/11/lto-wrapper
@@ -1102,14 +1102,14 @@ events:
         gcc version 11.4.0 (Ubuntu 11.4.0-1ubuntu1~22.04.3) 
         COMPILER_PATH=/usr/lib/gcc/x86_64-linux-gnu/11/:/usr/lib/gcc/x86_64-linux-gnu/11/:/usr/lib/gcc/x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/11/:/usr/lib/gcc/x86_64-linux-gnu/
         LIBRARY_PATH=/usr/lib/gcc/x86_64-linux-gnu/11/:/usr/lib/gcc/x86_64-linux-gnu/11/../../../x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/11/../../../../lib/:/lib/x86_64-linux-gnu/:/lib/../lib/:/usr/lib/x86_64-linux-gnu/:/usr/lib/../lib/:/usr/lib/gcc/x86_64-linux-gnu/11/../../../:/lib/:/usr/lib/
-        COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_e3106' '-shared-libgcc' '-mtune=generic' '-march=x86-64' '-dumpdir' 'cmTC_e3106.'
-         /usr/lib/gcc/x86_64-linux-gnu/11/collect2 -plugin /usr/lib/gcc/x86_64-linux-gnu/11/liblto_plugin.so -plugin-opt=/usr/lib/gcc/x86_64-linux-gnu/11/lto-wrapper -plugin-opt=-fresolution=/tmp/cczzMkIX.res -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc --build-id --eh-frame-hdr -m elf_x86_64 --hash-style=gnu --as-needed -dynamic-linker /lib64/ld-linux-x86-64.so.2 -pie -z now -z relro -o cmTC_e3106 /usr/lib/gcc/x86_64-linux-gnu/11/../../../x86_64-linux-gnu/Scrt1.o /usr/lib/gcc/x86_64-linux-gnu/11/../../../x86_64-linux-gnu/crti.o /usr/lib/gcc/x86_64-linux-gnu/11/crtbeginS.o -L/usr/lib/gcc/x86_64-linux-gnu/11 -L/usr/lib/gcc/x86_64-linux-gnu/11/../../../x86_64-linux-gnu -L/usr/lib/gcc/x86_64-linux-gnu/11/../../../../lib -L/lib/x86_64-linux-gnu -L/lib/../lib -L/usr/lib/x86_64-linux-gnu -L/usr/lib/../lib -L/usr/lib/gcc/x86_64-linux-gnu/11/../../.. -v CMakeFiles/cmTC_e3106.dir/CMakeCXXCompilerABI.cpp.o -lstdc++ -lm -lgcc_s -lgcc -lc -lgcc_s -lgcc /usr/lib/gcc/x86_64-linux-gnu/11/crtendS.o /usr/lib/gcc/x86_64-linux-gnu/11/../../../x86_64-linux-gnu/crtn.o
+        COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_387fe' '-shared-libgcc' '-mtune=generic' '-march=x86-64' '-dumpdir' 'cmTC_387fe.'
+         /usr/lib/gcc/x86_64-linux-gnu/11/collect2 -plugin /usr/lib/gcc/x86_64-linux-gnu/11/liblto_plugin.so -plugin-opt=/usr/lib/gcc/x86_64-linux-gnu/11/lto-wrapper -plugin-opt=-fresolution=/tmp/ccxcGhAR.res -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc --build-id --eh-frame-hdr -m elf_x86_64 --hash-style=gnu --as-needed -dynamic-linker /lib64/ld-linux-x86-64.so.2 -pie -z now -z relro -o cmTC_387fe /usr/lib/gcc/x86_64-linux-gnu/11/../../../x86_64-linux-gnu/Scrt1.o /usr/lib/gcc/x86_64-linux-gnu/11/../../../x86_64-linux-gnu/crti.o /usr/lib/gcc/x86_64-linux-gnu/11/crtbeginS.o -L/usr/lib/gcc/x86_64-linux-gnu/11 -L/usr/lib/gcc/x86_64-linux-gnu/11/../../../x86_64-linux-gnu -L/usr/lib/gcc/x86_64-linux-gnu/11/../../../../lib -L/lib/x86_64-linux-gnu -L/lib/../lib -L/usr/lib/x86_64-linux-gnu -L/usr/lib/../lib -L/usr/lib/gcc/x86_64-linux-gnu/11/../../.. -v CMakeFiles/cmTC_387fe.dir/CMakeCXXCompilerABI.cpp.o -lstdc++ -lm -lgcc_s -lgcc -lc -lgcc_s -lgcc /usr/lib/gcc/x86_64-linux-gnu/11/crtendS.o /usr/lib/gcc/x86_64-linux-gnu/11/../../../x86_64-linux-gnu/crtn.o
         collect2 version 11.4.0
-        /usr/bin/ld -plugin /usr/lib/gcc/x86_64-linux-gnu/11/liblto_plugin.so -plugin-opt=/usr/lib/gcc/x86_64-linux-gnu/11/lto-wrapper -plugin-opt=-fresolution=/tmp/cczzMkIX.res -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc --build-id --eh-frame-hdr -m elf_x86_64 --hash-style=gnu --as-needed -dynamic-linker /lib64/ld-linux-x86-64.so.2 -pie -z now -z relro -o cmTC_e3106 /usr/lib/gcc/x86_64-linux-gnu/11/../../../x86_64-linux-gnu/Scrt1.o /usr/lib/gcc/x86_64-linux-gnu/11/../../../x86_64-linux-gnu/crti.o /usr/lib/gcc/x86_64-linux-gnu/11/crtbeginS.o -L/usr/lib/gcc/x86_64-linux-gnu/11 -L/usr/lib/gcc/x86_64-linux-gnu/11/../../../x86_64-linux-gnu -L/usr/lib/gcc/x86_64-linux-gnu/11/../../../../lib -L/lib/x86_64-linux-gnu -L/lib/../lib -L/usr/lib/x86_64-linux-gnu -L/usr/lib/../lib -L/usr/lib/gcc/x86_64-linux-gnu/11/../../.. -v CMakeFiles/cmTC_e3106.dir/CMakeCXXCompilerABI.cpp.o -lstdc++ -lm -lgcc_s -lgcc -lc -lgcc_s -lgcc /usr/lib/gcc/x86_64-linux-gnu/11/crtendS.o /usr/lib/gcc/x86_64-linux-gnu/11/../../../x86_64-linux-gnu/crtn.o
+        /usr/bin/ld -plugin /usr/lib/gcc/x86_64-linux-gnu/11/liblto_plugin.so -plugin-opt=/usr/lib/gcc/x86_64-linux-gnu/11/lto-wrapper -plugin-opt=-fresolution=/tmp/ccxcGhAR.res -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc --build-id --eh-frame-hdr -m elf_x86_64 --hash-style=gnu --as-needed -dynamic-linker /lib64/ld-linux-x86-64.so.2 -pie -z now -z relro -o cmTC_387fe /usr/lib/gcc/x86_64-linux-gnu/11/../../../x86_64-linux-gnu/Scrt1.o /usr/lib/gcc/x86_64-linux-gnu/11/../../../x86_64-linux-gnu/crti.o /usr/lib/gcc/x86_64-linux-gnu/11/crtbeginS.o -L/usr/lib/gcc/x86_64-linux-gnu/11 -L/usr/lib/gcc/x86_64-linux-gnu/11/../../../x86_64-linux-gnu -L/usr/lib/gcc/x86_64-linux-gnu/11/../../../../lib -L/lib/x86_64-linux-gnu -L/lib/../lib -L/usr/lib/x86_64-linux-gnu -L/usr/lib/../lib -L/usr/lib/gcc/x86_64-linux-gnu/11/../../.. -v CMakeFiles/cmTC_387fe.dir/CMakeCXXCompilerABI.cpp.o -lstdc++ -lm -lgcc_s -lgcc -lc -lgcc_s -lgcc /usr/lib/gcc/x86_64-linux-gnu/11/crtendS.o /usr/lib/gcc/x86_64-linux-gnu/11/../../../x86_64-linux-gnu/crtn.o
         GNU ld (GNU Binutils for Ubuntu) 2.38
-        COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_e3106' '-shared-libgcc' '-mtune=generic' '-march=x86-64' '-dumpdir' 'cmTC_e3106.'
-        /usr/bin/c++  -v -Wl,-v CMakeFiles/cmTC_e3106.dir/CMakeCXXCompilerABI.cpp.o -o cmTC_e3106
-        gmake[1]: Leaving directory '/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/CMakeScratch/TryCompile-yAPkBQ'
+        COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_387fe' '-shared-libgcc' '-mtune=generic' '-march=x86-64' '-dumpdir' 'cmTC_387fe.'
+        /usr/bin/c++  -v -Wl,-v CMakeFiles/cmTC_387fe.dir/CMakeCXXCompilerABI.cpp.o -o cmTC_387fe
+        gmake[1]: Leaving directory '/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/CMakeScratch/TryCompile-mGA2MK'
         
       exitCode: 0
   -
@@ -1150,13 +1150,13 @@ events:
       Parsed CXX implicit link information:
         link line regex: [^( *|.*[/\\])(ld[0-9]*(|\\.[a-rt-z][a-z]*|\\.s[a-np-z][a-z]*|\\.so[a-z]+)|wild|CMAKE_LINK_STARTFILE-NOTFOUND|([^/\\]+-)?ld|collect2)[^/\\]*( |$)]
         linker tool regex: [^[ 	]*(->|"|[0-9]+>[ 	-]*Build:[ 	0-9]+ ms[ 	]*)?[ 	]*(([^"]*[/\\])?(ld[0-9]*(|\\.[a-rt-z][a-z]*|\\.s[a-np-z][a-z]*|\\.so[a-z]+)|wild))("|,| |$)]
-        ignore line: [Change Dir: '/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/CMakeScratch/TryCompile-yAPkBQ']
+        ignore line: [Change Dir: '/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/CMakeScratch/TryCompile-mGA2MK']
         ignore line: []
-        ignore line: [Run Build Command(s): /usr/local/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_e3106/fast]
-        ignore line: [/usr/bin/gmake  -f CMakeFiles/cmTC_e3106.dir/build.make CMakeFiles/cmTC_e3106.dir/build]
-        ignore line: [gmake[1]: Entering directory '/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/CMakeScratch/TryCompile-yAPkBQ']
-        ignore line: [Building CXX object CMakeFiles/cmTC_e3106.dir/CMakeCXXCompilerABI.cpp.o]
-        ignore line: [/usr/bin/c++   -v -o CMakeFiles/cmTC_e3106.dir/CMakeCXXCompilerABI.cpp.o -c /usr/local/share/cmake-4.3/Modules/CMakeCXXCompilerABI.cpp]
+        ignore line: [Run Build Command(s): /usr/local/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_387fe/fast]
+        ignore line: [/usr/bin/gmake  -f CMakeFiles/cmTC_387fe.dir/build.make CMakeFiles/cmTC_387fe.dir/build]
+        ignore line: [gmake[1]: Entering directory '/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/CMakeScratch/TryCompile-mGA2MK']
+        ignore line: [Building CXX object CMakeFiles/cmTC_387fe.dir/CMakeCXXCompilerABI.cpp.o]
+        ignore line: [/usr/bin/c++   -v -o CMakeFiles/cmTC_387fe.dir/CMakeCXXCompilerABI.cpp.o -c /usr/local/share/cmake-4.3/Modules/CMakeCXXCompilerABI.cpp]
         ignore line: [Using built-in specs.]
         ignore line: [COLLECT_GCC=/usr/bin/c++]
         ignore line: [OFFLOAD_TARGET_NAMES=nvptx-none:amdgcn-amdhsa]
@@ -1166,8 +1166,8 @@ events:
         ignore line: [Thread model: posix]
         ignore line: [Supported LTO compression algorithms: zlib zstd]
         ignore line: [gcc version 11.4.0 (Ubuntu 11.4.0-1ubuntu1~22.04.3) ]
-        ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_e3106.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64' '-dumpdir' 'CMakeFiles/cmTC_e3106.dir/']
-        ignore line: [ /usr/lib/gcc/x86_64-linux-gnu/11/cc1plus -quiet -v -imultiarch x86_64-linux-gnu -D_GNU_SOURCE /usr/local/share/cmake-4.3/Modules/CMakeCXXCompilerABI.cpp -quiet -dumpdir CMakeFiles/cmTC_e3106.dir/ -dumpbase CMakeCXXCompilerABI.cpp.cpp -dumpbase-ext .cpp -mtune=generic -march=x86-64 -version -fasynchronous-unwind-tables -fstack-protector-strong -Wformat -Wformat-security -fstack-clash-protection -fcf-protection -o /tmp/ccnNOMU1.s]
+        ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_387fe.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64' '-dumpdir' 'CMakeFiles/cmTC_387fe.dir/']
+        ignore line: [ /usr/lib/gcc/x86_64-linux-gnu/11/cc1plus -quiet -v -imultiarch x86_64-linux-gnu -D_GNU_SOURCE /usr/local/share/cmake-4.3/Modules/CMakeCXXCompilerABI.cpp -quiet -dumpdir CMakeFiles/cmTC_387fe.dir/ -dumpbase CMakeCXXCompilerABI.cpp.cpp -dumpbase-ext .cpp -mtune=generic -march=x86-64 -version -fasynchronous-unwind-tables -fstack-protector-strong -Wformat -Wformat-security -fstack-clash-protection -fcf-protection -o /tmp/ccq6pLyB.s]
         ignore line: [GNU C++17 (Ubuntu 11.4.0-1ubuntu1~22.04.3) version 11.4.0 (x86_64-linux-gnu)]
         ignore line: [	compiled by GNU C version 11.4.0  GMP version 6.2.1  MPFR version 4.1.0  MPC version 1.2.1  isl version isl-0.24-GMP]
         ignore line: []
@@ -1191,14 +1191,14 @@ events:
         ignore line: []
         ignore line: [GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072]
         ignore line: [Compiler executable checksum: ac7fa628ee459f217e6fdb88b3db0bde]
-        ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_e3106.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64' '-dumpdir' 'CMakeFiles/cmTC_e3106.dir/']
-        ignore line: [ as -v --64 -o CMakeFiles/cmTC_e3106.dir/CMakeCXXCompilerABI.cpp.o /tmp/ccnNOMU1.s]
+        ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_387fe.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64' '-dumpdir' 'CMakeFiles/cmTC_387fe.dir/']
+        ignore line: [ as -v --64 -o CMakeFiles/cmTC_387fe.dir/CMakeCXXCompilerABI.cpp.o /tmp/ccq6pLyB.s]
         ignore line: [GNU assembler version 2.38 (x86_64-linux-gnu) using BFD version (GNU Binutils for Ubuntu) 2.38]
         ignore line: [COMPILER_PATH=/usr/lib/gcc/x86_64-linux-gnu/11/:/usr/lib/gcc/x86_64-linux-gnu/11/:/usr/lib/gcc/x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/11/:/usr/lib/gcc/x86_64-linux-gnu/]
         ignore line: [LIBRARY_PATH=/usr/lib/gcc/x86_64-linux-gnu/11/:/usr/lib/gcc/x86_64-linux-gnu/11/../../../x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/11/../../../../lib/:/lib/x86_64-linux-gnu/:/lib/../lib/:/usr/lib/x86_64-linux-gnu/:/usr/lib/../lib/:/usr/lib/gcc/x86_64-linux-gnu/11/../../../:/lib/:/usr/lib/]
-        ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_e3106.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64' '-dumpdir' 'CMakeFiles/cmTC_e3106.dir/CMakeCXXCompilerABI.cpp.']
-        ignore line: [Linking CXX executable cmTC_e3106]
-        ignore line: [/usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_e3106.dir/link.txt --verbose=1]
+        ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_387fe.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64' '-dumpdir' 'CMakeFiles/cmTC_387fe.dir/CMakeCXXCompilerABI.cpp.']
+        ignore line: [Linking CXX executable cmTC_387fe]
+        ignore line: [/usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_387fe.dir/link.txt --verbose=1]
         ignore line: [Using built-in specs.]
         ignore line: [COLLECT_GCC=/usr/bin/c++]
         ignore line: [COLLECT_LTO_WRAPPER=/usr/lib/gcc/x86_64-linux-gnu/11/lto-wrapper]
@@ -1211,13 +1211,13 @@ events:
         ignore line: [gcc version 11.4.0 (Ubuntu 11.4.0-1ubuntu1~22.04.3) ]
         ignore line: [COMPILER_PATH=/usr/lib/gcc/x86_64-linux-gnu/11/:/usr/lib/gcc/x86_64-linux-gnu/11/:/usr/lib/gcc/x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/11/:/usr/lib/gcc/x86_64-linux-gnu/]
         ignore line: [LIBRARY_PATH=/usr/lib/gcc/x86_64-linux-gnu/11/:/usr/lib/gcc/x86_64-linux-gnu/11/../../../x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/11/../../../../lib/:/lib/x86_64-linux-gnu/:/lib/../lib/:/usr/lib/x86_64-linux-gnu/:/usr/lib/../lib/:/usr/lib/gcc/x86_64-linux-gnu/11/../../../:/lib/:/usr/lib/]
-        ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_e3106' '-shared-libgcc' '-mtune=generic' '-march=x86-64' '-dumpdir' 'cmTC_e3106.']
-        link line: [ /usr/lib/gcc/x86_64-linux-gnu/11/collect2 -plugin /usr/lib/gcc/x86_64-linux-gnu/11/liblto_plugin.so -plugin-opt=/usr/lib/gcc/x86_64-linux-gnu/11/lto-wrapper -plugin-opt=-fresolution=/tmp/cczzMkIX.res -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc --build-id --eh-frame-hdr -m elf_x86_64 --hash-style=gnu --as-needed -dynamic-linker /lib64/ld-linux-x86-64.so.2 -pie -z now -z relro -o cmTC_e3106 /usr/lib/gcc/x86_64-linux-gnu/11/../../../x86_64-linux-gnu/Scrt1.o /usr/lib/gcc/x86_64-linux-gnu/11/../../../x86_64-linux-gnu/crti.o /usr/lib/gcc/x86_64-linux-gnu/11/crtbeginS.o -L/usr/lib/gcc/x86_64-linux-gnu/11 -L/usr/lib/gcc/x86_64-linux-gnu/11/../../../x86_64-linux-gnu -L/usr/lib/gcc/x86_64-linux-gnu/11/../../../../lib -L/lib/x86_64-linux-gnu -L/lib/../lib -L/usr/lib/x86_64-linux-gnu -L/usr/lib/../lib -L/usr/lib/gcc/x86_64-linux-gnu/11/../../.. -v CMakeFiles/cmTC_e3106.dir/CMakeCXXCompilerABI.cpp.o -lstdc++ -lm -lgcc_s -lgcc -lc -lgcc_s -lgcc /usr/lib/gcc/x86_64-linux-gnu/11/crtendS.o /usr/lib/gcc/x86_64-linux-gnu/11/../../../x86_64-linux-gnu/crtn.o]
+        ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_387fe' '-shared-libgcc' '-mtune=generic' '-march=x86-64' '-dumpdir' 'cmTC_387fe.']
+        link line: [ /usr/lib/gcc/x86_64-linux-gnu/11/collect2 -plugin /usr/lib/gcc/x86_64-linux-gnu/11/liblto_plugin.so -plugin-opt=/usr/lib/gcc/x86_64-linux-gnu/11/lto-wrapper -plugin-opt=-fresolution=/tmp/ccxcGhAR.res -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc --build-id --eh-frame-hdr -m elf_x86_64 --hash-style=gnu --as-needed -dynamic-linker /lib64/ld-linux-x86-64.so.2 -pie -z now -z relro -o cmTC_387fe /usr/lib/gcc/x86_64-linux-gnu/11/../../../x86_64-linux-gnu/Scrt1.o /usr/lib/gcc/x86_64-linux-gnu/11/../../../x86_64-linux-gnu/crti.o /usr/lib/gcc/x86_64-linux-gnu/11/crtbeginS.o -L/usr/lib/gcc/x86_64-linux-gnu/11 -L/usr/lib/gcc/x86_64-linux-gnu/11/../../../x86_64-linux-gnu -L/usr/lib/gcc/x86_64-linux-gnu/11/../../../../lib -L/lib/x86_64-linux-gnu -L/lib/../lib -L/usr/lib/x86_64-linux-gnu -L/usr/lib/../lib -L/usr/lib/gcc/x86_64-linux-gnu/11/../../.. -v CMakeFiles/cmTC_387fe.dir/CMakeCXXCompilerABI.cpp.o -lstdc++ -lm -lgcc_s -lgcc -lc -lgcc_s -lgcc /usr/lib/gcc/x86_64-linux-gnu/11/crtendS.o /usr/lib/gcc/x86_64-linux-gnu/11/../../../x86_64-linux-gnu/crtn.o]
           arg [/usr/lib/gcc/x86_64-linux-gnu/11/collect2] ==> ignore
           arg [-plugin] ==> ignore
           arg [/usr/lib/gcc/x86_64-linux-gnu/11/liblto_plugin.so] ==> ignore
           arg [-plugin-opt=/usr/lib/gcc/x86_64-linux-gnu/11/lto-wrapper] ==> ignore
-          arg [-plugin-opt=-fresolution=/tmp/cczzMkIX.res] ==> ignore
+          arg [-plugin-opt=-fresolution=/tmp/ccxcGhAR.res] ==> ignore
           arg [-plugin-opt=-pass-through=-lgcc_s] ==> ignore
           arg [-plugin-opt=-pass-through=-lgcc] ==> ignore
           arg [-plugin-opt=-pass-through=-lc] ==> ignore
@@ -1235,7 +1235,7 @@ events:
           arg [-znow] ==> ignore
           arg [-zrelro] ==> ignore
           arg [-o] ==> ignore
-          arg [cmTC_e3106] ==> ignore
+          arg [cmTC_387fe] ==> ignore
           arg [/usr/lib/gcc/x86_64-linux-gnu/11/../../../x86_64-linux-gnu/Scrt1.o] ==> obj [/usr/lib/gcc/x86_64-linux-gnu/11/../../../x86_64-linux-gnu/Scrt1.o]
           arg [/usr/lib/gcc/x86_64-linux-gnu/11/../../../x86_64-linux-gnu/crti.o] ==> obj [/usr/lib/gcc/x86_64-linux-gnu/11/../../../x86_64-linux-gnu/crti.o]
           arg [/usr/lib/gcc/x86_64-linux-gnu/11/crtbeginS.o] ==> obj [/usr/lib/gcc/x86_64-linux-gnu/11/crtbeginS.o]
@@ -1248,7 +1248,7 @@ events:
           arg [-L/usr/lib/../lib] ==> dir [/usr/lib/../lib]
           arg [-L/usr/lib/gcc/x86_64-linux-gnu/11/../../..] ==> dir [/usr/lib/gcc/x86_64-linux-gnu/11/../../..]
           arg [-v] ==> ignore
-          arg [CMakeFiles/cmTC_e3106.dir/CMakeCXXCompilerABI.cpp.o] ==> ignore
+          arg [CMakeFiles/cmTC_387fe.dir/CMakeCXXCompilerABI.cpp.o] ==> ignore
           arg [-lstdc++] ==> lib [stdc++]
           arg [-lm] ==> lib [m]
           arg [-lgcc_s] ==> lib [gcc_s]
@@ -1259,7 +1259,7 @@ events:
           arg [/usr/lib/gcc/x86_64-linux-gnu/11/crtendS.o] ==> obj [/usr/lib/gcc/x86_64-linux-gnu/11/crtendS.o]
           arg [/usr/lib/gcc/x86_64-linux-gnu/11/../../../x86_64-linux-gnu/crtn.o] ==> obj [/usr/lib/gcc/x86_64-linux-gnu/11/../../../x86_64-linux-gnu/crtn.o]
         ignore line: [collect2 version 11.4.0]
-        ignore line: [/usr/bin/ld -plugin /usr/lib/gcc/x86_64-linux-gnu/11/liblto_plugin.so -plugin-opt=/usr/lib/gcc/x86_64-linux-gnu/11/lto-wrapper -plugin-opt=-fresolution=/tmp/cczzMkIX.res -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc --build-id --eh-frame-hdr -m elf_x86_64 --hash-style=gnu --as-needed -dynamic-linker /lib64/ld-linux-x86-64.so.2 -pie -z now -z relro -o cmTC_e3106 /usr/lib/gcc/x86_64-linux-gnu/11/../../../x86_64-linux-gnu/Scrt1.o /usr/lib/gcc/x86_64-linux-gnu/11/../../../x86_64-linux-gnu/crti.o /usr/lib/gcc/x86_64-linux-gnu/11/crtbeginS.o -L/usr/lib/gcc/x86_64-linux-gnu/11 -L/usr/lib/gcc/x86_64-linux-gnu/11/../../../x86_64-linux-gnu -L/usr/lib/gcc/x86_64-linux-gnu/11/../../../../lib -L/lib/x86_64-linux-gnu -L/lib/../lib -L/usr/lib/x86_64-linux-gnu -L/usr/lib/../lib -L/usr/lib/gcc/x86_64-linux-gnu/11/../../.. -v CMakeFiles/cmTC_e3106.dir/CMakeCXXCompilerABI.cpp.o -lstdc++ -lm -lgcc_s -lgcc -lc -lgcc_s -lgcc /usr/lib/gcc/x86_64-linux-gnu/11/crtendS.o /usr/lib/gcc/x86_64-linux-gnu/11/../../../x86_64-linux-gnu/crtn.o]
+        ignore line: [/usr/bin/ld -plugin /usr/lib/gcc/x86_64-linux-gnu/11/liblto_plugin.so -plugin-opt=/usr/lib/gcc/x86_64-linux-gnu/11/lto-wrapper -plugin-opt=-fresolution=/tmp/ccxcGhAR.res -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc --build-id --eh-frame-hdr -m elf_x86_64 --hash-style=gnu --as-needed -dynamic-linker /lib64/ld-linux-x86-64.so.2 -pie -z now -z relro -o cmTC_387fe /usr/lib/gcc/x86_64-linux-gnu/11/../../../x86_64-linux-gnu/Scrt1.o /usr/lib/gcc/x86_64-linux-gnu/11/../../../x86_64-linux-gnu/crti.o /usr/lib/gcc/x86_64-linux-gnu/11/crtbeginS.o -L/usr/lib/gcc/x86_64-linux-gnu/11 -L/usr/lib/gcc/x86_64-linux-gnu/11/../../../x86_64-linux-gnu -L/usr/lib/gcc/x86_64-linux-gnu/11/../../../../lib -L/lib/x86_64-linux-gnu -L/lib/../lib -L/usr/lib/x86_64-linux-gnu -L/usr/lib/../lib -L/usr/lib/gcc/x86_64-linux-gnu/11/../../.. -v CMakeFiles/cmTC_387fe.dir/CMakeCXXCompilerABI.cpp.o -lstdc++ -lm -lgcc_s -lgcc -lc -lgcc_s -lgcc /usr/lib/gcc/x86_64-linux-gnu/11/crtendS.o /usr/lib/gcc/x86_64-linux-gnu/11/../../../x86_64-linux-gnu/crtn.o]
         linker tool for 'CXX': /usr/bin/ld
         collapse obj [/usr/lib/gcc/x86_64-linux-gnu/11/../../../x86_64-linux-gnu/Scrt1.o] ==> [/usr/lib/x86_64-linux-gnu/Scrt1.o]
         collapse obj [/usr/lib/gcc/x86_64-linux-gnu/11/../../../x86_64-linux-gnu/crti.o] ==> [/usr/lib/x86_64-linux-gnu/crti.o]
@@ -1304,8 +1304,8 @@ events:
     checks:
       - "Performing Test CMAKE_HAVE_LIBC_PTHREAD"
     directories:
-      source: "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/CMakeScratch/TryCompile-pd9LGI"
-      binary: "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/CMakeScratch/TryCompile-pd9LGI"
+      source: "/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/CMakeScratch/TryCompile-hqHOzw"
+      binary: "/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/CMakeScratch/TryCompile-hqHOzw"
     cmakeVariables:
       CMAKE_CXX_FLAGS: ""
       CMAKE_CXX_FLAGS_DEBUG: "-g"
@@ -1316,17 +1316,17 @@ events:
       variable: "CMAKE_HAVE_LIBC_PTHREAD"
       cached: true
       stdout: |
-        Change Dir: '/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/CMakeScratch/TryCompile-pd9LGI'
+        Change Dir: '/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/CMakeScratch/TryCompile-hqHOzw'
         
-        Run Build Command(s): /usr/local/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_9b4b4/fast
-        /usr/bin/gmake  -f CMakeFiles/cmTC_9b4b4.dir/build.make CMakeFiles/cmTC_9b4b4.dir/build
-        gmake[1]: Entering directory '/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/CMakeScratch/TryCompile-pd9LGI'
-        Building CXX object CMakeFiles/cmTC_9b4b4.dir/src.cxx.o
-        /usr/bin/c++ -DCMAKE_HAVE_LIBC_PTHREAD  -std=gnu++17 -o CMakeFiles/cmTC_9b4b4.dir/src.cxx.o -c /media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/CMakeScratch/TryCompile-pd9LGI/src.cxx
-        Linking CXX executable cmTC_9b4b4
-        /usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_9b4b4.dir/link.txt --verbose=1
-        /usr/bin/c++ CMakeFiles/cmTC_9b4b4.dir/src.cxx.o -o cmTC_9b4b4
-        gmake[1]: Leaving directory '/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/CMakeScratch/TryCompile-pd9LGI'
+        Run Build Command(s): /usr/local/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_75cb2/fast
+        /usr/bin/gmake  -f CMakeFiles/cmTC_75cb2.dir/build.make CMakeFiles/cmTC_75cb2.dir/build
+        gmake[1]: Entering directory '/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/CMakeScratch/TryCompile-hqHOzw'
+        Building CXX object CMakeFiles/cmTC_75cb2.dir/src.cxx.o
+        /usr/bin/c++ -DCMAKE_HAVE_LIBC_PTHREAD  -std=gnu++17 -o CMakeFiles/cmTC_75cb2.dir/src.cxx.o -c /home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/CMakeScratch/TryCompile-hqHOzw/src.cxx
+        Linking CXX executable cmTC_75cb2
+        /usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_75cb2.dir/link.txt --verbose=1
+        /usr/bin/c++ CMakeFiles/cmTC_75cb2.dir/src.cxx.o -o cmTC_75cb2
+        gmake[1]: Leaving directory '/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/CMakeScratch/TryCompile-hqHOzw'
         
       exitCode: 0
   -
@@ -1345,8 +1345,8 @@ events:
     checks:
       - "Performing Test HAVE_STDATOMIC"
     directories:
-      source: "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/CMakeScratch/TryCompile-0re6r7"
-      binary: "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/CMakeScratch/TryCompile-0re6r7"
+      source: "/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/CMakeScratch/TryCompile-SB9FGL"
+      binary: "/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/CMakeScratch/TryCompile-SB9FGL"
     cmakeVariables:
       CMAKE_CXX_FLAGS: ""
       CMAKE_CXX_FLAGS_DEBUG: "-g"
@@ -1357,17 +1357,17 @@ events:
       variable: "HAVE_STDATOMIC"
       cached: true
       stdout: |
-        Change Dir: '/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/CMakeScratch/TryCompile-0re6r7'
+        Change Dir: '/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/CMakeScratch/TryCompile-SB9FGL'
         
-        Run Build Command(s): /usr/local/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_fe92a/fast
-        /usr/bin/gmake  -f CMakeFiles/cmTC_fe92a.dir/build.make CMakeFiles/cmTC_fe92a.dir/build
-        gmake[1]: Entering directory '/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/CMakeScratch/TryCompile-0re6r7'
-        Building CXX object CMakeFiles/cmTC_fe92a.dir/src.cxx.o
-        /usr/bin/c++ -DHAVE_STDATOMIC  -std=gnu++17 -o CMakeFiles/cmTC_fe92a.dir/src.cxx.o -c /media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/CMakeScratch/TryCompile-0re6r7/src.cxx
-        Linking CXX executable cmTC_fe92a
-        /usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_fe92a.dir/link.txt --verbose=1
-        /usr/bin/c++ CMakeFiles/cmTC_fe92a.dir/src.cxx.o -o cmTC_fe92a
-        gmake[1]: Leaving directory '/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/CMakeScratch/TryCompile-0re6r7'
+        Run Build Command(s): /usr/local/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_55fa8/fast
+        /usr/bin/gmake  -f CMakeFiles/cmTC_55fa8.dir/build.make CMakeFiles/cmTC_55fa8.dir/build
+        gmake[1]: Entering directory '/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/CMakeScratch/TryCompile-SB9FGL'
+        Building CXX object CMakeFiles/cmTC_55fa8.dir/src.cxx.o
+        /usr/bin/c++ -DHAVE_STDATOMIC  -std=gnu++17 -o CMakeFiles/cmTC_55fa8.dir/src.cxx.o -c /home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/CMakeScratch/TryCompile-SB9FGL/src.cxx
+        Linking CXX executable cmTC_55fa8
+        /usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_55fa8.dir/link.txt --verbose=1
+        /usr/bin/c++ CMakeFiles/cmTC_55fa8.dir/src.cxx.o -o cmTC_55fa8
+        gmake[1]: Leaving directory '/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/CMakeScratch/TryCompile-SB9FGL'
         
       exitCode: 0
   -
@@ -1421,35 +1421,35 @@ events:
         CMAKE_FIND_ROOT_PATH_MODE: "BOTH"
     candidates:
       -
-        path: "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/Qt6CoreToolsConfig.cmake"
+        path: "/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/Qt6CoreToolsConfig.cmake"
         mode: "config"
         reason: "no_exist"
       -
-        path: "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/qt6coretools-config.cmake"
+        path: "/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/qt6coretools-config.cmake"
         mode: "config"
         reason: "no_exist"
       -
-        path: "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/lib/x86_64-linux-gnu/cps/Qt6CoreTools.cps"
+        path: "/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/lib/x86_64-linux-gnu/cps/Qt6CoreTools.cps"
         mode: "cps"
         reason: "no_exist"
       -
-        path: "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/lib/x86_64-linux-gnu/cps/qt6coretools.cps"
+        path: "/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/lib/x86_64-linux-gnu/cps/qt6coretools.cps"
         mode: "cps"
         reason: "no_exist"
       -
-        path: "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/lib/cps/Qt6CoreTools.cps"
+        path: "/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/lib/cps/Qt6CoreTools.cps"
         mode: "cps"
         reason: "no_exist"
       -
-        path: "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/lib/cps/qt6coretools.cps"
+        path: "/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/lib/cps/qt6coretools.cps"
         mode: "cps"
         reason: "no_exist"
       -
-        path: "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/share/cps/Qt6CoreTools.cps"
+        path: "/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/share/cps/Qt6CoreTools.cps"
         mode: "cps"
         reason: "no_exist"
       -
-        path: "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/share/cps/qt6coretools.cps"
+        path: "/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/share/cps/qt6coretools.cps"
         mode: "cps"
         reason: "no_exist"
       -
@@ -1564,35 +1564,35 @@ events:
         CMAKE_FIND_ROOT_PATH_MODE: "BOTH"
     candidates:
       -
-        path: "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/Qt6CoreConfig.cmake"
+        path: "/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/Qt6CoreConfig.cmake"
         mode: "config"
         reason: "no_exist"
       -
-        path: "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/qt6core-config.cmake"
+        path: "/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/qt6core-config.cmake"
         mode: "config"
         reason: "no_exist"
       -
-        path: "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/lib/x86_64-linux-gnu/cps/Qt6Core.cps"
+        path: "/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/lib/x86_64-linux-gnu/cps/Qt6Core.cps"
         mode: "cps"
         reason: "no_exist"
       -
-        path: "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/lib/x86_64-linux-gnu/cps/qt6core.cps"
+        path: "/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/lib/x86_64-linux-gnu/cps/qt6core.cps"
         mode: "cps"
         reason: "no_exist"
       -
-        path: "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/lib/cps/Qt6Core.cps"
+        path: "/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/lib/cps/Qt6Core.cps"
         mode: "cps"
         reason: "no_exist"
       -
-        path: "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/lib/cps/qt6core.cps"
+        path: "/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/lib/cps/qt6core.cps"
         mode: "cps"
         reason: "no_exist"
       -
-        path: "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/share/cps/Qt6Core.cps"
+        path: "/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/share/cps/Qt6Core.cps"
         mode: "cps"
         reason: "no_exist"
       -
-        path: "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/share/cps/qt6core.cps"
+        path: "/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/share/cps/qt6core.cps"
         mode: "cps"
         reason: "no_exist"
       -
@@ -1698,35 +1698,35 @@ events:
         CMAKE_FIND_ROOT_PATH_MODE: "BOTH"
     candidates:
       -
-        path: "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/Qt6GuiToolsConfig.cmake"
+        path: "/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/Qt6GuiToolsConfig.cmake"
         mode: "config"
         reason: "no_exist"
       -
-        path: "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/qt6guitools-config.cmake"
+        path: "/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/qt6guitools-config.cmake"
         mode: "config"
         reason: "no_exist"
       -
-        path: "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/lib/x86_64-linux-gnu/cps/Qt6GuiTools.cps"
+        path: "/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/lib/x86_64-linux-gnu/cps/Qt6GuiTools.cps"
         mode: "cps"
         reason: "no_exist"
       -
-        path: "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/lib/x86_64-linux-gnu/cps/qt6guitools.cps"
+        path: "/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/lib/x86_64-linux-gnu/cps/qt6guitools.cps"
         mode: "cps"
         reason: "no_exist"
       -
-        path: "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/lib/cps/Qt6GuiTools.cps"
+        path: "/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/lib/cps/Qt6GuiTools.cps"
         mode: "cps"
         reason: "no_exist"
       -
-        path: "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/lib/cps/qt6guitools.cps"
+        path: "/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/lib/cps/qt6guitools.cps"
         mode: "cps"
         reason: "no_exist"
       -
-        path: "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/share/cps/Qt6GuiTools.cps"
+        path: "/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/share/cps/Qt6GuiTools.cps"
         mode: "cps"
         reason: "no_exist"
       -
-        path: "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/share/cps/qt6guitools.cps"
+        path: "/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/share/cps/qt6guitools.cps"
         mode: "cps"
         reason: "no_exist"
       -
@@ -1851,35 +1851,35 @@ events:
         CMAKE_FIND_ROOT_PATH_MODE: "BOTH"
     candidates:
       -
-        path: "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/Qt6WidgetsToolsConfig.cmake"
+        path: "/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/Qt6WidgetsToolsConfig.cmake"
         mode: "config"
         reason: "no_exist"
       -
-        path: "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/qt6widgetstools-config.cmake"
+        path: "/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/qt6widgetstools-config.cmake"
         mode: "config"
         reason: "no_exist"
       -
-        path: "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/lib/x86_64-linux-gnu/cps/Qt6WidgetsTools.cps"
+        path: "/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/lib/x86_64-linux-gnu/cps/Qt6WidgetsTools.cps"
         mode: "cps"
         reason: "no_exist"
       -
-        path: "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/lib/x86_64-linux-gnu/cps/qt6widgetstools.cps"
+        path: "/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/lib/x86_64-linux-gnu/cps/qt6widgetstools.cps"
         mode: "cps"
         reason: "no_exist"
       -
-        path: "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/lib/cps/Qt6WidgetsTools.cps"
+        path: "/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/lib/cps/Qt6WidgetsTools.cps"
         mode: "cps"
         reason: "no_exist"
       -
-        path: "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/lib/cps/qt6widgetstools.cps"
+        path: "/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/lib/cps/qt6widgetstools.cps"
         mode: "cps"
         reason: "no_exist"
       -
-        path: "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/share/cps/Qt6WidgetsTools.cps"
+        path: "/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/share/cps/Qt6WidgetsTools.cps"
         mode: "cps"
         reason: "no_exist"
       -
-        path: "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/share/cps/qt6widgetstools.cps"
+        path: "/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/share/cps/qt6widgetstools.cps"
         mode: "cps"
         reason: "no_exist"
       -
@@ -4267,35 +4267,35 @@ events:
         CMAKE_FIND_ROOT_PATH_MODE: "BOTH"
     candidates:
       -
-        path: "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/Qt6DBusToolsConfig.cmake"
+        path: "/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/Qt6DBusToolsConfig.cmake"
         mode: "config"
         reason: "no_exist"
       -
-        path: "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/qt6dbustools-config.cmake"
+        path: "/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/qt6dbustools-config.cmake"
         mode: "config"
         reason: "no_exist"
       -
-        path: "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/lib/x86_64-linux-gnu/cps/Qt6DBusTools.cps"
+        path: "/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/lib/x86_64-linux-gnu/cps/Qt6DBusTools.cps"
         mode: "cps"
         reason: "no_exist"
       -
-        path: "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/lib/x86_64-linux-gnu/cps/qt6dbustools.cps"
+        path: "/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/lib/x86_64-linux-gnu/cps/qt6dbustools.cps"
         mode: "cps"
         reason: "no_exist"
       -
-        path: "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/lib/cps/Qt6DBusTools.cps"
+        path: "/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/lib/cps/Qt6DBusTools.cps"
         mode: "cps"
         reason: "no_exist"
       -
-        path: "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/lib/cps/qt6dbustools.cps"
+        path: "/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/lib/cps/qt6dbustools.cps"
         mode: "cps"
         reason: "no_exist"
       -
-        path: "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/share/cps/Qt6DBusTools.cps"
+        path: "/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/share/cps/Qt6DBusTools.cps"
         mode: "cps"
         reason: "no_exist"
       -
-        path: "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/share/cps/qt6dbustools.cps"
+        path: "/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/share/cps/qt6dbustools.cps"
         mode: "cps"
         reason: "no_exist"
       -
@@ -4423,35 +4423,35 @@ events:
         CMAKE_FIND_ROOT_PATH_MODE: "BOTH"
     candidates:
       -
-        path: "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/Qt6DBusConfig.cmake"
+        path: "/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/Qt6DBusConfig.cmake"
         mode: "config"
         reason: "no_exist"
       -
-        path: "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/qt6dbus-config.cmake"
+        path: "/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/qt6dbus-config.cmake"
         mode: "config"
         reason: "no_exist"
       -
-        path: "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/lib/x86_64-linux-gnu/cps/Qt6DBus.cps"
+        path: "/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/lib/x86_64-linux-gnu/cps/Qt6DBus.cps"
         mode: "cps"
         reason: "no_exist"
       -
-        path: "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/lib/x86_64-linux-gnu/cps/qt6dbus.cps"
+        path: "/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/lib/x86_64-linux-gnu/cps/qt6dbus.cps"
         mode: "cps"
         reason: "no_exist"
       -
-        path: "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/lib/cps/Qt6DBus.cps"
+        path: "/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/lib/cps/Qt6DBus.cps"
         mode: "cps"
         reason: "no_exist"
       -
-        path: "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/lib/cps/qt6dbus.cps"
+        path: "/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/lib/cps/qt6dbus.cps"
         mode: "cps"
         reason: "no_exist"
       -
-        path: "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/share/cps/Qt6DBus.cps"
+        path: "/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/share/cps/Qt6DBus.cps"
         mode: "cps"
         reason: "no_exist"
       -
-        path: "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/share/cps/qt6dbus.cps"
+        path: "/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/share/cps/qt6dbus.cps"
         mode: "cps"
         reason: "no_exist"
       -
@@ -4558,35 +4558,35 @@ events:
         CMAKE_FIND_ROOT_PATH_MODE: "BOTH"
     candidates:
       -
-        path: "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/Qt6GuiConfig.cmake"
+        path: "/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/Qt6GuiConfig.cmake"
         mode: "config"
         reason: "no_exist"
       -
-        path: "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/qt6gui-config.cmake"
+        path: "/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/qt6gui-config.cmake"
         mode: "config"
         reason: "no_exist"
       -
-        path: "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/lib/x86_64-linux-gnu/cps/Qt6Gui.cps"
+        path: "/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/lib/x86_64-linux-gnu/cps/Qt6Gui.cps"
         mode: "cps"
         reason: "no_exist"
       -
-        path: "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/lib/x86_64-linux-gnu/cps/qt6gui.cps"
+        path: "/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/lib/x86_64-linux-gnu/cps/qt6gui.cps"
         mode: "cps"
         reason: "no_exist"
       -
-        path: "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/lib/cps/Qt6Gui.cps"
+        path: "/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/lib/cps/Qt6Gui.cps"
         mode: "cps"
         reason: "no_exist"
       -
-        path: "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/lib/cps/qt6gui.cps"
+        path: "/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/lib/cps/qt6gui.cps"
         mode: "cps"
         reason: "no_exist"
       -
-        path: "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/share/cps/Qt6Gui.cps"
+        path: "/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/share/cps/Qt6Gui.cps"
         mode: "cps"
         reason: "no_exist"
       -
-        path: "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/share/cps/qt6gui.cps"
+        path: "/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/share/cps/qt6gui.cps"
         mode: "cps"
         reason: "no_exist"
       -
@@ -4685,35 +4685,35 @@ events:
         CMAKE_FIND_ROOT_PATH_MODE: "BOTH"
     candidates:
       -
-        path: "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/Qt6WidgetsConfig.cmake"
+        path: "/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/Qt6WidgetsConfig.cmake"
         mode: "config"
         reason: "no_exist"
       -
-        path: "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/qt6widgets-config.cmake"
+        path: "/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/qt6widgets-config.cmake"
         mode: "config"
         reason: "no_exist"
       -
-        path: "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/lib/x86_64-linux-gnu/cps/Qt6Widgets.cps"
+        path: "/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/lib/x86_64-linux-gnu/cps/Qt6Widgets.cps"
         mode: "cps"
         reason: "no_exist"
       -
-        path: "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/lib/x86_64-linux-gnu/cps/qt6widgets.cps"
+        path: "/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/lib/x86_64-linux-gnu/cps/qt6widgets.cps"
         mode: "cps"
         reason: "no_exist"
       -
-        path: "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/lib/cps/Qt6Widgets.cps"
+        path: "/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/lib/cps/Qt6Widgets.cps"
         mode: "cps"
         reason: "no_exist"
       -
-        path: "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/lib/cps/qt6widgets.cps"
+        path: "/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/lib/cps/qt6widgets.cps"
         mode: "cps"
         reason: "no_exist"
       -
-        path: "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/share/cps/Qt6Widgets.cps"
+        path: "/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/share/cps/Qt6Widgets.cps"
         mode: "cps"
         reason: "no_exist"
       -
-        path: "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/share/cps/qt6widgets.cps"
+        path: "/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/share/cps/qt6widgets.cps"
         mode: "cps"
         reason: "no_exist"
       -
@@ -4812,35 +4812,35 @@ events:
         CMAKE_FIND_ROOT_PATH_MODE: "BOTH"
     candidates:
       -
-        path: "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/Qt6NetworkConfig.cmake"
+        path: "/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/Qt6NetworkConfig.cmake"
         mode: "config"
         reason: "no_exist"
       -
-        path: "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/qt6network-config.cmake"
+        path: "/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/qt6network-config.cmake"
         mode: "config"
         reason: "no_exist"
       -
-        path: "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/lib/x86_64-linux-gnu/cps/Qt6Network.cps"
+        path: "/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/lib/x86_64-linux-gnu/cps/Qt6Network.cps"
         mode: "cps"
         reason: "no_exist"
       -
-        path: "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/lib/x86_64-linux-gnu/cps/qt6network.cps"
+        path: "/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/lib/x86_64-linux-gnu/cps/qt6network.cps"
         mode: "cps"
         reason: "no_exist"
       -
-        path: "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/lib/cps/Qt6Network.cps"
+        path: "/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/lib/cps/Qt6Network.cps"
         mode: "cps"
         reason: "no_exist"
       -
-        path: "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/lib/cps/qt6network.cps"
+        path: "/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/lib/cps/qt6network.cps"
         mode: "cps"
         reason: "no_exist"
       -
-        path: "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/share/cps/Qt6Network.cps"
+        path: "/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/share/cps/Qt6Network.cps"
         mode: "cps"
         reason: "no_exist"
       -
-        path: "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/share/cps/qt6network.cps"
+        path: "/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/share/cps/qt6network.cps"
         mode: "cps"
         reason: "no_exist"
       -
@@ -4931,35 +4931,35 @@ events:
         CMAKE_FIND_ROOT_PATH_MODE: "BOTH"
     candidates:
       -
-        path: "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/Qt6SqlConfig.cmake"
+        path: "/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/Qt6SqlConfig.cmake"
         mode: "config"
         reason: "no_exist"
       -
-        path: "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/qt6sql-config.cmake"
+        path: "/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/qt6sql-config.cmake"
         mode: "config"
         reason: "no_exist"
       -
-        path: "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/lib/x86_64-linux-gnu/cps/Qt6Sql.cps"
+        path: "/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/lib/x86_64-linux-gnu/cps/Qt6Sql.cps"
         mode: "cps"
         reason: "no_exist"
       -
-        path: "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/lib/x86_64-linux-gnu/cps/qt6sql.cps"
+        path: "/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/lib/x86_64-linux-gnu/cps/qt6sql.cps"
         mode: "cps"
         reason: "no_exist"
       -
-        path: "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/lib/cps/Qt6Sql.cps"
+        path: "/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/lib/cps/Qt6Sql.cps"
         mode: "cps"
         reason: "no_exist"
       -
-        path: "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/lib/cps/qt6sql.cps"
+        path: "/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/lib/cps/qt6sql.cps"
         mode: "cps"
         reason: "no_exist"
       -
-        path: "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/share/cps/Qt6Sql.cps"
+        path: "/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/share/cps/Qt6Sql.cps"
         mode: "cps"
         reason: "no_exist"
       -
-        path: "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/share/cps/qt6sql.cps"
+        path: "/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/share/cps/qt6sql.cps"
         mode: "cps"
         reason: "no_exist"
       -
@@ -5050,35 +5050,35 @@ events:
         CMAKE_FIND_ROOT_PATH_MODE: "BOTH"
     candidates:
       -
-        path: "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/Qt6HttpServerConfig.cmake"
+        path: "/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/Qt6HttpServerConfig.cmake"
         mode: "config"
         reason: "no_exist"
       -
-        path: "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/qt6httpserver-config.cmake"
+        path: "/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/qt6httpserver-config.cmake"
         mode: "config"
         reason: "no_exist"
       -
-        path: "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/lib/x86_64-linux-gnu/cps/Qt6HttpServer.cps"
+        path: "/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/lib/x86_64-linux-gnu/cps/Qt6HttpServer.cps"
         mode: "cps"
         reason: "no_exist"
       -
-        path: "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/lib/x86_64-linux-gnu/cps/qt6httpserver.cps"
+        path: "/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/lib/x86_64-linux-gnu/cps/qt6httpserver.cps"
         mode: "cps"
         reason: "no_exist"
       -
-        path: "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/lib/cps/Qt6HttpServer.cps"
+        path: "/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/lib/cps/Qt6HttpServer.cps"
         mode: "cps"
         reason: "no_exist"
       -
-        path: "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/lib/cps/qt6httpserver.cps"
+        path: "/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/lib/cps/qt6httpserver.cps"
         mode: "cps"
         reason: "no_exist"
       -
-        path: "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/share/cps/Qt6HttpServer.cps"
+        path: "/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/share/cps/Qt6HttpServer.cps"
         mode: "cps"
         reason: "no_exist"
       -
-        path: "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/share/cps/qt6httpserver.cps"
+        path: "/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/share/cps/qt6httpserver.cps"
         mode: "cps"
         reason: "no_exist"
       -
@@ -5177,35 +5177,35 @@ events:
         CMAKE_FIND_ROOT_PATH_MODE: "BOTH"
     candidates:
       -
-        path: "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/Qt6OpenGLConfig.cmake"
+        path: "/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/Qt6OpenGLConfig.cmake"
         mode: "config"
         reason: "no_exist"
       -
-        path: "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/qt6opengl-config.cmake"
+        path: "/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/qt6opengl-config.cmake"
         mode: "config"
         reason: "no_exist"
       -
-        path: "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/lib/x86_64-linux-gnu/cps/Qt6OpenGL.cps"
+        path: "/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/lib/x86_64-linux-gnu/cps/Qt6OpenGL.cps"
         mode: "cps"
         reason: "no_exist"
       -
-        path: "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/lib/x86_64-linux-gnu/cps/qt6opengl.cps"
+        path: "/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/lib/x86_64-linux-gnu/cps/qt6opengl.cps"
         mode: "cps"
         reason: "no_exist"
       -
-        path: "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/lib/cps/Qt6OpenGL.cps"
+        path: "/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/lib/cps/Qt6OpenGL.cps"
         mode: "cps"
         reason: "no_exist"
       -
-        path: "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/lib/cps/qt6opengl.cps"
+        path: "/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/lib/cps/qt6opengl.cps"
         mode: "cps"
         reason: "no_exist"
       -
-        path: "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/share/cps/Qt6OpenGL.cps"
+        path: "/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/share/cps/Qt6OpenGL.cps"
         mode: "cps"
         reason: "no_exist"
       -
-        path: "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/share/cps/qt6opengl.cps"
+        path: "/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/share/cps/qt6opengl.cps"
         mode: "cps"
         reason: "no_exist"
       -
@@ -5312,35 +5312,35 @@ events:
         CMAKE_FIND_ROOT_PATH_MODE: "BOTH"
     candidates:
       -
-        path: "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/Qt6OpenGLWidgetsConfig.cmake"
+        path: "/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/Qt6OpenGLWidgetsConfig.cmake"
         mode: "config"
         reason: "no_exist"
       -
-        path: "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/qt6openglwidgets-config.cmake"
+        path: "/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/qt6openglwidgets-config.cmake"
         mode: "config"
         reason: "no_exist"
       -
-        path: "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/lib/x86_64-linux-gnu/cps/Qt6OpenGLWidgets.cps"
+        path: "/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/lib/x86_64-linux-gnu/cps/Qt6OpenGLWidgets.cps"
         mode: "cps"
         reason: "no_exist"
       -
-        path: "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/lib/x86_64-linux-gnu/cps/qt6openglwidgets.cps"
+        path: "/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/lib/x86_64-linux-gnu/cps/qt6openglwidgets.cps"
         mode: "cps"
         reason: "no_exist"
       -
-        path: "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/lib/cps/Qt6OpenGLWidgets.cps"
+        path: "/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/lib/cps/Qt6OpenGLWidgets.cps"
         mode: "cps"
         reason: "no_exist"
       -
-        path: "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/lib/cps/qt6openglwidgets.cps"
+        path: "/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/lib/cps/qt6openglwidgets.cps"
         mode: "cps"
         reason: "no_exist"
       -
-        path: "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/share/cps/Qt6OpenGLWidgets.cps"
+        path: "/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/share/cps/Qt6OpenGLWidgets.cps"
         mode: "cps"
         reason: "no_exist"
       -
-        path: "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/share/cps/qt6openglwidgets.cps"
+        path: "/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/share/cps/qt6openglwidgets.cps"
         mode: "cps"
         reason: "no_exist"
       -
@@ -5431,35 +5431,35 @@ events:
         CMAKE_FIND_ROOT_PATH_MODE: "BOTH"
     candidates:
       -
-        path: "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/Qt6ChartsConfig.cmake"
+        path: "/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/Qt6ChartsConfig.cmake"
         mode: "config"
         reason: "no_exist"
       -
-        path: "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/qt6charts-config.cmake"
+        path: "/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/qt6charts-config.cmake"
         mode: "config"
         reason: "no_exist"
       -
-        path: "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/lib/x86_64-linux-gnu/cps/Qt6Charts.cps"
+        path: "/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/lib/x86_64-linux-gnu/cps/Qt6Charts.cps"
         mode: "cps"
         reason: "no_exist"
       -
-        path: "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/lib/x86_64-linux-gnu/cps/qt6charts.cps"
+        path: "/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/lib/x86_64-linux-gnu/cps/qt6charts.cps"
         mode: "cps"
         reason: "no_exist"
       -
-        path: "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/lib/cps/Qt6Charts.cps"
+        path: "/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/lib/cps/Qt6Charts.cps"
         mode: "cps"
         reason: "no_exist"
       -
-        path: "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/lib/cps/qt6charts.cps"
+        path: "/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/lib/cps/qt6charts.cps"
         mode: "cps"
         reason: "no_exist"
       -
-        path: "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/share/cps/Qt6Charts.cps"
+        path: "/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/share/cps/Qt6Charts.cps"
         mode: "cps"
         reason: "no_exist"
       -
-        path: "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/share/cps/qt6charts.cps"
+        path: "/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/share/cps/qt6charts.cps"
         mode: "cps"
         reason: "no_exist"
       -
@@ -5580,35 +5580,35 @@ events:
         CMAKE_FIND_ROOT_PATH_MODE: "BOTH"
     candidates:
       -
-        path: "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/Qt6Config.cmake"
+        path: "/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/Qt6Config.cmake"
         mode: "config"
         reason: "no_exist"
       -
-        path: "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/qt6-config.cmake"
+        path: "/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/qt6-config.cmake"
         mode: "config"
         reason: "no_exist"
       -
-        path: "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/lib/x86_64-linux-gnu/cps/Qt6.cps"
+        path: "/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/lib/x86_64-linux-gnu/cps/Qt6.cps"
         mode: "cps"
         reason: "no_exist"
       -
-        path: "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/lib/x86_64-linux-gnu/cps/qt6.cps"
+        path: "/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/lib/x86_64-linux-gnu/cps/qt6.cps"
         mode: "cps"
         reason: "no_exist"
       -
-        path: "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/lib/cps/Qt6.cps"
+        path: "/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/lib/cps/Qt6.cps"
         mode: "cps"
         reason: "no_exist"
       -
-        path: "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/lib/cps/qt6.cps"
+        path: "/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/lib/cps/qt6.cps"
         mode: "cps"
         reason: "no_exist"
       -
-        path: "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/share/cps/Qt6.cps"
+        path: "/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/share/cps/Qt6.cps"
         mode: "cps"
         reason: "no_exist"
       -
-        path: "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/share/cps/qt6.cps"
+        path: "/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/pkgRedirects/share/cps/qt6.cps"
         mode: "cps"
         reason: "no_exist"
       -

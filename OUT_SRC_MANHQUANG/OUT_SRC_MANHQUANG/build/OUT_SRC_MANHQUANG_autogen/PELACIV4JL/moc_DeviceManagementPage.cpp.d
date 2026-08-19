@@ -1,5 +1,5 @@
-/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/OUT_SRC_MANHQUANG_autogen/PELACIV4JL/moc_DeviceManagementPage.cpp: /media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/ui/pages/DeviceManagementPage.h \
-  /media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/OUT_SRC_MANHQUANG_autogen/moc_predefs.h \
+/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/OUT_SRC_MANHQUANG_autogen/PELACIV4JL/moc_DeviceManagementPage.cpp: /home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/ui/pages/DeviceManagementPage.h \
+  /home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/OUT_SRC_MANHQUANG_autogen/moc_predefs.h \
   /home/quanghaictu/Qt6Cross/qt6/host/include/QtCore/QHash \
   /home/quanghaictu/Qt6Cross/qt6/host/include/QtCore/QJsonArray \
   /home/quanghaictu/Qt6Cross/qt6/host/include/QtCore/QJsonObject \

@@ -1,7 +1,7 @@
 CMakeFiles/OUT_SRC_MANHQUANG.dir/ui/dialogs/ErrorDialog.cpp.o: \
- /media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/ui/dialogs/ErrorDialog.cpp \
+ /home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/ui/dialogs/ErrorDialog.cpp \
  /usr/include/stdc-predef.h \
- /media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/ui/dialogs/ErrorDialog.h \
+ /home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/ui/dialogs/ErrorDialog.h \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtWidgets/QDialog \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtWidgets/qdialog.h \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtWidgets/qtwidgetsglobal.h \

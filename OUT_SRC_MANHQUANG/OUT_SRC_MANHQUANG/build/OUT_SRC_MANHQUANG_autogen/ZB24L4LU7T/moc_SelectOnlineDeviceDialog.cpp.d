@@ -1,5 +1,5 @@
-/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/OUT_SRC_MANHQUANG_autogen/ZB24L4LU7T/moc_SelectOnlineDeviceDialog.cpp: /media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/ui/dialogs/SelectOnlineDeviceDialog.h \
-  /media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/OUT_SRC_MANHQUANG_autogen/moc_predefs.h \
+/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/OUT_SRC_MANHQUANG_autogen/ZB24L4LU7T/moc_SelectOnlineDeviceDialog.cpp: /home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/ui/dialogs/SelectOnlineDeviceDialog.h \
+  /home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/OUT_SRC_MANHQUANG_autogen/moc_predefs.h \
   /home/quanghaictu/Qt6Cross/qt6/host/include/QtCore/QJsonArray \
   /home/quanghaictu/Qt6Cross/qt6/host/include/QtCore/q20memory.h \
   /home/quanghaictu/Qt6Cross/qt6/host/include/QtCore/q20type_traits.h \

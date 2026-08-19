@@ -176,7 +176,7 @@ bool Database::seedDefaults(QString *error)
         "INSERT OR IGNORE INTO discovered_devices (device_id, online, device_type, metrics_json, state_json, first_seen_at, last_seen_at) "
         "VALUES (:id, 1, 'smart_door', '{\"motion_detected\":false,\"ir_blocked\":false,\"door_position_pct\":0,\"motor_speed_rpm\":0,\"passage_count\":0,\"door_state\":\"CLOSED\"}', "
         "'{\"relay\":false,\"auto_mode\":true}', :now, :now)"));
-    devQuery.bindValue(QStringLiteral(":id"), QStringLiteral("Manhquang-150304"));
+    devQuery.bindValue(QStringLiteral(":id"), QStringLiteral("manhquang-190782"));
     const QString nowIso = QDateTime::currentDateTimeUtc().toString(Qt::ISODateWithMs);
     devQuery.bindValue(QStringLiteral(":now"), nowIso);
     devQuery.exec();
@@ -339,6 +339,13 @@ QJsonArray Database::users(QString *error) const
 bool Database::claimDevice(const QString &username, const QString &deviceId, const QString &name,
                            QString *errorCode, QString *error)
 {
+    const QString targetId = QStringLiteral("manhquang-190782");
+    if (deviceId.trimmed().compare(targetId, Qt::CaseInsensitive) != 0) {
+        if (errorCode) *errorCode = QStringLiteral("INVALID_DEVICE_ID");
+        if (error) *error = QStringLiteral("Chỉ được phép thêm thiết bị Mạnh Quang (ID: manhquang-190782) theo firmware!");
+        return false;
+    }
+
     QSqlQuery userQuery(m_db);
     userQuery.prepare(QStringLiteral("SELECT id FROM users WHERE username = :u"));
     userQuery.bindValue(QStringLiteral(":u"), username.trimmed());

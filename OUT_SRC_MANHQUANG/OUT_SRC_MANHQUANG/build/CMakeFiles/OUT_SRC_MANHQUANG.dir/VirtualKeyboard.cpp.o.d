@@ -1,7 +1,7 @@
 CMakeFiles/OUT_SRC_MANHQUANG.dir/VirtualKeyboard.cpp.o: \
- /media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/VirtualKeyboard.cpp \
+ /home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/VirtualKeyboard.cpp \
  /usr/include/stdc-predef.h \
- /media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/VirtualKeyboard.h \
+ /home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/VirtualKeyboard.h \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtWidgets/QWidget \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtWidgets/qwidget.h \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtWidgets/qtwidgetsglobal.h \

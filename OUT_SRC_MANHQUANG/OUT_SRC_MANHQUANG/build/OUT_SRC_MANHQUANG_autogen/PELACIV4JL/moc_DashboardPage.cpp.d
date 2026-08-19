@@ -1,5 +1,6 @@
-/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/OUT_SRC_MANHQUANG_autogen/PELACIV4JL/moc_DashboardPage.cpp: /media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/ui/pages/DashboardPage.h \
-  /media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/OUT_SRC_MANHQUANG_autogen/moc_predefs.h \
+/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/OUT_SRC_MANHQUANG_autogen/PELACIV4JL/moc_DashboardPage.cpp: /home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/ui/pages/DashboardPage.h \
+  /home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/OUT_SRC_MANHQUANG_autogen/moc_predefs.h \
+  /home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/models/SensorReading.h \
   /home/quanghaictu/Qt6Cross/qt6/host/include/QtCharts/QAbstractAxis \
   /home/quanghaictu/Qt6Cross/qt6/host/include/QtCharts/QAbstractSeries \
   /home/quanghaictu/Qt6Cross/qt6/host/include/QtCharts/QChartGlobal \
@@ -162,7 +163,6 @@
   /home/quanghaictu/Qt6Cross/qt6/host/include/QtWidgets/qtwidgetsexports.h \
   /home/quanghaictu/Qt6Cross/qt6/host/include/QtWidgets/qtwidgetsglobal.h \
   /home/quanghaictu/Qt6Cross/qt6/host/include/QtWidgets/qwidget.h \
-  /media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/models/SensorReading.h \
   /usr/include/alloca.h \
   /usr/include/asm-generic/errno-base.h \
   /usr/include/asm-generic/errno.h \

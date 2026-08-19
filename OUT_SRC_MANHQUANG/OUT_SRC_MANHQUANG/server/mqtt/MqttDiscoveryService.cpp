@@ -91,7 +91,9 @@ bool MqttDiscoveryService::publishDoorCommand(const QString &deviceId, const QSt
 
     QJsonObject cmdObj{
         {"command_id", commandId},
-        {"type", action}, // e.g. "door.open", "door.close", "door.stop", "door.hold_open", "door.auto_mode"
+        {"type", QStringLiteral("door.") + action},
+        {"action", action},
+        {"state", (action == QStringLiteral("open"))},
         {"params", params}
     };
     const QByteArray payload = QJsonDocument(cmdObj).toJson(QJsonDocument::Compact);
@@ -277,6 +279,17 @@ void MqttDiscoveryService::processPublish(quint8 flags, const QByteArray &body)
         metrics = QJsonDocument::fromJson(payload).object()
                       .value(QStringLiteral("metrics")).toObject();
         emit telemetryReceived(deviceId, metrics);
+
+        const double doorPos = metrics.value(QStringLiteral("door_position_pct")).toDouble(0.0);
+        const bool motion = metrics.value(QStringLiteral("motion_detected")).toBool(false);
+        const bool ir = metrics.value(QStringLiteral("ir_blocked")).toBool(false);
+        const double speed = metrics.value(QStringLiteral("motor_speed_rpm")).toDouble(0.0);
+        const int passages = metrics.value(QStringLiteral("passage_count")).toInt(0);
+        const double temp = metrics.value(QStringLiteral("temperature_c")).toDouble(28.5);
+        const QString nowIsoStr = QDateTime::currentDateTimeUtc().toString(Qt::ISODateWithMs);
+
+        QString readingErr;
+        m_database->insertReading(doorPos, motion, ir, speed, passages, temp, nowIsoStr, &readingErr);
 
         const qint64 nowMs = QDateTime::currentMSecsSinceEpoch();
         if (nowMs - m_lastTelemetryLogMs.value(deviceId, 0) >= 1000) {

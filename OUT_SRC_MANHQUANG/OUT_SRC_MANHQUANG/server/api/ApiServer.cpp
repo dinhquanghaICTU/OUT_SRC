@@ -156,6 +156,28 @@ void ApiServer::registerRoutes()
         return QHttpServerResponse(QJsonObject{{"status", "released"}, {"device_id", deviceId}});
     });
 
+        m_server.route(QStringLiteral("/api/devices/<arg>/door"), QHttpServerRequest::Method::Post,
+                   [this](const QString &deviceId, const QHttpServerRequest &request) {
+        const QJsonObject session = sessionForRequest(request);
+        if (session.isEmpty())
+            return jsonError(Status::Unauthorized, QStringLiteral("unauthorized"),
+                             tr("Thiếu hoặc sai access token"));
+        bool ok = false;
+        const QJsonObject body = parseObject(request, &ok);
+        if (!ok)
+            return jsonError(Status::BadRequest, QStringLiteral("invalid_json"),
+                             tr("Nội dung JSON không hợp lệ"));
+        const QString action = body.value(QStringLiteral("action")).toString(QStringLiteral("open"));
+        const QString commandId = body.value(QStringLiteral("command_id"))
+                                      .toString(QUuid::createUuid().toString(QUuid::WithoutBraces));
+
+        if (!m_mqtt->publishDoorCommand(deviceId, commandId, action, body))
+            return jsonError(Status::ServiceUnavailable, QStringLiteral("mqtt_unavailable"),
+                             tr("MQTT broker chưa kết nối hoặc gửi lệnh thất bại"));
+
+        return QHttpServerResponse(QJsonObject{{"command_id", commandId}, {"action", action}, {"status", "accepted"}});
+    });
+
     m_server.route(QStringLiteral("/api/devices/<arg>/relay"), QHttpServerRequest::Method::Post,
                    [this](const QString &deviceId, const QHttpServerRequest &request) {
         const QJsonObject session = sessionForRequest(request);

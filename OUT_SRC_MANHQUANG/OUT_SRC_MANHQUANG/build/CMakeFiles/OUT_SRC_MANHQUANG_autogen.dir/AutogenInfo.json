@@ -1,15 +1,15 @@
 {
-	"BUILD_DIR" : "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/OUT_SRC_MANHQUANG_autogen",
-	"CMAKE_BINARY_DIR" : "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build",
-	"CMAKE_CURRENT_BINARY_DIR" : "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build",
-	"CMAKE_CURRENT_SOURCE_DIR" : "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG",
+	"BUILD_DIR" : "/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/OUT_SRC_MANHQUANG_autogen",
+	"CMAKE_BINARY_DIR" : "/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build",
+	"CMAKE_CURRENT_BINARY_DIR" : "/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build",
+	"CMAKE_CURRENT_SOURCE_DIR" : "/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG",
 	"CMAKE_EXECUTABLE" : "/usr/local/bin/cmake",
 	"CMAKE_LIST_FILES" : 
 	[
-		"/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/CMakeLists.txt",
+		"/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/CMakeLists.txt",
 		"/usr/local/share/cmake-4.3/Modules/CMakeDetermineSystem.cmake",
 		"/usr/local/share/cmake-4.3/Modules/CMakeSystem.cmake.in",
-		"/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/4.3.20260523-g753b5a3/CMakeSystem.cmake",
+		"/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/4.3.20260523-g753b5a3/CMakeSystem.cmake",
 		"/usr/local/share/cmake-4.3/Modules/CMakeUnixFindMake.cmake",
 		"/usr/local/share/cmake-4.3/Modules/CMakeSystemSpecificInitialize.cmake",
 		"/usr/local/share/cmake-4.3/Modules/Platform/Linux-Initialize.cmake",
@@ -66,7 +66,7 @@
 		"/usr/local/share/cmake-4.3/Modules/CMakeFindBinUtils.cmake",
 		"/usr/local/share/cmake-4.3/Modules/Compiler/GNU-FindBinUtils.cmake",
 		"/usr/local/share/cmake-4.3/Modules/CMakeCXXCompiler.cmake.in",
-		"/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/4.3.20260523-g753b5a3/CMakeCXXCompiler.cmake",
+		"/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/4.3.20260523-g753b5a3/CMakeCXXCompiler.cmake",
 		"/usr/local/share/cmake-4.3/Modules/CMakeSystemSpecificInformation.cmake",
 		"/usr/local/share/cmake-4.3/Modules/CMakeGenericSystem.cmake",
 		"/usr/local/share/cmake-4.3/Modules/CMakeInitializeConfigs.cmake",
@@ -92,7 +92,7 @@
 		"/usr/local/share/cmake-4.3/Modules/CMakeDetermineCompilerSupport.cmake",
 		"/usr/local/share/cmake-4.3/Modules/Internal/FeatureTesting.cmake",
 		"/usr/local/share/cmake-4.3/Modules/CMakeCXXCompiler.cmake.in",
-		"/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/4.3.20260523-g753b5a3/CMakeCXXCompiler.cmake",
+		"/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/4.3.20260523-g753b5a3/CMakeCXXCompiler.cmake",
 		"/usr/local/share/cmake-4.3/Modules/Internal/CMakeCXXLinkerInformation.cmake",
 		"/usr/local/share/cmake-4.3/Modules/Internal/CMakeCommonLinkerInformation.cmake",
 		"/usr/local/share/cmake-4.3/Modules/Linker/GNU-CXX.cmake",
@@ -433,162 +433,162 @@
 		"/home/quanghaictu/Qt6Cross/qt6/host/lib/cmake/Qt6Charts/Qt6ChartsAdditionalTargetInfo.cmake",
 		"/home/quanghaictu/Qt6Cross/qt6/host/lib/cmake/Qt6Charts/Qt6ChartsVersionlessTargets.cmake",
 		"/usr/local/share/cmake-4.3/Modules/GNUInstallDirs.cmake",
-		"/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/resources/resources.qrc"
+		"/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/resources/resources.qrc"
 	],
-	"CMAKE_SOURCE_DIR" : "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG",
+	"CMAKE_SOURCE_DIR" : "/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG",
 	"CROSS_CONFIG" : false,
-	"DEP_FILE" : "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/OUT_SRC_MANHQUANG_autogen/deps",
+	"DEP_FILE" : "/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/OUT_SRC_MANHQUANG_autogen/deps",
 	"DEP_FILE_RULE_NAME" : "OUT_SRC_MANHQUANG_autogen/timestamp",
 	"HEADERS" : 
 	[
 		[
-			"/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/EmbeddedServer.h",
+			"/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/EmbeddedServer.h",
 			"MU",
 			"EWIEGA46WW/moc_EmbeddedServer.cpp",
 			null
 		],
 		[
-			"/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/VirtualKeyboard.h",
+			"/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/VirtualKeyboard.h",
 			"MU",
 			"EWIEGA46WW/moc_VirtualKeyboard.cpp",
 			null
 		],
 		[
-			"/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/api/ApiClient.h",
+			"/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/api/ApiClient.h",
 			"MU",
 			"JH45IGJHDZ/moc_ApiClient.cpp",
 			null
 		],
 		[
-			"/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/config/AppConfig.h",
+			"/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/config/AppConfig.h",
 			"MU",
 			"IJHAR2IVER/moc_AppConfig.cpp",
 			null
 		],
 		[
-			"/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/models/Alert.h",
+			"/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/models/Alert.h",
 			"MU",
 			"IVK4DJNV27/moc_Alert.cpp",
 			null
 		],
 		[
-			"/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/models/DeviceConfig.h",
+			"/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/models/DeviceConfig.h",
 			"MU",
 			"IVK4DJNV27/moc_DeviceConfig.cpp",
 			null
 		],
 		[
-			"/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/models/SensorReading.h",
+			"/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/models/SensorReading.h",
 			"MU",
 			"IVK4DJNV27/moc_SensorReading.cpp",
 			null
 		],
 		[
-			"/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/models/User.h",
+			"/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/models/User.h",
 			"MU",
 			"IVK4DJNV27/moc_User.cpp",
 			null
 		],
 		[
-			"/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/server/api/ApiServer.h",
+			"/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/server/api/ApiServer.h",
 			"MU",
 			"EG4V6WMW7F/moc_ApiServer.cpp",
 			null
 		],
 		[
-			"/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/server/database/Database.h",
+			"/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/server/database/Database.h",
 			"MU",
 			"I2HNX657TI/moc_Database.cpp",
 			null
 		],
 		[
-			"/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/server/mqtt/MqttDiscoveryService.h",
+			"/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/server/mqtt/MqttDiscoveryService.h",
 			"MU",
 			"QMA23EUNQU/moc_MqttDiscoveryService.cpp",
 			null
 		],
 		[
-			"/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/server/system/HotspotManager.h",
+			"/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/server/system/HotspotManager.h",
 			"MU",
 			"BUIV6BVTQU/moc_HotspotManager.cpp",
 			null
 		],
 		[
-			"/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/services/AuthService.h",
+			"/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/services/AuthService.h",
 			"MU",
 			"3BYFHCGL5U/moc_AuthService.cpp",
 			null
 		],
 		[
-			"/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/services/SensorService.h",
+			"/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/services/SensorService.h",
 			"MU",
 			"3BYFHCGL5U/moc_SensorService.cpp",
 			null
 		],
 		[
-			"/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/ui/MainWindow.h",
+			"/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/ui/MainWindow.h",
 			"MU",
 			"UYX5XTB5RZ/moc_MainWindow.cpp",
 			null
 		],
 		[
-			"/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/ui/dialogs/ErrorDialog.h",
+			"/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/ui/dialogs/ErrorDialog.h",
 			"MU",
 			"ZB24L4LU7T/moc_ErrorDialog.cpp",
 			null
 		],
 		[
-			"/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/ui/dialogs/SelectOnlineDeviceDialog.h",
+			"/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/ui/dialogs/SelectOnlineDeviceDialog.h",
 			"MU",
 			"ZB24L4LU7T/moc_SelectOnlineDeviceDialog.cpp",
 			null
 		],
 		[
-			"/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/ui/pages/AlertPage.h",
+			"/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/ui/pages/AlertPage.h",
 			"MU",
 			"PELACIV4JL/moc_AlertPage.cpp",
 			null
 		],
 		[
-			"/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/ui/pages/DashboardPage.h",
+			"/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/ui/pages/DashboardPage.h",
 			"MU",
 			"PELACIV4JL/moc_DashboardPage.cpp",
 			null
 		],
 		[
-			"/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/ui/pages/DeviceManagementPage.h",
+			"/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/ui/pages/DeviceManagementPage.h",
 			"MU",
 			"PELACIV4JL/moc_DeviceManagementPage.cpp",
 			null
 		],
 		[
-			"/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/ui/pages/HistoryPage.h",
+			"/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/ui/pages/HistoryPage.h",
 			"MU",
 			"PELACIV4JL/moc_HistoryPage.cpp",
 			null
 		],
 		[
-			"/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/ui/pages/LoginPage.h",
+			"/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/ui/pages/LoginPage.h",
 			"MU",
 			"PELACIV4JL/moc_LoginPage.cpp",
 			null
 		],
 		[
-			"/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/ui/pages/UserManagementPage.h",
+			"/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/ui/pages/UserManagementPage.h",
 			"MU",
 			"PELACIV4JL/moc_UserManagementPage.cpp",
 			null
 		],
 		[
-			"/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/ui/widgets/DoorVisualizerWidget.h",
+			"/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/ui/widgets/DoorVisualizerWidget.h",
 			"MU",
 			"NJHUVPU35C/moc_DoorVisualizerWidget.cpp",
 			null
 		]
 	],
 	"HEADER_EXTENSIONS" : [ "h", "hh", "h++", "hm", "hpp", "hxx", "in", "txx" ],
-	"INCLUDE_DIR" : "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/OUT_SRC_MANHQUANG_autogen/include",
-	"MOC_COMPILATION_FILE" : "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/OUT_SRC_MANHQUANG_autogen/mocs_compilation.cpp",
+	"INCLUDE_DIR" : "/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/OUT_SRC_MANHQUANG_autogen/include",
+	"MOC_COMPILATION_FILE" : "/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/OUT_SRC_MANHQUANG_autogen/mocs_compilation.cpp",
 	"MOC_DEFINITIONS" : 
 	[
 		"QT_CHARTS_LIB",
@@ -610,8 +610,8 @@
 	],
 	"MOC_INCLUDES" : 
 	[
-		"/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG",
-		"/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/server",
+		"/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG",
+		"/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/server",
 		"/home/quanghaictu/Qt6Cross/qt6/host/include/QtCore",
 		"/home/quanghaictu/Qt6Cross/qt6/host/include",
 		"/home/quanghaictu/Qt6Cross/qt6/host/mkspecs/linux-g++",
@@ -650,116 +650,116 @@
 		"-E",
 		"/usr/local/share/cmake-4.3/Modules/CMakeCXXCompilerABI.cpp"
 	],
-	"MOC_PREDEFS_FILE" : "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/OUT_SRC_MANHQUANG_autogen/moc_predefs.h",
+	"MOC_PREDEFS_FILE" : "/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/OUT_SRC_MANHQUANG_autogen/moc_predefs.h",
 	"MOC_RELAXED_MODE" : false,
 	"MOC_SKIP" : [],
 	"MULTI_CONFIG" : false,
 	"PARALLEL" : 6,
-	"PARSE_CACHE_FILE" : "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/OUT_SRC_MANHQUANG_autogen.dir/ParseCache.txt",
+	"PARSE_CACHE_FILE" : "/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/OUT_SRC_MANHQUANG_autogen.dir/ParseCache.txt",
 	"QT_MOC_EXECUTABLE" : "/home/quanghaictu/Qt6Cross/qt6/host/./libexec/moc",
 	"QT_UIC_EXECUTABLE" : "/home/quanghaictu/Qt6Cross/qt6/host/./libexec/uic",
 	"QT_VERSION_MAJOR" : 6,
 	"QT_VERSION_MINOR" : 5,
-	"SETTINGS_FILE" : "/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/OUT_SRC_MANHQUANG_autogen.dir/AutogenUsed.txt",
+	"SETTINGS_FILE" : "/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/OUT_SRC_MANHQUANG_autogen.dir/AutogenUsed.txt",
 	"SOURCES" : 
 	[
 		[
-			"/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/EmbeddedServer.cpp",
+			"/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/EmbeddedServer.cpp",
 			"MU",
 			null
 		],
 		[
-			"/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/VirtualKeyboard.cpp",
+			"/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/VirtualKeyboard.cpp",
 			"MU",
 			null
 		],
 		[
-			"/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/api/ApiClient.cpp",
+			"/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/api/ApiClient.cpp",
 			"MU",
 			null
 		],
 		[
-			"/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/main.cpp",
+			"/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/main.cpp",
 			"MU",
 			null
 		],
 		[
-			"/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/server/api/ApiServer.cpp",
+			"/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/server/api/ApiServer.cpp",
 			"MU",
 			null
 		],
 		[
-			"/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/server/database/Database.cpp",
+			"/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/server/database/Database.cpp",
 			"MU",
 			null
 		],
 		[
-			"/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/server/mqtt/MqttDiscoveryService.cpp",
+			"/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/server/mqtt/MqttDiscoveryService.cpp",
 			"MU",
 			null
 		],
 		[
-			"/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/server/system/HotspotManager.cpp",
+			"/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/server/system/HotspotManager.cpp",
 			"MU",
 			null
 		],
 		[
-			"/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/services/AuthService.cpp",
+			"/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/services/AuthService.cpp",
 			"MU",
 			null
 		],
 		[
-			"/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/services/SensorService.cpp",
+			"/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/services/SensorService.cpp",
 			"MU",
 			null
 		],
 		[
-			"/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/ui/MainWindow.cpp",
+			"/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/ui/MainWindow.cpp",
 			"MU",
 			null
 		],
 		[
-			"/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/ui/dialogs/ErrorDialog.cpp",
+			"/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/ui/dialogs/ErrorDialog.cpp",
 			"MU",
 			null
 		],
 		[
-			"/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/ui/dialogs/SelectOnlineDeviceDialog.cpp",
+			"/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/ui/dialogs/SelectOnlineDeviceDialog.cpp",
 			"MU",
 			null
 		],
 		[
-			"/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/ui/pages/AlertPage.cpp",
+			"/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/ui/pages/AlertPage.cpp",
 			"MU",
 			null
 		],
 		[
-			"/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/ui/pages/DashboardPage.cpp",
+			"/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/ui/pages/DashboardPage.cpp",
 			"MU",
 			null
 		],
 		[
-			"/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/ui/pages/DeviceManagementPage.cpp",
+			"/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/ui/pages/DeviceManagementPage.cpp",
 			"MU",
 			null
 		],
 		[
-			"/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/ui/pages/HistoryPage.cpp",
+			"/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/ui/pages/HistoryPage.cpp",
 			"MU",
 			null
 		],
 		[
-			"/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/ui/pages/LoginPage.cpp",
+			"/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/ui/pages/LoginPage.cpp",
 			"MU",
 			null
 		],
 		[
-			"/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/ui/pages/UserManagementPage.cpp",
+			"/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/ui/pages/UserManagementPage.cpp",
 			"MU",
 			null
 		],
 		[
-			"/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/ui/widgets/DoorVisualizerWidget.cpp",
+			"/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/ui/widgets/DoorVisualizerWidget.cpp",
 			"MU",
 			null
 		]

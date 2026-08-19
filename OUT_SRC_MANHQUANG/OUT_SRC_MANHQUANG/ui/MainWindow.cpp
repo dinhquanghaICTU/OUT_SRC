@@ -164,6 +164,12 @@ void MainWindow::setupNavigation()
     });
 
     connect(m_apiClient, &ApiClient::devicesReceived, m_deviceManagementPage, &DeviceManagementPage::setOwnedDevices);
+    connect(m_apiClient, &ApiClient::devicesReceived, this, [this](const QJsonArray &devs) {
+        if (!devs.isEmpty()) {
+            const QString id = devs.at(0).toObject().value(QStringLiteral("device_id")).toString();
+            if (!id.isEmpty()) m_activeDeviceId = id;
+        }
+    });
     connect(m_apiClient, &ApiClient::devicesReceived, m_historyPage, &HistoryPage::setDevices);
     connect(m_apiClient, &ApiClient::availableDevicesReceived, m_deviceManagementPage, &DeviceManagementPage::setAvailableDevices);
     connect(m_apiClient, &ApiClient::deviceClaimed, this, [this] {
@@ -198,18 +204,31 @@ void MainWindow::setupNavigation()
 
 void MainWindow::onDoorCommandFromDashboard(const QString &action)
 {
+    const QString devId = m_activeDeviceId.isEmpty() ? QStringLiteral("manhquang-190782") : m_activeDeviceId;
+
     if (action == QStringLiteral("open")) {
-        m_sensorService->triggerManualMotion();
+        m_sensorService->triggerManualOpen();
         if (!m_authService->isOfflineMode()) {
-            m_apiClient->setRelayState(m_activeDeviceId, true);
+            m_apiClient->sendDoorCommand(devId, QStringLiteral("open"));
         }
-        statusBar()->showMessage(tr("Lệnh mở cửa đã gửi"), 3000);
+        statusBar()->showMessage(tr("🚀 Đang mở cửa [Thiết bị: %1]...").arg(devId), 3000);
     } else if (action == QStringLiteral("close")) {
+        m_sensorService->triggerManualClose();
         if (!m_authService->isOfflineMode()) {
-            m_apiClient->setRelayState(m_activeDeviceId, false);
+            m_apiClient->sendDoorCommand(devId, QStringLiteral("close"));
         }
-        statusBar()->showMessage(tr("Lệnh đóng cửa đã gửi"), 3000);
+        statusBar()->showMessage(tr("🚪 Đang đóng cửa [Thiết bị: %1]...").arg(devId), 3000);
+    } else if (action == QStringLiteral("hold_open")) {
+        m_sensorService->triggerManualHoldOpen();
+        if (!m_authService->isOfflineMode()) {
+            m_apiClient->sendDoorCommand(devId, QStringLiteral("hold_open"));
+        }
+        statusBar()->showMessage(tr("🔓 Kích hoạt giữ mở cửa liên tục [Thiết bị: %1]").arg(devId), 3000);
     } else if (action == QStringLiteral("stop")) {
+        m_sensorService->triggerManualStop();
+        if (!m_authService->isOfflineMode()) {
+            m_apiClient->sendDoorCommand(devId, QStringLiteral("stop"));
+        }
         statusBar()->showMessage(tr("🛑 DỪNG KHẨN CẤP ĐỘNG CƠ CỬA"), 4000);
         m_alertPage->addAlert(QStringLiteral("MANUAL_STOP"), QStringLiteral("critical"), tr("Người vận hành kích hoạt dừng khẩn cấp"));
     }

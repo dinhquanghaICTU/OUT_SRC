@@ -1,8 +1,8 @@
 CMakeFiles/OUT_SRC_MANHQUANG.dir/ui/pages/DashboardPage.cpp.o: \
- /media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/ui/pages/DashboardPage.cpp \
+ /home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/ui/pages/DashboardPage.cpp \
  /usr/include/stdc-predef.h \
- /media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/ui/pages/DashboardPage.h \
- /media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/models/SensorReading.h \
+ /home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/ui/pages/DashboardPage.h \
+ /home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/models/SensorReading.h \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtCore/QDateTime \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtCore/qdatetime.h \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtCore/qcalendar.h \
@@ -388,7 +388,7 @@ CMakeFiles/OUT_SRC_MANHQUANG.dir/ui/pages/DashboardPage.cpp.o: \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtGui/qbrush.h \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtGui/QImage \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtGui/qimage.h \
- /media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/OUT_SRC_MANHQUANG_autogen/include/ui_DashboardPage.h \
+ /home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/OUT_SRC_MANHQUANG_autogen/include/ui_DashboardPage.h \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtWidgets/QApplication \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtWidgets/qapplication.h \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtCore/qcoreapplication.h \
@@ -420,7 +420,7 @@ CMakeFiles/OUT_SRC_MANHQUANG.dir/ui/pages/DashboardPage.cpp.o: \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtWidgets/qabstractbutton.h \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtWidgets/QVBoxLayout \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtWidgets/QWidget \
- /media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/ui/widgets/DoorVisualizerWidget.h \
+ /home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/ui/widgets/DoorVisualizerWidget.h \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtCore/QTimer \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtCore/qtimer.h \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtCore/qbasictimer.h \

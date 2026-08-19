@@ -1,8 +1,8 @@
 CMakeFiles/OUT_SRC_MANHQUANG.dir/services/AuthService.cpp.o: \
- /media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/services/AuthService.cpp \
+ /home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/services/AuthService.cpp \
  /usr/include/stdc-predef.h \
- /media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/services/AuthService.h \
- /media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/models/User.h \
+ /home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/services/AuthService.h \
+ /home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/models/User.h \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtCore/QString \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtCore/qstring.h \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtCore/qchar.h \
@@ -302,9 +302,9 @@ CMakeFiles/OUT_SRC_MANHQUANG.dir/services/AuthService.cpp.o: \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtCore/qbindingstorage.h \
  /usr/include/c++/11/chrono /usr/include/c++/11/ratio \
  /usr/include/c++/11/ctime \
- /media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/api/ApiClient.h \
- /media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/models/DeviceConfig.h \
- /media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/models/SensorReading.h \
+ /home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/api/ApiClient.h \
+ /home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/models/DeviceConfig.h \
+ /home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/models/SensorReading.h \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtCore/QDateTime \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtCore/qdatetime.h \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtCore/qcalendar.h \
@@ -377,4 +377,4 @@ CMakeFiles/OUT_SRC_MANHQUANG.dir/services/AuthService.cpp.o: \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtNetwork/QSslPreSharedKeyAuthenticator \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtNetwork/qsslpresharedkeyauthenticator.h \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtCore/QMetaType \
- /media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/config/AppConfig.h
+ /home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/config/AppConfig.h

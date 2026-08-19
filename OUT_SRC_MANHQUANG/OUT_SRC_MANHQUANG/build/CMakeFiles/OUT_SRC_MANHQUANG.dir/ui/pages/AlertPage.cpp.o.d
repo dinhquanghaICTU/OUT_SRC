@@ -1,7 +1,7 @@
 CMakeFiles/OUT_SRC_MANHQUANG.dir/ui/pages/AlertPage.cpp.o: \
- /media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/ui/pages/AlertPage.cpp \
+ /home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/ui/pages/AlertPage.cpp \
  /usr/include/stdc-predef.h \
- /media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/ui/pages/AlertPage.h \
+ /home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/ui/pages/AlertPage.h \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtWidgets/QWidget \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtWidgets/qwidget.h \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtWidgets/qtwidgetsglobal.h \
@@ -355,7 +355,7 @@ CMakeFiles/OUT_SRC_MANHQUANG.dir/ui/pages/AlertPage.cpp.o: \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtWidgets/qsizepolicy.h \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtGui/qcursor.h \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtGui/qbitmap.h \
- /media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/OUT_SRC_MANHQUANG_autogen/include/ui_AlertPage.h \
+ /home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/OUT_SRC_MANHQUANG_autogen/include/ui_AlertPage.h \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtCore/QVariant \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtCore/qvariant.h \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtWidgets/QApplication \

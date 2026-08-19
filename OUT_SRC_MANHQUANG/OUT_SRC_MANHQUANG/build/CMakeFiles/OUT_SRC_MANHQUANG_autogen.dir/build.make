@@ -53,10 +53,10 @@ RM = /usr/local/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG
+CMAKE_SOURCE_DIR = /home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build
+CMAKE_BINARY_DIR = /home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build
 
 # Utility rule file for OUT_SRC_MANHQUANG_autogen.
 
@@ -71,9 +71,9 @@ CMakeFiles/OUT_SRC_MANHQUANG_autogen: OUT_SRC_MANHQUANG_autogen/timestamp
 OUT_SRC_MANHQUANG_autogen/timestamp: /home/quanghaictu/Qt6Cross/qt6/host/./libexec/moc
 OUT_SRC_MANHQUANG_autogen/timestamp: /home/quanghaictu/Qt6Cross/qt6/host/./libexec/uic
 OUT_SRC_MANHQUANG_autogen/timestamp: CMakeFiles/OUT_SRC_MANHQUANG_autogen.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --blue --bold --progress-dir=/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Automatic MOC and UIC for target OUT_SRC_MANHQUANG"
-	/usr/local/bin/cmake -E cmake_autogen /media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/OUT_SRC_MANHQUANG_autogen.dir/AutogenInfo.json Debug
-	/usr/local/bin/cmake -E touch /media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/OUT_SRC_MANHQUANG_autogen/timestamp
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --blue --bold --progress-dir=/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Automatic MOC and UIC for target OUT_SRC_MANHQUANG"
+	/usr/local/bin/cmake -E cmake_autogen /home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/OUT_SRC_MANHQUANG_autogen.dir/AutogenInfo.json Debug
+	/usr/local/bin/cmake -E touch /home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/OUT_SRC_MANHQUANG_autogen/timestamp
 
 CMakeFiles/OUT_SRC_MANHQUANG_autogen.dir/codegen:
 .PHONY : CMakeFiles/OUT_SRC_MANHQUANG_autogen.dir/codegen
@@ -92,6 +92,6 @@ CMakeFiles/OUT_SRC_MANHQUANG_autogen.dir/clean:
 .PHONY : CMakeFiles/OUT_SRC_MANHQUANG_autogen.dir/clean
 
 CMakeFiles/OUT_SRC_MANHQUANG_autogen.dir/depend:
-	cd /media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG /media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG /media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build /media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build /media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/OUT_SRC_MANHQUANG_autogen.dir/DependInfo.cmake "--color=$(COLOR)" OUT_SRC_MANHQUANG_autogen
+	cd /home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG /home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG /home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build /home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build /home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/OUT_SRC_MANHQUANG_autogen.dir/DependInfo.cmake "--color=$(COLOR)" OUT_SRC_MANHQUANG_autogen
 .PHONY : CMakeFiles/OUT_SRC_MANHQUANG_autogen.dir/depend
 
