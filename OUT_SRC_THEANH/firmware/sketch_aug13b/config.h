@@ -1,7 +1,7 @@
 #ifndef __CONFIG_H__
 #define __CONFIG_H__
 
-#define NAME_AP "TRUNGKIEN_DEVICE"
+
 #define PI_WIFI_SSID "ICTU_IOT_AP"
 #define PI_WIFI_PASSWORD "12345678"
 #define WIFI_AP_PASSWORD "12345678"

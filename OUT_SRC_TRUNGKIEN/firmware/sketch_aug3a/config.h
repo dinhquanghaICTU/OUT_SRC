@@ -10,11 +10,11 @@
 #define WIFI_RETRY_INTERVAL_MS 15000UL
 #define SAMPLE_INTERVAL_MS 2000
 
-#define PRODUCT_ID "150304"
+#define PRODUCT_ID "Trungkien-150304"
 #define FIRMWARE_VERSION "1.0.0"
 
 /* Sua URI nay thanh dia chi Raspberry Pi chay Mosquitto. */
-#define MQTT_BROKER_URI "mqtt://192.168.4.1:1883"  // fallback; runtime lay gateway cua Pi AP
+#define MQTT_BROKER_URI "mqtt://192.168.4.1:1883" // fallback; runtime lay gateway cua Pi AP
 
 #define MQTT_TOPIC_PREFIX "iot/v1/devices/" PRODUCT_ID
 #define MQTT_PUB_TELEMETRY_TOPIC MQTT_TOPIC_PREFIX "/telemetry"
