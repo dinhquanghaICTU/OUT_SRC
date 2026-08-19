@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>AlertPage</class>
+ <widget class="QWidget" name="AlertPage">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>800</width>
+    <height>480</height>
+   </rect>
+  </property>
+  <layout class="QVBoxLayout" name="mainLayout">
+   <property name="spacing">
+    <number>8</number>
+   </property>
+   <property name="leftMargin">
+    <number>12</number>
+   </property>
+   <property name="topMargin">
+    <number>10</number>
+   </property>
+   <property name="rightMargin">
+    <number>12</number>
+   </property>
+   <property name="bottomMargin">
+    <number>10</number>
+   </property>
+
+   <item>
+    <layout class="QHBoxLayout" name="headerLayout">
+     <item>
+      <widget class="QLabel" name="titleLabel">
+       <property name="text">
+        <string>⚠️ CẢNH BÁO AN TOÀN &amp; SỰ CỐ CỬA</string>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">color: #f87171; font-size: 14px; font-weight: 800;</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="headerSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btnClearAlerts">
+       <property name="cursor">
+        <cursorShape>PointingHandCursor</cursorShape>
+       </property>
+       <property name="text">
+        <string>🗑️ Xóa danh sách</string>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">QPushButton { background-color: #334155; color: #cbd5e1; border: none; border-radius: 6px; padding: 6px 12px; font-weight: 600; font-size: 11px; } QPushButton:hover { background-color: #475569; }</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+
+   <item>
+    <widget class="QTableWidget" name="alertTable">
+     <property name="columnCount">
+      <number>4</number>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QTableWidget { background-color: #0f172a; border: 1.5px solid #1e293b; color: #f1f5f9; border-radius: 10px; gridline-color: #1e293b; } QHeaderView::section { background-color: #1e293b; color: #f87171; font-weight: 700; padding: 6px; border: none; }</string>
+     </property>
+     <column>
+      <property name="text">
+       <string>Thời gian</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Nguồn cảnh báo</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Mức độ</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Nội dung chi tiết</string>
+      </property>
+     </column>
+    </widget>
+   </item>
+
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

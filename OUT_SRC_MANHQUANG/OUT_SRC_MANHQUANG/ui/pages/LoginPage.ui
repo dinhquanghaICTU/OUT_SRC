@@ -1,0 +1,505 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>LoginPage</class>
+ <widget class="QWidget" name="LoginPage">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>800</width>
+    <height>480</height>
+   </rect>
+  </property>
+  <layout class="QVBoxLayout" name="pageLayout">
+   <property name="spacing">
+    <number>0</number>
+   </property>
+   <property name="leftMargin">
+    <number>16</number>
+   </property>
+   <property name="topMargin">
+    <number>12</number>
+   </property>
+   <property name="rightMargin">
+    <number>16</number>
+   </property>
+   <property name="bottomMargin">
+    <number>8</number>
+   </property>
+
+   <item>
+    <layout class="QHBoxLayout" name="contentRowLayout">
+     <property name="spacing">
+      <number>20</number>
+     </property>
+
+     <!-- LEFT HERO PANEL (BRAND & HARDWARE INTRO) -->
+     <item>
+      <widget class="QFrame" name="leftHeroPanel">
+       <property name="minimumSize">
+        <size>
+         <width>320</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">QFrame#leftHeroPanel { background: qlineargradient(x1:0, y1:0, x2:1, y2:1, stop:0 #0f172a, stop:1 #1e1b4b); border: 1.5px solid #334155; border-radius: 14px; }</string>
+       </property>
+       <layout class="QVBoxLayout" name="heroLayout">
+        <property name="leftMargin">
+         <number>20</number>
+        </property>
+        <property name="topMargin">
+         <number>20</number>
+        </property>
+        <property name="rightMargin">
+         <number>20</number>
+        </property>
+        <property name="bottomMargin">
+         <number>20</number>
+        </property>
+        <property name="spacing">
+         <number>10</number>
+        </property>
+
+        <item>
+         <widget class="QLabel" name="heroBadge">
+          <property name="text">
+           <string>🛡️ ACCESS SECURITY TERMINAL</string>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">color: #10b981; font-size: 10px; font-weight: 800; letter-spacing: 1px; background: rgba(16, 185, 129, 0.12); border-radius: 4px; padding: 3px 8px;</string>
+          </property>
+         </widget>
+        </item>
+
+        <item>
+         <widget class="QLabel" name="heroTitle">
+          <property name="text">
+           <string>HỆ THỐNG CỬA TỰ ĐỘNG
+MANH QUANG SMART DOOR</string>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">color: #ffffff; font-size: 16px; font-weight: 900; line-height: 1.3;</string>
+          </property>
+         </widget>
+        </item>
+
+        <item>
+         <widget class="QLabel" name="heroSubtitle">
+          <property name="text">
+           <string>Điều khiển định vị thông minh &amp; Giám sát an toàn đa lớp</string>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">color: #94a3b8; font-size: 11px;</string>
+          </property>
+         </widget>
+        </item>
+
+        <item>
+         <spacer name="heroGap">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>10</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+
+        <!-- Hardware Feature 1 -->
+        <item>
+         <widget class="QFrame" name="featureCard1">
+          <property name="styleSheet">
+           <string notr="true">background: rgba(30, 41, 59, 0.6); border: 1px solid #334155; border-radius: 8px; padding: 6px 10px;</string>
+          </property>
+          <layout class="QHBoxLayout" name="f1Layout">
+           <property name="margin">
+            <number>0</number>
+           </property>
+           <property name="spacing">
+            <number>8</number>
+           </property>
+           <item>
+            <widget class="QLabel" name="f1Icon">
+             <property name="text">
+              <string>⚡</string>
+             </property>
+             <property name="styleSheet">
+              <string notr="true">font-size: 16px; color: #10b981;</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="f1Text">
+             <property name="text">
+              <string>Cảm biến radar chuyển động SR602</string>
+             </property>
+             <property name="styleSheet">
+              <string notr="true">color: #e2e8f0; font-size: 11px; font-weight: 600;</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+
+        <!-- Hardware Feature 2 -->
+        <item>
+         <widget class="QFrame" name="featureCard2">
+          <property name="styleSheet">
+           <string notr="true">background: rgba(30, 41, 59, 0.6); border: 1px solid #334155; border-radius: 8px; padding: 6px 10px;</string>
+          </property>
+          <layout class="QHBoxLayout" name="f2Layout">
+           <property name="margin">
+            <number>0</number>
+           </property>
+           <property name="spacing">
+            <number>8</number>
+           </property>
+           <item>
+            <widget class="QLabel" name="f2Icon">
+             <property name="text">
+              <string>🚨</string>
+             </property>
+             <property name="styleSheet">
+              <string notr="true">font-size: 16px; color: #ef4444;</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="f2Text">
+             <property name="text">
+              <string>Cảm biến IR chùm tia chống kẹt an toàn</string>
+             </property>
+             <property name="styleSheet">
+              <string notr="true">color: #e2e8f0; font-size: 11px; font-weight: 600;</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+
+        <!-- Hardware Feature 3 -->
+        <item>
+         <widget class="QFrame" name="featureCard3">
+          <property name="styleSheet">
+           <string notr="true">background: rgba(30, 41, 59, 0.6); border: 1px solid #334155; border-radius: 8px; padding: 6px 10px;</string>
+          </property>
+          <layout class="QHBoxLayout" name="f3Layout">
+           <property name="margin">
+            <number>0</number>
+           </property>
+           <property name="spacing">
+            <number>8</number>
+           </property>
+           <item>
+            <widget class="QLabel" name="f3Icon">
+             <property name="text">
+              <string>⚙️</string>
+             </property>
+             <property name="styleSheet">
+              <string notr="true">font-size: 16px; color: #06b6d4;</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="f3Text">
+             <property name="text">
+              <string>Động cơ bước định vị vi bước mượt mà</string>
+             </property>
+             <property name="styleSheet">
+              <string notr="true">color: #e2e8f0; font-size: 11px; font-weight: 600;</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+
+        <item>
+         <spacer name="heroBottomSpacer">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>10</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+
+        <item>
+         <widget class="QLabel" name="heroFooterStatus">
+          <property name="text">
+           <string>🟢 Hệ thống sẵn sàng kết nối MQTT / IoT v1</string>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">color: #64748b; font-size: 9px;</string>
+          </property>
+         </widget>
+        </item>
+
+       </layout>
+      </widget>
+     </item>
+
+     <!-- RIGHT LOGIN FORM CARD -->
+     <item>
+      <widget class="QFrame" name="loginCard">
+       <property name="styleSheet">
+        <string notr="true">QFrame#loginCard { background-color: #111a2e; border: 1.5px solid #1e293b; border-radius: 14px; }</string>
+       </property>
+       <layout class="QVBoxLayout" name="loginFormLayout">
+        <property name="leftMargin">
+         <number>24</number>
+        </property>
+        <property name="topMargin">
+         <number>20</number>
+        </property>
+        <property name="rightMargin">
+         <number>24</number>
+        </property>
+        <property name="bottomMargin">
+         <number>20</number>
+        </property>
+        <property name="spacing">
+         <number>12</number>
+        </property>
+
+        <item alignment="Qt::AlignLeft">
+         <widget class="QLabel" name="loginTitle">
+          <property name="text">
+           <string>Xác thực quyền truy cập</string>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">color: #ffffff; font-size: 16px; font-weight: 800;</string>
+          </property>
+         </widget>
+        </item>
+
+        <item alignment="Qt::AlignLeft">
+         <widget class="QLabel" name="loginSubtitle">
+          <property name="text">
+           <string>Nhập tài khoản quản trị hoặc người vận hành</string>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">color: #64748b; font-size: 11px;</string>
+          </property>
+         </widget>
+        </item>
+
+        <!-- Username Input -->
+        <item>
+         <layout class="QHBoxLayout" name="userInputRow">
+          <property name="spacing">
+           <number>8</number>
+          </property>
+          <item>
+           <widget class="QLabel" name="userIconLabel">
+            <property name="text">
+             <string>👤</string>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">font-size: 14px; color: #94a3b8;</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="usernameEdit">
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>38</height>
+             </size>
+            </property>
+            <property name="placeholderText">
+             <string>Tài khoản (admin / admin1 / operator)</string>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">QLineEdit { background-color: #0d1322; border: 1.5px solid #1e293b; border-radius: 8px; color: #ffffff; font-size: 12px; padding: 4px 10px; } QLineEdit:focus { border: 1.5px solid #10b981; }</string>
+            </property>
+            <property name="clearButtonEnabled">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+
+        <!-- Password Input -->
+        <item>
+         <layout class="QHBoxLayout" name="passInputRow">
+          <property name="spacing">
+           <number>8</number>
+          </property>
+          <item>
+           <widget class="QLabel" name="passIconLabel">
+            <property name="text">
+             <string>🔒</string>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">font-size: 14px; color: #94a3b8;</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="passwordEdit">
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>38</height>
+             </size>
+            </property>
+            <property name="placeholderText">
+             <string>Mật khẩu</string>
+            </property>
+            <property name="echoMode">
+             <enum>QLineEdit::Password</enum>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">QLineEdit { background-color: #0d1322; border: 1.5px solid #1e293b; border-radius: 8px; color: #ffffff; font-size: 12px; padding: 4px 10px; } QLineEdit:focus { border: 1.5px solid #10b981; }</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="togglePassBtn">
+            <property name="minimumSize">
+             <size>
+              <width>36</width>
+              <height>36</height>
+             </size>
+            </property>
+            <property name="cursor">
+             <cursorShape>PointingHandCursor</cursorShape>
+            </property>
+            <property name="text">
+             <string>👁️</string>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">QPushButton { background-color: #1e293b; border: none; border-radius: 6px; color: #94a3b8; font-size: 13px; } QPushButton:hover { background-color: #334155; }</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+
+        <!-- Options row -->
+        <item>
+         <layout class="QHBoxLayout" name="optionsRow">
+          <item>
+           <widget class="QCheckBox" name="rememberAccountCheckBox">
+            <property name="cursor">
+             <cursorShape>PointingHandCursor</cursorShape>
+            </property>
+            <property name="text">
+             <string>Ghi nhớ tài khoản</string>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">QCheckBox { color: #94a3b8; font-size: 11px; } QCheckBox::indicator { width: 14px; height: 14px; }</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="optSpacer">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
+           <widget class="QPushButton" name="quickFillAdminBtn">
+            <property name="cursor">
+             <cursorShape>PointingHandCursor</cursorShape>
+            </property>
+            <property name="text">
+             <string>🔑 Admin 1-Click</string>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">QPushButton { background: transparent; border: none; color: #38bdf8; font-size: 10px; font-weight: 700; text-decoration: underline; }</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+
+        <!-- Submit Button -->
+        <item>
+         <widget class="QPushButton" name="loginButton">
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>42</height>
+           </size>
+          </property>
+          <property name="cursor">
+           <cursorShape>PointingHandCursor</cursorShape>
+          </property>
+          <property name="text">
+           <string>🚪 ĐĂNG NHẬP VẬN HÀNH</string>
+          </property>
+          <property name="default">
+           <bool>true</bool>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">QPushButton#loginButton { background: qlineargradient(x1:0, y1:0, x2:1, y2:0, stop:0 #10b981, stop:1 #059669); color: #ffffff; border: none; border-radius: 8px; font-size: 13px; font-weight: 800; letter-spacing: 0.5px; } QPushButton#loginButton:hover { background: #10b981; } QPushButton#loginButton:pressed { background: #047857; }</string>
+          </property>
+         </widget>
+        </item>
+
+        <item alignment="Qt::AlignCenter">
+         <widget class="QLabel" name="keyboardToggleHint">
+          <property name="text">
+           <string>Chạm vào ô nhập để mở bàn phím ảo</string>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">color: #475569; font-size: 10px;</string>
+          </property>
+         </widget>
+        </item>
+
+       </layout>
+      </widget>
+     </item>
+
+    </layout>
+   </item>
+
+   <!-- Bottom container for virtual keyboard -->
+   <item>
+    <layout class="QHBoxLayout" name="keyboardContainerLayout">
+     <property name="leftMargin">
+      <number>0</number>
+     </property>
+     <property name="topMargin">
+      <number>4</number>
+     </property>
+     <property name="rightMargin">
+      <number>0</number>
+     </property>
+     <property name="bottomMargin">
+      <number>0</number>
+     </property>
+    </layout>
+   </item>
+
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

@@ -1,0 +1,9 @@
+/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/build-OUT_SRC_MANHQUANG-Desktop-Debug/CMakeFiles/OUT_SRC_MANHQUANG.dir
+/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/build-OUT_SRC_MANHQUANG-Desktop-Debug/CMakeFiles/edit_cache.dir
+/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/build-OUT_SRC_MANHQUANG-Desktop-Debug/CMakeFiles/rebuild_cache.dir
+/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/build-OUT_SRC_MANHQUANG-Desktop-Debug/CMakeFiles/list_install_components.dir
+/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/build-OUT_SRC_MANHQUANG-Desktop-Debug/CMakeFiles/install.dir
+/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/build-OUT_SRC_MANHQUANG-Desktop-Debug/CMakeFiles/install/local.dir
+/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/build-OUT_SRC_MANHQUANG-Desktop-Debug/CMakeFiles/install/strip.dir
+/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/build-OUT_SRC_MANHQUANG-Desktop-Debug/CMakeFiles/OUT_SRC_MANHQUANG_autogen_timestamp_deps.dir
+/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_MANHQUANG/build-OUT_SRC_MANHQUANG-Desktop-Debug/CMakeFiles/OUT_SRC_MANHQUANG_autogen.dir

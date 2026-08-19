@@ -1,0 +1,494 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>DashboardPage</class>
+ <widget class="QWidget" name="DashboardPage">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>800</width>
+    <height>420</height>
+   </rect>
+  </property>
+  <layout class="QHBoxLayout" name="dashboardHLayout">
+   <property name="spacing">
+    <number>10</number>
+   </property>
+   <property name="leftMargin">
+    <number>10</number>
+   </property>
+   <property name="topMargin">
+    <number>8</number>
+   </property>
+   <property name="rightMargin">
+    <number>10</number>
+   </property>
+   <property name="bottomMargin">
+    <number>8</number>
+   </property>
+
+   <!-- ZONE 1 (LEFT): PLANT & SOIL CANVAS + SIM CONTROLS -->
+   <item>
+    <widget class="QFrame" name="zone1Frame">
+     <property name="minimumSize">
+      <size>
+       <width>250</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>270</width>
+       <height>16777215</height>
+      </size>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QFrame#zone1Frame { background-color: #06150c; border: 1.5px solid #1b4332; border-radius: 14px; }</string>
+     </property>
+     <layout class="QVBoxLayout" name="z1Layout">
+      <property name="leftMargin">
+       <number>8</number>
+      </property>
+      <property name="topMargin">
+       <number>8</number>
+      </property>
+      <property name="rightMargin">
+       <number>8</number>
+      </property>
+      <property name="bottomMargin">
+       <number>8</number>
+      </property>
+      <property name="spacing">
+       <number>6</number>
+      </property>
+
+      <item>
+       <widget class="QLabel" name="z1Title">
+        <property name="text">
+         <string>🌱 MÔ HÌNH VƯỜN ƯƠM</string>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">color: #34d399; font-size: 11px; font-weight: 800;</string>
+        </property>
+       </widget>
+      </item>
+
+      <item>
+       <layout class="QVBoxLayout" name="plantCanvasContainer"/>
+      </item>
+
+      <item>
+       <layout class="QHBoxLayout" name="z1SimRow">
+        <property name="spacing">
+         <number>4</number>
+        </property>
+        <item>
+         <widget class="QPushButton" name="btnSimDrySoil">
+          <property name="cursor">
+           <cursorShape>PointingHandCursor</cursorShape>
+          </property>
+          <property name="text">
+           <string>🍂 Test Đất Khô</string>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">QPushButton { background-color: #1a1608; color: #f59e0b; border: 1px solid #78350f; border-radius: 6px; font-size: 10px; font-weight: 700; padding: 4px; } QPushButton:hover { background-color: #78350f; color: white; }</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="btnSimMoistSoil">
+          <property name="cursor">
+           <cursorShape>PointingHandCursor</cursorShape>
+          </property>
+          <property name="text">
+           <string>🌱 Test Đất Ẩm</string>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">QPushButton { background-color: #061f12; color: #34d399; border: 1px solid #15803d; border-radius: 6px; font-size: 10px; font-weight: 700; padding: 4px; } QPushButton:hover { background-color: #15803d; color: white; }</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+
+     </layout>
+    </widget>
+   </item>
+
+   <!-- ZONE 2 (CENTER): AGRI-METRICS MATRIX & DYNAMIC CHART -->
+   <item>
+    <layout class="QVBoxLayout" name="z2Layout">
+     <property name="spacing">
+      <number>8</number>
+     </property>
+
+     <!-- TOP 3 METRICS CARDS -->
+     <item>
+      <layout class="QHBoxLayout" name="z2MetricsRow">
+       <property name="spacing">
+        <number>8</number>
+       </property>
+
+       <!-- METRIC 1: SOIL MOISTURE -->
+       <item>
+        <widget class="QFrame" name="cardSoil">
+         <property name="styleSheet">
+          <string notr="true">QFrame#cardSoil { background-color: #07190f; border: 1.5px solid #10b981; border-radius: 10px; padding: 6px; }</string>
+         </property>
+         <layout class="QVBoxLayout" name="csLayout">
+          <property name="margin">
+           <number>4</number>
+          </property>
+          <item>
+           <widget class="QLabel" name="csTitle">
+            <property name="text">
+             <string>🌾 ĐỘ ẨM ĐẤT</string>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">color: #34d399; font-size: 9px; font-weight: 800;</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="soilMoistureValueLabel">
+            <property name="text">
+             <string>55.0%</string>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">color: #ffffff; font-size: 17px; font-weight: 900;</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="soilMoistureSubLabel">
+            <property name="text">
+             <string>🌱 Đạt chuẩn</string>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">color: #a7f3d0; font-size: 9px; font-weight: 600;</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+
+       <!-- METRIC 2: DHT11 TEMP -->
+       <item>
+        <widget class="QFrame" name="cardTemp">
+         <property name="styleSheet">
+          <string notr="true">QFrame#cardTemp { background-color: #07190f; border: 1.5px solid #1b4332; border-radius: 10px; padding: 6px; }</string>
+         </property>
+         <layout class="QVBoxLayout" name="ctLayout">
+          <property name="margin">
+           <number>4</number>
+          </property>
+          <item>
+           <widget class="QLabel" name="ctTitle">
+            <property name="text">
+             <string>🌡️ NHIỆT ĐỘ KHÍ</string>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">color: #f59e0b; font-size: 9px; font-weight: 800;</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="tempValueLabel">
+            <property name="text">
+             <string>27.5 °C</string>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">color: #ffffff; font-size: 17px; font-weight: 900;</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="tempSubLabel">
+            <property name="text">
+             <string>DHT11 Mát mẻ</string>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">color: #a7f3d0; font-size: 9px; font-weight: 600;</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+
+       <!-- METRIC 3: DHT11 HUMIDITY -->
+       <item>
+        <widget class="QFrame" name="cardHum">
+         <property name="styleSheet">
+          <string notr="true">QFrame#cardHum { background-color: #07190f; border: 1.5px solid #1b4332; border-radius: 10px; padding: 6px; }</string>
+         </property>
+         <layout class="QVBoxLayout" name="chLayout">
+          <property name="margin">
+           <number>4</number>
+          </property>
+          <item>
+           <widget class="QLabel" name="chTitle">
+            <property name="text">
+             <string>💧 ĐỘ ẨM KHÍ</string>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">color: #38bdf8; font-size: 9px; font-weight: 800;</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="humValueLabel">
+            <property name="text">
+             <string>65.0 %RH</string>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">color: #ffffff; font-size: 17px; font-weight: 900;</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="humSubLabel">
+            <property name="text">
+             <string>Độ ẩm tán: Tốt</string>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">color: #a7f3d0; font-size: 9px; font-weight: 600;</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+
+      </layout>
+     </item>
+
+     <!-- REALTIME AGRI-CHART CONTAINER -->
+     <item>
+      <widget class="QFrame" name="chartCard">
+       <property name="styleSheet">
+        <string notr="true">QFrame#chartCard { background-color: #06150c; border: 1.5px solid #1b4332; border-radius: 12px; }</string>
+       </property>
+       <layout class="QVBoxLayout" name="chartContainerLayout">
+        <property name="leftMargin">
+         <number>6</number>
+        </property>
+        <property name="topMargin">
+         <number>4</number>
+        </property>
+        <property name="rightMargin">
+         <number>6</number>
+        </property>
+        <property name="bottomMargin">
+         <number>4</number>
+        </property>
+       </layout>
+      </widget>
+     </item>
+
+    </layout>
+   </item>
+
+   <!-- ZONE 3 (RIGHT): DEDICATED PUMP STATION -->
+   <item>
+    <widget class="QFrame" name="zone3Frame">
+     <property name="minimumSize">
+      <size>
+       <width>210</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>220</width>
+       <height>16777215</height>
+      </size>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QFrame#zone3Frame { background-color: #06150c; border: 1.5px solid #1b4332; border-radius: 14px; }</string>
+     </property>
+     <layout class="QVBoxLayout" name="z3Layout">
+      <property name="leftMargin">
+       <number>10</number>
+      </property>
+      <property name="topMargin">
+       <number>10</number>
+      </property>
+      <property name="rightMargin">
+       <number>10</number>
+      </property>
+      <property name="bottomMargin">
+       <number>10</number>
+      </property>
+      <property name="spacing">
+       <number>8</number>
+      </property>
+
+      <item>
+       <widget class="QLabel" name="z3Title">
+        <property name="text">
+         <string>🚰 TRẠM BƠM TƯỚI</string>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">color: #38bdf8; font-size: 11px; font-weight: 800;</string>
+        </property>
+       </widget>
+      </item>
+
+      <!-- BIG PUMP SWITCH -->
+      <item>
+       <widget class="QPushButton" name="btnTogglePumpMaster">
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>52</height>
+         </size>
+        </property>
+        <property name="cursor">
+         <cursorShape>PointingHandCursor</cursorShape>
+        </property>
+        <property name="text">
+         <string>💦 BẬT BƠM TƯỚI</string>
+        </property>
+        <property name="checkable">
+         <bool>true</bool>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QPushButton { background: qlineargradient(x1:0, y1:0, x2:1, y2:0, stop:0 #059669, stop:1 #10b981); color: white; border: none; border-radius: 12px; font-size: 12px; font-weight: 900; } QPushButton:hover { background: #10b981; } QPushButton:checked { background: #ef4444; }</string>
+        </property>
+       </widget>
+      </item>
+
+      <!-- Quick Timers -->
+      <item>
+       <layout class="QHBoxLayout" name="quickTimerRow">
+        <property name="spacing">
+         <number>4</number>
+        </property>
+        <item>
+         <widget class="QPushButton" name="btnTimer30s">
+          <property name="cursor">
+           <cursorShape>PointingHandCursor</cursorShape>
+          </property>
+          <property name="text">
+           <string>⏱ 30s</string>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">QPushButton { background: #0c2618; color: #a7f3d0; border: 1px solid #1b4332; border-radius: 6px; font-size: 10px; font-weight: 700; padding: 5px; } QPushButton:hover { background: #1b4332; color: white; }</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="btnTimer1m">
+          <property name="cursor">
+           <cursorShape>PointingHandCursor</cursorShape>
+          </property>
+          <property name="text">
+           <string>⏱ 1 phút</string>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">QPushButton { background: #0c2618; color: #a7f3d0; border: 1px solid #1b4332; border-radius: 6px; font-size: 10px; font-weight: 700; padding: 5px; } QPushButton:hover { background: #1b4332; color: white; }</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="btnTimer3m">
+          <property name="cursor">
+           <cursorShape>PointingHandCursor</cursorShape>
+          </property>
+          <property name="text">
+           <string>⏱ 3 phút</string>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">QPushButton { background: #0c2618; color: #a7f3d0; border: 1px solid #1b4332; border-radius: 6px; font-size: 10px; font-weight: 700; padding: 5px; } QPushButton:hover { background: #1b4332; color: white; }</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+
+      <!-- Auto Mode Capsule Button -->
+      <item>
+       <widget class="QPushButton" name="btnAutoModeCapsule">
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>34</height>
+         </size>
+        </property>
+        <property name="cursor">
+         <cursorShape>PointingHandCursor</cursorShape>
+        </property>
+        <property name="text">
+         <string>⚡ TỰ ĐỘNG THEO ĐỘ ẨM: BẬT</string>
+        </property>
+        <property name="checkable">
+         <bool>true</bool>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QPushButton { background: #064e3b; color: #34d399; border: 1px solid #059669; border-radius: 8px; font-size: 10px; font-weight: 800; } QPushButton:checked { background: #064e3b; color: #34d399; } QPushButton:!checked { background: #1e293b; color: #94a3b8; border-color: #334155; }</string>
+        </property>
+       </widget>
+      </item>
+
+      <item>
+       <spacer name="z3Spacer">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>20</width>
+          <height>10</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+
+      <!-- Tank Status Box -->
+      <item>
+       <widget class="QFrame" name="tankStatusBox">
+        <property name="styleSheet">
+         <string notr="true">background: #07190f; border: 1px solid #1b4332; border-radius: 8px; padding: 6px;</string>
+        </property>
+        <layout class="QVBoxLayout" name="tsbLayout">
+         <property name="margin">
+          <number>2</number>
+         </property>
+         <item>
+          <widget class="QLabel" name="tankLevelLabel">
+           <property name="text">
+            <string>🚰 Bồn nước: 85%</string>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">color: #38bdf8; font-size: 11px; font-weight: 800;</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="tankSubLabel">
+           <property name="text">
+            <string>Đã tưới: 3 lần (12.5 L)</string>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">color: #a7f3d0; font-size: 9px;</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+
+     </layout>
+    </widget>
+   </item>
+
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

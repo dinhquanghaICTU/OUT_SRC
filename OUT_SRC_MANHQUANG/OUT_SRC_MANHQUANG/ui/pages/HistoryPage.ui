@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>HistoryPage</class>
+ <widget class="QWidget" name="HistoryPage">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>800</width>
+    <height>480</height>
+   </rect>
+  </property>
+  <layout class="QVBoxLayout" name="mainLayout">
+   <property name="spacing">
+    <number>8</number>
+   </property>
+   <property name="leftMargin">
+    <number>12</number>
+   </property>
+   <property name="topMargin">
+    <number>10</number>
+   </property>
+   <property name="rightMargin">
+    <number>12</number>
+   </property>
+   <property name="bottomMargin">
+    <number>10</number>
+   </property>
+
+   <!-- TOP FILTER BAR -->
+   <item>
+    <layout class="QHBoxLayout" name="filterLayout">
+     <property name="spacing">
+      <number>10</number>
+     </property>
+
+     <item>
+      <widget class="QLabel" name="titleLabel">
+       <property name="text">
+        <string>📜 NHẬT KÝ RA VÀO &amp; LỊCH SỬ CỬA</string>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">color: #38bdf8; font-size: 14px; font-weight: 800;</string>
+       </property>
+      </widget>
+     </item>
+
+     <item>
+      <spacer name="spacer1">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>20</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+
+     <item>
+      <widget class="QLabel" name="devSelectLabel">
+       <property name="text">
+        <string>Thiết bị:</string>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">color: #94a3b8; font-size: 11px;</string>
+       </property>
+      </widget>
+     </item>
+
+     <item>
+      <widget class="QComboBox" name="deviceComboBox">
+       <property name="minimumSize">
+        <size>
+         <width>160</width>
+         <height>30</height>
+        </size>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">QComboBox { background-color: #1e293b; color: white; border: 1px solid #334155; border-radius: 6px; padding: 4px 8px; font-size: 11px; }</string>
+       </property>
+      </widget>
+     </item>
+
+     <item>
+      <widget class="QComboBox" name="periodComboBox">
+       <property name="minimumSize">
+        <size>
+         <width>100</width>
+         <height>30</height>
+        </size>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">QComboBox { background-color: #1e293b; color: white; border: 1px solid #334155; border-radius: 6px; padding: 4px 8px; font-size: 11px; }</string>
+       </property>
+       <item>
+        <property name="text">
+         <string>Hôm nay</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>7 ngày qua</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>30 ngày qua</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+
+     <item>
+      <widget class="QPushButton" name="refreshBtn">
+       <property name="minimumSize">
+        <size>
+         <width>80</width>
+         <height>30</height>
+        </size>
+       </property>
+       <property name="cursor">
+        <cursorShape>PointingHandCursor</cursorShape>
+       </property>
+       <property name="text">
+        <string>🔄 Tải dữ liệu</string>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">QPushButton { background-color: #0284c7; color: white; border: none; border-radius: 6px; font-size: 11px; font-weight: 700; } QPushButton:hover { background-color: #0369a1; }</string>
+       </property>
+      </widget>
+     </item>
+
+    </layout>
+   </item>
+
+   <!-- HISTORY TABLE -->
+   <item>
+    <widget class="QTableWidget" name="historyTable">
+     <property name="columnCount">
+      <number>5</number>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QTableWidget { background-color: #0f172a; border: 1.5px solid #1e293b; color: #f1f5f9; border-radius: 10px; gridline-color: #1e293b; } QHeaderView::section { background-color: #1e293b; color: #38bdf8; font-weight: 700; padding: 6px; border: none; }</string>
+     </property>
+     <column>
+      <property name="text">
+       <string>Thời điểm ghi nhận</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Trạng thái cửa</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Cảm biến SR602 (PIR)</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Cảm biến IR (Chống kẹt)</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Vị trí &amp; Tốc độ bước</string>
+      </property>
+     </column>
+    </widget>
+   </item>
+
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

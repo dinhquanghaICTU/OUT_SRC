@@ -1,0 +1,449 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>DashboardPage</class>
+ <widget class="QWidget" name="DashboardPage">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>800</width>
+    <height>480</height>
+   </rect>
+  </property>
+  <layout class="QVBoxLayout" name="mainLayout">
+   <property name="spacing">
+    <number>8</number>
+   </property>
+   <property name="leftMargin">
+    <number>12</number>
+   </property>
+   <property name="topMargin">
+    <number>8</number>
+   </property>
+   <property name="rightMargin">
+    <number>12</number>
+   </property>
+   <property name="bottomMargin">
+    <number>8</number>
+   </property>
+
+   <!-- TOP ROW: DOOR CANVAS & QUICK CONTROLS -->
+   <item>
+    <layout class="QHBoxLayout" name="topRowLayout">
+     <property name="spacing">
+      <number>10</number>
+     </property>
+
+     <!-- LEFT: DOOR VISUALIZER CONTAINER -->
+     <item>
+      <widget class="QFrame" name="doorVisualizerContainer">
+       <property name="minimumSize">
+        <size>
+         <width>360</width>
+         <height>180</height>
+        </size>
+       </property>
+       <layout class="QVBoxLayout" name="doorVisLayout">
+        <property name="margin">
+         <number>0</number>
+        </property>
+       </layout>
+      </widget>
+     </item>
+
+     <!-- RIGHT: ONE-TOUCH MANUAL CONTROLS -->
+     <item>
+      <widget class="QFrame" name="controlPanelCard">
+       <property name="minimumSize">
+        <size>
+         <width>240</width>
+         <height>180</height>
+        </size>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">QFrame#controlPanelCard { background-color: #0f172a; border: 1.5px solid #1e293b; border-radius: 10px; }</string>
+       </property>
+       <layout class="QVBoxLayout" name="ctrlLayout">
+        <property name="leftMargin">
+         <number>12</number>
+        </property>
+        <property name="topMargin">
+         <number>10</number>
+        </property>
+        <property name="rightMargin">
+         <number>12</number>
+        </property>
+        <property name="bottomMargin">
+         <number>10</number>
+        </property>
+        <property name="spacing">
+         <number>6</number>
+        </property>
+
+        <item>
+         <widget class="QLabel" name="ctrlTitle">
+          <property name="text">
+           <string>🕹️ ĐIỀU KHIỂN CỬA NHANH</string>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">color: #38bdf8; font-size: 11px; font-weight: 800;</string>
+          </property>
+         </widget>
+        </item>
+
+        <item>
+         <layout class="QHBoxLayout" name="actionRow1">
+          <property name="spacing">
+           <number>6</number>
+          </property>
+          <item>
+           <widget class="QPushButton" name="btnOpenDoor">
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>34</height>
+             </size>
+            </property>
+            <property name="cursor">
+             <cursorShape>PointingHandCursor</cursorShape>
+            </property>
+            <property name="text">
+             <string>🚪 MỞ CỬA</string>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">QPushButton { background-color: #059669; color: white; border: none; border-radius: 6px; font-size: 11px; font-weight: 700; } QPushButton:hover { background-color: #10b981; }</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="btnCloseDoor">
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>34</height>
+             </size>
+            </property>
+            <property name="cursor">
+             <cursorShape>PointingHandCursor</cursorShape>
+            </property>
+            <property name="text">
+             <string>🔒 ĐÓNG CỬA</string>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">QPushButton { background-color: #2563eb; color: white; border: none; border-radius: 6px; font-size: 11px; font-weight: 700; } QPushButton:hover { background-color: #3b82f6; }</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+
+        <item>
+         <layout class="QHBoxLayout" name="actionRow2">
+          <property name="spacing">
+           <number>6</number>
+          </property>
+          <item>
+           <widget class="QPushButton" name="btnHoldOpen">
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>32</height>
+             </size>
+            </property>
+            <property name="cursor">
+             <cursorShape>PointingHandCursor</cursorShape>
+            </property>
+            <property name="text">
+             <string>⏱ GIỮ MỞ</string>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">QPushButton { background-color: #d97706; color: white; border: none; border-radius: 6px; font-size: 10px; font-weight: 700; } QPushButton:hover { background-color: #f59e0b; }</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="btnStopEmergency">
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>32</height>
+             </size>
+            </property>
+            <property name="cursor">
+             <cursorShape>PointingHandCursor</cursorShape>
+            </property>
+            <property name="text">
+             <string>🛑 DỪNG KHẨN</string>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">QPushButton { background-color: #dc2626; color: white; border: none; border-radius: 6px; font-size: 10px; font-weight: 700; } QPushButton:hover { background-color: #ef4444; }</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+
+        <item>
+         <layout class="QHBoxLayout" name="actionRow3">
+          <property name="spacing">
+           <number>6</number>
+          </property>
+          <item>
+           <widget class="QPushButton" name="btnSimMotion">
+            <property name="cursor">
+             <cursorShape>PointingHandCursor</cursorShape>
+            </property>
+            <property name="text">
+             <string>🚶 Test SR602</string>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">QPushButton { background-color: #1e293b; color: #10b981; border: 1px solid #334155; border-radius: 5px; font-size: 10px; font-weight: 600; padding: 4px; } QPushButton:hover { background-color: #334155; }</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="btnSimObstacle">
+            <property name="cursor">
+             <cursorShape>PointingHandCursor</cursorShape>
+            </property>
+            <property name="text">
+             <string>🚧 Test Vật Cản IR</string>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">QPushButton { background-color: #1e293b; color: #f87171; border: 1px solid #334155; border-radius: 5px; font-size: 10px; font-weight: 600; padding: 4px; } QPushButton:hover { background-color: #334155; }</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+
+       </layout>
+      </widget>
+     </item>
+
+    </layout>
+   </item>
+
+   <!-- BOTTOM ROW: 4 HARDWARE METRIC CARDS & CHART -->
+   <item>
+    <layout class="QHBoxLayout" name="bottomRowLayout">
+     <property name="spacing">
+      <number>8</number>
+     </property>
+
+     <!-- CARD 1: SR602 MOTION SENSOR -->
+     <item>
+      <widget class="QFrame" name="sr602Card">
+       <property name="styleSheet">
+        <string notr="true">QFrame#sr602Card { background-color: #0f172a; border: 1.5px solid #1e293b; border-radius: 10px; padding: 6px; }</string>
+       </property>
+       <layout class="QVBoxLayout" name="sr602Layout">
+        <property name="margin">
+         <number>6</number>
+        </property>
+        <property name="spacing">
+         <number>4</number>
+        </property>
+        <item>
+         <widget class="QLabel" name="sr602Title">
+          <property name="text">
+           <string>⚡ CẢM BIẾN SR602</string>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">color: #10b981; font-size: 10px; font-weight: 800;</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="sr602StatusLabel">
+          <property name="text">
+           <string>Thông thoáng</string>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">color: #ffffff; font-size: 14px; font-weight: 800;</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="sr602TriggerCountLabel">
+          <property name="text">
+           <string>Lượt kích hoạt: 0</string>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">color: #94a3b8; font-size: 10px;</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </item>
+
+     <!-- CARD 2: IR ANTI-PINCH SENSOR -->
+     <item>
+      <widget class="QFrame" name="irCard">
+       <property name="styleSheet">
+        <string notr="true">QFrame#irCard { background-color: #0f172a; border: 1.5px solid #1e293b; border-radius: 10px; padding: 6px; }</string>
+       </property>
+       <layout class="QVBoxLayout" name="irLayout">
+        <property name="margin">
+         <number>6</number>
+        </property>
+        <property name="spacing">
+         <number>4</number>
+        </property>
+        <item>
+         <widget class="QLabel" name="irTitle">
+          <property name="text">
+           <string>🚨 CHÙM TIA IR (CHỐNG KẸT)</string>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">color: #38bdf8; font-size: 10px; font-weight: 800;</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="irStatusLabel">
+          <property name="text">
+           <string>Chùm tia an toàn</string>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">color: #10b981; font-size: 14px; font-weight: 800;</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="irSubLabel">
+          <property name="text">
+           <string>Tự đảo chiều: Bật</string>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">color: #94a3b8; font-size: 10px;</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </item>
+
+     <!-- CARD 3: STEPPER MOTOR -->
+     <item>
+      <widget class="QFrame" name="motorCard">
+       <property name="styleSheet">
+        <string notr="true">QFrame#motorCard { background-color: #0f172a; border: 1.5px solid #1e293b; border-radius: 10px; padding: 6px; }</string>
+       </property>
+       <layout class="QVBoxLayout" name="motorLayout">
+        <property name="margin">
+         <number>6</number>
+        </property>
+        <property name="spacing">
+         <number>4</number>
+        </property>
+        <item>
+         <widget class="QLabel" name="motorTitle">
+          <property name="text">
+           <string>⚙️ ĐỘNG CƠ BƯỚC</string>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">color: #f59e0b; font-size: 10px; font-weight: 800;</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="motorStepsLabel">
+          <property name="text">
+           <string>0 / 3200 steps</string>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">color: #ffffff; font-size: 14px; font-weight: 800;</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="motorSpeedLabel">
+          <property name="text">
+           <string>Tốc độ: 0 RPM | STOP</string>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">color: #94a3b8; font-size: 10px;</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </item>
+
+     <!-- CARD 4: TRAFFIC STATS -->
+     <item>
+      <widget class="QFrame" name="trafficCard">
+       <property name="styleSheet">
+        <string notr="true">QFrame#trafficCard { background-color: #0f172a; border: 1.5px solid #1e293b; border-radius: 10px; padding: 6px; }</string>
+       </property>
+       <layout class="QVBoxLayout" name="trafficLayout">
+        <property name="margin">
+         <number>6</number>
+        </property>
+        <property name="spacing">
+         <number>4</number>
+        </property>
+        <item>
+         <widget class="QLabel" name="trafficTitle">
+          <property name="text">
+           <string>👥 LƯU LƯỢNG RA VÀO</string>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">color: #a855f7; font-size: 10px; font-weight: 800;</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="passageCountLabel">
+          <property name="text">
+           <string>0 lượt</string>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">color: #ffffff; font-size: 14px; font-weight: 800;</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="trafficSubLabel">
+          <property name="text">
+           <string>Nhiệt độ: 28.5 °C</string>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">color: #94a3b8; font-size: 10px;</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </item>
+
+    </layout>
+   </item>
+
+   <!-- REALTIME CHART CONTAINER -->
+   <item>
+    <widget class="QFrame" name="chartCard">
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>120</height>
+      </size>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QFrame#chartCard { background-color: #0f172a; border: 1.5px solid #1e293b; border-radius: 10px; }</string>
+     </property>
+     <layout class="QVBoxLayout" name="chartContainerLayout">
+      <property name="margin">
+       <number>6</number>
+      </property>
+     </layout>
+    </widget>
+   </item>
+
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

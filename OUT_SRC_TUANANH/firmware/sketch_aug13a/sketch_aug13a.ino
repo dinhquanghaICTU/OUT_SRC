@@ -55,8 +55,8 @@ void loop()
 
         luxx = BH1750_white_parper_getdata();
 
-        Serial.println("luxxx \r\n");
-        Serial.println(luxx);
+        Serial.print("luxxx ");
+        Serial.print(luxx);
 
 
 
