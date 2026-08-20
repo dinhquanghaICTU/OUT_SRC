@@ -1,5 +1,7 @@
-/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/build/OUT_SRC_VANPHONG_autogen/JH45IGJHDZ/moc_ApiClient.cpp: /media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/api/ApiClient.h \
-  /media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/build/OUT_SRC_VANPHONG_autogen/moc_predefs.h \
+/home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/build/OUT_SRC_VANPHONG_autogen/JH45IGJHDZ/moc_ApiClient.cpp: /home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/api/ApiClient.h \
+  /home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/build/OUT_SRC_VANPHONG_autogen/moc_predefs.h \
+  /home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/models/DeviceConfig.h \
+  /home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/models/SensorReading.h \
   /home/quanghaictu/Qt6Cross/qt6/host/include/QtCore/QDateTime \
   /home/quanghaictu/Qt6Cross/qt6/host/include/QtCore/QFlags \
   /home/quanghaictu/Qt6Cross/qt6/host/include/QtCore/QJsonArray \
@@ -143,8 +145,6 @@
   /home/quanghaictu/Qt6Cross/qt6/host/include/QtNetwork/qtnetwork-config.h \
   /home/quanghaictu/Qt6Cross/qt6/host/include/QtNetwork/qtnetworkexports.h \
   /home/quanghaictu/Qt6Cross/qt6/host/include/QtNetwork/qtnetworkglobal.h \
-  /media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/models/DeviceConfig.h \
-  /media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/models/SensorReading.h \
   /usr/include/alloca.h \
   /usr/include/asm-generic/errno-base.h \
   /usr/include/asm-generic/errno.h \

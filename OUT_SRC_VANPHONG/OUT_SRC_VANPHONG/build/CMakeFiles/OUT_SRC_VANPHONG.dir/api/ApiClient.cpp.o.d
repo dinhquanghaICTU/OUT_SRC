@@ -1,8 +1,8 @@
 CMakeFiles/OUT_SRC_VANPHONG.dir/api/ApiClient.cpp.o: \
- /media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/api/ApiClient.cpp \
+ /home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/api/ApiClient.cpp \
  /usr/include/stdc-predef.h \
- /media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/api/ApiClient.h \
- /media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/models/DeviceConfig.h \
+ /home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/api/ApiClient.h \
+ /home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/models/DeviceConfig.h \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtCore/QString \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtCore/qstring.h \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtCore/qchar.h \
@@ -268,7 +268,7 @@ CMakeFiles/OUT_SRC_VANPHONG.dir/api/ApiClient.cpp.o: \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtCore/qanystringview.h \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtCore/qutf8stringview.h \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtCore/qstringtokenizer.h \
- /media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/models/SensorReading.h \
+ /home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/models/SensorReading.h \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtCore/QDateTime \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtCore/qdatetime.h \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtCore/qcalendar.h \
@@ -375,7 +375,7 @@ CMakeFiles/OUT_SRC_VANPHONG.dir/api/ApiClient.cpp.o: \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtNetwork/qsslpresharedkeyauthenticator.h \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtCore/QMetaType \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtCore/QObject \
- /media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/config/AppConfig.h \
+ /home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/config/AppConfig.h \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtCore/QJsonDocument \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtCore/qjsondocument.h \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtNetwork/QNetworkReply \

@@ -1,7 +1,7 @@
 CMakeFiles/OUT_SRC_VANPHONG.dir/EmbeddedServer.cpp.o: \
- /media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/EmbeddedServer.cpp \
+ /home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/EmbeddedServer.cpp \
  /usr/include/stdc-predef.h \
- /media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/EmbeddedServer.h \
+ /home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/EmbeddedServer.h \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtCore/QObject \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtCore/qobject.h \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtCore/qobjectdefs.h \
@@ -301,7 +301,7 @@ CMakeFiles/OUT_SRC_VANPHONG.dir/EmbeddedServer.cpp.o: \
  /usr/include/c++/11/ctime \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtCore/QString \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtCore/qstring.h \
- /media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/server/api/ApiServer.h \
+ /home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/server/api/ApiServer.h \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtCore/QHash \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtCore/qhash.h \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtHttpServer/QHttpServer \
@@ -381,7 +381,7 @@ CMakeFiles/OUT_SRC_VANPHONG.dir/EmbeddedServer.cpp.o: \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtCore/qlocale.h \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtCore/qcborcommon.h \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtCore/quuid.h \
- /media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/server/database/Database.h \
+ /home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/server/database/Database.h \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtCore/QJsonArray \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtCore/qjsonarray.h \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtSql/QSqlDatabase \
@@ -389,7 +389,7 @@ CMakeFiles/OUT_SRC_VANPHONG.dir/EmbeddedServer.cpp.o: \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtSql/qtsqlglobal.h \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtSql/qtsql-config.h \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtSql/qtsqlexports.h \
- /media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/server/mqtt/MqttDiscoveryService.h \
+ /home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/server/mqtt/MqttDiscoveryService.h \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtCore/QByteArray \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtCore/qbytearray.h \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtNetwork/QTcpSocket \
@@ -397,7 +397,7 @@ CMakeFiles/OUT_SRC_VANPHONG.dir/EmbeddedServer.cpp.o: \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtCore/QTimer \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtCore/qtimer.h \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtCore/qbasictimer.h \
- /media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/server/system/HotspotManager.h \
+ /home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/server/system/HotspotManager.h \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtCore/QDebug \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtCore/qdebug.h \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtCore/QDir \

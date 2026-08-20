@@ -281,6 +281,18 @@ void MqttDiscoveryService::processPublish(quint8 flags, const QByteArray &body)
                       .value(QStringLiteral("metrics")).toObject();
         emit telemetryReceived(deviceId, metrics);
 
+        const double tempC = metrics.value(QStringLiteral("temperature_c")).toDouble(
+            metrics.value(QStringLiteral("temperature")).toDouble(27.5));
+        const double humPct = metrics.value(QStringLiteral("humidity")).toDouble(
+            metrics.value(QStringLiteral("humidity_pct")).toDouble(65.0));
+        const double soilMoisture = metrics.value(QStringLiteral("soil_moisture")).toDouble(55.0);
+        const bool pumpActive = metrics.value(QStringLiteral("pump_active")).toBool(
+            metrics.value(QStringLiteral("relay")).toBool(false));
+        const double tankLevel = metrics.value(QStringLiteral("water_tank_level")).toDouble(85.0);
+
+        m_database->insertReading(soilMoisture, tempC, humPct, pumpActive, tankLevel,
+                                  QDateTime::currentDateTime().toString(Qt::ISODateWithMs), nullptr);
+
         const qint64 nowMs = QDateTime::currentMSecsSinceEpoch();
         if (nowMs - m_lastTelemetryLogMs.value(deviceId, 0) >= 1000) {
             QString logError;

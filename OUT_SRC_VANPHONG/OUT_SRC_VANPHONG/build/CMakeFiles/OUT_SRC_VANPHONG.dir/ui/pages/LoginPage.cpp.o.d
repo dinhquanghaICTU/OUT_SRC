@@ -1,7 +1,7 @@
 CMakeFiles/OUT_SRC_VANPHONG.dir/ui/pages/LoginPage.cpp.o: \
- /media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/ui/pages/LoginPage.cpp \
+ /home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/ui/pages/LoginPage.cpp \
  /usr/include/stdc-predef.h \
- /media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/ui/pages/LoginPage.h \
+ /home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/ui/pages/LoginPage.h \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtWidgets/QWidget \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtWidgets/qwidget.h \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtWidgets/qtwidgetsglobal.h \
@@ -355,7 +355,7 @@ CMakeFiles/OUT_SRC_VANPHONG.dir/ui/pages/LoginPage.cpp.o: \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtWidgets/qsizepolicy.h \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtGui/qcursor.h \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtGui/qbitmap.h \
- /media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/VirtualKeyboard.h \
+ /home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/VirtualKeyboard.h \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtWidgets/QDialog \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtWidgets/qdialog.h \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtWidgets/qwidget.h \
@@ -363,7 +363,7 @@ CMakeFiles/OUT_SRC_VANPHONG.dir/ui/pages/LoginPage.cpp.o: \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtCore/qvector.h \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtCore/QString \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtCore/qstring.h \
- /media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/build/OUT_SRC_VANPHONG_autogen/include/ui_LoginPage.h \
+ /home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/build/OUT_SRC_VANPHONG_autogen/include/ui_LoginPage.h \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtCore/QVariant \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtCore/qvariant.h \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtWidgets/QApplication \

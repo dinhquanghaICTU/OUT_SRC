@@ -74,9 +74,12 @@ void ApiClient::requestLatestReading()
         const QJsonObject obj = QJsonDocument::fromJson(reply->readAll()).object();
         SensorReading r;
         r.soilMoisturePct = obj.value(QStringLiteral("soil_moisture")).toDouble(55.0);
-        r.temperatureC = obj.value(QStringLiteral("temperature_c")).toDouble(27.5);
-        r.humidityPct = obj.value(QStringLiteral("humidity")).toDouble(65.0);
-        r.pumpActive = obj.value(QStringLiteral("pump_active")).toBool();
+        r.temperatureC = obj.value(QStringLiteral("temperature_c")).toDouble(
+            obj.value(QStringLiteral("temperature")).toDouble(27.5));
+        r.humidityPct = obj.value(QStringLiteral("humidity")).toDouble(
+            obj.value(QStringLiteral("humidity_pct")).toDouble(65.0));
+        r.pumpActive = obj.value(QStringLiteral("pump_active")).toBool(
+            obj.value(QStringLiteral("relay")).toBool(false));
         r.waterTankLevelPct = obj.value(QStringLiteral("water_tank_level")).toDouble(85.0);
         r.measuredAt = QDateTime::currentDateTime();
         emit latestReadingReceived(r);

@@ -1,7 +1,7 @@
 CMakeFiles/OUT_SRC_VANPHONG.dir/ui/widgets/PlantSoilVisualizerWidget.cpp.o: \
- /media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/ui/widgets/PlantSoilVisualizerWidget.cpp \
+ /home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/ui/widgets/PlantSoilVisualizerWidget.cpp \
  /usr/include/stdc-predef.h \
- /media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/ui/widgets/PlantSoilVisualizerWidget.h \
+ /home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/ui/widgets/PlantSoilVisualizerWidget.h \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtWidgets/QWidget \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtWidgets/qwidget.h \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtWidgets/qtwidgetsglobal.h \

@@ -55,7 +55,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::updateClock()
 {
-    ui->clockLabel->setText(QDateTime::currentDateTime().toString(QStringLiteral("dd/MM/yyyy HH:mm:ss")));
+    ui->clockLabel->setText(QDateTime::currentDateTime().toString(QStringLiteral("HH:mm:ss")));
 }
 
 void MainWindow::setupNavigation()
@@ -69,7 +69,7 @@ void MainWindow::setupNavigation()
         const QString user = m_authService->currentUsername();
         const bool isAdmin = m_authService->isAdmin();
 
-        ui->currentUserBadge->setText(isAdmin ? tr("👑 Admin (%1)").arg(user) : tr("👨‍🌾 %1").arg(user));
+        ui->currentUserBadge->setText(isAdmin ? tr("Admin: %1").arg(user) : tr("User: %1").arg(user));
         ui->btnNavUsers->setVisible(isAdmin);
         m_userManagementPage->setAdminEnabled(isAdmin);
         m_deviceManagementPage->setCurrentUser(user, isAdmin);
@@ -173,6 +173,9 @@ void MainWindow::setupNavigation()
 
     // Error handler
     connect(m_apiClient, &ApiClient::networkError, this, [this](const QString &err) {
+        statusBar()->showMessage(err, 5000);
+    });
+    connect(m_apiClient, &ApiClient::operationFailed, this, [this](const QString &err) {
         statusBar()->showMessage(err, 5000);
     });
 }

@@ -1,7 +1,7 @@
 CMakeFiles/OUT_SRC_VANPHONG.dir/server/system/HotspotManager.cpp.o: \
- /media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/server/system/HotspotManager.cpp \
+ /home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/server/system/HotspotManager.cpp \
  /usr/include/stdc-predef.h \
- /media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/server/system/HotspotManager.h \
+ /home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/server/system/HotspotManager.h \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtCore/QString \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtCore/qstring.h \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtCore/qchar.h \

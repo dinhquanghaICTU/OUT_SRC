@@ -1,7 +1,7 @@
 CMakeFiles/OUT_SRC_VANPHONG.dir/ui/pages/DeviceManagementPage.cpp.o: \
- /media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/ui/pages/DeviceManagementPage.cpp \
+ /home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/ui/pages/DeviceManagementPage.cpp \
  /usr/include/stdc-predef.h \
- /media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/ui/pages/DeviceManagementPage.h \
+ /home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/ui/pages/DeviceManagementPage.h \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtCore/QHash \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtCore/qhash.h \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtCore/qalgorithms.h \

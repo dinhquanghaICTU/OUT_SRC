@@ -53,10 +53,10 @@ RM = /usr/local/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG
+CMAKE_SOURCE_DIR = /home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/build
+CMAKE_BINARY_DIR = /home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/build
 
 # Utility rule file for OUT_SRC_VANPHONG_autogen_timestamp_deps.
 
@@ -81,6 +81,6 @@ CMakeFiles/OUT_SRC_VANPHONG_autogen_timestamp_deps.dir/clean:
 .PHONY : CMakeFiles/OUT_SRC_VANPHONG_autogen_timestamp_deps.dir/clean
 
 CMakeFiles/OUT_SRC_VANPHONG_autogen_timestamp_deps.dir/depend:
-	cd /media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG /media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG /media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/build /media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/build /media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/build/CMakeFiles/OUT_SRC_VANPHONG_autogen_timestamp_deps.dir/DependInfo.cmake "--color=$(COLOR)" OUT_SRC_VANPHONG_autogen_timestamp_deps
+	cd /home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG /home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG /home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/build /home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/build /home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/build/CMakeFiles/OUT_SRC_VANPHONG_autogen_timestamp_deps.dir/DependInfo.cmake "--color=$(COLOR)" OUT_SRC_VANPHONG_autogen_timestamp_deps
 .PHONY : CMakeFiles/OUT_SRC_VANPHONG_autogen_timestamp_deps.dir/depend
 

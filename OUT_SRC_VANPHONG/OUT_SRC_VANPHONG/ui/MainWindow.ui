@@ -31,103 +31,83 @@
      <number>0</number>
     </property>
 
-    <!-- TOP FLOATING ISLAND HEADER -->
+    <!-- TOP COMPACT NAVIGATION HEADER -->
     <item>
      <widget class="QFrame" name="topIslandHeader">
       <property name="minimumSize">
        <size>
         <width>0</width>
-        <height>50</height>
+        <height>44</height>
        </size>
       </property>
       <property name="maximumSize">
        <size>
         <width>16777215</width>
-        <height>50</height>
+        <height>44</height>
        </size>
       </property>
       <property name="styleSheet">
-       <string notr="true">QFrame#topIslandHeader { background: qlineargradient(x1:0, y1:0, x2:1, y2:0, stop:0 #05140b, stop:0.5 #0c2617, stop:1 #05140b); border-bottom: 2px solid #10b981; }</string>
+       <string notr="true">QFrame#topIslandHeader { background: #071910; border-bottom: 1.5px solid #10b981; }</string>
       </property>
       <layout class="QHBoxLayout" name="headerHLayout">
        <property name="leftMargin">
-        <number>12</number>
-       </property>
-       <property name="topMargin">
-        <number>4</number>
-       </property>
-       <property name="rightMargin">
-        <number>12</number>
-       </property>
-       <property name="bottomMargin">
-        <number>4</number>
-       </property>
-       <property name="spacing">
         <number>8</number>
        </property>
+       <property name="topMargin">
+        <number>2</number>
+       </property>
+       <property name="rightMargin">
+        <number>8</number>
+       </property>
+       <property name="bottomMargin">
+        <number>2</number>
+       </property>
+       <property name="spacing">
+        <number>6</number>
+       </property>
 
-       <!-- Brand Emblem & Title -->
+       <!-- Brand Title -->
        <item>
         <widget class="QLabel" name="appBrandLabel">
          <property name="text">
-          <string>🌿 VAN PHONG AGRI-POD</string>
+          <string>AGRI-POD</string>
          </property>
          <property name="styleSheet">
-          <string notr="true">color: #34d399; font-size: 13px; font-weight: 900; letter-spacing: 0.8px;</string>
+          <string notr="true">color: #34d399; font-size: 12px; font-weight: 900; letter-spacing: 0.5px; padding-left: 2px;</string>
          </property>
         </widget>
-       </item>
-
-       <item>
-        <spacer name="headerLeftSpacer">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>10</width>
-           <height>20</height>
-          </size>
-         </property>
-        </spacer>
        </item>
 
        <!-- TOP CENTER INTEGRATED CAPSULE SEGMENTED NAVIGATOR -->
        <item>
         <widget class="QFrame" name="segmentedNavCapsule">
          <property name="styleSheet">
-          <string notr="true">QFrame#segmentedNavCapsule { background-color: #05120a; border: 1.5px solid #1b4332; border-radius: 18px; }</string>
+          <string notr="true">QFrame#segmentedNavCapsule { background-color: #041009; border: 1px solid #1b4332; border-radius: 14px; }</string>
          </property>
          <layout class="QHBoxLayout" name="navSegLayout">
           <property name="leftMargin">
-           <number>4</number>
+           <number>2</number>
           </property>
           <property name="topMargin">
            <number>2</number>
           </property>
           <property name="rightMargin">
-           <number>4</number>
+           <number>2</number>
           </property>
           <property name="bottomMargin">
            <number>2</number>
           </property>
           <property name="spacing">
-           <number>4</number>
+           <number>2</number>
           </property>
 
           <item>
            <widget class="QPushButton" name="btnNavDashboard">
-            <property name="minimumSize">
-             <size>
-              <width>95</width>
-              <height>32</height>
-             </size>
-            </property>
             <property name="cursor">
              <cursorShape>PointingHandCursor</cursorShape>
             </property>
             <property name="text">
-             <string>🌿 Vườn Ươm</string>
+             <string>Vườn Ươm</string>
             </property>
             <property name="checkable">
              <bool>true</bool>
@@ -139,24 +119,18 @@
              <bool>true</bool>
             </property>
             <property name="styleSheet">
-             <string notr="true">QPushButton { background: transparent; color: #a7f3d0; border: none; border-radius: 14px; font-size: 11px; font-weight: 700; padding: 4px 8px; } QPushButton:hover { background: #0c281a; color: white; } QPushButton:checked { background: #10b981; color: white; }</string>
+             <string notr="true">QPushButton { background: transparent; color: #a7f3d0; border: none; border-radius: 12px; font-size: 10px; font-weight: 700; padding: 4px 8px; } QPushButton:hover { background: #0c281a; color: white; } QPushButton:checked { background: #10b981; color: white; }</string>
             </property>
            </widget>
           </item>
 
           <item>
            <widget class="QPushButton" name="btnNavDevices">
-            <property name="minimumSize">
-             <size>
-              <width>105</width>
-              <height>32</height>
-             </size>
-            </property>
             <property name="cursor">
              <cursorShape>PointingHandCursor</cursorShape>
             </property>
             <property name="text">
-             <string>🚰 Bơm &amp; Ngưỡng</string>
+             <string>Thiết Bị</string>
             </property>
             <property name="checkable">
              <bool>true</bool>
@@ -165,24 +139,18 @@
              <bool>true</bool>
             </property>
             <property name="styleSheet">
-             <string notr="true">QPushButton { background: transparent; color: #a7f3d0; border: none; border-radius: 14px; font-size: 11px; font-weight: 700; padding: 4px 8px; } QPushButton:hover { background: #0c281a; color: white; } QPushButton:checked { background: #10b981; color: white; }</string>
+             <string notr="true">QPushButton { background: transparent; color: #a7f3d0; border: none; border-radius: 12px; font-size: 10px; font-weight: 700; padding: 4px 8px; } QPushButton:hover { background: #0c281a; color: white; } QPushButton:checked { background: #10b981; color: white; }</string>
             </property>
            </widget>
           </item>
 
           <item>
            <widget class="QPushButton" name="btnNavHistory">
-            <property name="minimumSize">
-             <size>
-              <width>95</width>
-              <height>32</height>
-             </size>
-            </property>
             <property name="cursor">
              <cursorShape>PointingHandCursor</cursorShape>
             </property>
             <property name="text">
-             <string>📈 Lịch Sử</string>
+             <string>Lịch Sử</string>
             </property>
             <property name="checkable">
              <bool>true</bool>
@@ -191,24 +159,18 @@
              <bool>true</bool>
             </property>
             <property name="styleSheet">
-             <string notr="true">QPushButton { background: transparent; color: #a7f3d0; border: none; border-radius: 14px; font-size: 11px; font-weight: 700; padding: 4px 8px; } QPushButton:hover { background: #0c281a; color: white; } QPushButton:checked { background: #10b981; color: white; }</string>
+             <string notr="true">QPushButton { background: transparent; color: #a7f3d0; border: none; border-radius: 12px; font-size: 10px; font-weight: 700; padding: 4px 8px; } QPushButton:hover { background: #0c281a; color: white; } QPushButton:checked { background: #10b981; color: white; }</string>
             </property>
            </widget>
           </item>
 
           <item>
            <widget class="QPushButton" name="btnNavAlerts">
-            <property name="minimumSize">
-             <size>
-              <width>90</width>
-              <height>32</height>
-             </size>
-            </property>
             <property name="cursor">
              <cursorShape>PointingHandCursor</cursorShape>
             </property>
             <property name="text">
-             <string>⚠️ Cảnh Báo</string>
+             <string>Cảnh Báo</string>
             </property>
             <property name="checkable">
              <bool>true</bool>
@@ -217,24 +179,18 @@
              <bool>true</bool>
             </property>
             <property name="styleSheet">
-             <string notr="true">QPushButton { background: transparent; color: #a7f3d0; border: none; border-radius: 14px; font-size: 11px; font-weight: 700; padding: 4px 8px; } QPushButton:hover { background: #0c281a; color: white; } QPushButton:checked { background: #10b981; color: white; }</string>
+             <string notr="true">QPushButton { background: transparent; color: #a7f3d0; border: none; border-radius: 12px; font-size: 10px; font-weight: 700; padding: 4px 8px; } QPushButton:hover { background: #0c281a; color: white; } QPushButton:checked { background: #10b981; color: white; }</string>
             </property>
            </widget>
           </item>
 
           <item>
            <widget class="QPushButton" name="btnNavUsers">
-            <property name="minimumSize">
-             <size>
-              <width>90</width>
-              <height>32</height>
-             </size>
-            </property>
             <property name="cursor">
              <cursorShape>PointingHandCursor</cursorShape>
             </property>
             <property name="text">
-             <string>👥 Tài Khoản</string>
+             <string>Tài Khoản</string>
             </property>
             <property name="checkable">
              <bool>true</bool>
@@ -243,7 +199,7 @@
              <bool>true</bool>
             </property>
             <property name="styleSheet">
-             <string notr="true">QPushButton { background: transparent; color: #a7f3d0; border: none; border-radius: 14px; font-size: 11px; font-weight: 700; padding: 4px 8px; } QPushButton:hover { background: #0c281a; color: white; } QPushButton:checked { background: #10b981; color: white; }</string>
+             <string notr="true">QPushButton { background: transparent; color: #a7f3d0; border: none; border-radius: 12px; font-size: 10px; font-weight: 700; padding: 4px 8px; } QPushButton:hover { background: #0c281a; color: white; } QPushButton:checked { background: #10b981; color: white; }</string>
             </property>
            </widget>
           </item>
@@ -259,7 +215,7 @@
          </property>
          <property name="sizeHint" stdset="0">
           <size>
-           <width>10</width>
+           <width>5</width>
            <height>20</height>
           </size>
          </property>
@@ -273,7 +229,7 @@
           <string>--:--:--</string>
          </property>
          <property name="styleSheet">
-          <string notr="true">color: #6ee7b7; font-size: 11px; font-weight: 700;</string>
+          <string notr="true">color: #6ee7b7; font-size: 10px; font-weight: 700;</string>
          </property>
         </widget>
        </item>
@@ -281,10 +237,10 @@
        <item>
         <widget class="QLabel" name="currentUserBadge">
          <property name="text">
-          <string>👑 Admin</string>
+          <string>Admin</string>
          </property>
          <property name="styleSheet">
-          <string notr="true">color: #f59e0b; background: rgba(245, 158, 11, 0.15); border: 1px solid #d97706; border-radius: 10px; font-size: 10px; font-weight: 800; padding: 3px 8px;</string>
+          <string notr="true">color: #f59e0b; background: rgba(245, 158, 11, 0.15); border: 1px solid #d97706; border-radius: 8px; font-size: 9px; font-weight: 800; padding: 2px 6px;</string>
          </property>
         </widget>
        </item>
@@ -295,10 +251,10 @@
           <cursorShape>PointingHandCursor</cursorShape>
          </property>
          <property name="text">
-          <string>Thoát ↪</string>
+          <string>Thoát</string>
          </property>
          <property name="styleSheet">
-          <string notr="true">QPushButton { background-color: #37151e; color: #f87171; border: 1px solid #7f1d1d; border-radius: 10px; font-size: 10px; font-weight: 800; padding: 4px 8px; } QPushButton:hover { background-color: #dc2626; color: #ffffff; }</string>
+          <string notr="true">QPushButton { background-color: #37151e; color: #f87171; border: 1px solid #7f1d1d; border-radius: 8px; font-size: 9px; font-weight: 800; padding: 3px 8px; } QPushButton:hover { background-color: #dc2626; color: #ffffff; }</string>
          </property>
         </widget>
        </item>

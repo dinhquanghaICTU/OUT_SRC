@@ -1,7 +1,7 @@
 CMakeFiles/OUT_SRC_VANPHONG.dir/server/database/Database.cpp.o: \
- /media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/server/database/Database.cpp \
+ /home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/server/database/Database.cpp \
  /usr/include/stdc-predef.h \
- /media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/server/database/Database.h \
+ /home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/server/database/Database.h \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtCore/QJsonArray \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtCore/qjsonarray.h \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtCore/qjsonvalue.h \

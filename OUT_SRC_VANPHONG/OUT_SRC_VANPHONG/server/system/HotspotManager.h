@@ -7,9 +7,9 @@ class HotspotManager final
 public:
     struct Config
     {
-        QString interfaceName = QStringLiteral("wlan0");
-        QString connectionName = QStringLiteral("VANPHONG-AGRI");
-        QString ssid = QStringLiteral("VANPHONG-AGRI");
+        QString interfaceName = QStringLiteral("wlan1");
+        QString connectionName = QStringLiteral("ICTU_VANPHONG_AP");
+        QString ssid = QStringLiteral("ICTU_VANPHONG_AP");
         QString password = QStringLiteral("12345678");
         QString addressCidr = QStringLiteral("192.168.4.1/24");
     };

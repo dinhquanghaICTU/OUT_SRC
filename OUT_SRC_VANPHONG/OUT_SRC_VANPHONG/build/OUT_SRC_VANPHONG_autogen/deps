@@ -1,4 +1,53 @@
 OUT_SRC_VANPHONG_autogen/timestamp: \
+	/home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/CMakeLists.txt \
+	/home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/EmbeddedServer.cpp \
+	/home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/EmbeddedServer.h \
+	/home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/VirtualKeyboard.cpp \
+	/home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/VirtualKeyboard.h \
+	/home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/api/ApiClient.cpp \
+	/home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/api/ApiClient.h \
+	/home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/build/CMakeFiles/4.3.20260523-g753b5a3/CMakeCXXCompiler.cmake \
+	/home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/build/CMakeFiles/4.3.20260523-g753b5a3/CMakeSystem.cmake \
+	/home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/build/OUT_SRC_VANPHONG_autogen/moc_predefs.h \
+	/home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/config/AppConfig.h \
+	/home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/main.cpp \
+	/home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/models/Alert.h \
+	/home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/models/DeviceConfig.h \
+	/home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/models/SensorReading.h \
+	/home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/models/User.h \
+	/home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/resources/resources.qrc \
+	/home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/server/api/ApiServer.cpp \
+	/home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/server/api/ApiServer.h \
+	/home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/server/database/Database.cpp \
+	/home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/server/database/Database.h \
+	/home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/server/mqtt/MqttDiscoveryService.cpp \
+	/home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/server/mqtt/MqttDiscoveryService.h \
+	/home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/server/system/HotspotManager.cpp \
+	/home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/server/system/HotspotManager.h \
+	/home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/services/AuthService.cpp \
+	/home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/services/AuthService.h \
+	/home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/services/SensorService.cpp \
+	/home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/services/SensorService.h \
+	/home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/ui/MainWindow.cpp \
+	/home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/ui/MainWindow.h \
+	/home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/ui/dialogs/ErrorDialog.cpp \
+	/home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/ui/dialogs/ErrorDialog.h \
+	/home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/ui/dialogs/SelectOnlineDeviceDialog.cpp \
+	/home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/ui/dialogs/SelectOnlineDeviceDialog.h \
+	/home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/ui/pages/AlertPage.cpp \
+	/home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/ui/pages/AlertPage.h \
+	/home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/ui/pages/DashboardPage.cpp \
+	/home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/ui/pages/DashboardPage.h \
+	/home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/ui/pages/DeviceManagementPage.cpp \
+	/home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/ui/pages/DeviceManagementPage.h \
+	/home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/ui/pages/HistoryPage.cpp \
+	/home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/ui/pages/HistoryPage.h \
+	/home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/ui/pages/LoginPage.cpp \
+	/home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/ui/pages/LoginPage.h \
+	/home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/ui/pages/UserManagementPage.cpp \
+	/home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/ui/pages/UserManagementPage.h \
+	/home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/ui/widgets/PlantSoilVisualizerWidget.cpp \
+	/home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/ui/widgets/PlantSoilVisualizerWidget.h \
 	/home/quanghaictu/Qt6Cross/qt6/host/include/QtCharts/QAbstractAxis \
 	/home/quanghaictu/Qt6Cross/qt6/host/include/QtCharts/QAbstractSeries \
 	/home/quanghaictu/Qt6Cross/qt6/host/include/QtCharts/QChartGlobal \
@@ -504,55 +553,6 @@ OUT_SRC_VANPHONG_autogen/timestamp: \
 	/home/quanghaictu/Qt6Cross/qt6/host/lib/cmake/Qt6WidgetsTools/Qt6WidgetsToolsTargets-release.cmake \
 	/home/quanghaictu/Qt6Cross/qt6/host/lib/cmake/Qt6WidgetsTools/Qt6WidgetsToolsTargets.cmake \
 	/home/quanghaictu/Qt6Cross/qt6/host/lib/cmake/Qt6WidgetsTools/Qt6WidgetsToolsVersionlessTargets.cmake \
-	/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/CMakeLists.txt \
-	/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/EmbeddedServer.cpp \
-	/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/EmbeddedServer.h \
-	/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/VirtualKeyboard.cpp \
-	/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/VirtualKeyboard.h \
-	/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/api/ApiClient.cpp \
-	/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/api/ApiClient.h \
-	/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/build/CMakeFiles/4.3.20260523-g753b5a3/CMakeCXXCompiler.cmake \
-	/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/build/CMakeFiles/4.3.20260523-g753b5a3/CMakeSystem.cmake \
-	/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/build/OUT_SRC_VANPHONG_autogen/moc_predefs.h \
-	/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/config/AppConfig.h \
-	/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/main.cpp \
-	/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/models/Alert.h \
-	/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/models/DeviceConfig.h \
-	/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/models/SensorReading.h \
-	/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/models/User.h \
-	/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/resources/resources.qrc \
-	/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/server/api/ApiServer.cpp \
-	/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/server/api/ApiServer.h \
-	/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/server/database/Database.cpp \
-	/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/server/database/Database.h \
-	/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/server/mqtt/MqttDiscoveryService.cpp \
-	/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/server/mqtt/MqttDiscoveryService.h \
-	/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/server/system/HotspotManager.cpp \
-	/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/server/system/HotspotManager.h \
-	/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/services/AuthService.cpp \
-	/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/services/AuthService.h \
-	/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/services/SensorService.cpp \
-	/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/services/SensorService.h \
-	/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/ui/MainWindow.cpp \
-	/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/ui/MainWindow.h \
-	/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/ui/dialogs/ErrorDialog.cpp \
-	/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/ui/dialogs/ErrorDialog.h \
-	/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/ui/dialogs/SelectOnlineDeviceDialog.cpp \
-	/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/ui/dialogs/SelectOnlineDeviceDialog.h \
-	/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/ui/pages/AlertPage.cpp \
-	/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/ui/pages/AlertPage.h \
-	/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/ui/pages/DashboardPage.cpp \
-	/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/ui/pages/DashboardPage.h \
-	/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/ui/pages/DeviceManagementPage.cpp \
-	/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/ui/pages/DeviceManagementPage.h \
-	/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/ui/pages/HistoryPage.cpp \
-	/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/ui/pages/HistoryPage.h \
-	/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/ui/pages/LoginPage.cpp \
-	/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/ui/pages/LoginPage.h \
-	/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/ui/pages/UserManagementPage.cpp \
-	/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/ui/pages/UserManagementPage.h \
-	/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/ui/widgets/PlantSoilVisualizerWidget.cpp \
-	/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/ui/widgets/PlantSoilVisualizerWidget.h \
 	/usr/include/alloca.h \
 	/usr/include/asm-generic/errno-base.h \
 	/usr/include/asm-generic/errno.h \
@@ -838,22 +838,82 @@ OUT_SRC_VANPHONG_autogen/timestamp: \
 	/usr/lib/gcc/x86_64-linux-gnu/11/include/stdarg.h \
 	/usr/lib/gcc/x86_64-linux-gnu/11/include/stdbool.h \
 	/usr/lib/gcc/x86_64-linux-gnu/11/include/stddef.h \
+	/usr/local/share/cmake-4.3/Modules/CMakeCXXCompiler.cmake.in \
+	/usr/local/share/cmake-4.3/Modules/CMakeCXXCompilerABI.cpp \
 	/usr/local/share/cmake-4.3/Modules/CMakeCXXInformation.cmake \
 	/usr/local/share/cmake-4.3/Modules/CMakeCheckCompilerFlagCommonPatterns.cmake \
 	/usr/local/share/cmake-4.3/Modules/CMakeCommonLanguageInclude.cmake \
+	/usr/local/share/cmake-4.3/Modules/CMakeCompilerIdDetection.cmake \
+	/usr/local/share/cmake-4.3/Modules/CMakeDetermineCXXCompiler.cmake \
+	/usr/local/share/cmake-4.3/Modules/CMakeDetermineCompiler.cmake \
+	/usr/local/share/cmake-4.3/Modules/CMakeDetermineCompilerABI.cmake \
+	/usr/local/share/cmake-4.3/Modules/CMakeDetermineCompilerId.cmake \
+	/usr/local/share/cmake-4.3/Modules/CMakeDetermineCompilerSupport.cmake \
+	/usr/local/share/cmake-4.3/Modules/CMakeDetermineSystem.cmake \
+	/usr/local/share/cmake-4.3/Modules/CMakeFindBinUtils.cmake \
 	/usr/local/share/cmake-4.3/Modules/CMakeFindDependencyMacro.cmake \
 	/usr/local/share/cmake-4.3/Modules/CMakeGenericSystem.cmake \
 	/usr/local/share/cmake-4.3/Modules/CMakeInitializeConfigs.cmake \
 	/usr/local/share/cmake-4.3/Modules/CMakeLanguageInformation.cmake \
+	/usr/local/share/cmake-4.3/Modules/CMakeParseImplicitIncludeInfo.cmake \
+	/usr/local/share/cmake-4.3/Modules/CMakeParseImplicitLinkInfo.cmake \
+	/usr/local/share/cmake-4.3/Modules/CMakeParseLibraryArchitecture.cmake \
+	/usr/local/share/cmake-4.3/Modules/CMakeSystem.cmake.in \
 	/usr/local/share/cmake-4.3/Modules/CMakeSystemSpecificInformation.cmake \
 	/usr/local/share/cmake-4.3/Modules/CMakeSystemSpecificInitialize.cmake \
+	/usr/local/share/cmake-4.3/Modules/CMakeTestCXXCompiler.cmake \
+	/usr/local/share/cmake-4.3/Modules/CMakeTestCompilerCommon.cmake \
+	/usr/local/share/cmake-4.3/Modules/CMakeUnixFindMake.cmake \
 	/usr/local/share/cmake-4.3/Modules/CheckCXXCompilerFlag.cmake \
 	/usr/local/share/cmake-4.3/Modules/CheckCXXSourceCompiles.cmake \
 	/usr/local/share/cmake-4.3/Modules/CheckIncludeFileCXX.cmake \
 	/usr/local/share/cmake-4.3/Modules/CheckLibraryExists.cmake \
+	/usr/local/share/cmake-4.3/Modules/Compiler/ADSP-DetermineCompiler.cmake \
+	/usr/local/share/cmake-4.3/Modules/Compiler/ARMCC-DetermineCompiler.cmake \
+	/usr/local/share/cmake-4.3/Modules/Compiler/ARMClang-DetermineCompiler.cmake \
+	/usr/local/share/cmake-4.3/Modules/Compiler/AppleClang-DetermineCompiler.cmake \
+	/usr/local/share/cmake-4.3/Modules/Compiler/Borland-DetermineCompiler.cmake \
 	/usr/local/share/cmake-4.3/Modules/Compiler/CMakeCommonCompilerMacros.cmake \
+	/usr/local/share/cmake-4.3/Modules/Compiler/Clang-DetermineCompiler.cmake \
+	/usr/local/share/cmake-4.3/Modules/Compiler/Clang-DetermineCompilerInternal.cmake \
+	/usr/local/share/cmake-4.3/Modules/Compiler/Compaq-CXX-DetermineCompiler.cmake \
+	/usr/local/share/cmake-4.3/Modules/Compiler/Cray-DetermineCompiler.cmake \
+	/usr/local/share/cmake-4.3/Modules/Compiler/CrayClang-DetermineCompiler.cmake \
+	/usr/local/share/cmake-4.3/Modules/Compiler/Diab-DetermineCompiler.cmake \
+	/usr/local/share/cmake-4.3/Modules/Compiler/Embarcadero-DetermineCompiler.cmake \
+	/usr/local/share/cmake-4.3/Modules/Compiler/Fujitsu-DetermineCompiler.cmake \
+	/usr/local/share/cmake-4.3/Modules/Compiler/FujitsuClang-DetermineCompiler.cmake \
+	/usr/local/share/cmake-4.3/Modules/Compiler/GHS-DetermineCompiler.cmake \
+	/usr/local/share/cmake-4.3/Modules/Compiler/GNU-CXX-DetermineCompiler.cmake \
 	/usr/local/share/cmake-4.3/Modules/Compiler/GNU-CXX.cmake \
+	/usr/local/share/cmake-4.3/Modules/Compiler/GNU-FindBinUtils.cmake \
 	/usr/local/share/cmake-4.3/Modules/Compiler/GNU.cmake \
+	/usr/local/share/cmake-4.3/Modules/Compiler/HP-CXX-DetermineCompiler.cmake \
+	/usr/local/share/cmake-4.3/Modules/Compiler/IAR-DetermineCompiler.cmake \
+	/usr/local/share/cmake-4.3/Modules/Compiler/IBMCPP-CXX-DetermineVersionInternal.cmake \
+	/usr/local/share/cmake-4.3/Modules/Compiler/IBMClang-CXX-DetermineCompiler.cmake \
+	/usr/local/share/cmake-4.3/Modules/Compiler/Intel-DetermineCompiler.cmake \
+	/usr/local/share/cmake-4.3/Modules/Compiler/IntelLLVM-DetermineCompiler.cmake \
+	/usr/local/share/cmake-4.3/Modules/Compiler/LCC-CXX-DetermineCompiler.cmake \
+	/usr/local/share/cmake-4.3/Modules/Compiler/MSVC-DetermineCompiler.cmake \
+	/usr/local/share/cmake-4.3/Modules/Compiler/NVHPC-DetermineCompiler.cmake \
+	/usr/local/share/cmake-4.3/Modules/Compiler/NVIDIA-DetermineCompiler.cmake \
+	/usr/local/share/cmake-4.3/Modules/Compiler/OpenWatcom-DetermineCompiler.cmake \
+	/usr/local/share/cmake-4.3/Modules/Compiler/OrangeC-DetermineCompiler.cmake \
+	/usr/local/share/cmake-4.3/Modules/Compiler/PGI-DetermineCompiler.cmake \
+	/usr/local/share/cmake-4.3/Modules/Compiler/PathScale-DetermineCompiler.cmake \
+	/usr/local/share/cmake-4.3/Modules/Compiler/PellesC-DetermineCompiler.cmake \
+	/usr/local/share/cmake-4.3/Modules/Compiler/Renesas-DetermineCompiler.cmake \
+	/usr/local/share/cmake-4.3/Modules/Compiler/SCO-DetermineCompiler.cmake \
+	/usr/local/share/cmake-4.3/Modules/Compiler/SunPro-CXX-DetermineCompiler.cmake \
+	/usr/local/share/cmake-4.3/Modules/Compiler/TI-DetermineCompiler.cmake \
+	/usr/local/share/cmake-4.3/Modules/Compiler/TIClang-DetermineCompiler.cmake \
+	/usr/local/share/cmake-4.3/Modules/Compiler/Tasking-DetermineCompiler.cmake \
+	/usr/local/share/cmake-4.3/Modules/Compiler/VisualAge-CXX-DetermineCompiler.cmake \
+	/usr/local/share/cmake-4.3/Modules/Compiler/Watcom-DetermineCompiler.cmake \
+	/usr/local/share/cmake-4.3/Modules/Compiler/XL-CXX-DetermineCompiler.cmake \
+	/usr/local/share/cmake-4.3/Modules/Compiler/XLClang-CXX-DetermineCompiler.cmake \
+	/usr/local/share/cmake-4.3/Modules/Compiler/zOS-CXX-DetermineCompiler.cmake \
 	/usr/local/share/cmake-4.3/Modules/FeatureSummary.cmake \
 	/usr/local/share/cmake-4.3/Modules/FindOpenGL.cmake \
 	/usr/local/share/cmake-4.3/Modules/FindPackageHandleStandardArgs.cmake \
@@ -863,24 +923,28 @@ OUT_SRC_VANPHONG_autogen/timestamp: \
 	/usr/local/share/cmake-4.3/Modules/GNUInstallDirs.cmake \
 	/usr/local/share/cmake-4.3/Modules/Internal/CMakeCXXLinkerInformation.cmake \
 	/usr/local/share/cmake-4.3/Modules/Internal/CMakeCommonLinkerInformation.cmake \
+	/usr/local/share/cmake-4.3/Modules/Internal/CMakeDetermineLinkerId.cmake \
+	/usr/local/share/cmake-4.3/Modules/Internal/CMakeInspectCXXLinker.cmake \
 	/usr/local/share/cmake-4.3/Modules/Internal/CheckCompilerFlag.cmake \
 	/usr/local/share/cmake-4.3/Modules/Internal/CheckFlagCommonConfig.cmake \
 	/usr/local/share/cmake-4.3/Modules/Internal/CheckSourceCompiles.cmake \
+	/usr/local/share/cmake-4.3/Modules/Internal/FeatureTesting.cmake \
 	/usr/local/share/cmake-4.3/Modules/Linker/GNU-CXX.cmake \
 	/usr/local/share/cmake-4.3/Modules/Linker/GNU.cmake \
 	/usr/local/share/cmake-4.3/Modules/MacroAddFileDependencies.cmake \
 	/usr/local/share/cmake-4.3/Modules/Platform/Linker/GNU.cmake \
 	/usr/local/share/cmake-4.3/Modules/Platform/Linker/Linux-GNU-CXX.cmake \
 	/usr/local/share/cmake-4.3/Modules/Platform/Linker/Linux-GNU.cmake \
+	/usr/local/share/cmake-4.3/Modules/Platform/Linux-Determine-CXX.cmake \
 	/usr/local/share/cmake-4.3/Modules/Platform/Linux-GNU-CXX.cmake \
 	/usr/local/share/cmake-4.3/Modules/Platform/Linux-GNU.cmake \
 	/usr/local/share/cmake-4.3/Modules/Platform/Linux-Initialize.cmake \
 	/usr/local/share/cmake-4.3/Modules/Platform/Linux.cmake \
 	/usr/local/share/cmake-4.3/Modules/Platform/UnixPaths.cmake \
-	/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/ui/MainWindow.ui \
-	/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/ui/pages/AlertPage.ui \
-	/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/ui/pages/DashboardPage.ui \
-	/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/ui/pages/HistoryPage.ui \
-	/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/ui/pages/LoginPage.ui \
-	/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/ui/pages/UserManagementPage.ui \
+	/home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/ui/MainWindow.ui \
+	/home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/ui/pages/AlertPage.ui \
+	/home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/ui/pages/DashboardPage.ui \
+	/home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/ui/pages/HistoryPage.ui \
+	/home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/ui/pages/LoginPage.ui \
+	/home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/ui/pages/UserManagementPage.ui \
 	/usr/local/bin/cmake

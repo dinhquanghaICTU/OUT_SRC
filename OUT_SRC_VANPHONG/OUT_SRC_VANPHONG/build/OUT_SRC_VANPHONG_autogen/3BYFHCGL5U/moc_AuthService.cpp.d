@@ -1,5 +1,6 @@
-/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/build/OUT_SRC_VANPHONG_autogen/3BYFHCGL5U/moc_AuthService.cpp: /media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/services/AuthService.h \
-  /media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/build/OUT_SRC_VANPHONG_autogen/moc_predefs.h \
+/home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/build/OUT_SRC_VANPHONG_autogen/3BYFHCGL5U/moc_AuthService.cpp: /home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/services/AuthService.h \
+  /home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/build/OUT_SRC_VANPHONG_autogen/moc_predefs.h \
+  /home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/models/User.h \
   /home/quanghaictu/Qt6Cross/qt6/host/include/QtCore/QObject \
   /home/quanghaictu/Qt6Cross/qt6/host/include/QtCore/QString \
   /home/quanghaictu/Qt6Cross/qt6/host/include/QtCore/q20type_traits.h \
@@ -90,7 +91,6 @@
   /home/quanghaictu/Qt6Cross/qt6/host/include/QtCore/qutf8stringview.h \
   /home/quanghaictu/Qt6Cross/qt6/host/include/QtCore/qversiontagging.h \
   /home/quanghaictu/Qt6Cross/qt6/host/include/QtCore/qxptype_traits.h \
-  /media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/models/User.h \
   /usr/include/alloca.h \
   /usr/include/asm-generic/errno-base.h \
   /usr/include/asm-generic/errno.h \

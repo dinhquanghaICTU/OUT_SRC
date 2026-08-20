@@ -43,5 +43,5 @@ private:
     UserManagementPage *m_userManagementPage;
 
     QTimer m_clockTimer;
-    QString m_activeDeviceId = QStringLiteral("Vanphong-150304");
+    QString m_activeDeviceId = QStringLiteral("Vanphong-190782");
 };

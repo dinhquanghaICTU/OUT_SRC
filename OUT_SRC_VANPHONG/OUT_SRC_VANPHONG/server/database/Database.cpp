@@ -175,7 +175,7 @@ bool Database::seedDefaults(QString *error)
         "INSERT OR IGNORE INTO discovered_devices (device_id, online, device_type, metrics_json, state_json, first_seen_at, last_seen_at) "
         "VALUES (:id, 1, 'smart_irrigation', '{\"soil_moisture\":55.0,\"temperature_c\":27.5,\"humidity\":65.0,\"pump_active\":false,\"water_tank_level\":85.0}', "
         "'{\"relay\":false,\"auto_mode\":true}', :now, :now)"));
-    devQuery.bindValue(QStringLiteral(":id"), QStringLiteral("Vanphong-150304"));
+    devQuery.bindValue(QStringLiteral(":id"), QStringLiteral("Vanphong-190782"));
     const QString nowIso = QDateTime::currentDateTimeUtc().toString(Qt::ISODateWithMs);
     devQuery.bindValue(QStringLiteral(":now"), nowIso);
     devQuery.exec();
@@ -338,6 +338,12 @@ QJsonArray Database::users(QString *error) const
 bool Database::claimDevice(const QString &username, const QString &deviceId, const QString &name,
                            QString *errorCode, QString *error)
 {
+    if (deviceId.trimmed() != QStringLiteral("Vanphong-190782")) {
+        if (errorCode) *errorCode = QStringLiteral("INVALID_DEVICE_ID");
+        if (error) *error = QStringLiteral("Chỉ cho phép thêm thiết bị có ID trong firmware (Vanphong-190782)");
+        return false;
+    }
+
     QSqlQuery userQuery(m_db);
     userQuery.prepare(QStringLiteral("SELECT id FROM users WHERE username = :u"));
     userQuery.bindValue(QStringLiteral(":u"), username.trimmed());
@@ -368,12 +374,25 @@ bool Database::claimDevice(const QString &username, const QString &deviceId, con
 bool Database::releaseDevice(const QString &username, const QString &deviceId,
                              QString *errorCode, QString *error)
 {
+    QSqlQuery roleQuery(m_db);
+    roleQuery.prepare(QStringLiteral("SELECT role, id FROM users WHERE username = :u"));
+    roleQuery.bindValue(QStringLiteral(":u"), username.trimmed());
+    QString role;
+    int userId = -1;
+    if (roleQuery.exec() && roleQuery.next()) {
+        role = roleQuery.value(0).toString();
+        userId = roleQuery.value(1).toInt();
+    }
+
     QSqlQuery query(m_db);
-    query.prepare(QStringLiteral(
-        "DELETE FROM devices WHERE device_id = :did AND owner_user_id = ("
-        "SELECT id FROM users WHERE username = :u)"));
-    query.bindValue(QStringLiteral(":did"), deviceId.trimmed());
-    query.bindValue(QStringLiteral(":u"), username.trimmed());
+    if (role == QStringLiteral("admin")) {
+        query.prepare(QStringLiteral("DELETE FROM devices WHERE device_id = :did"));
+        query.bindValue(QStringLiteral(":did"), deviceId.trimmed());
+    } else {
+        query.prepare(QStringLiteral("DELETE FROM devices WHERE device_id = :did AND owner_user_id = :uid"));
+        query.bindValue(QStringLiteral(":did"), deviceId.trimmed());
+        query.bindValue(QStringLiteral(":uid"), userId);
+    }
 
     if (!query.exec()) {
         if (errorCode) *errorCode = QStringLiteral("RELEASE_FAILED");
@@ -395,7 +414,7 @@ QJsonArray Database::devicesForUser(const QString &username, int onlineWindowSec
         "JOIN users u ON d.owner_user_id = u.id "
         "LEFT JOIN discovered_devices disc ON disc.device_id = d.device_id "
         "LEFT JOIN per_device_config cfg ON cfg.device_id = d.device_id "
-        "WHERE u.username = :u ORDER BY d.id ASC"));
+        "WHERE u.username = :u AND d.device_id = 'Vanphong-190782' ORDER BY d.id ASC"));
     query.bindValue(QStringLiteral(":u"), username.trimmed());
 
     if (!query.exec()) {
@@ -563,7 +582,7 @@ QJsonArray Database::availableDevices(int onlineWindowSeconds, QString *error) c
     if (!query.exec(QStringLiteral(
             "SELECT disc.device_id, disc.online, disc.device_type, disc.metrics_json, disc.state_json, "
             "disc.last_seen_at FROM discovered_devices disc "
-            "WHERE disc.device_id NOT IN (SELECT device_id FROM devices)"))) {
+            "WHERE disc.device_id NOT IN (SELECT device_id FROM devices) AND disc.device_id = 'Vanphong-190782'"))) {
         if (error) *error = query.lastError().text();
         return result;
     }
@@ -622,12 +641,45 @@ QJsonObject Database::latestReading(QString *error) const
         return obj;
     }
     if (query.next()) {
-        obj.insert(QStringLiteral("soil_moisture"), query.value(0).toDouble());
-        obj.insert(QStringLiteral("temperature_c"), query.value(1).toDouble());
-        obj.insert(QStringLiteral("humidity"), query.value(2).toDouble());
-        obj.insert(QStringLiteral("pump_active"), query.value(3).toInt() == 1);
-        obj.insert(QStringLiteral("water_tank_level"), query.value(4).toDouble());
-        obj.insert(QStringLiteral("measured_at"), query.value(5).toString());
+        const double sm = query.value(0).toDouble();
+        const double t = query.value(1).toDouble();
+        const double h = query.value(2).toDouble();
+        const bool p = query.value(3).toInt() == 1;
+        const double wt = query.value(4).toDouble();
+        const QString dt = query.value(5).toString();
+
+        obj.insert(QStringLiteral("soil_moisture"), sm);
+        obj.insert(QStringLiteral("temperature_c"), t);
+        obj.insert(QStringLiteral("temperature"), t);
+        obj.insert(QStringLiteral("humidity"), h);
+        obj.insert(QStringLiteral("humidity_pct"), h);
+        obj.insert(QStringLiteral("pump_active"), p);
+        obj.insert(QStringLiteral("relay"), p);
+        obj.insert(QStringLiteral("water_tank_level"), wt);
+        obj.insert(QStringLiteral("measured_at"), dt);
+        return obj;
+    }
+
+    // Fallback: lay tu discovered_devices cua Vanphong-190782
+    QSqlQuery discQuery(m_db);
+    if (discQuery.exec(QStringLiteral("SELECT metrics_json, state_json, last_seen_at FROM discovered_devices WHERE device_id = 'Vanphong-190782'")) && discQuery.next()) {
+        const QJsonObject m = QJsonDocument::fromJson(discQuery.value(0).toByteArray()).object();
+        const QJsonObject s = QJsonDocument::fromJson(discQuery.value(1).toByteArray()).object();
+        const double sm = m.value(QStringLiteral("soil_moisture")).toDouble(55.0);
+        const double t = m.value(QStringLiteral("temperature_c")).toDouble(m.value(QStringLiteral("temperature")).toDouble(27.5));
+        const double h = m.value(QStringLiteral("humidity")).toDouble(m.value(QStringLiteral("humidity_pct")).toDouble(65.0));
+        const bool p = s.value(QStringLiteral("relay")).toBool(m.value(QStringLiteral("pump_active")).toBool(false));
+        const double wt = m.value(QStringLiteral("water_tank_level")).toDouble(85.0);
+
+        obj.insert(QStringLiteral("soil_moisture"), sm);
+        obj.insert(QStringLiteral("temperature_c"), t);
+        obj.insert(QStringLiteral("temperature"), t);
+        obj.insert(QStringLiteral("humidity"), h);
+        obj.insert(QStringLiteral("humidity_pct"), h);
+        obj.insert(QStringLiteral("pump_active"), p);
+        obj.insert(QStringLiteral("relay"), p);
+        obj.insert(QStringLiteral("water_tank_level"), wt);
+        obj.insert(QStringLiteral("measured_at"), discQuery.value(2).toString());
     }
     return obj;
 }

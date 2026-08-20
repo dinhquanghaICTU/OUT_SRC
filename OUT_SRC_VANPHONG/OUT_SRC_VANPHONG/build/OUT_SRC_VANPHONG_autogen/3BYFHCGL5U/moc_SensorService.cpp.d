@@ -1,5 +1,6 @@
-/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/build/OUT_SRC_VANPHONG_autogen/3BYFHCGL5U/moc_SensorService.cpp: /media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/services/SensorService.h \
-  /media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/build/OUT_SRC_VANPHONG_autogen/moc_predefs.h \
+/home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/build/OUT_SRC_VANPHONG_autogen/3BYFHCGL5U/moc_SensorService.cpp: /home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/services/SensorService.h \
+  /home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/build/OUT_SRC_VANPHONG_autogen/moc_predefs.h \
+  /home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/models/SensorReading.h \
   /home/quanghaictu/Qt6Cross/qt6/host/include/QtCore/QDateTime \
   /home/quanghaictu/Qt6Cross/qt6/host/include/QtCore/QMetaType \
   /home/quanghaictu/Qt6Cross/qt6/host/include/QtCore/QObject \
@@ -112,7 +113,6 @@
   /home/quanghaictu/Qt6Cross/qt6/host/include/QtCore/qvarlengtharray.h \
   /home/quanghaictu/Qt6Cross/qt6/host/include/QtCore/qversiontagging.h \
   /home/quanghaictu/Qt6Cross/qt6/host/include/QtCore/qxptype_traits.h \
-  /media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/models/SensorReading.h \
   /usr/include/alloca.h \
   /usr/include/asm-generic/errno-base.h \
   /usr/include/asm-generic/errno.h \

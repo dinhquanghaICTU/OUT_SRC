@@ -181,11 +181,12 @@ DeviceManagementPage::DeviceManagementPage(QWidget *parent)
         "QPushButton { background: #ef4444; color: white; border: none; border-radius: 6px; padding: 8px; font-weight: 700; font-size: 11px; } "
         "QPushButton:hover { background: #dc2626; }"));
     connect(m_releaseDevBtn, &QPushButton::clicked, this, [this] {
-        const QString did = m_selectedDevice.value(QStringLiteral("device_id")).toString();
+        QString did = m_selectedDevice.value(QStringLiteral("device_id")).toString();
+        if (did.isEmpty() && !m_ownedDevices.isEmpty()) {
+            did = m_ownedDevices.first().toObject().value(QStringLiteral("device_id")).toString();
+        }
         if (!did.isEmpty()) {
-            if (QMessageBox::question(this, tr("Xác nhận"), tr("Bạn có chắc muốn xóa thiết bị %1?").arg(did)) == QMessageBox::Yes) {
-                emit releaseDeviceRequested(did);
-            }
+            emit releaseDeviceRequested(did);
         }
     });
     drawerLayout->addWidget(m_releaseDevBtn);
@@ -322,6 +323,13 @@ QWidget *DeviceManagementPage::createOwnedCard(const QJsonObject &device)
     });
     btnRow->addWidget(btnStop);
 
+    auto *btnRelease = new QPushButton(tr("🗑️ Gỡ"), card);
+    btnRelease->setStyleSheet(QStringLiteral("background: #991b1b; color: white; border: none; border-radius: 4px; padding: 4px 10px; font-weight: 600; font-size: 10px;"));
+    connect(btnRelease, &QPushButton::clicked, this, [this, id] {
+        emit releaseDeviceRequested(id);
+    });
+    btnRow->addWidget(btnRelease);
+
     layout->addLayout(btnRow);
     return card;
 }
@@ -356,6 +364,10 @@ void DeviceManagementPage::rebuildOwnedGrid()
 {
     clearGrid(m_ownedGrid);
     m_ownedEmpty->setVisible(m_ownedDevices.isEmpty());
+
+    if (!m_ownedDevices.isEmpty() && m_selectedDevice.isEmpty()) {
+        openDeviceDrawer(m_ownedDevices.first().toObject());
+    }
 
     int row = 0, col = 0;
     for (const auto &val : m_ownedDevices) {

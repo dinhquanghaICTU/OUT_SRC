@@ -1,0 +1,9 @@
+/home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/build-OUT_SRC_VANPHONG-RPI-Debug/CMakeFiles/OUT_SRC_VANPHONG.dir
+/home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/build-OUT_SRC_VANPHONG-RPI-Debug/CMakeFiles/edit_cache.dir
+/home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/build-OUT_SRC_VANPHONG-RPI-Debug/CMakeFiles/rebuild_cache.dir
+/home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/build-OUT_SRC_VANPHONG-RPI-Debug/CMakeFiles/list_install_components.dir
+/home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/build-OUT_SRC_VANPHONG-RPI-Debug/CMakeFiles/install.dir
+/home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/build-OUT_SRC_VANPHONG-RPI-Debug/CMakeFiles/install/local.dir
+/home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/build-OUT_SRC_VANPHONG-RPI-Debug/CMakeFiles/install/strip.dir
+/home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/build-OUT_SRC_VANPHONG-RPI-Debug/CMakeFiles/OUT_SRC_VANPHONG_autogen_timestamp_deps.dir
+/home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/build-OUT_SRC_VANPHONG-RPI-Debug/CMakeFiles/OUT_SRC_VANPHONG_autogen.dir

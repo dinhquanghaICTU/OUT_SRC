@@ -1,5 +1,5 @@
-/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/build/OUT_SRC_VANPHONG_autogen/EG4V6WMW7F/moc_ApiServer.cpp: /media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/server/api/ApiServer.h \
-  /media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/build/OUT_SRC_VANPHONG_autogen/moc_predefs.h \
+/home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/build/OUT_SRC_VANPHONG_autogen/EG4V6WMW7F/moc_ApiServer.cpp: /home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/server/api/ApiServer.h \
+  /home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/build/OUT_SRC_VANPHONG_autogen/moc_predefs.h \
   /home/quanghaictu/Qt6Cross/qt6/host/include/QtCore/QFlags \
   /home/quanghaictu/Qt6Cross/qt6/host/include/QtCore/QHash \
   /home/quanghaictu/Qt6Cross/qt6/host/include/QtCore/QJsonObject \

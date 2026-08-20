@@ -1,5 +1,5 @@
-/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/build/OUT_SRC_VANPHONG_autogen/NJHUVPU35C/moc_PlantSoilVisualizerWidget.cpp: /media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/ui/widgets/PlantSoilVisualizerWidget.h \
-  /media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/build/OUT_SRC_VANPHONG_autogen/moc_predefs.h \
+/home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/build/OUT_SRC_VANPHONG_autogen/NJHUVPU35C/moc_PlantSoilVisualizerWidget.cpp: /home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/ui/widgets/PlantSoilVisualizerWidget.h \
+  /home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/build/OUT_SRC_VANPHONG_autogen/moc_predefs.h \
   /home/quanghaictu/Qt6Cross/qt6/host/include/QtCore/QPointF \
   /home/quanghaictu/Qt6Cross/qt6/host/include/QtCore/QTimer \
   /home/quanghaictu/Qt6Cross/qt6/host/include/QtCore/QVector \

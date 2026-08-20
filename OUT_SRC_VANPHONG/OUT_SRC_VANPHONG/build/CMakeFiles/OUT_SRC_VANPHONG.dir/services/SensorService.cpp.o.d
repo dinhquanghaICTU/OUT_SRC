@@ -1,8 +1,8 @@
 CMakeFiles/OUT_SRC_VANPHONG.dir/services/SensorService.cpp.o: \
- /media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/services/SensorService.cpp \
+ /home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/services/SensorService.cpp \
  /usr/include/stdc-predef.h \
- /media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/services/SensorService.h \
- /media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/models/SensorReading.h \
+ /home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/services/SensorService.h \
+ /home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/models/SensorReading.h \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtCore/QDateTime \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtCore/qdatetime.h \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtCore/qcalendar.h \
@@ -334,8 +334,8 @@ CMakeFiles/OUT_SRC_VANPHONG.dir/services/SensorService.cpp.o: \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtCore/QTimer \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtCore/qtimer.h \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtCore/qbasictimer.h \
- /media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/api/ApiClient.h \
- /media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/models/DeviceConfig.h \
+ /home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/api/ApiClient.h \
+ /home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/models/DeviceConfig.h \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtCore/QJsonArray \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtCore/qjsonarray.h \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtCore/qjsonvalue.h \
@@ -379,6 +379,6 @@ CMakeFiles/OUT_SRC_VANPHONG.dir/services/SensorService.cpp.o: \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtNetwork/QSslPreSharedKeyAuthenticator \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtNetwork/qsslpresharedkeyauthenticator.h \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtCore/QMetaType \
- /media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/config/AppConfig.h \
+ /home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/config/AppConfig.h \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtCore/QtMath \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtCore/qmath.h

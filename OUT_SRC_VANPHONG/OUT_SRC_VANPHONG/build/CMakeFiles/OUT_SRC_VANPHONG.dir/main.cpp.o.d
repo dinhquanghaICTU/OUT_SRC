@@ -1,7 +1,7 @@
 CMakeFiles/OUT_SRC_VANPHONG.dir/main.cpp.o: \
- /media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/main.cpp \
+ /home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/main.cpp \
  /usr/include/stdc-predef.h \
- /media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/EmbeddedServer.h \
+ /home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/EmbeddedServer.h \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtCore/QObject \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtCore/qobject.h \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtCore/qobjectdefs.h \
@@ -301,7 +301,7 @@ CMakeFiles/OUT_SRC_VANPHONG.dir/main.cpp.o: \
  /usr/include/c++/11/ctime \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtCore/QString \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtCore/qstring.h \
- /media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/ui/MainWindow.h \
+ /home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/ui/MainWindow.h \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtWidgets/QMainWindow \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtWidgets/qmainwindow.h \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtWidgets/qtwidgetsglobal.h \

@@ -1,7 +1,7 @@
 CMakeFiles/OUT_SRC_VANPHONG.dir/ui/MainWindow.cpp.o: \
- /media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/ui/MainWindow.cpp \
+ /home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/ui/MainWindow.cpp \
  /usr/include/stdc-predef.h \
- /media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/ui/MainWindow.h \
+ /home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/ui/MainWindow.h \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtWidgets/QMainWindow \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtWidgets/qmainwindow.h \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtWidgets/qtwidgetsglobal.h \
@@ -360,7 +360,7 @@ CMakeFiles/OUT_SRC_VANPHONG.dir/ui/MainWindow.cpp.o: \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtCore/QTimer \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtCore/qtimer.h \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtCore/qbasictimer.h \
- /media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/build/OUT_SRC_VANPHONG_autogen/include/ui_MainWindow.h \
+ /home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/build/OUT_SRC_VANPHONG_autogen/include/ui_MainWindow.h \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtCore/QVariant \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtCore/qvariant.h \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtWidgets/QApplication \
@@ -402,11 +402,11 @@ CMakeFiles/OUT_SRC_VANPHONG.dir/ui/MainWindow.cpp.o: \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtWidgets/QVBoxLayout \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtWidgets/QWidget \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtWidgets/qwidget.h \
- /media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/api/ApiClient.h \
- /media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/models/DeviceConfig.h \
+ /home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/api/ApiClient.h \
+ /home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/models/DeviceConfig.h \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtCore/QString \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtCore/qstring.h \
- /media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/models/SensorReading.h \
+ /home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/models/SensorReading.h \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtCore/QDateTime \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtCore/qdatetime.h \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtCore/qcalendar.h \
@@ -453,15 +453,15 @@ CMakeFiles/OUT_SRC_VANPHONG.dir/ui/MainWindow.cpp.o: \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtNetwork/qsslpresharedkeyauthenticator.h \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtCore/QMetaType \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtCore/QObject \
- /media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/services/AuthService.h \
- /media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/models/User.h \
- /media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/services/SensorService.h \
- /media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/ui/dialogs/ErrorDialog.h \
+ /home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/services/AuthService.h \
+ /home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/models/User.h \
+ /home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/services/SensorService.h \
+ /home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/ui/dialogs/ErrorDialog.h \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtWidgets/QDialog \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtWidgets/qdialog.h \
- /media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/ui/pages/AlertPage.h \
+ /home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/ui/pages/AlertPage.h \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtWidgets/QWidget \
- /media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/ui/pages/DashboardPage.h \
+ /home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/ui/pages/DashboardPage.h \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtCharts/QLineSeries \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtCharts/qlineseries.h \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtCharts/QChartGlobal \
@@ -482,12 +482,12 @@ CMakeFiles/OUT_SRC_VANPHONG.dir/ui/MainWindow.cpp.o: \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtGui/qbrush.h \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtGui/QImage \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtGui/qimage.h \
- /media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/ui/pages/DeviceManagementPage.h \
+ /home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/ui/pages/DeviceManagementPage.h \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtCore/QHash \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtCore/qhash.h \
- /media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/ui/pages/HistoryPage.h \
- /media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/ui/pages/LoginPage.h \
- /media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/ui/pages/UserManagementPage.h \
+ /home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/ui/pages/HistoryPage.h \
+ /home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/ui/pages/LoginPage.h \
+ /home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/ui/pages/UserManagementPage.h \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtWidgets/QMessageBox \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtWidgets/qmessagebox.h \
  /home/quanghaictu/Qt6Cross/qt6/host/include/QtWidgets/qdialog.h
