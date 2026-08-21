@@ -1,9 +1,0 @@
-/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/OUT_SRC_MANHQUANG.dir
-/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/edit_cache.dir
-/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/rebuild_cache.dir
-/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/list_install_components.dir
-/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/install.dir
-/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/install/local.dir
-/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/install/strip.dir
-/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/OUT_SRC_MANHQUANG_autogen_timestamp_deps.dir
-/home/quanghaictu/OUT_SRC/OUT_SRC_MANHQUANG/OUT_SRC_MANHQUANG/build/CMakeFiles/OUT_SRC_MANHQUANG_autogen.dir

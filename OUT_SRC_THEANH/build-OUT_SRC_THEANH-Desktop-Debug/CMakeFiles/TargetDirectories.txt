@@ -1,9 +1,0 @@
-/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_THEANH/build-OUT_SRC_THEANH-Desktop-Debug/CMakeFiles/OUT_SRC_THEANH.dir
-/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_THEANH/build-OUT_SRC_THEANH-Desktop-Debug/CMakeFiles/edit_cache.dir
-/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_THEANH/build-OUT_SRC_THEANH-Desktop-Debug/CMakeFiles/rebuild_cache.dir
-/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_THEANH/build-OUT_SRC_THEANH-Desktop-Debug/CMakeFiles/list_install_components.dir
-/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_THEANH/build-OUT_SRC_THEANH-Desktop-Debug/CMakeFiles/install.dir
-/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_THEANH/build-OUT_SRC_THEANH-Desktop-Debug/CMakeFiles/install/local.dir
-/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_THEANH/build-OUT_SRC_THEANH-Desktop-Debug/CMakeFiles/install/strip.dir
-/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_THEANH/build-OUT_SRC_THEANH-Desktop-Debug/CMakeFiles/OUT_SRC_THEANH_autogen_timestamp_deps.dir
-/media/quanghaictu/WIN/ha/OUTSRC/OUT_SRC/OUT_SRC_THEANH/build-OUT_SRC_THEANH-Desktop-Debug/CMakeFiles/OUT_SRC_THEANH_autogen.dir

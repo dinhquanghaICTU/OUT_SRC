@@ -1,9 +1,0 @@
-/home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/build/CMakeFiles/OUT_SRC_VANPHONG.dir
-/home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/build/CMakeFiles/edit_cache.dir
-/home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/build/CMakeFiles/rebuild_cache.dir
-/home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/build/CMakeFiles/list_install_components.dir
-/home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/build/CMakeFiles/install.dir
-/home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/build/CMakeFiles/install/local.dir
-/home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/build/CMakeFiles/install/strip.dir
-/home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/build/CMakeFiles/OUT_SRC_VANPHONG_autogen_timestamp_deps.dir
-/home/quanghaictu/OUT_SRC/OUT_SRC_VANPHONG/OUT_SRC_VANPHONG/build/CMakeFiles/OUT_SRC_VANPHONG_autogen.dir

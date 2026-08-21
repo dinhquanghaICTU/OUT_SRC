@@ -1,4 +1,100 @@
-build-OUT_SRC_LENAM-RPI-Debug/
-build-OUT_SRC_TRUNGKIEN-RPI-Debug/
-build-OUT_SRC_HOANGANH-Desktop-Debug/
-build-OUT_SRC_SON-Desktop-Debug/
+# ============================================================================
+# C / C++ / Qt / CMake Build Directories and Generated Files
+# ============================================================================
+
+# Build directories (desktop, rpi, subprojects)
+[Bb]uild/
+[Bb]uild-*/
+cmake-build-*/
+Testing/
+
+# CMake artifacts
+CMakeFiles/
+CMakeCache.txt
+CMakeCache.txt.prev
+cmake_install.cmake
+install_manifest.txt
+CTestTestfile.cmake
+qtcsettings.cmake
+CMakeConfigureLog.yaml
+TargetDirectories.txt
+
+# Ninja artifacts
+*.ninja
+.ninja_*
+.ninja_deps
+.ninja_log
+
+# Qt Creator specific files & caches
+*.user
+*.user.*
+*.creator.user*
+*.autosave
+.qtc_clangd/
+.qt/
+*_autogen/
+
+# Qt intermediate generated files
+moc_*.cpp
+moc_*.cpp.d
+ui_*.h
+qrc_*.cpp
+*.moc
+*.qm
+*.qmlc
+*.jsc
+*_pch.h.cpp
+*_resource.rc
+
+# Compiled object files & dependencies
+*.o
+*.obj
+*.d
+*.o.d
+
+# Libraries and archives
+*.a
+*.lib
+*.so
+*.so.*
+*.dylib
+*.dll
+
+# Executables & Debug artifacts
+*.exe
+*.out
+*.app
+*.debug
+*.pdb
+*.idb
+*.ilk
+run_test_bin
+
+# Firmware / Embedded (PlatformIO, Arduino, ESP32)
+.pio/
+.pioenvs/
+.piolibdeps/
+*.hex
+*.bin
+*.elf
+*.map
+
+# IDEs and Editors
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+
+# OS & Temporary files
+*~
+*.swp
+*.swo
+.#*
+*.*#
+.DS_Store
+.DS_Store?
+._*
+Thumbs.db
+*.log
+core
+!core/
