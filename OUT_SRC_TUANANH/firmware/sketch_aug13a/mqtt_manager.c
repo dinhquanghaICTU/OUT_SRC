@@ -15,6 +15,32 @@ static bool mqtt_started = false;
 static bool mqtt_connected = false;
 static uint32_t mqtt_boot_id = 0;
 static uint32_t telemetry_sequence = 0;
+static bool s_auto_mode = false;
+static device_config_thresholds_t s_thresholds = {
+    .lux_min = 50.0f,
+    .lux_max = 500.0f,
+    .sample_interval_ms = SAMPLE_INTERVAL_MS
+};
+
+static bool parse_json_double(const char *payload, const char *field, double *out)
+{
+    if (payload == NULL || field == NULL || out == NULL)
+        return false;
+
+    char key[64];
+    snprintf(key, sizeof(key), "\"%s\"", field);
+    const char *p = strstr(payload, key);
+    if (!p)
+        return false;
+    p = strchr(p + strlen(key), ':');
+    if (!p)
+        return false;
+    p++;
+    while (*p == ' ' || *p == '\t' || *p == '\r' || *p == '\n')
+        p++;
+    *out = atof(p);
+    return true;
+}
 
 static bool parse_relay_state(const char *payload, bool *state)
 {
@@ -96,6 +122,21 @@ static void publish_command_result(const char *command_id, bool state)
             mqtt_client, MQTT_COMMAND_RESULT_TOPIC, payload, length, 1, 0);
 }
 
+bool mqtt_manager_publish_config_reported(uint32_t config_version)
+{
+    char topic[128];
+    snprintf(topic, sizeof(topic), "iot/v1/devices/%s/config/reported", PRODUCT_ID);
+    char payload[256];
+    int len = snprintf(payload, sizeof(payload),
+                       "{\"config_version\":%" PRIu32 ",\"status\":\"applied\","
+                       "\"sampling_interval_ms\":%" PRIu32 ","
+                       "\"thresholds\":{\"lux\":{\"min\":%.1f,\"max\":%.1f}}}",
+                       config_version, s_thresholds.sample_interval_ms,
+                       s_thresholds.lux_min, s_thresholds.lux_max);
+    if (!mqtt_connected || mqtt_client == NULL || len <= 0) return false;
+    return esp_mqtt_client_publish(mqtt_client, topic, payload, len, 1, 1) >= 0;
+}
+
 static void
 mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_t event_id, void *event_data)
 {
@@ -137,52 +178,118 @@ mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_t event_id, 
     case MQTT_EVENT_DATA:
     {
         printf("[MQTT] Topic: %.*s\n", event->topic_len, event->topic);
-
         printf("[MQTT] Payload: %.*s\n", event->data_len, event->data);
 
-        if (event->topic_len != (int)strlen(MQTT_COMMAND_TOPIC) ||
-            memcmp(event->topic, MQTT_COMMAND_TOPIC, event->topic_len) != 0)
+        // 1. Process Command Topic
+        if (event->topic_len == (int)strlen(MQTT_COMMAND_TOPIC) &&
+            memcmp(event->topic, MQTT_COMMAND_TOPIC, event->topic_len) == 0)
         {
+            if (event->data_len >= 128 || event->data_len != event->total_data_len)
+            {
+                printf("[MQTT] Payload qua dai hoac bi chia nho\n");
+                break;
+            }
+
+            char payload[128];
+            char command_id[64];
+            char command_type[32];
+
+            memcpy(payload, event->data, event->data_len);
+            payload[event->data_len] = '\0';
+
+            bool cmd_state = false;
+            if (!parse_json_string(payload, "command_id", command_id, sizeof(command_id)) ||
+                !parse_json_string(payload, "type", command_type, sizeof(command_type)))
+            {
+                printf("[MQTT] Command khong hop le\n");
+                break;
+            }
+
+            if (strcmp(command_type, "relay.set") == 0 && parse_relay_state(payload, &cmd_state))
+            {
+                relay_set(cmd_state);
+                printf("[RELAY] Dieu khien tu server: %s\n", cmd_state ? "ON" : "OFF");
+                mqtt_manager_publish_relay(cmd_state, "command");
+                publish_command_result(command_id, cmd_state);
+            }
+            else if (strcmp(command_type, "auto.set") == 0 && parse_relay_state(payload, &cmd_state))
+            {
+                s_auto_mode = cmd_state;
+                printf("[AUTO] Che do auto tu server: %s\n", cmd_state ? "ON" : "OFF");
+                publish_command_result(command_id, cmd_state);
+            }
+            else
+            {
+                printf("[MQTT] Command type %s khong duoc ho tro\n", command_type);
+            }
             break;
         }
 
-        if (event->data_len >= 128 || event->data_len != event->total_data_len)
+        // 2. Process Config Desired Topic
+        if (event->topic_len == (int)strlen(MQTT_CONFIG_DESIRED_TOPIC) &&
+            memcmp(event->topic, MQTT_CONFIG_DESIRED_TOPIC, event->topic_len) == 0)
         {
-            printf("[MQTT] Payload qua dai hoac bi chia nho\n");
+            char payload[512];
+            if (event->data_len >= (int)sizeof(payload)) break;
+            memcpy(payload, event->data, event->data_len);
+            payload[event->data_len] = '\0';
+            printf("[CONFIG] Nhan cau hinh nguong tu server: %s\n", payload);
+
+            double val = 0;
+            if (parse_json_double(payload, "sampling_interval_ms", &val) && val >= 500) {
+                s_thresholds.sample_interval_ms = (uint32_t)val;
+            }
+            if (parse_json_double(payload, "min", &val) || parse_json_double(payload, "warning_below", &val)) {
+                s_thresholds.lux_min = (float)val;
+            }
+            if (parse_json_double(payload, "max", &val) || parse_json_double(payload, "warning_above", &val)) {
+                s_thresholds.lux_max = (float)val;
+            }
+
+            const char *autoKey = strstr(payload, "\"auto_mode\"");
+            if (autoKey != NULL) {
+                bool newAuto = false;
+                if (parse_relay_state(autoKey, &newAuto)) {
+                    s_auto_mode = newAuto;
+                    printf("[AUTO] Cap nhat auto_mode tu config: %s\n", s_auto_mode ? "ON" : "OFF");
+                }
+            }
+
+            printf("[CONFIG] Da cap nhat nguong thanh cong: min=%.1f lux, max=%.1f lux, interval=%u ms, auto=%d\n",
+                   s_thresholds.lux_min, s_thresholds.lux_max, (unsigned)s_thresholds.sample_interval_ms, s_auto_mode ? 1 : 0);
+
+            double ver = 1;
+            parse_json_double(payload, "config_version", &ver);
+            mqtt_manager_publish_config_reported((uint32_t)ver);
             break;
         }
-
-        char payload[128];
-        char command_id[64];
-        char command_type[32];
-
-        memcpy(payload, event->data, event->data_len);
-        payload[event->data_len] = '\0';
-
-        bool relay_state = false;
-        if (!parse_json_string(payload, "command_id", command_id, sizeof(command_id)) ||
-            !parse_json_string(payload, "type", command_type, sizeof(command_type)) ||
-            strcmp(command_type, "relay.set") != 0 ||
-            !parse_relay_state(payload, &relay_state))
-        {
-            printf("[MQTT] Command relay.set khong hop le\n");
-            break;
-        }
-
-        relay_set(relay_state);
-
-        printf(
-            "[RELAY] Dieu khien tu server: %s\n",
-            relay_state ? "ON" : "OFF"
-        );
-
-        mqtt_manager_publish_relay(relay_state, "command");
-        publish_command_result(command_id, relay_state);
         break;
     }
     default:
         break;
     }
+}
+
+bool mqtt_manager_get_auto_mode(void)
+{
+    return s_auto_mode;
+}
+
+void mqtt_manager_set_auto_mode(bool auto_mode)
+{
+    s_auto_mode = auto_mode;
+}
+
+device_config_thresholds_t mqtt_manager_get_thresholds(void)
+{
+    return s_thresholds;
+}
+
+void mqtt_manager_set_thresholds(float min_lux, float max_lux, uint32_t interval_ms)
+{
+    s_thresholds.lux_min = min_lux;
+    s_thresholds.lux_max = max_lux;
+    if (interval_ms >= 500) s_thresholds.sample_interval_ms = interval_ms;
 }
 
 void mqtt_manager_start(void)
@@ -241,13 +348,18 @@ bool mqtt_manager_is_connected(void)
 
 bool mqtt_manager_publish_sensor(bool detech, float luxx, bool relay_state)
 {
-    char payload[384];
+    char payload[450];
     int length;
     const uint32_t sequence = ++telemetry_sequence;
     const uint64_t uptime_ms = (uint64_t)(esp_timer_get_time() / 1000);
 
     if (!mqtt_connected || mqtt_client == NULL)
         return false;
+
+    const bool is_alert = (luxx > 0 && (luxx < s_thresholds.lux_min || luxx > s_thresholds.lux_max));
+    const char *alert_msg = "normal";
+    if (luxx > 0 && luxx < s_thresholds.lux_min) alert_msg = "lux_low";
+    else if (luxx > 0 && luxx > s_thresholds.lux_max) alert_msg = "lux_high";
 
     length = snprintf(payload,
                       sizeof(payload),
@@ -263,7 +375,9 @@ bool mqtt_manager_publish_sensor(bool detech, float luxx, bool relay_state)
                       "\"light_lux\":%.2f,"
                       "\"lux\":%.2f,"
                       "\"relay_on\":%s,"
-                      "\"relay\":%s}}",
+                      "\"relay\":%s,"
+                      "\"alert\":%s,"
+                      "\"alert_msg\":\"%s\"}}",
                       PRODUCT_ID,
                       PRODUCT_ID,
                       mqtt_boot_id,
@@ -276,7 +390,9 @@ bool mqtt_manager_publish_sensor(bool detech, float luxx, bool relay_state)
                       luxx,
                       luxx,
                       relay_state ? "true" : "false",
-                      relay_state ? "true" : "false"
+                      relay_state ? "true" : "false",
+                      is_alert ? "true" : "false",
+                      alert_msg
                     );
 
     if (length <= 0 || length >= (int)sizeof(payload))

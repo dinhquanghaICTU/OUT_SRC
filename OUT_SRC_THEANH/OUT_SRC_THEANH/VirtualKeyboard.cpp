@@ -241,9 +241,11 @@ void VirtualKeyboard::setSymbolMode(bool symbol)
 }
 
 #include <QDialog>
+#include <QDoubleSpinBox>
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QPointer>
+#include <QSpinBox>
 #include <QVBoxLayout>
 
 VirtualKeyboardDialog::VirtualKeyboardDialog(QLineEdit *target, QWidget *parent, const QString &title)
@@ -372,4 +374,92 @@ void VirtualKeyboardDialog::attachToLineEdit(QLineEdit *target, const QString &t
     };
 
     target->installEventFilter(new LineEditClickFilter(target, title));
+}
+
+void VirtualKeyboardDialog::attachToDoubleSpinBox(QDoubleSpinBox *target, const QString &title)
+{
+    if (!target) return;
+
+    struct DoubleSpinBoxClickFilter : public QObject {
+        QPointer<QDoubleSpinBox> spin;
+        QString dlgTitle;
+        bool opening = false;
+
+        DoubleSpinBoxClickFilter(QDoubleSpinBox *s, const QString &t)
+            : QObject(s), spin(s), dlgTitle(t) {}
+
+        bool eventFilter(QObject *watched, QEvent *event) override {
+            if (event->type() == QEvent::MouseButtonRelease) {
+                if (!opening && spin && spin->isEnabled() && !spin->isReadOnly()) {
+                    opening = true;
+                    QLineEdit tempEdit;
+                    tempEdit.setText(QString::number(spin->value(), 'f', spin->decimals()));
+                    QString dialogHeader = dlgTitle.isEmpty()
+                        ? tr("Nhập giá trị (%1)").arg(spin->suffix().trimmed())
+                        : dlgTitle;
+                    VirtualKeyboardDialog dlg(&tempEdit, spin->window(), dialogHeader);
+                    if (dlg.exec() == QDialog::Accepted) {
+                        bool ok = false;
+                        double val = tempEdit.text().trimmed().toDouble(&ok);
+                        if (ok) {
+                            spin->setValue(val);
+                        }
+                    }
+                    opening = false;
+                    return true;
+                }
+            }
+            return QObject::eventFilter(watched, event);
+        }
+    };
+
+    auto *filter = new DoubleSpinBoxClickFilter(target, title);
+    target->installEventFilter(filter);
+    if (auto *childEdit = target->findChild<QLineEdit*>()) {
+        childEdit->installEventFilter(filter);
+    }
+}
+
+void VirtualKeyboardDialog::attachToSpinBox(QSpinBox *target, const QString &title)
+{
+    if (!target) return;
+
+    struct SpinBoxClickFilter : public QObject {
+        QPointer<QSpinBox> spin;
+        QString dlgTitle;
+        bool opening = false;
+
+        SpinBoxClickFilter(QSpinBox *s, const QString &t)
+            : QObject(s), spin(s), dlgTitle(t) {}
+
+        bool eventFilter(QObject *watched, QEvent *event) override {
+            if (event->type() == QEvent::MouseButtonRelease) {
+                if (!opening && spin && spin->isEnabled() && !spin->isReadOnly()) {
+                    opening = true;
+                    QLineEdit tempEdit;
+                    tempEdit.setText(QString::number(spin->value()));
+                    QString dialogHeader = dlgTitle.isEmpty()
+                        ? tr("Nhập giá trị (%1)").arg(spin->suffix().trimmed())
+                        : dlgTitle;
+                    VirtualKeyboardDialog dlg(&tempEdit, spin->window(), dialogHeader);
+                    if (dlg.exec() == QDialog::Accepted) {
+                        bool ok = false;
+                        int val = tempEdit.text().trimmed().toInt(&ok);
+                        if (ok) {
+                            spin->setValue(val);
+                        }
+                    }
+                    opening = false;
+                    return true;
+                }
+            }
+            return QObject::eventFilter(watched, event);
+        }
+    };
+
+    auto *filter = new SpinBoxClickFilter(target, title);
+    target->installEventFilter(filter);
+    if (auto *childEdit = target->findChild<QLineEdit*>()) {
+        childEdit->installEventFilter(filter);
+    }
 }

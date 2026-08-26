@@ -58,7 +58,7 @@ private:
     void createUserDialog();
     void editUserDialog(const QJsonObject &user);
     void openClaimDeviceDialog(const QJsonObject &device);
-    void openDeviceConfigDialog(const QJsonObject &device);
+    void openDeviceConfigDialog(const QString &deviceId);
     void updateDeviceConfig(const QString &deviceId, const QJsonObject &config);
 
     void showChartZoomDialog(const QString &key);
@@ -92,6 +92,7 @@ private:
     QJsonArray m_devices;
     QJsonArray m_available;
     QJsonArray m_users;
+    QMap<QString, QJsonObject> m_deviceConfigs;
     QJsonObject m_lastHistory;
     QTimer *m_timer = nullptr;
 };

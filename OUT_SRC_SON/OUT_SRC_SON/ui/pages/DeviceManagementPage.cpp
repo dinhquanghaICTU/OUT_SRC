@@ -929,6 +929,9 @@ void DeviceManagementPage::rebuildThresholdForm(const QJsonObject &device)
         input->setValue(value);
         input->setSuffix(suffix);
         input->setEnabled(isOwner);
+        if (auto *le = input->findChild<QLineEdit*>()) {
+            VirtualKeyboardDialog::attachToLineEdit(le, label);
+        }
         m_thresholdInputs.insert(key, input);
         m_thresholdForm->addRow(label, input);
     };
@@ -948,6 +951,8 @@ void DeviceManagementPage::rebuildThresholdForm(const QJsonObject &device)
         addThreshold(QStringLiteral("pressure_hpa.min"), tr("Áp suất thấp"), 990, 100, 1500, tr(" hPa"));
         addThreshold(QStringLiteral("pressure_hpa.max"), tr("Áp suất cao"), 1030, 100, 1500, tr(" hPa"));
     } else if (type == QStringLiteral("water_flow_pump") || type == QStringLiteral("pump_distance")) {
+        addThreshold(QStringLiteral("distance_cm.warning_above"), tr("Khoảng cách cạn (Bật bơm)"), 35.0, 1, 400, tr(" cm"));
+        addThreshold(QStringLiteral("distance_cm.warning_below"), tr("Khoảng cách đầy (Tắt bơm)"), 10.0, 1, 400, tr(" cm"));
         addThreshold(QStringLiteral("flow_l_min.min"), tr("Lưu lượng tối thiểu"), 0.20, 0, 60, tr(" L/min"));
         addThreshold(QStringLiteral("flow_l_min.max"), tr("Lưu lượng tối đa"), 20.00, 0, 60, tr(" L/min"));
         addThreshold(QStringLiteral("total_liters.max"), tr("Tổng nước cảnh báo"), 100.00, 0, 100000, tr(" L"));
@@ -959,6 +964,9 @@ void DeviceManagementPage::rebuildThresholdForm(const QJsonObject &device)
     m_samplingInterval->setValue(saved.value(QStringLiteral("sampling_interval_ms"))
                                      .toInt(2000) / 1000);
     m_samplingInterval->setEnabled(isOwner);
+    if (auto *le = m_samplingInterval->findChild<QLineEdit*>()) {
+        VirtualKeyboardDialog::attachToLineEdit(le, tr("Chu kỳ gửi (giây)"));
+    }
     const bool hasThresholds = !m_thresholdInputs.isEmpty();
     m_thresholdForm->addRow(tr("Chu kỳ gửi"), m_samplingInterval);
     m_thresholdForm->setRowVisible(m_samplingInterval, hasThresholds);

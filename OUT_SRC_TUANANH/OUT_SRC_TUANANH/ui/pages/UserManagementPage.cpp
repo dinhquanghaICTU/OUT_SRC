@@ -20,13 +20,7 @@ UserManagementPage::UserManagementPage(QWidget *parent)
     : QWidget(parent), ui(new Ui::UserManagementPage)
 {
     ui->setupUi(this);
-    setStyleSheet(
-        "QWidget#UserManagementPage { "
-        "  background-color: #06090e; "
-        "  color: #e2e8f0; "
-        "  font-family: 'Segoe UI', sans-serif; "
-        "}"
-    );
+    setStyleSheet("background-color: #06090e; color: #e2e8f0; font-family: 'Segoe UI', 'Roboto', sans-serif;");
 
     setupCustomUI();
 }
@@ -88,7 +82,7 @@ void UserManagementPage::setupCustomUI()
 
     topBar->addWidget(titleIcon);
     topBar->addWidget(titleLbl);
-    topBar->addSpacing(12);
+    topBar->addSpacing(8);
 
     auto makeFilterBtn = [&](const QString &label, const QString &mode) {
         auto *btn = new QPushButton(label);
@@ -153,14 +147,20 @@ void UserManagementPage::setupCustomUI()
     // ==========================================
     auto *scroll = new QScrollArea;
     scroll->setWidgetResizable(true);
-    scroll->setStyleSheet("background: transparent; border: none;");
+    scroll->setFrameShape(QFrame::NoFrame);
+    scroll->setStyleSheet("QScrollArea { background-color: #06090e; border: none; } "
+                          "QScrollBar:vertical { width: 6px; background: #0c1218; } "
+                          "QScrollBar::handle:vertical { background: #1e293b; border-radius: 3px; }");
 
     auto *container = new QWidget;
-    container->setStyleSheet("background: transparent;");
+    container->setStyleSheet("background-color: #06090e;");
     m_gridLayout = new QGridLayout(container);
-    m_gridLayout->setContentsMargins(2, 2, 2, 2);
-    m_gridLayout->setHorizontalSpacing(8);
-    m_gridLayout->setVerticalSpacing(8);
+    m_gridLayout->setContentsMargins(4, 4, 4, 4);
+    m_gridLayout->setHorizontalSpacing(10);
+    m_gridLayout->setVerticalSpacing(10);
+    m_gridLayout->setAlignment(Qt::AlignTop);
+    m_gridLayout->setColumnStretch(0, 1);
+    m_gridLayout->setColumnStretch(1, 1);
 
     m_emptyLabel = new QLabel(QStringLiteral("Đang đồng bộ cơ sở dữ liệu phân quyền..."));
     m_emptyLabel->setStyleSheet("color: #64748b; font-style: italic; font-size: 11px; padding: 30px;");

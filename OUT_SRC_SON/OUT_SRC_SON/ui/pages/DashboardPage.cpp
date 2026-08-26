@@ -12,6 +12,7 @@
 #include <QPainter>
 #include <QPushButton>
 #include <QScrollArea>
+#include <QSettings>
 #include <QStackedWidget>
 #include <QValueAxis>
 #include <QVBoxLayout>
@@ -109,6 +110,11 @@ DashboardPage::DashboardPage(QWidget *parent)
     ui->setupUi(this);
     setStyleSheet("background-color: #070d1e; color: #ecf2ff;");
 
+    QSettings settings(QStringLiteral("ICTU"), QStringLiteral("SonApp"));
+    m_autoPumpMode = settings.value(QStringLiteral("auto_pump_mode"), false).toBool();
+    m_distanceStartCm = settings.value(QStringLiteral("distance_start_cm"), 35.0).toDouble();
+    m_distanceStopCm = settings.value(QStringLiteral("distance_stop_cm"), 10.0).toDouble();
+
     setupDashboardLayout();
     updateDisplays();
 }
@@ -203,6 +209,9 @@ void DashboardPage::updateDeviceMetrics(const QJsonObject &metrics)
     if (metrics.contains(QStringLiteral("pump_on"))) {
         m_pumpOn = metrics.value(QStringLiteral("pump_on")).toBool();
         hasUpdate = true;
+    } else if (metrics.contains(QStringLiteral("relay"))) {
+        m_pumpOn = metrics.value(QStringLiteral("relay")).toBool();
+        hasUpdate = true;
     }
 
     if (metrics.contains(QStringLiteral("total_liters"))) {
@@ -229,14 +238,18 @@ void DashboardPage::appendPoint(QLineSeries *series, QValueAxis *axisX, QValueAx
     if (!series || !axisX || !axisY)
         return;
 
-    m_sampleIndex++;
-    series->append(m_sampleIndex, value);
+    const int count = series->count();
+    series->append(count, value);
 
-    if (series->count() > 40)
+    if (count > 30) {
         series->remove(0);
-
-    const qreal minX = qMax(0, m_sampleIndex - 30);
-    axisX->setRange(minX, minX + 30);
+        for (int i = 0; i < series->count(); ++i) {
+            series->replace(i, i, series->at(i).y());
+        }
+        axisX->setRange(0, 30);
+    } else {
+        axisX->setRange(0, qMax(10, count));
+    }
 
     qreal currentMin = minVal;
     qreal currentMax = maxVal;
@@ -250,7 +263,55 @@ void DashboardPage::appendPoint(QLineSeries *series, QValueAxis *axisX, QValueAx
 void DashboardPage::openSensorDetail(const QString &sensorName, const QString &unit,
                                      const QString &accentColor, const QVector<SensorDataPoint> &history)
 {
-    SensorDetailDialog dlg(sensorName, unit, accentColor, history, this);
+    double initialMin = 0.0;
+    double initialMax = 100.0;
+    if (sensorName.contains(QStringLiteral("Khoảng cách"), Qt::CaseInsensitive)) {
+        initialMin = m_distanceStopCm;
+        initialMax = m_distanceStartCm;
+    }
+
+    SensorDetailDialog dlg(sensorName, unit, accentColor, history, this, initialMin, initialMax);
+    connect(&dlg, &SensorDetailDialog::thresholdChanged, this, [this, sensorName](double minVal, double maxVal) {
+        if (!m_deviceId.isEmpty()) {
+            QJsonObject thresholds;
+            if (sensorName.contains(QStringLiteral("Khoảng cách"), Qt::CaseInsensitive)) {
+                m_distanceStopCm = minVal;
+                m_distanceStartCm = maxVal;
+                QJsonObject distObj;
+                distObj.insert(QStringLiteral("min"), minVal);
+                distObj.insert(QStringLiteral("max"), maxVal);
+                distObj.insert(QStringLiteral("warning_below"), minVal);
+                distObj.insert(QStringLiteral("warning_above"), maxVal);
+                thresholds.insert(QStringLiteral("distance_cm"), distObj);
+
+                QSettings settings(QStringLiteral("ICTU"), QStringLiteral("SonApp"));
+                settings.setValue(QStringLiteral("distance_start_cm"), m_distanceStartCm);
+                settings.setValue(QStringLiteral("distance_stop_cm"), m_distanceStopCm);
+
+                const QJsonObject config{
+                    {"auto_mode", m_autoPumpMode},
+                    {"distance_start_cm", maxVal},
+                    {"distance_stop_cm", minVal},
+                    {"sampling_interval_ms", 2000},
+                    {"thresholds", thresholds}
+                };
+                emit deviceConfigRequested(m_deviceId, config);
+            } else if (sensorName.contains(QStringLiteral("Lưu lượng"), Qt::CaseInsensitive)) {
+                QJsonObject flowObj;
+                flowObj.insert(QStringLiteral("min"), minVal);
+                flowObj.insert(QStringLiteral("max"), maxVal);
+                flowObj.insert(QStringLiteral("warning_below"), minVal);
+                flowObj.insert(QStringLiteral("warning_above"), maxVal);
+                thresholds.insert(QStringLiteral("flow_l_min"), flowObj);
+
+                const QJsonObject config{
+                    {"sampling_interval_ms", 2000},
+                    {"thresholds", thresholds}
+                };
+                emit deviceConfigRequested(m_deviceId, config);
+            }
+        }
+    });
     dlg.exec();
 }
 
@@ -261,6 +322,12 @@ void DashboardPage::openPumpAutoConfig()
         m_autoPumpMode = config.value(QStringLiteral("auto_mode")).toBool();
         m_distanceStartCm = config.value(QStringLiteral("distance_start_cm")).toDouble(35.0);
         m_distanceStopCm = config.value(QStringLiteral("distance_stop_cm")).toDouble(10.0);
+
+        QSettings settings(QStringLiteral("ICTU"), QStringLiteral("SonApp"));
+        settings.setValue(QStringLiteral("auto_pump_mode"), m_autoPumpMode);
+        settings.setValue(QStringLiteral("distance_start_cm"), m_distanceStartCm);
+        settings.setValue(QStringLiteral("distance_stop_cm"), m_distanceStopCm);
+
         emit deviceConfigRequested(devId, config);
     });
     dlg.exec();
@@ -464,7 +531,7 @@ void DashboardPage::setupDashboardLayout()
     m_pumpStatusBadge = new QLabel(QStringLiteral("ĐANG TẮT [OFF]"));
     m_pumpStatusBadge->setStyleSheet("color: #ef4444; font-size: 9px; font-weight: 900; background: rgba(239, 68, 68, 0.15); border-radius: 4px; padding: 2px 6px;");
 
-    auto *autoConfigBtn = new QPushButton(QStringLiteral("⚙ Tự Động"));
+    auto *autoConfigBtn = new QPushButton(QStringLiteral("⚙ Ngưỡng"));
     autoConfigBtn->setCursor(Qt::PointingHandCursor);
     autoConfigBtn->setStyleSheet("background: #1e3a8a; color: #38bdf8; border: 1px solid #2563eb; border-radius: 4px; font-size: 9px; font-weight: 800; padding: 2px 6px;");
     connect(autoConfigBtn, &QPushButton::clicked, this, &DashboardPage::openPumpAutoConfig);
@@ -492,20 +559,40 @@ void DashboardPage::setupDashboardLayout()
     statusRow->addWidget(unbindBtn);
     pumpLayout->addLayout(statusRow);
 
-    // Big Toggle Button
+    // Button Row: [Auto Toggle Switch] + [Manual Pump Toggle]
+    auto *pumpBtnsRow = new QHBoxLayout;
+    pumpBtnsRow->setSpacing(8);
+
+    m_autoToggleButton = new QPushButton;
+    m_autoToggleButton->setCursor(Qt::PointingHandCursor);
+    m_autoToggleButton->setMinimumHeight(34);
+    connect(m_autoToggleButton, &QPushButton::clicked, this, [this] {
+        m_autoPumpMode = !m_autoPumpMode;
+
+        QSettings settings(QStringLiteral("ICTU"), QStringLiteral("SonApp"));
+        settings.setValue(QStringLiteral("auto_pump_mode"), m_autoPumpMode);
+
+        const QJsonObject config{
+            {"auto_mode", m_autoPumpMode},
+            {"distance_start_cm", m_distanceStartCm},
+            {"distance_stop_cm", m_distanceStopCm},
+            {"sampling_interval_ms", 2000}
+        };
+        emit deviceConfigRequested(m_deviceId, config);
+        updateDisplays();
+    });
+
     m_pumpToggleButton = new QPushButton(QStringLiteral("BẬT MÁY BƠM"));
     m_pumpToggleButton->setCursor(Qt::PointingHandCursor);
     m_pumpToggleButton->setMinimumHeight(34);
-    m_pumpToggleButton->setStyleSheet(
-        "QPushButton { background-color: #10b981; color: #ffffff; border: none; border-radius: 17px; font-size: 12px; font-weight: 900; } "
-        "QPushButton:hover { background-color: #059669; } "
-        "QPushButton:pressed { background-color: #047857; }"
-    );
     connect(m_pumpToggleButton, &QPushButton::clicked, this, [this] {
         const bool nextState = !m_pumpOn;
         emit relayControlRequested(m_deviceId, nextState);
     });
-    pumpLayout->addWidget(m_pumpToggleButton);
+
+    pumpBtnsRow->addWidget(m_autoToggleButton, 1);
+    pumpBtnsRow->addWidget(m_pumpToggleButton, 1);
+    pumpLayout->addLayout(pumpBtnsRow);
 
     // Metrics summary inside pump card
     auto *metricsRow = new QHBoxLayout;
@@ -621,11 +708,18 @@ void DashboardPage::updateDisplays()
             : "color: #ef4444; font-size: 11px; font-weight: 900; background: rgba(239, 68, 68, 0.15); border-radius: 6px; padding: 2px 6px;");
     }
 
+    if (m_autoToggleButton) {
+        m_autoToggleButton->setText(m_autoPumpMode ? QStringLiteral("🤖 AUTO: BẬT") : QStringLiteral("🤖 AUTO: TẮT"));
+        m_autoToggleButton->setStyleSheet(m_autoPumpMode
+            ? "QPushButton { background-color: #0284c7; color: #ffffff; border: 1.5px solid #38bdf8; border-radius: 17px; font-size: 11px; font-weight: 900; } QPushButton:hover { background-color: #0369a1; }"
+            : "QPushButton { background-color: #1e293b; color: #94a3b8; border: 1px solid #334155; border-radius: 17px; font-size: 11px; font-weight: 900; } QPushButton:hover { background-color: #334155; color: #ffffff; }");
+    }
+
     if (m_pumpToggleButton) {
         m_pumpToggleButton->setText(m_pumpOn ? QStringLiteral("TẮT MÁY BƠM") : QStringLiteral("BẬT MÁY BƠM"));
         m_pumpToggleButton->setStyleSheet(m_pumpOn
-            ? "QPushButton { background-color: #ef4444; color: #ffffff; border: none; border-radius: 17px; font-size: 12px; font-weight: 900; } QPushButton:hover { background-color: #dc2626; }"
-            : "QPushButton { background-color: #10b981; color: #ffffff; border: none; border-radius: 17px; font-size: 12px; font-weight: 900; } QPushButton:hover { background-color: #059669; }");
+            ? "QPushButton { background-color: #ef4444; color: #ffffff; border: none; border-radius: 17px; font-size: 11px; font-weight: 900; } QPushButton:hover { background-color: #dc2626; }"
+            : "QPushButton { background-color: #10b981; color: #ffffff; border: none; border-radius: 17px; font-size: 11px; font-weight: 900; } QPushButton:hover { background-color: #059669; }");
     }
 
     if (m_pumpFlowValue)

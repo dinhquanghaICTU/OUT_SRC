@@ -929,6 +929,9 @@ void DeviceManagementPage::rebuildThresholdForm(const QJsonObject &device)
         input->setValue(value);
         input->setSuffix(suffix);
         input->setEnabled(isOwner);
+        if (auto *le = input->findChild<QLineEdit*>()) {
+            VirtualKeyboardDialog::attachToLineEdit(le, label);
+        }
         m_thresholdInputs.insert(key, input);
         m_thresholdForm->addRow(label, input);
     };
@@ -959,6 +962,9 @@ void DeviceManagementPage::rebuildThresholdForm(const QJsonObject &device)
     m_samplingInterval->setValue(saved.value(QStringLiteral("sampling_interval_ms"))
                                      .toInt(2000) / 1000);
     m_samplingInterval->setEnabled(isOwner);
+    if (auto *le = m_samplingInterval->findChild<QLineEdit*>()) {
+        VirtualKeyboardDialog::attachToLineEdit(le, tr("Chu kỳ gửi (giây)"));
+    }
     const bool hasThresholds = !m_thresholdInputs.isEmpty();
     m_thresholdForm->addRow(tr("Chu kỳ gửi"), m_samplingInterval);
     m_thresholdForm->setRowVisible(m_samplingInterval, hasThresholds);

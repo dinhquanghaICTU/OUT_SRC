@@ -18,36 +18,57 @@ static bool mqtt_connected = false;
 static uint32_t mqtt_boot_id = 0;
 static uint32_t telemetry_sequence = 0;
 
+static bool parse_json_double(const char *payload, const char *field, double *out)
+{
+    if (payload == NULL || field == NULL || out == NULL)
+        return false;
+
+    char key[64];
+    snprintf(key, sizeof(key), "\"%s\"", field);
+    const char *p = strstr(payload, key);
+    if (!p)
+        return false;
+    p = strchr(p + strlen(key), ':');
+    if (!p)
+        return false;
+    p++;
+    while (*p == ' ' || *p == '\t' || *p == '\r' || *p == '\n')
+        p++;
+    *out = atof(p);
+    return true;
+}
+
+static bool parse_json_bool(const char *payload, const char *field, bool *out)
+{
+    if (payload == NULL || field == NULL || out == NULL)
+        return false;
+
+    char key[64];
+    snprintf(key, sizeof(key), "\"%s\"", field);
+    const char *p = strstr(payload, key);
+    if (!p)
+        return false;
+    p = strchr(p + strlen(key), ':');
+    if (!p)
+        return false;
+    p++;
+    while (*p == ' ' || *p == '\t' || *p == '\r' || *p == '\n')
+        p++;
+
+    if (strncmp(p, "true", 4) == 0 || strncmp(p, "1", 1) == 0) {
+        *out = true;
+        return true;
+    }
+    if (strncmp(p, "false", 5) == 0 || strncmp(p, "0", 1) == 0) {
+        *out = false;
+        return true;
+    }
+    return false;
+}
+
 static bool parse_relay_state(const char *payload, bool *state)
 {
-    if (payload == NULL || state == NULL)
-        return false;
-
-    const char *key = strstr(payload, "\"state\"");
-    if (key == NULL)
-        return false;
-
-    const char *value = strchr(key, ':');
-    if (value == NULL)
-        return false;
-
-    ++value;
-    while (*value == ' ' || *value == '\t' || *value == '\r' || *value == '\n')
-        ++value;
-
-    if (strncmp(value, "true", 4) == 0)
-    {
-        *state = true;
-        return true;
-    }
-
-    if (strncmp(value, "false", 5) == 0)
-    {
-        *state = false;
-        return true;
-    }
-
-    return false;
+    return parse_json_bool(payload, "state", state);
 }
 
 static bool parse_json_string(const char *payload,
@@ -145,35 +166,38 @@ mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_t event_id, 
         if (event->topic_len == (int)strlen(MQTT_CONFIG_DESIRED_TOPIC) &&
             memcmp(event->topic, MQTT_CONFIG_DESIRED_TOPIC, event->topic_len) == 0)
         {
-            char payload[256];
-            int len = event->data_len < 255 ? event->data_len : 255;
+            char payload[512];
+            int len = event->data_len < 511 ? event->data_len : 511;
             memcpy(payload, event->data, len);
             payload[len] = '\0';
-            printf("[MQTT] Nhan cau hinh config/desired: %s\n", payload);
+            printf("[CONFIG] Nhan cau hinh tu server: %s\n", payload);
 
-            bool auto_mode = false;
-            if (strstr(payload, "\"auto_mode\":true") != NULL || strstr(payload, "\"auto_mode\": true") != NULL) {
-                auto_mode = true;
+            bool auto_mode = pump_peripheral_get_auto_mode();
+            parse_json_bool(payload, "auto_mode", &auto_mode);
+
+            double val = 0;
+            float start_cm = pump_peripheral_get_distance_start();
+            float stop_cm = pump_peripheral_get_distance_stop();
+
+            if (parse_json_double(payload, "distance_start_cm", &val) ||
+                parse_json_double(payload, "warning_above", &val) ||
+                parse_json_double(payload, "max", &val)) {
+                if (val > 0.0) start_cm = (float)val;
             }
 
-            float start_cm = 35.0f;
-            float stop_cm = 10.0f;
-
-            char *pStart = strstr(payload, "\"distance_start_cm\":");
-            if (!pStart) pStart = strstr(payload, "\"distance_start\":");
-            if (pStart) {
-                char *colon = strchr(pStart, ':');
-                if (colon) start_cm = (float)atof(colon + 1);
-            }
-
-            char *pStop = strstr(payload, "\"distance_stop_cm\":");
-            if (!pStop) pStop = strstr(payload, "\"distance_stop\":");
-            if (pStop) {
-                char *colon = strchr(pStop, ':');
-                if (colon) stop_cm = (float)atof(colon + 1);
+            if (parse_json_double(payload, "distance_stop_cm", &val) ||
+                parse_json_double(payload, "warning_below", &val) ||
+                parse_json_double(payload, "min", &val)) {
+                if (val > 0.0) stop_cm = (float)val;
             }
 
             pump_peripheral_set_auto_config(auto_mode, start_cm, stop_cm);
+            printf("[CONFIG] Cap nhat thanh cong: Auto=%s, Bat khi >= %.1f cm, Tat khi <= %.1f cm\n",
+                   auto_mode ? "ON" : "OFF", start_cm, stop_cm);
+
+            double ver = 1;
+            parse_json_double(payload, "config_version", &ver);
+            mqtt_manager_publish_config_reported((uint32_t)ver);
             break;
         }
 
@@ -354,4 +378,21 @@ bool mqtt_manager_publish_relay(bool state, const char *changed_by)
                                    length,
                                    1,
                                    1) >= 0;
+}
+
+bool mqtt_manager_publish_config_reported(uint32_t config_version)
+{
+    char topic[128];
+    snprintf(topic, sizeof(topic), "iot/v1/devices/%s/config/reported", PRODUCT_ID);
+    char payload[256];
+    int len = snprintf(payload, sizeof(payload),
+                       "{\"config_version\":%" PRIu32 ",\"status\":\"applied\","
+                       "\"auto_mode\":%s,"
+                       "\"distance_start_cm\":%.1f,\"distance_stop_cm\":%.1f}",
+                       config_version,
+                       pump_peripheral_get_auto_mode() ? "true" : "false",
+                       pump_peripheral_get_distance_start(),
+                       pump_peripheral_get_distance_stop());
+    if (!mqtt_connected || mqtt_client == NULL || len <= 0) return false;
+    return esp_mqtt_client_publish(mqtt_client, topic, payload, len, 1, 1) >= 0;
 }

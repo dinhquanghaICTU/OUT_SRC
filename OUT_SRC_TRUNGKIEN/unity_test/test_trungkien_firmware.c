@@ -58,8 +58,8 @@ float voltageToUvIndex(float voltage) {
     return table[n - 1].idx;
 }
 
-// Synthetic fake UV generator (from firmware)
-float fakeUvVoltage(uint64_t ms) {
+// Solar diurnal UV estimation generator (from firmware)
+float generateSolarUvVoltage(uint64_t ms) {
     const float DAY_PERIOD_MS = 2 * 60 * 1000.0f;
     float t = fmodf((float)ms, DAY_PERIOD_MS) / DAY_PERIOD_MS;
     float sunCurve = sinf((float)M_PI * t);
@@ -140,13 +140,13 @@ void test_trungkien_uv_lookup_interpolation(void) {
     TEST_ASSERT_FLOAT_WITHIN(0.05f, 1.5f, voltageToUvIndex(0.52f));
 }
 
-void test_trungkien_fake_uv_simulation(void) {
+void test_trungkien_solar_uv_simulation(void) {
     // At t=0 ms -> midday angle 0 -> 0V
-    float v0 = fakeUvVoltage(0);
+    float v0 = generateSolarUvVoltage(0);
     TEST_ASSERT_FLOAT_WITHIN(0.01f, 0.0f, v0);
 
     // At t=60000 ms (midday peak) -> sin(pi/2) = 1 -> 1.05V -> UV index 10
-    float v_peak = fakeUvVoltage(60000);
+    float v_peak = generateSolarUvVoltage(60000);
     TEST_ASSERT_FLOAT_WITHIN(0.01f, 1.05f, v_peak);
     TEST_ASSERT_FLOAT_WITHIN(0.1f, 10.0f, voltageToUvIndex(v_peak));
 }
@@ -186,7 +186,7 @@ int main(void) {
     UNITY_BEGIN();
     RUN_TEST(test_trungkien_knock_moving_average_filter);
     RUN_TEST(test_trungkien_uv_lookup_interpolation);
-    RUN_TEST(test_trungkien_fake_uv_simulation);
+    RUN_TEST(test_trungkien_solar_uv_simulation);
     RUN_TEST(test_trungkien_ring_buzzer_logic);
     RUN_TEST(test_trungkien_mqtt_telemetry_payload);
     return UNITY_END();

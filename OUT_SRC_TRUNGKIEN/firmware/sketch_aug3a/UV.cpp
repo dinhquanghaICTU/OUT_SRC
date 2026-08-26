@@ -72,9 +72,8 @@ float voltageToUvIndex(float voltage)
     return table[n - 1].idx;
 }
 
-// feck data
-
-float fakeUvVoltage()
+// Mo phong chu ky buc xa mat troi khi chua gan cam bien vat ly
+float generateSolarUvVoltage()
 {
     const float DAY_PERIOD_MS = 2 * 60 * 1000.0f;
 
@@ -90,8 +89,8 @@ float fakeUvVoltage()
     return voltage;
 }
 
-float fakeUvIndex()
+float generateSolarUvIndex()
 {
-    float v = fakeUvVoltage();
+    float v = generateSolarUvVoltage();
     return voltageToUvIndex(v);
 }

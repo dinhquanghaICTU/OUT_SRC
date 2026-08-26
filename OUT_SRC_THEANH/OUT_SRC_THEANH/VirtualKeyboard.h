@@ -49,6 +49,8 @@ private:
 
 class QDialog;
 class QLabel;
+class QDoubleSpinBox;
+class QSpinBox;
 
 class VirtualKeyboardDialog : public QDialog
 {
@@ -57,6 +59,8 @@ public:
     explicit VirtualKeyboardDialog(QLineEdit *target, QWidget *parent = nullptr, const QString &title = QString());
     static void openFor(QLineEdit *target, QWidget *parent = nullptr, const QString &title = QString());
     static void attachToLineEdit(QLineEdit *target, const QString &title = QString());
+    static void attachToDoubleSpinBox(QDoubleSpinBox *target, const QString &title = QString());
+    static void attachToSpinBox(QSpinBox *target, const QString &title = QString());
 
 protected:
     void showEvent(QShowEvent *event) override;

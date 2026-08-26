@@ -1,4 +1,5 @@
 #include "SensorDetailDialog.h"
+#include "VirtualKeyboard.h"
 
 #include <QChart>
 #include <QChartView>
@@ -9,6 +10,7 @@
 #include <QHBoxLayout>
 #include <QHeaderView>
 #include <QLabel>
+#include <QLineEdit>
 #include <QLineSeries>
 #include <QPainter>
 #include <QPushButton>
@@ -139,6 +141,9 @@ void SensorDetailDialog::setupUI(const QString &sensorName, const QString &unit,
     m_minThresholdSpin->setRange(0.0, 9999.0);
     m_minThresholdSpin->setValue(minThreshold);
     m_minThresholdSpin->setDecimals(1);
+    if (auto *le = m_minThresholdSpin->findChild<QLineEdit*>()) {
+        VirtualKeyboardDialog::attachToLineEdit(le, QStringLiteral("Nhập Ngưỡng Dưới (Min)"));
+    }
     formGrid->addWidget(m_minThresholdSpin, 0, 1);
 
     // Max Threshold
@@ -147,6 +152,9 @@ void SensorDetailDialog::setupUI(const QString &sensorName, const QString &unit,
     m_maxThresholdSpin->setRange(0.0, 9999.0);
     m_maxThresholdSpin->setValue(maxThreshold);
     m_maxThresholdSpin->setDecimals(1);
+    if (auto *le = m_maxThresholdSpin->findChild<QLineEdit*>()) {
+        VirtualKeyboardDialog::attachToLineEdit(le, QStringLiteral("Nhập Ngưỡng Trên (Max)"));
+    }
     formGrid->addWidget(m_maxThresholdSpin, 1, 1);
 
     // Sampling Interval
@@ -154,6 +162,9 @@ void SensorDetailDialog::setupUI(const QString &sensorName, const QString &unit,
     m_intervalSpin = new QSpinBox;
     m_intervalSpin->setRange(1, 60);
     m_intervalSpin->setValue(2);
+    if (auto *le = m_intervalSpin->findChild<QLineEdit*>()) {
+        VirtualKeyboardDialog::attachToLineEdit(le, QStringLiteral("Nhập Chu kỳ lấy mẫu (giây)"));
+    }
     formGrid->addWidget(m_intervalSpin, 2, 1);
 
     threshLayout->addLayout(formGrid);

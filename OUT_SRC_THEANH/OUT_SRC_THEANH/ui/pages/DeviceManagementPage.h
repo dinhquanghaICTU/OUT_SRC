@@ -79,7 +79,7 @@ private:
     QLabel *m_drawerId;
     QLabel *m_drawerMetrics;
     QLabel *m_thresholdTitle;
-    QFormLayout *m_thresholdForm;
+    QGridLayout *m_thresholdGrid;
     QSpinBox *m_samplingInterval;
     QPushButton *m_saveThresholds;
     QPushButton *m_releaseDevice;

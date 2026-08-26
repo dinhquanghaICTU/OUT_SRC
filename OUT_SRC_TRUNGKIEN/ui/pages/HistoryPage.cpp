@@ -49,6 +49,22 @@ HistoryPage::HistoryPage(QWidget *parent)
       m_summaryStatCard(nullptr)
 {
     ui->setupUi(this);
+    setStyleSheet(
+        "QWidget#HistoryPage { background-color: #070d1e; color: #ecf2ff; font-family: sans-serif; } "
+        "QLabel#historyRecordBadge { background: #0e1938; color: #38bdf8; border: 1px solid #1e293b; border-radius: 4px; padding: 2px 6px; font-size: 10px; font-weight: 700; } "
+        "QPushButton#deviceViewTabButton { background: #0e1938; color: #94a3b8; border: 1px solid #223565; border-radius: 6px; padding: 4px 10px; font-size: 11px; font-weight: 800; } "
+        "QPushButton#deviceViewTabButton:checked { background: #0284c7; color: #ffffff; border-color: #38bdf8; font-weight: 900; } "
+        "QPushButton#historySearchButton { background: #10b981; color: #ffffff; border: none; border-radius: 6px; font-size: 11px; font-weight: 900; padding: 4px 12px; } "
+        "QComboBox { background-color: #0f1c3f; color: #ffffff; border: 1px solid #233870; border-radius: 6px; padding: 3px 6px; font-size: 11px; } "
+        "QDateEdit { background-color: #0f1c3f; color: #ffffff; border: 1px solid #233870; border-radius: 6px; padding: 3px 6px; font-size: 11px; } "
+        "QFrame#historyChartCard { background-color: #0d1733; border: 1px solid #1c2b54; border-radius: 8px; } "
+        "QFrame#historyStatCard { background-color: #0e1938; border: 1px solid #223565; border-radius: 6px; } "
+        "QLabel#historyStatTitle { color: #94a3b8; font-size: 9px; font-weight: 700; } "
+        "QLabel#historyStatValue { color: #38bdf8; font-size: 12px; font-weight: 900; } "
+        "QTableWidget#historyTableSmart { background-color: #0c1630; color: #ffffff; gridline-color: #1c2b54; border: 1px solid #1c2b54; border-radius: 8px; font-size: 10px; } "
+        "QTableWidget#historyTableSmart QHeaderView::section { background-color: #111d3d; color: #94a3b8; font-weight: 800; font-size: 10px; padding: 4px; border: none; }"
+    );
+
     ui->recordCountLabel->setObjectName(QStringLiteral("historyRecordBadge"));
     ui->chartTabButton->setObjectName(QStringLiteral("deviceViewTabButton"));
     ui->tableTabButton->setObjectName(QStringLiteral("deviceViewTabButton"));
@@ -74,31 +90,23 @@ HistoryPage::HistoryPage(QWidget *parent)
     ui->historyTable->verticalHeader()->hide();
     ui->historyTable->setObjectName(QStringLiteral("historyTableSmart"));
 
-    auto makeStatCard = [this](const QString &title, QLabel *value, const QString &icon) {
+    auto makeStatCard = [this](const QString &title, QLabel *value) {
         auto *card = new QFrame(this);
         card->setObjectName(QStringLiteral("historyStatCard"));
         card->setCursor(Qt::PointingHandCursor);
-        card->setToolTip(tr("Bấm để xem phóng to biểu đồ chỉ số này"));
-        auto *layout = new QHBoxLayout(card);
-        layout->setContentsMargins(6, 2, 6, 2);
-        layout->setSpacing(4);
-        auto *iconLabel = new QLabel(icon, card);
-        iconLabel->setObjectName(QStringLiteral("historyStatIcon"));
-        iconLabel->setAlignment(Qt::AlignCenter);
+        card->setFixedHeight(38);
+        card->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+        auto *layout = new QVBoxLayout(card);
+        layout->setContentsMargins(8, 2, 8, 2);
+        layout->setSpacing(0);
 
-        auto *textLayout = new QVBoxLayout;
-        textLayout->setContentsMargins(0, 0, 0, 0);
-        textLayout->setSpacing(0);
         auto *titleLabel = new QLabel(title, card);
         titleLabel->setObjectName(QStringLiteral("historyStatTitle"));
         value->setObjectName(QStringLiteral("historyStatValue"));
         value->setText(QStringLiteral("--"));
         value->setWordWrap(false);
-        textLayout->addWidget(titleLabel);
-        textLayout->addWidget(value);
-
-        layout->addWidget(iconLabel, 0, Qt::AlignVCenter);
-        layout->addLayout(textLayout, 1);
+        layout->addWidget(titleLabel);
+        layout->addWidget(value);
         card->installEventFilter(this);
         return card;
     };
@@ -108,11 +116,17 @@ HistoryPage::HistoryPage(QWidget *parent)
     m_chartView->setRenderHint(QPainter::Antialiasing);
     m_chartView->setCursor(Qt::PointingHandCursor);
     m_chartView->setToolTip(tr("Chạm vào biểu đồ để phóng to"));
+    m_chartView->setStyleSheet(QStringLiteral("background: #070d1e; border: none;"));
     m_chartView->viewport()->installEventFilter(this);
+
+    m_chart->setBackgroundBrush(QBrush(QColor("#070d1e")));
+    m_chart->setPlotAreaBackgroundBrush(QBrush(QColor("#0c1630")));
+    m_chart->setPlotAreaBackgroundVisible(true);
     m_chart->setTitle(QString());
     m_chart->setAnimationOptions(QChart::SeriesAnimations);
     m_chart->legend()->setAlignment(Qt::AlignBottom);
-    m_chart->setMargins(QMargins(0, 0, 0, 0));
+    m_chart->legend()->setLabelColor(QColor("#ffffff"));
+    m_chart->setMargins(QMargins(2, 2, 2, 2));
     m_chart->setBackgroundRoundness(0);
 
     QFont legFont;
@@ -141,7 +155,7 @@ HistoryPage::HistoryPage(QWidget *parent)
     m_metricCombo->hide();
     m_chartHeaderLayout->addWidget(m_metricCombo, 0, Qt::AlignVCenter | Qt::AlignRight);
 
-    auto *zoomBtn = new QPushButton(tr("⛶ Phóng to"), m_chartCard);
+    auto *zoomBtn = new QPushButton(tr("Phóng to"), m_chartCard);
     zoomBtn->setObjectName(QStringLiteral("historyZoomButton"));
     zoomBtn->setCursor(Qt::PointingHandCursor);
     zoomBtn->setToolTip(tr("Phóng to biểu đồ"));
@@ -163,9 +177,9 @@ HistoryPage::HistoryPage(QWidget *parent)
     m_analyticsGrid->setContentsMargins(0, 0, 0, 0);
     m_analyticsGrid->setHorizontalSpacing(6);
     m_analyticsGrid->setVerticalSpacing(0);
-    m_primaryStatCard = makeStatCard(tr("Chỉ số chính"), m_primaryStat, QStringLiteral("↯"));
-    m_secondaryStatCard = makeStatCard(tr("Chỉ số phụ"), m_secondaryStat, QStringLiteral("◍"));
-    m_summaryStatCard = makeStatCard(tr("Tóm tắt"), m_thirdStat, QStringLiteral("▥"));
+    m_primaryStatCard = makeStatCard(tr("Chỉ số chính"), m_primaryStat);
+    m_secondaryStatCard = makeStatCard(tr("Chỉ số phụ"), m_secondaryStat);
+    m_summaryStatCard = makeStatCard(tr("Tóm tắt"), m_thirdStat);
     m_analyticsGrid->addWidget(m_primaryStatCard, 0, 0);
     m_analyticsGrid->addWidget(m_secondaryStatCard, 0, 1);
     m_analyticsGrid->addWidget(m_summaryStatCard, 0, 2);
@@ -366,6 +380,7 @@ void HistoryPage::setHistory(const QJsonObject &history)
     ui->historyTable->clear();
     ui->historyTable->setRowCount(rows.size());
     ui->historyTable->setColumnCount(keys.size() + 1);
+    ui->historyTable->setAlternatingRowColors(false);
     QStringList headers{tr("Thời gian")};
     for (const QJsonValue &key : keys)
         headers.append(metricTitle(key.toString()));
@@ -379,13 +394,22 @@ void HistoryPage::setHistory(const QJsonObject &history)
         if (!time.isValid())
             time = QDateTime::fromString(recordedAtStr, QStringLiteral("yyyy-MM-dd HH:mm:ss"));
         time = time.toLocalTime();
-        ui->historyTable->setItem(row, 0, new QTableWidgetItem(
-            time.isValid() ? time.toString(QStringLiteral("dd/MM/yyyy HH:mm:ss")) : recordedAtStr));
+
+        const QColor rowBg(row % 2 == 0 ? "#0c1630" : "#111d3d");
+        auto *timeItem = new QTableWidgetItem(
+            time.isValid() ? time.toString(QStringLiteral("dd/MM/yyyy HH:mm:ss")) : recordedAtStr);
+        timeItem->setForeground(QBrush(QColor("#ffffff")));
+        timeItem->setBackground(QBrush(rowBg));
+        ui->historyTable->setItem(row, 0, timeItem);
+
         const QJsonObject metrics = entry.value(QStringLiteral("metrics")).toObject();
         for (int column = 0; column < keys.size(); ++column) {
             const QJsonValue value = metrics.value(keys.at(column).toString());
-            ui->historyTable->setItem(row, column + 1, new QTableWidgetItem(
-                value.isDouble() ? QString::number(value.toDouble(), 'f', 2) : QStringLiteral("—")));
+            auto *valItem = new QTableWidgetItem(
+                value.isDouble() ? QString::number(value.toDouble(), 'f', 2) : QStringLiteral("—"));
+            valItem->setForeground(QBrush(QColor("#38bdf8")));
+            valItem->setBackground(QBrush(rowBg));
+            ui->historyTable->setItem(row, column + 1, valItem);
         }
     }
 
@@ -465,13 +489,15 @@ void HistoryPage::updateChart()
     QFont axisFont;
     axisFont.setPixelSize(9);
     axisX->setLabelsFont(axisFont);
+    axisX->setLabelsColor(QColor("#94a3b8"));
+    axisX->setGridLineColor(QColor("#1c2b54"));
     m_chart->addAxis(axisX, Qt::AlignBottom);
 
     qint64 minimumTime = std::numeric_limits<qint64>::max();
     qint64 maximumTime = std::numeric_limits<qint64>::min();
-    const QList<QColor> colors{QColor("#15945a"), QColor("#2d9cdb"),
-                               QColor("#e0a025"), QColor("#6750d8"),
-                               QColor("#d84d76"), QColor("#64748b")};
+    const QList<QColor> colors{QColor("#38bdf8"), QColor("#10b981"),
+                               QColor("#f59e0b"), QColor("#818cf8"),
+                               QColor("#f43f5e"), QColor("#64748b")};
 
     QStringList activeKeys;
     if (m_selectedMetricKey.isEmpty() || m_selectedMetricKey == QStringLiteral("all")) {
@@ -526,6 +552,7 @@ void HistoryPage::updateChart()
         axisY->setTitleText(compactMetricTitle(key));
         axisY->setLabelsColor(colors.at(metricIndex % colors.size()));
         axisY->setTitleBrush(colors.at(metricIndex % colors.size()));
+        axisY->setGridLineColor(QColor("#1c2b54"));
         axisY->setLabelsFont(axisFont);
         axisY->setTitleFont(axisFont);
         if (minimum > maximum) {

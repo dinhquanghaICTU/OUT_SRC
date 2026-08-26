@@ -107,6 +107,82 @@ bool isDeviceOnline(const QJsonObject &device)
     return last.secsTo(QDateTime::currentDateTimeUtc()) <= 35;
 }
 
+void showCustomMessageBox(QWidget *parent, QMessageBox::Icon icon, const QString &title, const QString &text)
+{
+    QMessageBox msgBox(icon, title, text, QMessageBox::Ok, parent);
+    msgBox.setStyleSheet(R"QSS(
+        QMessageBox {
+            background-color: #0c1230;
+            border: 2px solid #3c54a4;
+            border-radius: 12px;
+        }
+        QLabel {
+            color: #ffffff;
+            font-size: 13px;
+            font-weight: 700;
+            background: transparent;
+            min-height: 40px;
+            padding: 6px;
+        }
+        QPushButton {
+            background: #7c5cff;
+            color: #ffffff;
+            border: none;
+            border-radius: 8px;
+            padding: 6px 22px;
+            font-weight: 900;
+            font-size: 12px;
+            min-width: 80px;
+            min-height: 30px;
+        }
+        QPushButton:hover {
+            background: #6945f8;
+        }
+        QPushButton:pressed {
+            background: #5633e0;
+        }
+    )QSS");
+    msgBox.exec();
+}
+
+bool showCustomQuestionBox(QWidget *parent, const QString &title, const QString &text)
+{
+    QMessageBox msgBox(QMessageBox::Question, title, text, QMessageBox::Yes | QMessageBox::No, parent);
+    msgBox.setStyleSheet(R"QSS(
+        QMessageBox {
+            background-color: #0c1230;
+            border: 2px solid #3c54a4;
+            border-radius: 12px;
+        }
+        QLabel {
+            color: #ffffff;
+            font-size: 13px;
+            font-weight: 700;
+            background: transparent;
+            min-height: 40px;
+            padding: 6px;
+        }
+        QPushButton {
+            background: #7c5cff;
+            color: #ffffff;
+            border: none;
+            border-radius: 8px;
+            padding: 6px 22px;
+            font-weight: 900;
+            font-size: 12px;
+            min-width: 80px;
+            min-height: 30px;
+        }
+        QPushButton:hover {
+            background: #6945f8;
+        }
+        QPushButton:pressed {
+            background: #5633e0;
+        }
+    )QSS");
+    return (msgBox.exec() == QMessageBox::Yes);
+}
+
 }
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
@@ -118,10 +194,41 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     m_root = new QStackedWidget(this);
     setCentralWidget(m_root);
 
-    setStyleSheet(R"QSS(
+    const QString appStyle = R"QSS(
         QMainWindow, QWidget#shell { background-color: #070a1e; color: #ecf2ff; }
         QWidget { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif; }
         QLabel { color: #ecf2ff; background: transparent; }
+        
+        /* === DIALOGS & POPUPS === */
+        QDialog, QMessageBox {
+            background-color: #0c1230;
+            color: #ecf2ff;
+        }
+        QMessageBox {
+            background-color: #0c1230;
+            border: 2px solid #3c54a4;
+            border-radius: 12px;
+        }
+        QMessageBox QLabel {
+            color: #ffffff;
+            font-size: 13px;
+            font-weight: 700;
+            background: transparent;
+        }
+        QMessageBox QPushButton {
+            background: #7c5cff;
+            color: #ffffff;
+            border: none;
+            border-radius: 8px;
+            padding: 6px 22px;
+            font-weight: 900;
+            font-size: 12px;
+            min-width: 80px;
+            min-height: 30px;
+        }
+        QMessageBox QPushButton:hover {
+            background: #6945f8;
+        }
         
         /* === LOGIN PAGE === */
         QFrame#loginWrap { background: qradialgradient(cx:0.2, cy:0.2, radius:1.1, stop:0 #1a1b4b, stop:0.5 #0b112c, stop:1 #060919); }
@@ -221,7 +328,10 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
         QPushButton#toggleTab:checked { background: qlineargradient(x1:0, y1:0, x2:1, y2:0, stop:0 #ff8a3d, stop:1 #7c5cff); color: white; font-weight: 900; border: none; }
         QChartView { background: transparent; border: none; }
         QScrollArea { border: none; background: transparent; }
-    )QSS");
+    )QSS";
+
+    setStyleSheet(appStyle);
+    if (qApp) qApp->setStyleSheet(appStyle);
 
     buildLogin();
     buildShell();
@@ -258,7 +368,7 @@ void MainWindow::post(const QString &path, const QJsonObject &body, std::functio
     connect(reply, &QNetworkReply::finished, this, [this, reply, ok] {
         const auto body = reply->readAll();
         if (reply->error() == QNetworkReply::NoError) { if (ok) ok(QJsonDocument::fromJson(body).object()); }
-        else QMessageBox::warning(this, tr("Lỗi"), reply->errorString());
+        else showCustomMessageBox(this, QMessageBox::Warning, tr("Lỗi"), reply->errorString());
         reply->deleteLater();
     });
 }
@@ -269,7 +379,7 @@ void MainWindow::del(const QString &path, std::function<void(QJsonObject)> ok)
     connect(reply, &QNetworkReply::finished, this, [this, reply, ok] {
         const auto body = reply->readAll();
         if (reply->error() == QNetworkReply::NoError) { if (ok) ok(QJsonDocument::fromJson(body).object()); }
-        else QMessageBox::warning(this, tr("Lỗi"), reply->errorString());
+        else showCustomMessageBox(this, QMessageBox::Warning, tr("Lỗi"), reply->errorString());
         reply->deleteLater();
     });
 }
@@ -522,6 +632,9 @@ void MainWindow::buildHome()
     m_homeDeviceGrid = new QGridLayout(wrap);
     m_homeDeviceGrid->setSpacing(8);
     m_homeDeviceGrid->setContentsMargins(2, 2, 2, 2);
+    m_homeDeviceGrid->setColumnStretch(0, 1);
+    m_homeDeviceGrid->setColumnStretch(1, 1);
+    m_homeDeviceGrid->setAlignment(Qt::AlignTop);
     scroll->setWidget(wrap);
 
     hl->addWidget(scroll, 1);
@@ -552,11 +665,17 @@ void MainWindow::buildDevices()
     vl->addWidget(label("Danh sách thiết bị đã ghép nối", "pageTitle"));
     m_deviceGrid = new QGridLayout;
     m_deviceGrid->setSpacing(8);
+    m_deviceGrid->setColumnStretch(0, 1);
+    m_deviceGrid->setColumnStretch(1, 1);
+    m_deviceGrid->setAlignment(Qt::AlignTop);
     vl->addLayout(m_deviceGrid);
 
     vl->addWidget(label("Thiết bị mới phát hiện (chưa liên kết)", "pageTitle"));
     m_availableGrid = new QGridLayout;
     m_availableGrid->setSpacing(8);
+    m_availableGrid->setColumnStretch(0, 1);
+    m_availableGrid->setColumnStretch(1, 1);
+    m_availableGrid->setAlignment(Qt::AlignTop);
     vl->addLayout(m_availableGrid);
     vl->addStretch();
 
@@ -618,6 +737,8 @@ void MainWindow::buildHistory()
     m_historyCharts = new QGridLayout(chartsWrap);
     m_historyCharts->setSpacing(8);
     m_historyCharts->setContentsMargins(2, 2, 2, 2);
+    m_historyCharts->setColumnStretch(0, 1);
+    m_historyCharts->setColumnStretch(1, 1);
     chartsScroll->setWidget(chartsWrap);
     m_historyStack->addWidget(chartsScroll);
 
@@ -839,14 +960,6 @@ void MainWindow::renderDevices()
                     badgeLbl->style()->unpolish(badgeLbl);
                     badgeLbl->style()->polish(badgeLbl);
                 }
-
-                auto *relayBtn = card->findChild<QPushButton*>("relayBtn");
-                if (relayBtn) {
-                    const bool relayOn = d.value("state").toObject().value("relay").toBool(false);
-                    const bool isPump = (d.value("device_type").toString() == "water_flow_pump");
-                    relayBtn->setText(isPump ? (relayOn ? "Bơm: BẬT" : "Bơm: TẮT") : (relayOn ? "Relay: BẬT" : "Relay: TẮT"));
-                    relayBtn->setEnabled(onlineNow);
-                }
             }
         }
         return;
@@ -873,12 +986,15 @@ void MainWindow::renderDevices()
         card->setStyleSheet("QFrame#deviceCard { background-color: #0f1938; border: 1.5px solid #3c54a4; border-radius: 10px; } "
                             "QFrame#deviceCard:hover { border: 1.5px solid #7c5cff; background-color: #14224c; }");
         card->setProperty("deviceId", d.value("device_id").toString());
+        card->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
         auto *l = new QVBoxLayout(card);
         l->setContentsMargins(10, 8, 10, 8);
         l->setSpacing(6);
 
         auto *top = new QHBoxLayout;
-        top->addWidget(label(deviceIcon(d.value("device_type").toString()), "cardIcon"));
+        auto *iconLbl = label(deviceIcon(d.value("device_type").toString()), "cardIcon");
+        iconLbl->setFixedSize(28, 28);
+        top->addWidget(iconLbl);
         
         auto *titleBox = new QVBoxLayout;
         titleBox->setSpacing(1);
@@ -889,7 +1005,9 @@ void MainWindow::renderDevices()
         const bool onlineNow = isDeviceOnline(d);
         auto *statusBadge = label(onlineNow ? "ONLINE" : "OFFLINE", onlineNow ? "onlineBadge" : "offlineBadge");
         statusBadge->setObjectName("statusVal");
-        top->addWidget(statusBadge);
+        statusBadge->setFixedHeight(20);
+        statusBadge->setAlignment(Qt::AlignCenter);
+        top->addWidget(statusBadge, 0, Qt::AlignVCenter);
         l->addLayout(top);
 
         auto *metricLbl = label(metricText(d), "bigMetric");
@@ -903,27 +1021,12 @@ void MainWindow::renderDevices()
         rel->setFixedHeight(26);
         row->addWidget(cfg);
         row->addWidget(rel);
-
-        bool hasRelay = false;
-        for (const auto &cap : d.value("capabilities").toArray()) {
-            if (cap.toString() == "relay") hasRelay = true;
-        }
-        if (hasRelay) {
-            const bool relayOn = d.value("state").toObject().value("relay").toBool(false);
-            auto *r = button((d.value("device_type").toString() == "water_flow_pump") ? (relayOn ? "Bơm: BẬT" : "Bơm: TẮT") : (relayOn ? "Relay: BẬT" : "Relay: TẮT"));
-            r->setObjectName("relayBtn");
-            r->setFixedHeight(26);
-            r->setEnabled(onlineNow);
-            row->addWidget(r);
-            connect(r, &QPushButton::clicked, this, [=] {
-                if (onlineNow) toggleRelay(d.value("device_id").toString(), !relayOn);
-            });
-        }
         row->addStretch();
         l->addLayout(row);
 
-        connect(cfg, &QPushButton::clicked, this, [=] { openDeviceConfigDialog(d); });
-        connect(rel, &QPushButton::clicked, this, [=] { releaseDevice(d.value("device_id").toString()); });
+        const QString devId = d.value("device_id").toString();
+        connect(cfg, &QPushButton::clicked, this, [this, devId] { openDeviceConfigDialog(devId); });
+        connect(rel, &QPushButton::clicked, this, [this, devId] { releaseDevice(devId); });
         return card;
     };
 
@@ -974,7 +1077,7 @@ void MainWindow::renderAvailable()
         auto *card = panel("availableCard");
         card->setStyleSheet("QFrame#availableCard { background-color: #0c202d; border: 1.5px solid #20c96b; border-radius: 10px; }");
         card->setProperty("deviceId", d.value("device_id").toString());
-        card->setMinimumHeight(80);
+        card->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 
         auto *row = new QHBoxLayout(card);
         row->setContentsMargins(10, 8, 10, 8);
@@ -1035,15 +1138,15 @@ void MainWindow::refreshHistory()
 void MainWindow::renderHistory(const QJsonObject &h)
 {
     m_lastHistory = h;
-    while (auto *it = m_historyCharts->takeAt(0)) {
-        if (it->widget()) it->widget()->deleteLater();
-        delete it;
-    }
     const auto keys = h.value("metric_keys").toArray(), rows = h.value("data").toArray();
+
+    // 1. Update Table
     QStringList headers{"Thời gian"};
     for (auto k : keys) headers << friendlyMetricTitle(k.toString());
-    m_historyTable->setColumnCount(headers.size());
-    m_historyTable->setHorizontalHeaderLabels(headers);
+    if (m_historyTable->columnCount() != headers.size()) {
+        m_historyTable->setColumnCount(headers.size());
+        m_historyTable->setHorizontalHeaderLabels(headers);
+    }
     m_historyTable->setRowCount(rows.size());
 
     for (int r = 0; r < rows.size(); ++r) {
@@ -1056,33 +1159,95 @@ void MainWindow::renderHistory(const QJsonObject &h)
             m_historyTable->setItem(r, c + 1, new QTableWidgetItem(QString::number(m.value(keys[c].toString()).toDouble(), 'f', 2)));
     }
 
+    // 2. Check if chart cards need structural rebuild
+    QStringList validKeys;
     for (auto k : keys) {
-        QString key = k.toString();
-        if (key == "ir_detected") continue; // IR is boolean, no need for bar chart
+        QString keyStr = k.toString();
+        if (keyStr != "ir_detected") validKeys << keyStr;
+    }
 
-        QStringList cats;
+    QStringList existingKeys;
+    for (int i = 0; i < m_historyCharts->count(); ++i) {
+        auto *item = m_historyCharts->itemAt(i);
+        if (item && item->widget()) {
+            existingKeys << item->widget()->property("metricKey").toString();
+        }
+    }
+
+    if (existingKeys != validKeys) {
+        while (auto *it = m_historyCharts->takeAt(0)) {
+            if (it->widget()) it->widget()->deleteLater();
+            delete it;
+        }
+    }
+
+    // 3. Update or create each metric chart
+    for (const auto &key : validKeys) {
+        const int maxBars = 16;
+        const int totalPoints = rows.size();
+        const int startIdx = std::max(0, totalPoints - maxBars);
+
         double minValue = std::numeric_limits<double>::max();
         double maxValue = std::numeric_limits<double>::lowest();
         double latestValue = 0.0;
         bool hasLatest = false;
 
-        const int maxBars = 18;
-        const int totalPoints = rows.size();
-        const int startIdx = std::max(0, totalPoints - maxBars);
-
         QVector<double> values;
+        QStringList cats;
         for (int r = startIdx; r < totalPoints; ++r) {
             auto e = rows[r].toObject();
-            QString timeLabel = QDateTime::fromString(e.value("recorded_at").toString(), Qt::ISODateWithMs).toLocalTime().toString("HH:mm:ss");
-            if (timeLabel.isEmpty()) timeLabel = e.value("recorded_at").toString();
-            cats << timeLabel;
-
             const double value = e.value("metrics").toObject().value(key).toDouble();
             latestValue = value;
             hasLatest = true;
             values.append(value);
             minValue = std::min(minValue, value);
             maxValue = std::max(maxValue, value);
+            cats << QString::number(r - startIdx);
+        }
+
+        // Keep constant slot count so bar width and spacing are perfectly uniform
+        while (cats.size() < maxBars) {
+            cats << QString::number(cats.size());
+        }
+
+        // Calculate clean rounded Y-axis bounds & steps
+        double yMin = 0.0, yMax = 10.0;
+        int tickCount = 5;
+        QString labelFormat = "%.1f";
+
+        if (key == "pressure_hpa") {
+            yMin = std::floor(std::min(990.0, minValue - 2.0) / 10.0) * 10.0;
+            yMax = std::ceil(std::max(1030.0, maxValue + 2.0) / 10.0) * 10.0;
+            tickCount = 5;
+            labelFormat = "%.0f";
+        } else if (key.contains("temp")) {
+            yMin = std::floor(std::max(0.0, minValue - 3.0) / 5.0) * 5.0;
+            yMax = std::ceil((maxValue + 3.0) / 5.0) * 5.0;
+            if (yMax <= yMin) yMax = yMin + 10.0;
+            tickCount = 5;
+            labelFormat = "%.1f";
+        } else if (key.contains("sound")) {
+            yMin = 0.0;
+            yMax = std::max(3.0, std::ceil(maxValue + 0.5));
+            tickCount = 4;
+            labelFormat = "%.1f";
+        } else if (key.contains("uv")) {
+            yMin = 0.0;
+            yMax = std::max(10.0, std::ceil(maxValue + 1.0));
+            tickCount = 5;
+            labelFormat = "%.0f";
+        } else if (minValue != std::numeric_limits<double>::max() && maxValue > minValue) {
+            const double diff = maxValue - minValue;
+            yMin = std::max(0.0, std::floor((minValue - diff * 0.15)));
+            yMax = std::ceil((maxValue + diff * 0.15));
+            if (yMax <= yMin) yMax = yMin + 5.0;
+            tickCount = 5;
+            labelFormat = "%.1f";
+        } else {
+            yMin = 0.0;
+            yMax = std::max(10.0, std::ceil(latestValue + 2.0));
+            tickCount = 5;
+            labelFormat = "%.1f";
         }
 
         // Check if card for this metric key already exists (in-place update = ZERO flicker)
@@ -1107,6 +1272,7 @@ void MainWindow::renderHistory(const QJsonObject &h)
                 if (!chart->series().isEmpty()) {
                     auto *series = qobject_cast<QBarSeries*>(chart->series().first());
                     if (series && !series->barSets().isEmpty()) {
+                        series->setBarWidth(0.35);
                         auto *set = series->barSets().first();
                         set->remove(0, set->count());
                         for (double v : values) *set << v;
@@ -1116,15 +1282,11 @@ void MainWindow::renderHistory(const QJsonObject &h)
                 for (auto *axObj : axes) {
                     if (auto *ax = qobject_cast<QBarCategoryAxis*>(axObj)) {
                         ax->setCategories(cats);
+                        ax->setLabelsVisible(false);
                     } else if (auto *ay = qobject_cast<QValueAxis*>(axObj)) {
-                        if (key == "pressure_hpa") {
-                            ay->setRange(990.0, std::max(1025.0, maxValue + 2.0));
-                        } else if (key.contains("uv")) {
-                            ay->setRange(0.0, std::max(10.0, maxValue + 1.0));
-                        } else if (minValue != std::numeric_limits<double>::max() && maxValue > minValue) {
-                            const double pad = std::max(0.5, (maxValue - minValue) * 0.2);
-                            ay->setRange(std::max(0.0, minValue - pad), maxValue + pad);
-                        }
+                        ay->setRange(yMin, yMax);
+                        ay->setTickCount(tickCount);
+                        ay->setLabelFormat(labelFormat);
                     }
                 }
             }
@@ -1138,42 +1300,33 @@ void MainWindow::renderHistory(const QJsonObject &h)
         for (double v : values) *set << v;
 
         auto *series = new QBarSeries;
-        series->setBarWidth(0.55);
+        series->setBarWidth(0.35);
         series->append(set);
 
         auto *chart = new QChart;
         chart->legend()->hide();
         chart->addSeries(series);
         chart->setBackgroundVisible(false);
-        chart->setMargins(QMargins(2, 2, 2, 2));
+        chart->setAnimationOptions(QChart::NoAnimation);
+        chart->setMargins(QMargins(0, 2, 6, 2));
 
         auto *ax = new QBarCategoryAxis;
         ax->append(cats);
-        ax->setLabelsColor(QColor("#a6b8e8"));
-        ax->setLabelsAngle(-35);
-        QFont axisFont = ax->labelsFont();
-        axisFont.setPointSize(8);
-        axisFont.setBold(true);
-        ax->setLabelsFont(axisFont);
+        ax->setLabelsVisible(false);
+        ax->setGridLineVisible(false);
         ax->setLinePen(QPen(QColor("#2c3868"), 1));
-        ax->setGridLinePen(QPen(QColor("#18224c"), 1, Qt::DotLine));
 
         auto *ay = new QValueAxis;
         ay->setLabelsColor(QColor("#a6b8e8"));
+        QFont axisFont = ay->labelsFont();
+        axisFont.setPointSize(8);
+        axisFont.setBold(true);
         ay->setLabelsFont(axisFont);
         ay->setLinePen(QPen(QColor("#2c3868"), 1));
         ay->setGridLinePen(QPen(QColor("#18224c"), 1, Qt::DotLine));
-
-        if (key == "pressure_hpa") {
-            ay->setRange(990.0, std::max(1025.0, maxValue + 2.0));
-        } else if (key.contains("uv")) {
-            ay->setRange(0.0, std::max(10.0, maxValue + 1.0));
-        } else if (minValue != std::numeric_limits<double>::max() && maxValue > minValue) {
-            const double pad = std::max(0.5, (maxValue - minValue) * 0.2);
-            ay->setRange(std::max(0.0, minValue - pad), maxValue + pad);
-        } else {
-            ay->setRange(0.0, std::max(10.0, maxValue + 2.0));
-        }
+        ay->setRange(yMin, yMax);
+        ay->setTickCount(tickCount);
+        ay->setLabelFormat(labelFormat);
 
         chart->addAxis(ax, Qt::AlignBottom);
         chart->addAxis(ay, Qt::AlignLeft);
@@ -1182,7 +1335,8 @@ void MainWindow::renderHistory(const QJsonObject &h)
 
         auto *mini = panel("miniChartCard");
         mini->setProperty("metricKey", key);
-        mini->setMinimumHeight(175);
+        mini->setMinimumHeight(165);
+        mini->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
         mini->setCursor(Qt::PointingHandCursor);
         mini->setToolTip(tr("Bấm để phóng to biểu đồ này"));
         auto *miniLayout = new QVBoxLayout(mini);
@@ -1208,10 +1362,13 @@ void MainWindow::renderHistory(const QJsonObject &h)
 
         auto *view = new QChartView(chart);
         view->setRenderHint(QPainter::Antialiasing);
-        view->setFixedHeight(135);
+        view->setFixedHeight(125);
+        view->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
         view->setCursor(Qt::PointingHandCursor);
         miniLayout->addWidget(view);
 
+        m_historyCharts->setColumnStretch(0, 1);
+        m_historyCharts->setColumnStretch(1, 1);
         int count = m_historyCharts->count();
         m_historyCharts->addWidget(mini, count / 2, count % 2);
     }
@@ -1353,17 +1510,39 @@ void MainWindow::renderUsers()
 
 void MainWindow::updateDeviceConfig(const QString &deviceId, const QJsonObject &config)
 {
+    m_deviceConfigs[deviceId] = config;
+    for (int i = 0; i < m_devices.size(); ++i) {
+        auto obj = m_devices[i].toObject();
+        if (obj.value("device_id").toString() == deviceId) {
+            obj.insert("config", config);
+            m_devices[i] = obj;
+            break;
+        }
+    }
     post("/api/devices/config", {{"device_id", deviceId}, {"config", config}}, [this](QJsonObject) {
         refreshDevices();
-        QMessageBox::information(this, tr("Đã gửi"), tr("Đã gửi cấu hình xuống thiết bị thành công."));
+        showCustomMessageBox(this, QMessageBox::Information, tr("Đã gửi"), tr("Đã gửi cấu hình xuống thiết bị thành công."));
     });
 }
 
-void MainWindow::openDeviceConfigDialog(const QJsonObject &device)
+void MainWindow::openDeviceConfigDialog(const QString &deviceId)
 {
-    const QString deviceId = device.value("device_id").toString();
+    QJsonObject device;
+    for (const auto &v : m_devices) {
+        auto obj = v.toObject();
+        if (obj.value("device_id").toString() == deviceId) {
+            device = obj;
+            break;
+        }
+    }
     const QString type = device.value("device_type").toString();
-    const QJsonObject current = device.value("config").toObject();
+    QJsonObject current = device.value("config").toObject();
+    if (m_deviceConfigs.contains(deviceId)) {
+        const auto cached = m_deviceConfigs.value(deviceId);
+        for (auto it = cached.begin(); it != cached.end(); ++it) {
+            current.insert(it.key(), it.value());
+        }
+    }
 
     QDialog dialog(this);
     dialog.setObjectName("configDialog");
@@ -1387,10 +1566,30 @@ void MainWindow::openDeviceConfigDialog(const QJsonObject &device)
     form->setHorizontalSpacing(10);
     form->setVerticalSpacing(6);
     QVector<QPair<QString, QLineEdit*>> inputs;
+
+    auto getVal = [&](const QString &key, double fallback) -> double {
+        if (current.contains(key)) return current.value(key).toDouble(fallback);
+        const auto th = current.value("thresholds").toObject();
+        if (key == "temperature_warn_c" && th.contains("temperature_c")) {
+            return th.value("temperature_c").toObject().value("warning_above").toDouble(fallback);
+        }
+        if (key == "pressure_min_hpa" && th.contains("pressure_hpa")) {
+            return th.value("pressure_hpa").toObject().value("min").toDouble(fallback);
+        }
+        if (key == "pressure_max_hpa" && th.contains("pressure_hpa")) {
+            return th.value("pressure_hpa").toObject().value("max").toDouble(fallback);
+        }
+        if (key == "sampling_interval_seconds" && current.contains("sampling_interval_ms")) {
+            return current.value("sampling_interval_ms").toDouble(fallback * 1000.0) / 1000.0;
+        }
+        return fallback;
+    };
+
     auto addInput = [&](const QString &key, const QString &title, double fallback) {
-        auto *edit = new QLineEdit(QString::number(current.value(key).toDouble(fallback), 'f', 2), &dialog);
+        auto *edit = new QLineEdit(QString::number(getVal(key, fallback), 'f', 2), &dialog);
         form->addRow(title, edit);
         inputs.append({key, edit});
+        VirtualKeyboardDialog::attachToLineEdit(edit, title);
     };
 
     if (type == "temperature_sound") {
@@ -1403,7 +1602,7 @@ void MainWindow::openDeviceConfigDialog(const QJsonObject &device)
         addInput("pressure_min_hpa", tr("Áp suất min (hPa)"), 990);
         addInput("pressure_max_hpa", tr("Áp suất max (hPa)"), 1030);
         addInput("ir_alarm_seconds", tr("Báo động IR (giây)"), 1);
-        addInput("sampling_interval_seconds", tr("Chu kỳ gửi (giây)"), 3);
+        addInput("sampling_interval_seconds", tr("Chu kỳ gửi (giây)"), 2);
     } else if (type == "uv_pressure") {
         addInput("uv_warn_index", tr("UV cảnh báo"), 6);
         addInput("uv_danger_index", tr("UV nguy hiểm"), 8);
@@ -1430,6 +1629,27 @@ void MainWindow::openDeviceConfigDialog(const QJsonObject &device)
     QJsonObject config;
     for (const auto &item : inputs)
         config.insert(item.first, item.second->text().replace(',', '.').toDouble());
+
+    // Build structured thresholds
+    const int intervalMs = int(config.value("sampling_interval_seconds").toDouble(2.0) * 1000.0);
+    config.insert("sampling_interval_ms", intervalMs > 0 ? intervalMs : 2000);
+
+    QJsonObject thresholds;
+    if (type == "weather_pressure") {
+        thresholds.insert("temperature_c", QJsonObject{
+            {"min", 0.0},
+            {"max", 50.0},
+            {"warning_above", config.value("temperature_warn_c").toDouble(40.0)}
+        });
+        thresholds.insert("pressure_hpa", QJsonObject{
+            {"min", config.value("pressure_min_hpa").toDouble(990.0)},
+            {"max", config.value("pressure_max_hpa").toDouble(1030.0)}
+        });
+    }
+    if (!thresholds.isEmpty()) {
+        config.insert("thresholds", thresholds);
+    }
+
     updateDeviceConfig(deviceId, config);
 }
 
@@ -1599,7 +1819,7 @@ void MainWindow::editUserDialog(const QJsonObject &user)
     connect(cancel, &QPushButton::clicked, &d, &QDialog::reject);
     connect(save, &QPushButton::clicked, &d, &QDialog::accept);
     connect(remove, &QPushButton::clicked, &d, [&] {
-        if (QMessageBox::question(this, "Xác nhận", "Xóa người dùng " + oldUsername + "?") != QMessageBox::Yes)
+        if (!showCustomQuestionBox(this, "Xác nhận", "Xóa người dùng " + oldUsername + "?"))
             return;
         del("/api/admin/users/" + QString::fromUtf8(QUrl::toPercentEncoding(oldUsername)), [this](QJsonObject) { refreshUsers(); });
         d.reject();
@@ -1610,7 +1830,7 @@ void MainWindow::editUserDialog(const QJsonObject &user)
         auto *reply = m_net.put(request("/api/admin/users/" + QString::fromUtf8(QUrl::toPercentEncoding(oldUsername))), QJsonDocument(payload).toJson());
         connect(reply, &QNetworkReply::finished, this, [this, reply] {
             if (reply->error() != QNetworkReply::NoError)
-                QMessageBox::warning(this, "Lỗi", reply->errorString());
+                showCustomMessageBox(this, QMessageBox::Warning, "Lỗi", reply->errorString());
             reply->deleteLater();
             refreshUsers();
         });

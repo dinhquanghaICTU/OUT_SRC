@@ -83,6 +83,7 @@ private:
     QLabel *m_pumpFlowValue = nullptr;
     QLabel *m_pumpTotalValue = nullptr;
     QPushButton *m_pumpToggleButton = nullptr;
+    QPushButton *m_autoToggleButton = nullptr;
 
     // Realtime Charts & Axes (Khoảng cách & Lưu lượng)
     QLineSeries *m_distanceSeries = nullptr;

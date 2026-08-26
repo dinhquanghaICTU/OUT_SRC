@@ -1,4 +1,5 @@
 #include "PumpAutoConfigDialog.h"
+#include "VirtualKeyboard.h"
 
 #include <QCheckBox>
 #include <QDoubleSpinBox>
@@ -6,6 +7,7 @@
 #include <QGridLayout>
 #include <QHBoxLayout>
 #include <QLabel>
+#include <QLineEdit>
 #include <QPushButton>
 #include <QTimer>
 #include <QVBoxLayout>
@@ -73,6 +75,9 @@ PumpAutoConfigDialog::PumpAutoConfigDialog(const QString &deviceId,
     m_startDistanceSpin->setValue(startDistanceCm > 0 ? startDistanceCm : 35.0);
     m_startDistanceSpin->setSuffix(QStringLiteral(" cm (Nước cạn)"));
     m_startDistanceSpin->setDecimals(1);
+    if (auto *le = m_startDistanceSpin->findChild<QLineEdit*>()) {
+        VirtualKeyboardDialog::attachToLineEdit(le, QStringLiteral("Nhập khoảng cách Bật Bơm (cm)"));
+    }
     formGrid->addWidget(lblStart, 0, 0);
     formGrid->addWidget(m_startDistanceSpin, 0, 1);
 
@@ -83,6 +88,9 @@ PumpAutoConfigDialog::PumpAutoConfigDialog(const QString &deviceId,
     m_stopDistanceSpin->setValue(stopDistanceCm > 0 ? stopDistanceCm : 10.0);
     m_stopDistanceSpin->setSuffix(QStringLiteral(" cm (Nước đầy)"));
     m_stopDistanceSpin->setDecimals(1);
+    if (auto *le = m_stopDistanceSpin->findChild<QLineEdit*>()) {
+        VirtualKeyboardDialog::attachToLineEdit(le, QStringLiteral("Nhập khoảng cách Tắt Bơm (cm)"));
+    }
     formGrid->addWidget(lblStop, 1, 0);
     formGrid->addWidget(m_stopDistanceSpin, 1, 1);
 
@@ -112,10 +120,24 @@ PumpAutoConfigDialog::PumpAutoConfigDialog(const QString &deviceId,
     m_statusLabel->setStyleSheet("color: #10b981; font-weight: 800; font-size: 11px;");
 
     connect(saveBtn, &QPushButton::clicked, this, [this] {
+        const double startVal = m_startDistanceSpin->value();
+        const double stopVal = m_stopDistanceSpin->value();
+
+        QJsonObject thresholds;
+        QJsonObject distObj;
+        distObj.insert(QStringLiteral("min"), stopVal);
+        distObj.insert(QStringLiteral("max"), startVal);
+        distObj.insert(QStringLiteral("warning_below"), stopVal);
+        distObj.insert(QStringLiteral("warning_above"), startVal);
+        thresholds.insert(QStringLiteral("distance_cm"), distObj);
+
         QJsonObject config;
         config.insert(QStringLiteral("auto_mode"), m_autoModeCheck->isChecked());
-        config.insert(QStringLiteral("distance_start_cm"), m_startDistanceSpin->value());
-        config.insert(QStringLiteral("distance_stop_cm"), m_stopDistanceSpin->value());
+        config.insert(QStringLiteral("distance_start_cm"), startVal);
+        config.insert(QStringLiteral("distance_stop_cm"), stopVal);
+        config.insert(QStringLiteral("sampling_interval_ms"), 2000);
+        config.insert(QStringLiteral("thresholds"), thresholds);
+
         emit configSaved(m_deviceId, config);
 
         m_statusLabel->setText(QStringLiteral("✓ Đã gửi cấu hình xuống ESP32!"));

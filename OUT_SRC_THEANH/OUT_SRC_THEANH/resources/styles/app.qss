@@ -246,21 +246,21 @@ QWidget#devicePageContent {
 }
 
 QLabel#devicePageTitle {
-    color: #18262e;
-    font-size: 26px;
-    font-weight: 700;
+    color: #ffffff;
+    font-size: 13px;
+    font-weight: 800;
 }
 
 QLabel#devicePageSubtitle,
 QLabel#deviceSectionHint {
-    color: #77858d;
-    font-size: 12px;
+    color: #94a3b8;
+    font-size: 10px;
 }
 
 QLabel#deviceSectionTitle {
-    color: #24343d;
-    font-size: 17px;
-    font-weight: 700;
+    color: #38bdf8;
+    font-size: 11px;
+    font-weight: 800;
 }
 
 QLabel#liveBadge {
@@ -315,89 +315,138 @@ QWidget#deviceMainPanel {
 
 QFrame#deviceDrawer {
     background-color: #ffffff;
-    border-left: 1px solid #d8e3de;
+    border-left: 1px solid #e2e8f0;
 }
 
-QLabel#drawerTitle,
+QFrame#deviceDrawer QLabel {
+    color: #1e293b;
+}
+
+QLabel#drawerTitle {
+    color: #0f172a;
+    font-size: 13px;
+    font-weight: 800;
+}
+
 QLabel#drawerSectionTitle {
-    color: #1d3027;
-    font-size: 16px;
+    color: #0f172a;
+    font-size: 12px;
     font-weight: 700;
+    margin-top: 4px;
+    margin-bottom: 2px;
+}
+
+QLabel#thresholdFieldLabel {
+    color: #334155;
+    font-size: 11px;
+    font-weight: 700;
+    background: transparent;
 }
 
 QPushButton#closeDrawerButton {
-    background-color: #eef3f1;
+    background-color: #f1f5f9;
     border: none;
-    border-radius: 15px;
-    color: #586a62;
-    font-size: 20px;
-    min-width: 30px;
-    max-width: 30px;
-    min-height: 30px;
-    max-height: 30px;
+    border-radius: 12px;
+    color: #64748b;
+    font-size: 13px;
+    font-weight: 700;
+    min-width: 24px;
+    max-width: 24px;
+    min-height: 24px;
+    max-height: 24px;
+}
+
+QPushButton#closeDrawerButton:hover {
+    background-color: #fee2e2;
+    color: #ef4444;
 }
 
 QLabel#drawerDeviceIcon {
-    background-color: #e7f5ee;
-    border-radius: 14px;
-    color: #15945a;
-    font-size: 32px;
-    min-width: 58px;
-    max-width: 58px;
-    min-height: 58px;
-    max-height: 58px;
+    background-color: #ecfdf5;
+    border: 1px solid #a7f3d0;
+    border-radius: 16px;
+    color: #10b981;
+    font-size: 18px;
+    min-width: 32px;
+    max-width: 32px;
+    min-height: 32px;
+    max-height: 32px;
 }
 
 QLabel#drawerDeviceName {
-    color: #172b22;
-    font-size: 19px;
-    font-weight: 700;
+    color: #0f172a;
+    font-size: 13px;
+    font-weight: 800;
 }
 
 QLabel#drawerDeviceId {
-    color: #7b8983;
-    font-size: 11px;
+    color: #64748b;
+    font-size: 10px;
+    font-weight: 500;
 }
 
 QLabel#drawerMetrics {
-    background-color: #eff7f3;
-    border-radius: 9px;
-    color: #335e4a;
+    background-color: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    border-radius: 6px;
+    color: #15803d;
     font-size: 11px;
-    padding: 10px;
+    font-weight: 700;
+    padding: 4px 8px;
 }
 
 QFrame#deviceDrawer QDoubleSpinBox,
 QFrame#deviceDrawer QSpinBox {
-    background-color: #f8faf9;
-    border: 1px solid #cedbd5;
-    border-radius: 7px;
-    min-height: 32px;
-    padding: 0 8px;
+    background-color: #f8fafc;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    min-height: 28px;
+    max-height: 28px;
+    padding: 0 6px;
+    font-size: 11px;
+    font-weight: 700;
+    color: #0f172a;
+}
+
+QFrame#deviceDrawer QDoubleSpinBox:focus,
+QFrame#deviceDrawer QSpinBox:focus {
+    background-color: #ffffff;
+    border-color: #10b981;
 }
 
 QPushButton#saveDeviceConfigButton {
-    background-color: #15945a;
+    background-color: #10b981;
     border: none;
-    border-radius: 8px;
-    color: white;
-    font-size: 11px;
+    border-radius: 6px;
+    color: #ffffff;
+    font-size: 12px;
     font-weight: 700;
-    min-height: 38px;
+    min-height: 32px;
+    max-height: 32px;
+}
+
+QPushButton#saveDeviceConfigButton:hover {
+    background-color: #059669;
+}
+
+QPushButton#saveDeviceConfigButton:disabled {
+    background-color: #cbd5e1;
+    color: #64748b;
 }
 
 QPushButton#releaseDeviceButton {
-    background-color: #fff3f3;
-    border: 1px solid #efb8b8;
-    border-radius: 8px;
-    color: #bd3030;
+    background-color: transparent;
+    border: 1px solid #fecdd3;
+    border-radius: 6px;
+    color: #e11d48;
     font-size: 11px;
     font-weight: 700;
-    min-height: 38px;
+    min-height: 26px;
+    max-height: 26px;
 }
 
 QPushButton#releaseDeviceButton:hover {
-    background-color: #ffe5e5;
+    background-color: #fff1f2;
 }
 
 QFrame#ownedDeviceCard:hover,
@@ -1778,18 +1827,17 @@ QWidget#deviceMainPanel {
     background: #edf4f8;
 }
 QLabel#dashboardTitle,
-QLabel#devicePageTitle,
 QLabel#historyPageTitle,
 QLabel#usersPageTitle {
     color: #10172f;
-    font-size: 30px;
-    font-weight: 950;
+    font-size: 16px;
+    font-weight: 900;
 }
 QLabel#dashboardSubtitle,
-QLabel#devicePageSubtitle,
 QLabel#historyPageSubtitle {
     color: #5f7488;
     font-weight: 700;
+    font-size: 11px;
 }
 
 QFrame#smartHeroCard,
@@ -1890,19 +1938,6 @@ QLineEdit {
     padding: 0 12px;
     color: #142033;
     font-weight: 800;
-}
-QFrame#deviceDrawer {
-    background: #10172f;
-    border-left: 1px solid rgba(92,225,230,80);
-}
-QFrame#deviceDrawer QLabel {
-    color: #effbff;
-}
-QFrame#deviceDrawer QLabel#drawerMetrics {
-    background: rgba(255,255,255,18);
-    border-radius: 14px;
-    padding: 10px;
-    color: #b7ecf2;
 }
 
 
@@ -2179,373 +2214,251 @@ QTableWidget#lenamHistoryTable QHeaderView::section {
     font-weight: 800;
 }
 
-/* LeNam device list v2 - mobile home style */
+/* 7-inch Device Management styling */
 QWidget#DeviceManagementPage,
 QWidget#deviceMainPanel,
 QWidget#devicePageContent {
-    background: qlineargradient(x1:0,y1:0,x2:1,y2:1,
-                                stop:0 #8fc6e8, stop:.48 #d7d5c0, stop:1 #b37a31);
+    background: #0d0a26;
+    color: #ecf2ff;
 }
 QScrollArea { background: transparent; border: none; }
 QLabel#devicePageTitle {
-    color: white;
-    font-size: 58px;
-    font-weight: 950;
-    letter-spacing: -2px;
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.5px;
 }
-QLabel#devicePageSubtitle { color: rgba(255,255,255,180); }
+QLabel#devicePageSubtitle {
+    color: #94a3b8;
+    font-size: 9px;
+}
 QLabel#deviceSectionTitle {
-    color: white;
-    font-size: 36px;
-    font-weight: 900;
-    margin-top: 18px;
-    margin-bottom: 8px;
+    color: #38bdf8;
+    font-size: 11px;
+    font-weight: 800;
+    margin-top: 2px;
+    margin-bottom: 2px;
 }
 QLabel#deviceSectionHint {
-    color: rgba(255,255,255,180);
-    font-size: 13px;
+    color: #64748b;
+    font-size: 9px;
+    font-weight: 600;
+}
+QLabel#liveBadge {
+    background: rgba(16, 185, 129, 0.15);
+    color: #10b981;
+    border: 1px solid rgba(16, 185, 129, 0.3);
+    border-radius: 4px;
+    padding: 2px 6px;
+    font-size: 9px;
     font-weight: 700;
 }
-QLabel#liveBadge,
 QPushButton#refreshDevicesButton {
-    background: rgba(82,99,103,150);
-    color: white;
-    border: none;
-    border-radius: 28px;
-    padding: 10px 18px;
-    font-weight: 900;
-}
-QFrame#ownedDeviceCard,
-QFrame#availableDeviceCard {
-    background: rgba(255,255,255,238);
-    border: none;
-    border-radius: 26px;
-}
-QFrame#ownedDeviceCard[deviceType="temperature_sound"],
-QFrame#availableDeviceCard[deviceType="temperature_sound"] {
-    background: rgba(255,255,255,245);
-}
-QFrame#ownedDeviceCard[deviceType="environment"],
-QFrame#availableDeviceCard[deviceType="environment"] {
-    background: rgba(111,82,39,185);
-}
-QFrame#ownedDeviceCard[deviceType="uv_pressure"],
-QFrame#availableDeviceCard[deviceType="uv_pressure"] {
-    background: rgba(255,255,255,238);
-}
-QFrame#ownedDeviceCard:hover,
-QFrame#availableDeviceCard:hover {
-    background: rgba(255,255,255,255);
-}
-QLabel#deviceTypeIcon,
-QLabel#availableDeviceIcon {
-    min-width: 58px;
-    max-width: 58px;
-    min-height: 58px;
-    max-height: 58px;
-    border-radius: 29px;
-    background: #ffc800;
-    color: white;
-    font-size: 31px;
-    font-weight: 950;
-}
-QLabel#devicePrimaryMetric {
-    color: #111111;
-    font-size: 0px;
-    max-height: 0px;
-}
-QLabel#deviceSecondaryMetric {
-    color: #8c8c8c;
-    font-size: 20px;
+    background: #1e1b4b;
+    color: #38bdf8;
+    border: 1px solid #3730a3;
+    border-radius: 4px;
+    padding: 2px 8px;
+    font-size: 9px;
     font-weight: 700;
 }
-QLabel#deviceCardName,
-QLabel#availableDeviceId {
-    color: #111111;
-    font-size: 26px;
-    font-weight: 950;
-}
-QLabel#deviceCardId,
-QLabel#deviceCardType,
-QLabel#availableDeviceHint {
-    color: #8d8d8d;
-    font-size: 17px;
-    font-weight: 700;
-}
-QFrame#ownedDeviceCard[deviceType="environment"] QLabel#deviceCardName,
-QFrame#ownedDeviceCard[deviceType="environment"] QLabel#deviceSecondaryMetric,
-QFrame#ownedDeviceCard[deviceType="environment"] QLabel#deviceCardId,
-QFrame#availableDeviceCard[deviceType="environment"] QLabel {
-    color: white;
-}
-QLabel#onlinePill,
-QLabel#offlinePill {
-    background: rgba(0,0,0,75);
-    color: white;
-    border-radius: 15px;
-    padding: 5px 10px;
-    font-size: 11px;
-    font-weight: 900;
-}
-QPushButton#claimDeviceButton,
-QPushButton#relayToggle {
-    background: rgba(0,0,0,105);
-    color: white;
-    border-radius: 14px;
-    min-height: 26px;
-    font-weight: 900;
-}
-QLabel#irDetectedStatus,
-QLabel#irClearStatus {
-    background: rgba(0,0,0,88);
-    color: white;
-    border-radius: 14px;
-    padding: 5px;
-    font-weight: 900;
-}
-QLabel#deviceEmptyState {
-    background: rgba(255,255,255,155);
-    color: #4e5f63;
-    border: none;
-    border-radius: 22px;
-    padding: 20px;
-    font-weight: 800;
-}
-
-/* LeNam device card horizontal fix */
-QFrame#ownedDeviceCard {
-    min-width: 350px;
-    max-width: 350px;
-    min-height: 112px;
-    max-height: 112px;
-    border-radius: 24px;
-}
-QLabel#deviceCardName {
-    font-size: 22px;
-    font-weight: 950;
-    color: #111111;
-    max-height: 28px;
-}
-QLabel#deviceCardId {
-    font-size: 13px;
-    font-weight: 800;
-    color: #7f8790;
-    max-height: 18px;
-}
-QLabel#deviceSecondaryMetric {
-    font-size: 14px;
-    font-weight: 850;
-    color: #777777;
-    max-height: 20px;
-}
-QLabel#onlinePill,
-QLabel#offlinePill {
-    min-width: 92px;
-    max-width: 92px;
-    min-height: 28px;
-    max-height: 28px;
-    border-radius: 14px;
-    padding: 0;
-}
-QLabel#deviceTypeIcon {
-    min-width: 62px;
-    max-width: 62px;
-    min-height: 62px;
-    max-height: 62px;
-    border-radius: 31px;
-}
-QFrame#ownedDeviceCard[deviceType="environment"] QLabel#deviceCardName,
-QFrame#ownedDeviceCard[deviceType="environment"] QLabel#deviceSecondaryMetric,
-QFrame#ownedDeviceCard[deviceType="environment"] QLabel#deviceCardId {
+QPushButton#refreshDevicesButton:hover {
+    background: #312e81;
     color: #ffffff;
 }
-
-
-/* LeNam wider device cards */
-QFrame#ownedDeviceCard {
-    min-width: 410px;
-    max-width: 410px;
+QPushButton#deviceViewTabButton {
+    background: #1c1642;
+    color: #94a3b8;
+    border: 1px solid #2e2468;
+    border-radius: 5px;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 3px 8px;
+    min-height: 22px;
 }
-QLabel#deviceCardName {
-    font-size: 21px;
+QPushButton#deviceViewTabButton:hover {
+    background: #261e5a;
+    color: #ffffff;
 }
-QLabel#onlinePill,
-QLabel#offlinePill {
-    min-width: 96px;
-    max-width: 96px;
+QPushButton#deviceViewTabButton:checked {
+    background: #3b82f6;
+    color: #ffffff;
+    border-color: #60a5fa;
+    font-weight: 800;
 }
-
-
-/* LeNam device spacing/color fix */
-QFrame#ownedDeviceCard {
-    min-width: 450px;
-    max-width: 450px;
-    min-height: 122px;
-    max-height: 122px;
-}
-QLabel#deviceCardName {
-    font-size: 22px;
-    max-height: 30px;
-}
-QLabel#deviceCardId {
-    font-size: 13px;
-    max-height: 18px;
-}
-QLabel#deviceSecondaryMetric {
-    font-size: 14px;
-    max-height: 20px;
-}
-QLabel#onlinePill {
-    background: #27c46b;
-    color: white;
-    min-width: 102px;
-    max-width: 102px;
-}
-QLabel#offlinePill {
-    background: #9ca3af;
-    color: white;
-    min-width: 102px;
-    max-width: 102px;
-}
-QLabel#irDetectedStatus {
-    background: #ef4444;
-    color: white;
-    min-width: 150px;
-    max-width: 150px;
-}
-QLabel#irClearStatus {
-    background: #27c46b;
-    color: white;
-    min-width: 150px;
-    max-width: 150px;
-}
-
-
-/* LeNam device typography cleanup */
-QLabel#devicePageTitle {
-    font-size: 46px;
-    letter-spacing: -1px;
-}
-QLabel#deviceSectionTitle {
-    font-size: 30px;
-    margin-top: 14px;
-    margin-bottom: 6px;
-}
-QFrame#availableDeviceCard {
-    min-width: 450px;
-    max-width: 450px;
-    min-height: 122px;
-    max-height: 122px;
-    border-radius: 24px;
-}
-QLabel#availableDeviceId {
-    font-size: 22px;
-    font-weight: 950;
-    color: #111111;
-    max-height: 30px;
-}
-QLabel#deviceCardType {
-    font-size: 14px;
-    font-weight: 850;
-    color: #7f8790;
-    max-height: 20px;
-}
-QLabel#availableDeviceHint {
-    font-size: 14px;
-    font-weight: 850;
-    color: #7f8790;
-    max-height: 20px;
-}
-QLabel#availableDeviceIcon {
-    min-width: 62px;
-    max-width: 62px;
-    min-height: 62px;
-    max-height: 62px;
-    border-radius: 31px;
-}
-QPushButton#claimDeviceButton {
-    background: #27c46b;
-    color: white;
-    border-radius: 16px;
-    font-weight: 950;
-}
-
-/* LeNam smaller device card titles */
-QLabel#deviceCardName,
-QLabel#availableDeviceId {
-    font-size: 18px;
-    font-weight: 900;
-    max-height: 24px;
-}
-QLabel#deviceCardId,
-QLabel#deviceSecondaryMetric,
-QLabel#deviceCardType,
-QLabel#availableDeviceHint {
-    font-size: 12px;
-    max-height: 18px;
-}
+/* Modern Device Management Cards */
 QFrame#ownedDeviceCard,
 QFrame#availableDeviceCard {
-    min-height: 116px;
-    max-height: 116px;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
 }
 
+QFrame#ownedDeviceCard:hover,
+QFrame#availableDeviceCard:hover {
+    border: 1.5px solid #10b981;
+    background: #fafcfb;
+}
 
-/* LeNam device title space fix */
 QLabel#deviceTypeIcon,
 QLabel#availableDeviceIcon {
-    min-width: 54px;
-    max-width: 54px;
-    min-height: 54px;
-    max-height: 54px;
-    border-radius: 27px;
-}
-QLabel#onlinePill,
-QLabel#offlinePill {
-    min-width: 92px;
-    max-width: 92px;
-}
-QLabel#irDetectedStatus,
-QLabel#irClearStatus {
-    min-width: 132px;
-    max-width: 132px;
-}
-QLabel#deviceCardName,
-QLabel#availableDeviceId {
-    font-size: 17px;
+    min-width: 30px;
+    max-width: 30px;
+    min-height: 30px;
+    max-height: 30px;
+    border-radius: 15px;
+    background: #f1f5f9;
+    color: #0f172a;
+    font-size: 15px;
+    font-weight: 700;
+    border: 1px solid #e2e8f0;
 }
 
-
-/* LeNam final card width and relay visibility */
-QFrame#ownedDeviceCard,
-QFrame#availableDeviceCard {
-    min-width: 520px;
-    max-width: 520px;
+QFrame#ownedDeviceCard[deviceType="power_monitor"] QLabel#deviceTypeIcon,
+QFrame#ownedDeviceCard[deviceType="electric_power"] QLabel#deviceTypeIcon,
+QFrame#availableDeviceCard[deviceType="power_monitor"] QLabel#availableDeviceIcon,
+QFrame#availableDeviceCard[deviceType="electric_power"] QLabel#availableDeviceIcon {
+    background: #fef9c3;
+    border-color: #fde047;
+    color: #ca8a04;
 }
+
+QFrame#ownedDeviceCard[deviceType="pump_distance"] QLabel#deviceTypeIcon,
+QFrame#ownedDeviceCard[deviceType="water_flow_pump"] QLabel#deviceTypeIcon,
+QFrame#availableDeviceCard[deviceType="pump_distance"] QLabel#availableDeviceIcon,
+QFrame#availableDeviceCard[deviceType="water_flow_pump"] QLabel#availableDeviceIcon {
+    background: #e0f2fe;
+    border-color: #7dd3fc;
+    color: #0284c7;
+}
+
+QFrame#ownedDeviceCard[deviceType="temperature_sound"] QLabel#deviceTypeIcon,
+QFrame#availableDeviceCard[deviceType="temperature_sound"] QLabel#availableDeviceIcon {
+    background: #f3e8ff;
+    border-color: #d8b4fe;
+    color: #9333ea;
+}
+
+QFrame#ownedDeviceCard[deviceType="uv_pressure"] QLabel#deviceTypeIcon,
+QFrame#availableDeviceCard[deviceType="uv_pressure"] QLabel#availableDeviceIcon {
+    background: #ffedd5;
+    border-color: #fdba74;
+    color: #ea580c;
+}
+
 QLabel#deviceCardName,
 QLabel#availableDeviceId {
-    font-size: 17px;
-    font-weight: 950;
+    font-size: 12px;
+    font-weight: 800;
+    color: #0f172a;
+    background: transparent;
 }
-QLabel#onlinePill,
+
+QLabel#deviceCardId,
+QLabel#deviceCardType {
+    font-size: 10px;
+    font-weight: 500;
+    color: #64748b;
+    background: transparent;
+}
+
+QLabel#devicePrimaryMetric {
+    font-size: 10px;
+    font-weight: 700;
+    color: #0f766e;
+    background: #f0fdfa;
+    border: 1px solid #ccfbf1;
+    border-radius: 4px;
+    padding: 2px 6px;
+}
+
+QLabel#deviceSecondaryMetric,
+QLabel#availableDeviceHint {
+    font-size: 10px;
+    font-weight: 500;
+    color: #64748b;
+    background: transparent;
+}
+
+QLabel#onlinePill {
+    background: #dcfce7;
+    color: #15803d;
+    border: 1px solid #bbf7d0;
+    border-radius: 4px;
+    padding: 1px 5px;
+    font-size: 9px;
+    font-weight: 700;
+}
+
 QLabel#offlinePill {
-    min-width: 96px;
-    max-width: 96px;
+    background: #f1f5f9;
+    color: #64748b;
+    border: 1px solid #e2e8f0;
+    border-radius: 4px;
+    padding: 1px 5px;
+    font-size: 9px;
+    font-weight: 700;
 }
-QLabel#irDetectedStatus,
+
+QPushButton#claimDeviceButton {
+    background: #10b981;
+    color: #ffffff;
+    border: none;
+    border-radius: 5px;
+    font-size: 11px;
+    font-weight: 700;
+    min-height: 24px;
+    max-height: 24px;
+}
+
+QPushButton#claimDeviceButton:hover {
+    background: #059669;
+}
+
+QPushButton#claimDeviceButton:pressed {
+    background: #047857;
+}
+
+QLabel#irDetectedStatus {
+    background: #fee2e2;
+    color: #b91c1c;
+    border: 1px solid #fca5a5;
+    border-radius: 4px;
+    padding: 3px 6px;
+    font-size: 10px;
+    font-weight: 700;
+}
+
 QLabel#irClearStatus {
-    min-width: 150px;
-    max-width: 150px;
+    background: #dcfce7;
+    color: #15803d;
+    border: 1px solid #bbf7d0;
+    border-radius: 4px;
+    padding: 3px 6px;
+    font-size: 10px;
+    font-weight: 700;
 }
-QPushButton#relayToggle {
-    min-width: 150px;
-    max-width: 150px;
-    min-height: 32px;
-    max-height: 32px;
-    padding-left: 12px;
-    padding-right: 12px;
-    text-align: left;
+
+QLabel#deviceCardActionHint {
+    font-size: 10px;
+    font-weight: 700;
+    color: #2563eb;
+    background: #eff6ff;
+    border: 1px solid #bfdbfe;
+    border-radius: 4px;
+    padding: 2px 6px;
 }
+
+QLabel#deviceEmptyState {
+    background: rgba(255,255,255,180);
+    color: #475569;
+    border: 1px dashed #cbd5e1;
+    border-radius: 10px;
+    padding: 16px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
 
 /* LeNam header navigation */
 QWidget#sideBar {

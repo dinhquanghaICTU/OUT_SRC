@@ -8,6 +8,14 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTORCC ON)
 
+# Auto-detect local Qt6 installation paths
+if(EXISTS "/home/quanghaictu/Qt6Cross/qt6/host")
+    list(APPEND CMAKE_PREFIX_PATH "/home/quanghaictu/Qt6Cross/qt6/host")
+endif()
+if(EXISTS "/home/quanghaictu/Qt6Cross/qt6/pi")
+    list(APPEND CMAKE_PREFIX_PATH "/home/quanghaictu/Qt6Cross/qt6/pi")
+endif()
+
 find_package(Qt6 REQUIRED COMPONENTS Core Widgets Network Sql HttpServer Charts)
 
 qt_add_executable(OUT_SRC_HOANGANH

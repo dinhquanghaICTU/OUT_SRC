@@ -29,7 +29,7 @@ static unsigned long s_last_update_ms = 0;
 static float s_flow_l_min = 0.0F;
 static float s_total_liters = 0.0F;
 
-static bool s_auto_mode = false;
+static bool s_auto_mode = true;
 static float s_distance_start_cm = 35.0f; // Bật bơm khi >= 35cm (nước cạn)
 static float s_distance_stop_cm = 10.0f;  // Tắt bơm khi <= 10cm (nước đầy)
 

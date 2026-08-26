@@ -1,0 +1,59 @@
+# ============================================================================
+# C / C++ / Qt / CMake Build Directories and Generated Files
+# ============================================================================
+
+# Build directories
+build/
+build-*/
+build-*/**
+cmake-build-*/
+
+# CMake artifacts
+CMakeFiles/
+CMakeCache.txt
+CMakeCache.txt.prev
+cmake_install.cmake
+install_manifest.txt
+CTestTestfile.cmake
+qtcsettings.cmake
+CMakeConfigureLog.yaml
+TargetDirectories.txt
+
+# Qt Creator specific files & caches
+*.user
+*.user.*
+*.creator.user*
+*.autosave
+.qtc_clangd/
+.qt/
+*_autogen/
+
+# Intermediate & object files
+moc_*.cpp
+moc_*.cpp.d
+ui_*.h
+qrc_*.cpp
+*.moc
+*.qm
+*.o
+*.obj
+*.d
+*.a
+*.so
+*.so.*
+*.dylib
+*.dll
+*.exe
+*.out
+*.app
+run_test_bin
+
+# IDEs
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+*~
+*.swp

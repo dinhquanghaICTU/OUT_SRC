@@ -39,30 +39,28 @@ void loop()
     // relay_off();
     pump_peripheral_update();
 
-    if (millis() - lastSendMs >= SAMPLE_INTERVAL_MS)
+    static bool prevPumpState = false;
+    float distance_cm = hcsr04_read_distance_cm();
+    pump_peripheral_check_auto(distance_cm);
+
+    bool pumpOn = pump_get_relay_state();
+    bool pumpChanged = (pumpOn != prevPumpState);
+    prevPumpState = pumpOn;
+
+    if (pumpChanged && wifi_manager_is_connected() && mqtt_manager_is_connected())
+    {
+        mqtt_manager_publish_relay(pumpOn, "auto_distance");
+    }
+
+    if ((millis() - lastSendMs >= SAMPLE_INTERVAL_MS) || pumpChanged)
     {
         lastSendMs = millis();
 
         float flowLMin = pump_get_flow_l_min();
         float totalLiters = pump_get_total_liters();
-        bool pumpOn = pump_get_relay_state();
-        float distance_cm = hcsr04_read_distance_cm();
-        pump_peripheral_check_auto(distance_cm);
 
-        Serial.print("Luu luong nuoc: ");
-        Serial.print(flowLMin);
-        Serial.println(" L/min");
-
-        Serial.print("Tong nuoc: ");
-        Serial.print(totalLiters);
-        Serial.println(" L");
-
-        Serial.print("Trang thai bom: ");
-        Serial.println(pumpOn ? "ON" : "OFF");
-
-        Serial.print("Khoang cach: ");
-        Serial.print(distance_cm);
-        Serial.println(" cm");
+        Serial.printf("[SENSOR] Flow=%.2f L/min, Total=%.2f L, Pump=%d, Dist=%.1f cm, Auto=%d\r\n",
+                      flowLMin, totalLiters, pumpOn ? 1 : 0, distance_cm, pump_peripheral_get_auto_mode() ? 1 : 0);
 
         if (wifi_manager_get_state() == WIFI_MANAGER_CONNECTED && mqtt_manager_is_connected())
         {

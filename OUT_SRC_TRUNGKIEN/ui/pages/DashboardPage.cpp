@@ -130,6 +130,24 @@ DashboardPage::DashboardPage(QWidget *parent)
       m_distanceSeries(new QLineSeries(this))
 {
     ui->setupUi(this);
+    setStyleSheet(
+        "QWidget#DashboardPage { background-color: #070d1e; color: #ecf2ff; font-family: sans-serif; } "
+        "QLabel#dashboardTitle { color: #38bdf8; font-size: 15px; font-weight: 900; } "
+        "QLabel#dashboardSubtitle { color: #94a3b8; font-size: 10px; } "
+        "QLabel#dashboardUpdatedAt { color: #10b981; font-size: 9px; font-weight: 900; background: rgba(16, 185, 129, 0.15); border-radius: 4px; padding: 2px 6px; } "
+        "QPushButton#dashboardTab { background: #0e1938; color: #94a3b8; border: 1px solid #223565; border-radius: 6px; padding: 3px 8px; font-size: 10px; font-weight: 800; } "
+        "QPushButton#dashboardTabActive { background: #0284c7; color: #ffffff; border: 1px solid #38bdf8; border-radius: 6px; padding: 3px 8px; font-size: 10px; font-weight: 900; } "
+        "QFrame#dashboardWeatherCard { background-color: #0d1733; border: 1px solid #1c2b54; border-radius: 8px; } "
+        "QFrame#dashboardSceneCard { background-color: #0d1733; border: 1px solid #1c2b54; border-radius: 8px; } "
+        "QFrame#dashboardMediaCard { background-color: #0d1733; border: 1px solid #1c2b54; border-radius: 8px; } "
+        "QFrame#dashboardCameraCard { background-color: #0d1733; border: 1px solid #1c2b54; border-radius: 8px; } "
+        "QFrame#dashboardMetricPill { background-color: #0e1938; border: 1px solid #223565; border-radius: 6px; } "
+        "QLabel#dashboardClock { color: #ffffff; font-size: 20px; font-weight: 900; font-family: monospace; } "
+        "QLabel#dashboardDate { color: #94a3b8; font-size: 10px; font-weight: 700; } "
+        "QLabel#dashboardWeatherChip { background: #0e1938; color: #38bdf8; border: 1px solid #223565; border-radius: 6px; font-size: 10px; font-weight: 800; } "
+        "QLabel#dashboardMetricSmallValue { color: #ffffff; font-size: 14px; font-weight: 900; } "
+        "QLabel#dashboardMetricSmallUnit { color: #94a3b8; font-size: 9px; font-weight: 700; }"
+    );
 
     auto *header = new QHBoxLayout;
     header->setContentsMargins(0, 0, 0, 0);

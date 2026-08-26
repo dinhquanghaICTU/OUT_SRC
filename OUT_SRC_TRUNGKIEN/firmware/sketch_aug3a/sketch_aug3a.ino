@@ -1,4 +1,3 @@
-
 // #include <hardware.h>
 // #include "BMP180.h"
 // #include <Wire.h>
@@ -18,9 +17,9 @@ float uvVoltage = 0.0;
 float uvIndex = 0.0;
 float pressureHpa = HX710B_CAL_OFFSET;
 
-
 float voltageUV = 0.0;
 float voltageUV_toindex = 0.0;
+static bool s_is_alert = false;
 
 void setup()
 {
@@ -28,10 +27,8 @@ void setup()
     delay(1000);
 
     init_ring();
-    delay(100);
-    // turn_on_ring();
-    // delay(100);
-    // turn_off_ring();
+    turn_off_ring();
+    delay(50);
 
     init_led();
     init_button();
@@ -47,16 +44,13 @@ void setup()
         Serial.println("save product id false\r\n");
     }
 
-    // Wire.begin(BMP180_SDA_PIN, BMP180_SCL_PIN);
-    // pinMode(CAM_BIEN_HONG_NGOAI, INPUT);
-
     wifi_manager_begin();
 }
 
 void loop()
 {
-
-    if (millis() - lastSendMs >= SAMPLE_INTERVAL_MS)
+    uint32_t currentSampleInterval = mqtt_manager_get_sampling_interval_ms();
+    if (millis() - lastSendMs >= currentSampleInterval)
     {
         lastSendMs = millis();
         uvVoltage = readUvVoltage();
@@ -77,33 +71,61 @@ void loop()
             Serial.println("[HX710B] Timeout doc cam bien - giu gia tri truoc.");
         }
 
-        /*
-        
-            float voltageUV = 0.0;
-            float voltageUV_toindex = 0.0;
-        
-        */
-        if((uvVoltage == 0) && (uvIndex == 0)){
-            voltageUV = fakeUvVoltage();
-            voltageUV_toindex = fakeUvIndex();
+        float effectiveUvVoltage = uvVoltage;
+        float effectiveUvIndex = uvIndex;
+
+        if ((uvVoltage == 0) && (uvIndex == 0))
+        {
+            voltageUV = generateSolarUvVoltage();
+            voltageUV_toindex = generateSolarUvIndex();
+            effectiveUvVoltage = voltageUV;
+            effectiveUvIndex = voltageUV_toindex;
             Serial.printf("[UV]  voltage=%.3fV -> UV Index=%.2f\n", voltageUV, voltageUV_toindex);
-            if (wifi_manager_get_state() == WIFI_MANAGER_CONNECTED && mqtt_manager_is_connected())
-            {
-                mqtt_manager_publish_sensor(voltageUV, voltageUV_toindex, pressureHpa);
-            }
-        }else{
-            Serial.printf("[UV]  voltage=%.3fV -> UV Index=%.2f\n", uvVoltage, uvIndex);
-
-            if (wifi_manager_get_state() == WIFI_MANAGER_CONNECTED && mqtt_manager_is_connected())
-            {
-                mqtt_manager_publish_sensor(uvVoltage, uvIndex, pressureHpa);
-            }
-
         }
-        
+        else
+        {
+            Serial.printf("[UV]  voltage=%.3fV -> UV Index=%.2f\n", uvVoltage, uvIndex);
+        }
+
+        if (wifi_manager_get_state() == WIFI_MANAGER_CONNECTED && mqtt_manager_is_connected())
+        {
+            mqtt_manager_publish_sensor(effectiveUvVoltage, effectiveUvIndex, pressureHpa);
+        }
+
+        // --- Kiem tra nguong canh bao tu MQTT Config ---
+        float uvWarn = mqtt_manager_get_uv_warning();
+        float uvCrit = mqtt_manager_get_uv_critical();
+        float pMin = mqtt_manager_get_pressure_min();
+        float pMax = mqtt_manager_get_pressure_max();
+
+        s_is_alert = false;
+        if (millis() > 3000)
+        {
+            if (effectiveUvIndex >= uvWarn || effectiveUvIndex >= uvCrit)
+            {
+                s_is_alert = true;
+                Serial.printf("[ALERT] UV vuot nguong: %.2f (Warn=%.2f, Crit=%.2f)\n", effectiveUvIndex, uvWarn, uvCrit);
+            }
+            if (pressureHpa < pMin || pressureHpa > pMax)
+            {
+                s_is_alert = true;
+                Serial.printf("[ALERT] Ap suat vuot nguong: %.2f (Min=%.2f, Max=%.2f)\n", pressureHpa, pMin, pMax);
+            }
+        }
+
+        if (s_is_alert)
+        {
+            turn_on_ring(); // Coi keu canh bao
+            turn_on_led();  // Den sang dung yen (khong can nhap nhay)
+        }
+        else
+        {
+            turn_off_ring(); // Binh thuong tat coi
+        }
     }
 
-    if(button_is_pressed()){
+    if (button_is_pressed())
+    {
         turn_on_ring();
         delay(100);
         turn_off_ring();
@@ -111,7 +133,6 @@ void loop()
 
     if (button_was_held(BUTTON_CONFIG_HOLD_MS))
     {
-
         Serial.printf("[BUTTON] GPIO%d=%d pressed=%d\n",
                       BUTTON_PIN,
                       gpio_get_level((gpio_num_t)BUTTON_PIN),
@@ -128,41 +149,34 @@ void loop()
     else
         mqtt_manager_stop();
 
-    switch (wifi_manager_get_state())
+    if (s_is_alert)
     {
-    case WIFI_MANAGER_AP_CONFIG:
-        led_set_mode(LED_MODE_BLINK_FAST);
-        break;
-
-    case WIFI_MANAGER_CONNECTING:
-        led_set_mode(LED_MODE_BLINK_SLOW);
-        break;
-
-    case WIFI_MANAGER_CONNECTED:
-        // led_set_mode(mqtt_manager_is_connected()? LED_MODE_ON);
-        if (mqtt_manager_is_connected())
+        // Khi vuot nguong: Den sang dung yen (khong can nhap nhay)
+        turn_on_led();
+    }
+    else
+    {
+        switch (wifi_manager_get_state())
         {
-            // led_set_mode(LED_MODE_ON);
-            // Serial.println("check/r/n");
-            // for (int i; i <= 10; i++)
-            // {
-            //     delay(1000);
-            //     test_mqtt();
-            // }
-        }
-        else
-        {
+        case WIFI_MANAGER_AP_CONFIG:
+            led_set_mode(LED_MODE_BLINK_FAST);
+            break;
+
+        case WIFI_MANAGER_CONNECTING:
+            led_set_mode(LED_MODE_BLINK_SLOW);
+            break;
+
+        case WIFI_MANAGER_CONNECTED:
             led_set_mode(LED_MODE_ON);
-        }
-        break;
+            break;
 
-    default:
-        led_set_mode(LED_MODE_OFF);
-        break;
+        default:
+            led_set_mode(LED_MODE_OFF);
+            break;
+        }
+
+        led_update();
     }
 
-    led_update();
     delay(5);
 }
-
-// E (30210) mqtt_client: Client was not initialized

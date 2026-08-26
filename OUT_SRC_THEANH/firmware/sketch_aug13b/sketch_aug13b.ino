@@ -4,7 +4,6 @@
 #include "led.h"
 #include "mqtt_manager.h"
 #include "product_ID.h"
-#include "relay.h"
 #include "wifiAP.h"
 #include <driver/gpio.h>
 
@@ -14,10 +13,10 @@ void setup() {
   Serial.begin(115200);
   delay(1000);
 
-  init_relay();
   acs712_init();
   zmpt101b_init();
   init_led();
+  mqtt_manager_init();
 
   if (save_product_id()) {
     Serial.println("save product id done\r\n");
@@ -29,7 +28,8 @@ void setup() {
 }
 
 void loop() {
-  if (millis() - lastSendMs >= SAMPLE_INTERVAL_MS) {
+  const uint32_t interval = mqtt_manager_get_sample_interval();
+  if (millis() - lastSendMs >= interval) {
     lastSendMs = millis();
 
     acs712_update();
@@ -37,8 +37,17 @@ void loop() {
 
     float currentA = acs712_get_current_a();
     float voltageV = zmpt101b_get_voltage_v();
+    float powerW = voltageV * currentA;
 
-    Serial.printf("[SENSOR] Voltage: %.2f V | Current: %.3f A\r\n", voltageV, currentA);
+    alert_status_t alert = mqtt_manager_check_thresholds(currentA, voltageV, powerW);
+
+    if (alert.is_alert) {
+      Serial.printf("[WARNING] %s | Voltage: %.2f V | Current: %.3f A | Power: %.2f W\r\n",
+                    alert.alert_msg, voltageV, currentA, powerW);
+    } else {
+      Serial.printf("[SENSOR] Voltage: %.2f V | Current: %.3f A | Power: %.2f W\r\n",
+                    voltageV, currentA, powerW);
+    }
 
     if (wifi_manager_get_state() == WIFI_MANAGER_CONNECTED &&
         mqtt_manager_is_connected()) {
@@ -53,6 +62,11 @@ void loop() {
   else
     mqtt_manager_stop();
 
+  float currentA = acs712_get_current_a();
+  float voltageV = zmpt101b_get_voltage_v();
+  float powerW = voltageV * currentA;
+  alert_status_t alert = mqtt_manager_check_thresholds(currentA, voltageV, powerW);
+
   switch (wifi_manager_get_state()) {
   case WIFI_MANAGER_AP_CONFIG:
     led_set_mode(LED_MODE_BLINK_FAST);
@@ -63,7 +77,9 @@ void loop() {
     break;
 
   case WIFI_MANAGER_CONNECTED:
-    if (mqtt_manager_is_connected()) {
+    if (alert.is_alert) {
+      led_set_mode(LED_MODE_BLINK_FAST); // Warning blink when threshold exceeded
+    } else if (mqtt_manager_is_connected()) {
       led_set_mode(LED_MODE_ON);
     } else {
       led_set_mode(LED_MODE_BLINK_SLOW);

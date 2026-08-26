@@ -1,14 +1,18 @@
 #include "VirtualKeyboard.h"
 
 #include <QDialog>
+#include <QDoubleSpinBox>
 #include <QEvent>
 #include <QGridLayout>
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QLineEdit>
+#include <QMouseEvent>
 #include <QPointer>
 #include <QPushButton>
 #include <QSizePolicy>
+#include <QSpinBox>
+#include <QTimer>
 #include <QVBoxLayout>
 
 VirtualKeyboard::VirtualKeyboard(QWidget *parent) : QWidget(parent)
@@ -233,7 +237,20 @@ VirtualKeyboardDialog::VirtualKeyboardDialog(QLineEdit *target, QWidget *parent,
     m_previewEdit = new QLineEdit(this);
     m_previewEdit->setObjectName(QStringLiteral("kbDialogInput"));
     if (m_target) {
-        m_previewEdit->setText(m_target->text());
+        QString initialText = m_target->text();
+        QObject *p = m_target->parent();
+        while (p) {
+            if (auto *doubleSpin = qobject_cast<QDoubleSpinBox *>(p)) {
+                initialText = QString::number(doubleSpin->value(), 'f', doubleSpin->decimals());
+                break;
+            }
+            if (auto *intSpin = qobject_cast<QSpinBox *>(p)) {
+                initialText = QString::number(intSpin->value());
+                break;
+            }
+            p = p->parent();
+        }
+        m_previewEdit->setText(initialText);
         m_previewEdit->setEchoMode(m_target->echoMode());
         m_previewEdit->setPlaceholderText(m_target->placeholderText());
     }
@@ -256,33 +273,41 @@ VirtualKeyboardDialog::VirtualKeyboardDialog(QLineEdit *target, QWidget *parent,
     m_keyboard->attachTo(m_previewEdit);
     root->addWidget(m_keyboard, 1);
 
-    connect(doneBtn, &QPushButton::clicked, this, [this] {
+    auto applyText = [this] {
         if (m_target) {
-            m_target->setText(m_previewEdit->text());
+            const QString text = m_previewEdit->text().trimmed();
+            m_target->setText(text);
+
+            QObject *p = m_target->parent();
+            while (p) {
+                if (auto *doubleSpin = qobject_cast<QDoubleSpinBox *>(p)) {
+                    bool ok = false;
+                    double v = text.toDouble(&ok);
+                    if (ok) {
+                        doubleSpin->setValue(v);
+                    }
+                    break;
+                }
+                if (auto *intSpin = qobject_cast<QSpinBox *>(p)) {
+                    bool ok = false;
+                    int v = text.toInt(&ok);
+                    if (ok) {
+                        intSpin->setValue(v);
+                    }
+                    break;
+                }
+                p = p->parent();
+            }
             emit m_target->editingFinished();
+            emit m_target->returnPressed();
         }
         accept();
-    });
+    };
 
+    connect(doneBtn, &QPushButton::clicked, this, applyText);
     connect(closeBtn, &QPushButton::clicked, this, &QDialog::reject);
-
-    connect(m_keyboard, &VirtualKeyboard::enterPressed, this, [this] {
-        if (m_target) {
-            m_target->setText(m_previewEdit->text());
-            emit m_target->editingFinished();
-            emit m_target->returnPressed();
-        }
-        accept();
-    });
-
-    connect(m_previewEdit, &QLineEdit::returnPressed, this, [this] {
-        if (m_target) {
-            m_target->setText(m_previewEdit->text());
-            emit m_target->editingFinished();
-            emit m_target->returnPressed();
-        }
-        accept();
-    });
+    connect(m_keyboard, &VirtualKeyboard::enterPressed, this, applyText);
+    connect(m_previewEdit, &QLineEdit::returnPressed, this, applyText);
 }
 
 void VirtualKeyboardDialog::showEvent(QShowEvent *event)
@@ -319,11 +344,18 @@ void VirtualKeyboardDialog::attachToLineEdit(QLineEdit *target, const QString &t
             : QObject(targetEdit), edit(targetEdit), dlgTitle(t) {}
 
         bool eventFilter(QObject *watched, QEvent *event) override {
-            if (event->type() == QEvent::MouseButtonPress || event->type() == QEvent::MouseButtonRelease) {
-                if (!opening && edit && edit->isEnabled() && !edit->isReadOnly()) {
+            if (event->type() == QEvent::MouseButtonRelease) {
+                auto *me = static_cast<QMouseEvent *>(event);
+                if (me->button() == Qt::LeftButton && !opening && edit && edit->isEnabled() && !edit->isReadOnly()) {
                     opening = true;
-                    VirtualKeyboardDialog::openFor(edit.data(), edit->window(), dlgTitle);
-                    opening = false;
+                    auto targetPtr = edit;
+                    auto titleStr = dlgTitle;
+                    QTimer::singleShot(0, [this, targetPtr, titleStr] {
+                        if (targetPtr) {
+                            VirtualKeyboardDialog::openFor(targetPtr.data(), targetPtr->window(), titleStr);
+                        }
+                        opening = false;
+                    });
                     return true;
                 }
             }

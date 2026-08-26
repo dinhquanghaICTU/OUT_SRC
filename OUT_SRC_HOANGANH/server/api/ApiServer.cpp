@@ -233,8 +233,7 @@ void ApiServer::registerRoutes()
                                                {"device_id", deviceId}});
     });
 
-    m_server.route(QStringLiteral("/api/devices/config"), QHttpServerRequest::Method::Put,
-                   [this](const QHttpServerRequest &request) {
+    auto handleConfig = [this](const QHttpServerRequest &request) {
         const QJsonObject session = sessionForRequest(request);
         if (session.isEmpty())
             return jsonError(Status::Unauthorized, QStringLiteral("unauthorized"),
@@ -242,27 +241,42 @@ void ApiServer::registerRoutes()
         bool ok = false;
         const QJsonObject body = parseObject(request, &ok);
         const QString deviceId = body.value(QStringLiteral("device_id")).toString().trimmed();
-        const QJsonObject config = body.value(QStringLiteral("config")).toObject();
-        const int interval = config.value(QStringLiteral("sampling_interval_ms")).toInt(-1);
-        const QJsonObject thresholds = config.value(QStringLiteral("thresholds")).toObject();
-        bool thresholdsValid = !thresholds.isEmpty();
-        for (auto sensor = thresholds.begin(); sensor != thresholds.end(); ++sensor) {
-            const QJsonObject values = sensor.value().toObject();
-            thresholdsValid = thresholdsValid && !values.isEmpty();
-            for (auto value = values.begin(); value != values.end(); ++value)
-                thresholdsValid = thresholdsValid && value.value().isDouble();
-            if (values.contains(QStringLiteral("min")) && values.contains(QStringLiteral("max")))
-                thresholdsValid = thresholdsValid
-                    && values.value(QStringLiteral("min")).toDouble()
-                       < values.value(QStringLiteral("max")).toDouble();
-            if (values.contains(QStringLiteral("warning_above"))
-                && values.contains(QStringLiteral("critical_above")))
-                thresholdsValid = thresholdsValid
-                    && values.value(QStringLiteral("warning_above")).toDouble()
-                       < values.value(QStringLiteral("critical_above")).toDouble();
+        QJsonObject rawConfig = body.value(QStringLiteral("config")).toObject();
+
+        // Normalize config
+        QJsonObject config = rawConfig;
+        if (!config.contains(QStringLiteral("sampling_interval_ms"))) {
+            if (config.contains(QStringLiteral("sampling_interval_seconds"))) {
+                config.insert(QStringLiteral("sampling_interval_ms"),
+                              int(config.value(QStringLiteral("sampling_interval_seconds")).toDouble(2.0) * 1000.0));
+            } else {
+                config.insert(QStringLiteral("sampling_interval_ms"), 2000);
+            }
         }
-        if (!ok || deviceId.isEmpty() || interval < 1000 || interval > 3600000
-            || !thresholdsValid)
+
+        if (!config.contains(QStringLiteral("thresholds")) || !config.value(QStringLiteral("thresholds")).isObject()) {
+            QJsonObject thresholds;
+            if (config.contains(QStringLiteral("temperature_warn_c")) || config.contains(QStringLiteral("temp_warn"))) {
+                QJsonObject tempThresh;
+                tempThresh.insert(QStringLiteral("min"), config.value(QStringLiteral("temp_min")).toDouble(0.0));
+                tempThresh.insert(QStringLiteral("max"), config.value(QStringLiteral("temp_max")).toDouble(50.0));
+                tempThresh.insert(QStringLiteral("warning_above"),
+                                  config.value(QStringLiteral("temperature_warn_c")).toDouble(40.0));
+                thresholds.insert(QStringLiteral("temperature_c"), tempThresh);
+            }
+            if (config.contains(QStringLiteral("pressure_min_hpa")) || config.contains(QStringLiteral("pressure_max_hpa"))) {
+                QJsonObject pressThresh;
+                pressThresh.insert(QStringLiteral("min"), config.value(QStringLiteral("pressure_min_hpa")).toDouble(990.0));
+                pressThresh.insert(QStringLiteral("max"), config.value(QStringLiteral("pressure_max_hpa")).toDouble(1030.0));
+                thresholds.insert(QStringLiteral("pressure_hpa"), pressThresh);
+            }
+            if (!thresholds.isEmpty()) {
+                config.insert(QStringLiteral("thresholds"), thresholds);
+            }
+        }
+
+        const int interval = config.value(QStringLiteral("sampling_interval_ms")).toInt(2000);
+        if (!ok || deviceId.isEmpty() || interval < 500 || interval > 3600000)
             return jsonError(Status::BadRequest, QStringLiteral("validation_error"),
                              tr("Cấu hình ngưỡng không hợp lệ"));
 
@@ -275,11 +289,14 @@ void ApiServer::registerRoutes()
                                       ? Status::Forbidden : Status::InternalServerError;
             return jsonError(status, errorCode, error);
         }
-        const bool published = m_mqtt->publishDeviceConfig(deviceId, config);
-        return QHttpServerResponse(QJsonObject{{"status", "saved"},
+        m_mqtt->publishDeviceConfig(deviceId, config);
+        return QHttpServerResponse(QJsonObject{{"status", "applied"},
                                                {"device_id", deviceId},
-                                               {"mqtt_published", published}});
-    });
+                                               {"config", config}});
+    };
+
+    m_server.route(QStringLiteral("/api/devices/config"), QHttpServerRequest::Method::Put, handleConfig);
+    m_server.route(QStringLiteral("/api/devices/config"), QHttpServerRequest::Method::Post, handleConfig);
 
     m_server.route(QStringLiteral("/api/admin/users"), QHttpServerRequest::Method::Get,
                    [this](const QHttpServerRequest &request) {

@@ -9,6 +9,7 @@
 #include <QPainterPath>
 #include <QPaintEvent>
 #include <QPushButton>
+#include <QSettings>
 #include <QStackedWidget>
 #include <QTimer>
 #include <QVBoxLayout>
@@ -202,11 +203,26 @@ DashboardPage::DashboardPage(QWidget *parent)
     ui->setupUi(this);
     setStyleSheet("background-color: #06090e; color: #e2e8f0; font-family: 'Segoe UI', 'Roboto', sans-serif;");
 
+    QSettings settings(QStringLiteral("ICTU"), QStringLiteral("TuanAnhApp"));
+    m_autoModeActive = settings.value(QStringLiteral("auto_mode_active"), false).toBool();
+
     m_relayPendingTimer = new QTimer(this);
     m_relayPendingTimer->setSingleShot(true);
     connect(m_relayPendingTimer, &QTimer::timeout, this, [this] {
         m_isRelayPending = false;
         updateHudState();
+    });
+
+    m_autoOffTimer = new QTimer(this);
+    m_autoOffTimer->setSingleShot(true);
+    connect(m_autoOffTimer, &QTimer::timeout, this, [this] {
+        if (m_autoModeActive && !m_curMotion && m_relayState && !m_isRelayPending && !m_deviceId.isEmpty() && m_hasDevice) {
+            m_isRelayPending = true;
+            m_pendingRelayState = false;
+            m_relayPendingTimer->start(3500);
+            updateHudState();
+            emit relayControlRequested(m_deviceId, false);
+        }
     });
 
     setupHudDashboard();
@@ -247,6 +263,26 @@ void DashboardPage::setOwnedDevices(const QJsonArray &devices)
         m_isOnline = first.value(QStringLiteral("is_online")).toBool(true);
         m_hasDevice = true;
 
+        if (first.contains(QStringLiteral("config"))) {
+            const auto cfg = first.value(QStringLiteral("config")).toObject();
+            const auto thresh = cfg.value(QStringLiteral("thresholds")).toObject();
+            QJsonObject luxObj;
+            if (thresh.contains(QStringLiteral("lux"))) {
+                luxObj = thresh.value(QStringLiteral("lux")).toObject();
+            } else if (thresh.contains(QStringLiteral("light_lux"))) {
+                luxObj = thresh.value(QStringLiteral("light_lux")).toObject();
+            }
+            if (luxObj.contains(QStringLiteral("min"))) {
+                m_minLuxThreshold = luxObj.value(QStringLiteral("min")).toDouble(m_minLuxThreshold);
+            } else if (luxObj.contains(QStringLiteral("warning_below"))) {
+                m_minLuxThreshold = luxObj.value(QStringLiteral("warning_below")).toDouble(m_minLuxThreshold);
+            }
+            if (luxObj.contains(QStringLiteral("max"))) {
+                m_maxLuxThreshold = luxObj.value(QStringLiteral("max")).toDouble(m_maxLuxThreshold);
+            } else if (luxObj.contains(QStringLiteral("warning_above"))) {
+                m_maxLuxThreshold = luxObj.value(QStringLiteral("warning_above")).toDouble(m_maxLuxThreshold);
+            }
+        }
         if (first.contains(QStringLiteral("state"))) {
             const auto st = first.value(QStringLiteral("state")).toObject();
             if (st.contains(QStringLiteral("relay"))) {
@@ -300,6 +336,50 @@ void DashboardPage::updateDeviceMetrics(const QJsonObject &metrics)
             m_isRelayPending = false;
             m_relayPendingTimer->stop();
         }
+    } else if (metrics.contains(QStringLiteral("relay"))) {
+        const bool serverRelay = metrics.value(QStringLiteral("relay")).toBool();
+        m_relayState = serverRelay;
+        if (m_isRelayPending && serverRelay == m_pendingRelayState) {
+            m_isRelayPending = false;
+            m_relayPendingTimer->stop();
+        }
+    }
+
+    // Auto Trigger logic: triggers when motion detected OR light level is dark (<= min threshold)
+    if (m_autoModeActive && !m_deviceId.isEmpty() && m_hasDevice) {
+        const bool isDark = (m_curLux > 0 && m_curLux <= m_minLuxThreshold);
+        const bool shouldTurnOn = m_curMotion || isDark;
+
+        if (shouldTurnOn) {
+            if (m_autoOffTimer && m_autoOffTimer->isActive()) {
+                m_autoOffTimer->stop();
+            }
+            if (!m_relayState && !m_isRelayPending) {
+                m_isRelayPending = true;
+                m_pendingRelayState = true;
+                m_relayPendingTimer->start(3500);
+                updateHudState();
+                emit relayControlRequested(m_deviceId, true);
+            }
+        } else {
+            // If it is bright (>= max threshold) or neither motion nor dark, countdown to auto-off
+            const bool isTooBright = (m_curLux >= m_maxLuxThreshold && m_maxLuxThreshold > 0);
+            if (m_relayState && !m_isRelayPending) {
+                if (isTooBright) {
+                    m_isRelayPending = true;
+                    m_pendingRelayState = false;
+                    m_relayPendingTimer->start(3500);
+                    updateHudState();
+                    emit relayControlRequested(m_deviceId, false);
+                } else if (m_autoOffTimer && !m_autoOffTimer->isActive()) {
+                    m_autoOffTimer->start(6000);
+                }
+            }
+        }
+    } else {
+        if (m_autoOffTimer && m_autoOffTimer->isActive()) {
+            m_autoOffTimer->stop();
+        }
     }
 
     const QDateTime now = QDateTime::currentDateTime();
@@ -320,7 +400,47 @@ void DashboardPage::openLuxDetail()
                            QStringLiteral("#00f0ff"),
                            m_luxHistory,
                            this,
-                           50.0, 500.0);
+                           m_minLuxThreshold, m_maxLuxThreshold);
+    connect(&dlg, &SensorDetailDialog::thresholdChanged, this, [this](double minVal, double maxVal) {
+        m_minLuxThreshold = minVal;
+        m_maxLuxThreshold = maxVal;
+
+        // Automatically activate Auto Trigger mode when user saves threshold
+        m_autoModeActive = true;
+        QSettings settings(QStringLiteral("ICTU"), QStringLiteral("TuanAnhApp"));
+        settings.setValue(QStringLiteral("auto_mode_active"), true);
+        if (m_autoModeBtn) {
+            m_autoModeBtn->setText(QStringLiteral("🤖 AUTO TRIGGER: ON"));
+            m_autoModeBtn->setStyleSheet(QStringLiteral("QPushButton { background: #153229; color: #34d399; border: 1px solid #065f46; border-radius: 6px; font-weight: 900; font-size: 10px; padding: 10px; }"));
+        }
+
+        if (!m_deviceId.isEmpty()) {
+            QJsonObject thresholds;
+            QJsonObject luxObj;
+            luxObj.insert(QStringLiteral("min"), minVal);
+            luxObj.insert(QStringLiteral("max"), maxVal);
+            luxObj.insert(QStringLiteral("warning_below"), minVal);
+            luxObj.insert(QStringLiteral("warning_above"), maxVal);
+            thresholds.insert(QStringLiteral("light_lux"), luxObj);
+            thresholds.insert(QStringLiteral("lux"), luxObj);
+            const QJsonObject config{
+                {"sampling_interval_ms", 2000},
+                {"auto_mode", true},
+                {"thresholds", thresholds}
+            };
+            emit deviceConfigRequested(m_deviceId, config);
+        }
+
+        // If current lux is already <= min threshold or motion detected, immediately turn ON relay
+        const bool isDark = (m_curLux > 0 && m_curLux <= m_minLuxThreshold);
+        if ((m_curMotion || isDark) && !m_relayState && !m_deviceId.isEmpty() && m_hasDevice) {
+            m_isRelayPending = true;
+            m_pendingRelayState = true;
+            m_relayPendingTimer->start(3500);
+            updateHudState();
+            emit relayControlRequested(m_deviceId, true);
+        }
+    });
     dlg.exec();
 }
 
@@ -558,15 +678,50 @@ void DashboardPage::setupHudDashboard()
     });
     switchGrid->addWidget(m_lightSwitchBtn, 1);
 
-    m_autoModeBtn = new QPushButton(QStringLiteral("🤖 AUTO TRIGGER: ON"));
+    m_autoModeBtn = new QPushButton(m_autoModeActive ? QStringLiteral("🤖 AUTO TRIGGER: ON") : QStringLiteral("🤖 AUTO TRIGGER: OFF"));
     m_autoModeBtn->setCursor(Qt::PointingHandCursor);
-    m_autoModeBtn->setStyleSheet("QPushButton { background: #153229; color: #34d399; border: 1px solid #065f46; border-radius: 6px; font-weight: 900; font-size: 10px; padding: 10px; }");
+    m_autoModeBtn->setStyleSheet(m_autoModeActive
+        ? "QPushButton { background: #153229; color: #34d399; border: 1px solid #065f46; border-radius: 6px; font-weight: 900; font-size: 10px; padding: 10px; }"
+        : "QPushButton { background: #1c1917; color: #78716c; border: 1px solid #292524; border-radius: 6px; font-weight: 900; font-size: 10px; padding: 10px; }");
     connect(m_autoModeBtn, &QPushButton::clicked, this, [this] {
         m_autoModeActive = !m_autoModeActive;
+        QSettings settings(QStringLiteral("ICTU"), QStringLiteral("TuanAnhApp"));
+        settings.setValue(QStringLiteral("auto_mode_active"), m_autoModeActive);
+
         m_autoModeBtn->setText(m_autoModeActive ? QStringLiteral("🤖 AUTO TRIGGER: ON") : QStringLiteral("🤖 AUTO TRIGGER: OFF"));
         m_autoModeBtn->setStyleSheet(m_autoModeActive
             ? "QPushButton { background: #153229; color: #34d399; border: 1px solid #065f46; border-radius: 6px; font-weight: 900; font-size: 10px; padding: 10px; }"
             : "QPushButton { background: #1c1917; color: #78716c; border: 1px solid #292524; border-radius: 6px; font-weight: 900; font-size: 10px; padding: 10px; }");
+
+        // Sync auto_mode state down to device config
+        if (!m_deviceId.isEmpty()) {
+            QJsonObject thresholds;
+            QJsonObject luxObj;
+            luxObj.insert(QStringLiteral("min"), m_minLuxThreshold);
+            luxObj.insert(QStringLiteral("max"), m_maxLuxThreshold);
+            luxObj.insert(QStringLiteral("warning_below"), m_minLuxThreshold);
+            luxObj.insert(QStringLiteral("warning_above"), m_maxLuxThreshold);
+            thresholds.insert(QStringLiteral("light_lux"), luxObj);
+            thresholds.insert(QStringLiteral("lux"), luxObj);
+            const QJsonObject config{
+                {"sampling_interval_ms", 2000},
+                {"auto_mode", m_autoModeActive},
+                {"thresholds", thresholds}
+            };
+            emit deviceConfigRequested(m_deviceId, config);
+        }
+
+        // If turned ON while motion or dark is active and relay is OFF, immediately trigger relay ON
+        const bool isDark = (m_curLux > 0 && m_curLux <= m_minLuxThreshold);
+        if (m_autoModeActive && (m_curMotion || isDark) && !m_relayState && !m_deviceId.isEmpty() && m_hasDevice) {
+            m_isRelayPending = true;
+            m_pendingRelayState = true;
+            m_relayPendingTimer->start(3500);
+            updateHudState();
+            emit relayControlRequested(m_deviceId, true);
+        } else if (!m_autoModeActive && m_autoOffTimer && m_autoOffTimer->isActive()) {
+            m_autoOffTimer->stop();
+        }
     });
     switchGrid->addWidget(m_autoModeBtn, 1);
 

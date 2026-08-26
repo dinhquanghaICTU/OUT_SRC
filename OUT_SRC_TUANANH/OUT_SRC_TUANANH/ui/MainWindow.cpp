@@ -85,6 +85,8 @@ MainWindow::MainWindow(QWidget *parent)
             m_apiClient, &ApiClient::releaseDevice);
     connect(m_dashboardPage, &DashboardPage::relayControlRequested,
             m_apiClient, &ApiClient::setRelayState);
+    connect(m_dashboardPage, &DashboardPage::deviceConfigRequested,
+            m_apiClient, &ApiClient::updatePerDeviceConfig);
     connect(m_dashboardPage, &DashboardPage::refreshDevicesRequested, this, [this] {
         m_apiClient->requestAvailableDevices();
         m_apiClient->requestMyDevice();

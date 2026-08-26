@@ -5,30 +5,57 @@
 #include "config.h"
 #include "BMP180.h"
 #include "ir_sensor.h"
-#include <driver/gpio.h>
 #include "ring.h"
+#include <driver/gpio.h>
 
-long lastSendMs = 0;
-bool currentIrDetected = false;
-bool previousIrDetected = false;
-bool ringActive = false;
-unsigned long ringStopAtMs = 0;
+static unsigned long lastSendMs = 0;
+static bool currentIrDetected = false;
+static bool previousIrDetected = false;
+static bool irAlarmActive = false;
+static unsigned long irAlarmStopAtMs = 0;
+static bool thresholdAlertActive = false;
+static float s_lastTempC = 25.0f;
+static float s_lastPressHpa = 1013.25f;
+
+static void send_telemetry(bool irDetected)
+{
+    if (!wifi_manager_is_connected() || !mqtt_manager_is_connected())
+        return;
+
+    float temperatureC = s_lastTempC;
+    float pressureHpa = s_lastPressHpa;
+
+    if (!bmp180_read(&temperatureC, &pressureHpa))
+    {
+#if BMP180_SIMULATE_ON_FAILURE
+        bmp180_simulate(&temperatureC, &pressureHpa);
+#endif
+    }
+    s_lastTempC = temperatureC;
+    s_lastPressHpa = pressureHpa;
+
+    alert_status_t alert = mqtt_manager_check_thresholds(temperatureC, pressureHpa, irDetected);
+    thresholdAlertActive = alert.active;
+    led_set_mode(LED_MODE_ON);
+
+    mqtt_manager_publish_sensor(temperatureC, pressureHpa, irDetected, &alert);
+}
 
 void setup()
 {
     Serial.begin(115200);
-    delay(1000);
-    delay(100);
+    delay(500);
 
     init_led();
     bmp180_begin();
     ir_sensor_begin();
     init_ring();
+    mqtt_manager_init();
 
     if (save_product_id())
-        Serial.println("save product id done\r\n");
+        Serial.println("[SYSTEM] Save product ID OK");
     else
-        Serial.println("save product id false\r\n");
+        Serial.println("[SYSTEM] Save product ID Failed");
 
     wifi_manager_begin();
 }
@@ -36,24 +63,30 @@ void setup()
 void loop()
 {
     currentIrDetected = ir_sensor_detected();
+    device_thresholds_t thresholds = mqtt_manager_get_thresholds();
+    bool irEventTriggered = false;
 
-    // Chỉ kích còi ở cạnh phát hiện mới; không block loop bằng delay().
+    // 1. Trigger pulse alarm on newly detected obstacle
     if (currentIrDetected && !previousIrDetected)
     {
-        turn_on_ring();
-        ringActive = true;
-        ringStopAtMs = millis() + 1000UL;
-        Serial.println("[IR] Phat hien vat - bat coi trong 1 giay");
+        irAlarmActive = true;
+        unsigned long durationMs = (unsigned long)(thresholds.ir_alarm_seconds * 1000.0f);
+        if (durationMs < 200) durationMs = 200;
+        irAlarmStopAtMs = millis() + durationMs;
+        Serial.printf("[IR] Phat hien vat can - Bat coi trong %u ms\n", (unsigned)durationMs);
+        irEventTriggered = true;
     }
     previousIrDetected = currentIrDetected;
 
-    if (ringActive && (long)(millis() - ringStopAtMs) >= 0)
+    // Check IR alarm expiration
+    if (irAlarmActive && (long)(millis() - irAlarmStopAtMs) >= 0)
     {
-        turn_off_ring();
-        ringActive = false;
-        Serial.println("[IR] Tat coi");
+        irAlarmActive = false;
+        Serial.println("[IR] Het thoi gian coi IR");
+        irEventTriggered = true;
     }
 
+    // 2. WiFi & MQTT background management
     wifi_manager_update();
 
     if (wifi_manager_is_connected())
@@ -61,47 +94,37 @@ void loop()
     else
         mqtt_manager_stop();
 
-    if (millis() - lastSendMs >= SAMPLE_INTERVAL_MS)
+    // 3. Sensor sampling & Threshold evaluation
+    const bool effectiveIr = currentIrDetected || irAlarmActive;
+    const uint32_t intervalMs = mqtt_manager_get_sample_interval();
+    const bool intervalExpired = (millis() - lastSendMs >= intervalMs);
+
+    if (wifi_manager_is_connected() && mqtt_manager_is_connected())
     {
-        lastSendMs = millis();
-
-        if (wifi_manager_is_connected() && mqtt_manager_is_connected())
+        if (irEventTriggered || intervalExpired)
         {
-            float temperatureC = 0.0f;
-            float pressureHpa = 0.0f;
-
-            if (bmp180_read(&temperatureC, &pressureHpa))
-            {
-                Serial.printf("[BMP180] Nhiet do=%.2f C, Ap suat=%.2f hPa\n",
-                              temperatureC, pressureHpa);
-                Serial.printf("[IR] raw=%d, detected=%d\n",
-                              ir_sensor_raw(), currentIrDetected ? 1 : 0);
-
-                if (!mqtt_manager_publish_sensor(temperatureC, pressureHpa, currentIrDetected))
-                    Serial.println("[BMP180] Gui MQTT that bai");
-            }
-            else
-            {
-                Serial.println("[BMP180] Doc cam bien that bai");
-#if BMP180_SIMULATE_ON_FAILURE
-                bmp180_simulate(&temperatureC, &pressureHpa);
-                Serial.printf("[BMP180][MO PHONG] Nhiet do=%.2f C, Ap suat=%.2f hPa\n",
-                              temperatureC, pressureHpa);
-                if (!mqtt_manager_publish_sensor(temperatureC, pressureHpa, currentIrDetected))
-                    Serial.println("[BMP180][MO PHONG] Gui MQTT that bai");
-#endif
-            }
-        }
-        else
-        {
-            Serial.println("[MQTT] Chua san sang: WiFi/MQTT chua ket noi");
+            lastSendMs = millis();
+            send_telemetry(effectiveIr);
         }
     }
-
-    if (wifi_manager_is_connected())
-        led_set_mode(mqtt_manager_is_connected() ? LED_MODE_ON : LED_MODE_BLINK_SLOW);
     else
-        led_set_mode(LED_MODE_BLINK_FAST);
+    {
+        if (wifi_manager_is_connected())
+            led_set_mode(LED_MODE_BLINK_SLOW);
+        else
+            led_set_mode(LED_MODE_BLINK_FAST);
+    }
+
+    // 4. Combined Buzzer Ring Control: Manual ON || IR Alarm || Threshold Alert
+    bool shouldRing = mqtt_manager_get_ring_state() || irAlarmActive || thresholdAlertActive;
+    if (shouldRing)
+    {
+        turn_on_ring();
+    }
+    else
+    {
+        turn_off_ring();
+    }
 
     led_update();
     delay(5);

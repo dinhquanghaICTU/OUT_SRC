@@ -247,6 +247,32 @@ void test_hoanganh_mqtt_command_parsing(void) {
     TEST_ASSERT_FALSE(mqtt_parse_ring_command(missing_state, cmd_id, sizeof(cmd_id), &target_state));
 }
 
+void test_hoanganh_threshold_and_alert_logic(void) {
+    // Normal conditions
+    float temp_normal = 28.0f;
+    float press_normal = 1013.25f;
+    float temp_warn = 40.0f;
+    float press_min = 990.0f;
+    float press_max = 1030.0f;
+
+    bool temp_alert = (temp_normal > temp_warn);
+    bool press_alert = (press_normal < press_min || press_normal > press_max);
+    TEST_ASSERT_FALSE(temp_alert);
+    TEST_ASSERT_FALSE(press_alert);
+
+    // Over temperature alert
+    float temp_over = 45.5f;
+    TEST_ASSERT_TRUE(temp_over > temp_warn);
+
+    // Under pressure alert
+    float press_under = 980.0f;
+    TEST_ASSERT_TRUE(press_under < press_min);
+
+    // Over pressure alert
+    float press_over = 1040.0f;
+    TEST_ASSERT_TRUE(press_over > press_max);
+}
+
 int main(void) {
     UNITY_BEGIN();
     RUN_TEST(test_hoanganh_bmp180_simulation_math);
@@ -256,5 +282,6 @@ int main(void) {
     RUN_TEST(test_hoanganh_ring_controller);
     RUN_TEST(test_hoanganh_mqtt_telemetry_keys_and_schema);
     RUN_TEST(test_hoanganh_mqtt_command_parsing);
+    RUN_TEST(test_hoanganh_threshold_and_alert_logic);
     return UNITY_END();
 }

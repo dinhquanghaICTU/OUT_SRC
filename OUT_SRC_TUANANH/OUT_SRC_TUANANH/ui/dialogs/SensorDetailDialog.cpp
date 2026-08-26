@@ -1,4 +1,5 @@
 #include "SensorDetailDialog.h"
+#include "VirtualKeyboard.h"
 
 #include <QChart>
 #include <QChartView>
@@ -9,6 +10,7 @@
 #include <QHBoxLayout>
 #include <QHeaderView>
 #include <QLabel>
+#include <QLineEdit>
 #include <QLineSeries>
 #include <QPainter>
 #include <QPushButton>
@@ -137,6 +139,9 @@ void SensorDetailDialog::setupUI(const QString &sensorName, const QString &unit,
     m_minThresholdSpin->setRange(0.0, 99999.0);
     m_minThresholdSpin->setValue(minThreshold);
     m_minThresholdSpin->setDecimals(1);
+    if (auto *le = m_minThresholdSpin->findChild<QLineEdit*>()) {
+        VirtualKeyboardDialog::attachToLineEdit(le, QStringLiteral("Nhập Ngưỡng Bật Đèn (Min Lux)"));
+    }
     formGrid->addWidget(m_minThresholdSpin, 0, 1);
 
     formGrid->addWidget(new QLabel(QStringLiteral("Ngưỡng Tắt Đèn (Ánh sáng > Max %1):").arg(unit)), 1, 0);
@@ -144,6 +149,9 @@ void SensorDetailDialog::setupUI(const QString &sensorName, const QString &unit,
     m_maxThresholdSpin->setRange(0.0, 99999.0);
     m_maxThresholdSpin->setValue(maxThreshold);
     m_maxThresholdSpin->setDecimals(1);
+    if (auto *le = m_maxThresholdSpin->findChild<QLineEdit*>()) {
+        VirtualKeyboardDialog::attachToLineEdit(le, QStringLiteral("Nhập Ngưỡng Tắt Đèn (Max Lux)"));
+    }
     formGrid->addWidget(m_maxThresholdSpin, 1, 1);
 
     formGrid->addWidget(new QLabel(QStringLiteral("Chế độ thông minh kết hợp PIR:")), 2, 0);
@@ -156,6 +164,9 @@ void SensorDetailDialog::setupUI(const QString &sensorName, const QString &unit,
     m_intervalSpin->setRange(5, 300);
     m_intervalSpin->setValue(30);
     m_intervalSpin->setSuffix(QStringLiteral(" giây"));
+    if (auto *le = m_intervalSpin->findChild<QLineEdit*>()) {
+        VirtualKeyboardDialog::attachToLineEdit(le, QStringLiteral("Thời gian duy trì sáng (giây)"));
+    }
     formGrid->addWidget(m_intervalSpin, 3, 1);
 
     threshLayout->addLayout(formGrid);

@@ -622,9 +622,12 @@ QJsonArray Database::devicesForUser(const QString &username, int onlineWindowSec
             query.value(8).toByteArray()).object();
         QJsonArray capabilities;
         if (state.contains(QStringLiteral("relay"))
+            || state.contains(QStringLiteral("ring"))
             || query.value(5).toString() == QStringLiteral("temperature_sound")
             || query.value(5).toString() == QStringLiteral("water_flow_pump")
-            || metrics.contains(QStringLiteral("pump_on")))
+            || query.value(5).toString() == QStringLiteral("weather_pressure")
+            || metrics.contains(QStringLiteral("pump_on"))
+            || metrics.contains(QStringLiteral("ring_on")))
             capabilities.append(QStringLiteral("relay"));
         result.append(QJsonObject{{"device_id", query.value(0).toString()},
                                   {"name", query.value(1).toString()},

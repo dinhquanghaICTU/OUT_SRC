@@ -13,8 +13,8 @@ extern "C"
 
     float readUvVoltage();
     float voltageToUvIndex(float voltage);
-    float fakeUvVoltage();
-    float fakeUvIndex();
+    float generateSolarUvVoltage();
+    float generateSolarUvIndex();
 
 #ifdef __cplusplus
 }

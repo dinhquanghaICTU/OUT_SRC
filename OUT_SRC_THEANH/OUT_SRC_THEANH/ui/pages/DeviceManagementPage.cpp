@@ -43,59 +43,6 @@ protected:
             clicked();
     }
 };
-
-class RelayToggle final : public QPushButton
-{
-public:
-    explicit RelayToggle(bool on, const QString &label = QObject::tr("Relay"), QWidget *parent = nullptr)
-        : QPushButton(parent), m_on(on), m_label(label)
-    {
-        setCursor(Qt::PointingHandCursor);
-        setFixedHeight(32);
-        setFlat(true);
-    }
-
-    void setPending()
-    {
-        m_pending = true;
-        setEnabled(false);
-        update();
-    }
-
-protected:
-    void paintEvent(QPaintEvent *) override
-    {
-        QPainter painter(this);
-        painter.setRenderHint(QPainter::Antialiasing);
-        painter.setPen(Qt::NoPen);
-        painter.setBrush(isDown() ? QColor("#dbece5") : QColor("#edf7f2"));
-        painter.drawRoundedRect(rect().adjusted(0, 0, -1, -1), 9, 9);
-        const QColor textColor = isEnabled() ? QColor("#29473a") : QColor("#8a9992");
-        painter.setPen(textColor);
-        QFont textFont = font();
-        textFont.setPointSize(9);
-        textFont.setWeight(QFont::DemiBold);
-        painter.setFont(textFont);
-        painter.drawText(QRect(10, 0, width() - 58, height()),
-                         Qt::AlignVCenter | Qt::AlignLeft,
-                         m_pending ? tr("Đang gửi…")
-                                   : tr("%1 %2").arg(m_label, m_on ? tr("bật") : tr("tắt")));
-
-        const QRectF track(width() - 52, 7, 42, 18);
-        painter.setPen(Qt::NoPen);
-        painter.setBrush(!isEnabled() ? QColor("#ccd5d1")
-                         : m_on ? QColor("#15945a") : QColor("#aab7b1"));
-        painter.drawRoundedRect(track, 10, 10);
-        const qreal knobX = m_on ? track.right() - 15 : track.left() + 2;
-        painter.setBrush(Qt::white);
-        painter.drawEllipse(QRectF(knobX, track.top() + 2, 14, 14));
-    }
-
-private:
-    bool m_on;
-    bool m_pending = false;
-    QString m_label;
-};
 }
 
 DeviceManagementPage::DeviceManagementPage(QWidget *parent)
@@ -111,8 +58,8 @@ DeviceManagementPage::DeviceManagementPage(QWidget *parent)
       m_drawerName(new QLabel(this)),
       m_drawerId(new QLabel(this)),
       m_drawerMetrics(new QLabel(this)),
-      m_thresholdTitle(new QLabel(tr("Ngưỡng cảnh báo"), this)),
-      m_thresholdForm(new QFormLayout),
+      m_thresholdTitle(new QLabel(tr("⚙ Ngưỡng cảnh báo"), this)),
+      m_thresholdGrid(new QGridLayout),
       m_samplingInterval(new QSpinBox(this)),
       m_saveThresholds(new QPushButton(tr("Lưu & gửi xuống thiết bị"), this)),
       m_releaseDevice(new QPushButton(tr("Xóa thiết bị khỏi tài khoản"), this))
@@ -125,47 +72,38 @@ DeviceManagementPage::DeviceManagementPage(QWidget *parent)
     auto *mainPanel = new QWidget(this);
     mainPanel->setObjectName(QStringLiteral("deviceMainPanel"));
     auto *root = new QVBoxLayout(mainPanel);
-    root->setContentsMargins(14, 12, 14, 12);
-    root->setSpacing(10);
+    root->setContentsMargins(8, 6, 8, 6);
+    root->setSpacing(6);
 
-    auto *header = new QHBoxLayout;
-    auto *titles = new QVBoxLayout;
-    auto *title = new QLabel(tr("Quản lý thiết bị & Lịch sử thêm"), this);
+    auto *topBar = new QHBoxLayout;
+    topBar->setContentsMargins(0, 0, 0, 0);
+    topBar->setSpacing(8);
+
+    auto *title = new QLabel(tr("🖲 THIẾT BỊ"), this);
     title->setObjectName(QStringLiteral("devicePageTitle"));
-    auto *subtitle = new QLabel(
-        tr("Theo dõi chi tiết thiết bị, người đã thêm (kèm ngày giờ) và điều khiển online."), this);
-    subtitle->setObjectName(QStringLiteral("devicePageSubtitle"));
-    titles->addWidget(title);
-    titles->addWidget(subtitle);
-    m_liveLabel->setObjectName(QStringLiteral("liveBadge"));
-    header->addLayout(titles);
-    header->addStretch();
-    header->addWidget(m_liveLabel, 0, Qt::AlignTop);
-    root->addLayout(header);
+    topBar->addWidget(title);
 
-    // --- View Mode Tabs ---
-    auto *toolbar = new QHBoxLayout;
-    toolbar->setSpacing(8);
-
-    m_logTabBtn = new QPushButton(tr("📋  Nhật ký & Quản lý thiết bị"), this);
-    m_cardsTabBtn = new QPushButton(tr("⊞  Thẻ điều khiển & Ngưỡng"), this);
-    m_logTabBtn->setObjectName(QStringLiteral("deviceViewTabButton"));
+    m_cardsTabBtn = new QPushButton(tr("⊞  Thẻ điều khiển"), this);
+    m_logTabBtn = new QPushButton(tr("📋  Nhật ký"), this);
     m_cardsTabBtn->setObjectName(QStringLiteral("deviceViewTabButton"));
-    m_logTabBtn->setCheckable(true);
+    m_logTabBtn->setObjectName(QStringLiteral("deviceViewTabButton"));
     m_cardsTabBtn->setCheckable(true);
-    m_logTabBtn->setChecked(true);
-    m_logTabBtn->setCursor(Qt::PointingHandCursor);
+    m_logTabBtn->setCheckable(true);
+    m_cardsTabBtn->setChecked(true);
     m_cardsTabBtn->setCursor(Qt::PointingHandCursor);
+    m_logTabBtn->setCursor(Qt::PointingHandCursor);
 
     auto *tabGroup = new QButtonGroup(this);
-    tabGroup->addButton(m_logTabBtn, 0);
-    tabGroup->addButton(m_cardsTabBtn, 1);
+    tabGroup->addButton(m_cardsTabBtn, 0);
+    tabGroup->addButton(m_logTabBtn, 1);
     tabGroup->setExclusive(true);
 
-    toolbar->addWidget(m_logTabBtn);
-    toolbar->addWidget(m_cardsTabBtn);
-    toolbar->addStretch();
-    root->addLayout(toolbar);
+    topBar->addWidget(m_cardsTabBtn);
+    topBar->addWidget(m_logTabBtn);
+    topBar->addStretch();
+    m_liveLabel->setObjectName(QStringLiteral("liveBadge"));
+    topBar->addWidget(m_liveLabel);
+    root->addLayout(topBar);
 
     m_viewStack = new QStackedWidget(this);
 
@@ -173,28 +111,28 @@ DeviceManagementPage::DeviceManagementPage(QWidget *parent)
     auto *logPage = new QWidget(m_viewStack);
     auto *logLayout = new QVBoxLayout(logPage);
     logLayout->setContentsMargins(0, 4, 0, 4);
-    logLayout->setSpacing(8);
+    logLayout->setSpacing(6);
 
-    auto *topBar = new QHBoxLayout;
-    topBar->setSpacing(8);
+    auto *logTopBar = new QHBoxLayout;
+    logTopBar->setSpacing(8);
     m_logSearchEdit = new QLineEdit(logPage);
     m_logSearchEdit->setObjectName(QStringLiteral("logSearchInput"));
     m_logSearchEdit->setPlaceholderText(tr("🔍 Tìm kiếm User thêm, Mã ID, Tên..."));
     m_logSearchEdit->setClearButtonEnabled(true);
     VirtualKeyboardDialog::attachToLineEdit(m_logSearchEdit, tr("Tìm kiếm thiết bị / log"));
 
-    m_statTotalDevices = new QLabel(tr("Tổng: 0 thiết bị"), logPage);
+    m_statTotalDevices = new QLabel(tr("Tổng: 0"), logPage);
     m_statOnlineDevices = new QLabel(tr("Online: 0"), logPage);
-    m_statLinkedUsers = new QLabel(tr("Người dùng: 0"), logPage);
+    m_statLinkedUsers = new QLabel(tr("User: 0"), logPage);
     m_statTotalDevices->setObjectName(QStringLiteral("logStatBadge"));
     m_statOnlineDevices->setObjectName(QStringLiteral("logStatBadgeOnline"));
     m_statLinkedUsers->setObjectName(QStringLiteral("logStatBadge"));
 
-    topBar->addWidget(m_logSearchEdit, 1);
-    topBar->addWidget(m_statTotalDevices);
-    topBar->addWidget(m_statOnlineDevices);
-    topBar->addWidget(m_statLinkedUsers);
-    logLayout->addLayout(topBar);
+    logTopBar->addWidget(m_logSearchEdit, 1);
+    logTopBar->addWidget(m_statTotalDevices);
+    logTopBar->addWidget(m_statOnlineDevices);
+    logTopBar->addWidget(m_statLinkedUsers);
+    logLayout->addLayout(logTopBar);
 
     m_deviceLogTable = new QTableWidget(logPage);
     m_deviceLogTable->setObjectName(QStringLiteral("deviceLogTable"));
@@ -228,14 +166,14 @@ DeviceManagementPage::DeviceManagementPage(QWidget *parent)
     auto *content = new QWidget(scroll);
     content->setObjectName(QStringLiteral("devicePageContent"));
     auto *contentLayout = new QVBoxLayout(content);
-    contentLayout->setContentsMargins(0, 0, 2, 10);
-    contentLayout->setSpacing(10);
+    contentLayout->setContentsMargins(0, 0, 2, 8);
+    contentLayout->setSpacing(8);
 
     auto *ownedTitle = new QLabel(tr("Thiết bị của tôi"), content);
     ownedTitle->setObjectName(QStringLiteral("deviceSectionTitle"));
     contentLayout->addWidget(ownedTitle);
-    m_ownedGrid->setHorizontalSpacing(14);
-    m_ownedGrid->setVerticalSpacing(14);
+    m_ownedGrid->setHorizontalSpacing(8);
+    m_ownedGrid->setVerticalSpacing(8);
     contentLayout->addLayout(m_ownedGrid);
     m_ownedEmpty->setObjectName(QStringLiteral("deviceEmptyState"));
     contentLayout->addWidget(m_ownedEmpty);
@@ -255,8 +193,8 @@ DeviceManagementPage::DeviceManagementPage(QWidget *parent)
     availableHeader->addStretch();
     availableHeader->addWidget(refreshButton);
     contentLayout->addLayout(availableHeader);
-    m_availableGrid->setHorizontalSpacing(14);
-    m_availableGrid->setVerticalSpacing(14);
+    m_availableGrid->setHorizontalSpacing(8);
+    m_availableGrid->setVerticalSpacing(8);
     contentLayout->addLayout(m_availableGrid);
     m_availableEmpty->setObjectName(QStringLiteral("deviceEmptyState"));
     contentLayout->addWidget(m_availableEmpty);
@@ -265,13 +203,15 @@ DeviceManagementPage::DeviceManagementPage(QWidget *parent)
     scroll->setWidget(content);
     m_viewStack->addWidget(scroll);
 
+    // Make Cards view active by default
+    m_viewStack->setCurrentIndex(1);
     root->addWidget(m_viewStack, 1);
 
-    connect(m_logTabBtn, &QPushButton::clicked, this, [this] {
-        m_viewStack->setCurrentIndex(0);
-    });
     connect(m_cardsTabBtn, &QPushButton::clicked, this, [this] {
         m_viewStack->setCurrentIndex(1);
+    });
+    connect(m_logTabBtn, &QPushButton::clicked, this, [this] {
+        m_viewStack->setCurrentIndex(0);
     });
     connect(m_logSearchEdit, &QLineEdit::textChanged, this, [this] {
         rebuildLogTable();
@@ -283,42 +223,75 @@ DeviceManagementPage::DeviceManagementPage(QWidget *parent)
     });
 
     m_drawer->setObjectName(QStringLiteral("deviceDrawer"));
-    m_drawer->setFixedWidth(240);
-    auto *drawerLayout = new QVBoxLayout(m_drawer);
-    drawerLayout->setContentsMargins(14, 14, 14, 14);
-    drawerLayout->setSpacing(8);
+    m_drawer->setFixedWidth(300);
+    auto *drawerOuterLayout = new QVBoxLayout(m_drawer);
+    drawerOuterLayout->setContentsMargins(10, 10, 10, 10);
+    drawerOuterLayout->setSpacing(4);
+
     auto *drawerTop = new QHBoxLayout;
-    auto *drawerTitle = new QLabel(tr("Chi tiết thiết bị"), m_drawer);
+    auto *drawerTitle = new QLabel(tr("Chi tiết & Cài đặt"), m_drawer);
     drawerTitle->setObjectName(QStringLiteral("drawerTitle"));
-    auto *closeDrawer = new QPushButton(QStringLiteral("×"), m_drawer);
+    auto *closeDrawer = new QPushButton(QStringLiteral("✕"), m_drawer);
     closeDrawer->setObjectName(QStringLiteral("closeDrawerButton"));
+    closeDrawer->setCursor(Qt::PointingHandCursor);
     drawerTop->addWidget(drawerTitle);
     drawerTop->addStretch();
     drawerTop->addWidget(closeDrawer);
-    drawerLayout->addLayout(drawerTop);
+    drawerOuterLayout->addLayout(drawerTop);
+
+    auto *drawerScroll = new QScrollArea(m_drawer);
+    drawerScroll->setWidgetResizable(true);
+    drawerScroll->setFrameShape(QFrame::NoFrame);
+    drawerScroll->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    auto *drawerBody = new QWidget(drawerScroll);
+    auto *drawerLayout = new QVBoxLayout(drawerBody);
+    drawerLayout->setContentsMargins(0, 0, 2, 0);
+    drawerLayout->setSpacing(6);
+
     m_drawerIcon->setObjectName(QStringLiteral("drawerDeviceIcon"));
     m_drawerIcon->setAlignment(Qt::AlignCenter);
     m_drawerName->setObjectName(QStringLiteral("drawerDeviceName"));
+    m_drawerName->setWordWrap(true);
     m_drawerId->setObjectName(QStringLiteral("drawerDeviceId"));
+    m_drawerId->setWordWrap(true);
     m_drawerMetrics->setObjectName(QStringLiteral("drawerMetrics"));
     m_drawerMetrics->setWordWrap(true);
-    drawerLayout->addWidget(m_drawerIcon, 0, Qt::AlignLeft);
-    drawerLayout->addWidget(m_drawerName);
-    drawerLayout->addWidget(m_drawerId);
+
+    auto *devHeadLayout = new QHBoxLayout;
+    devHeadLayout->setSpacing(8);
+    devHeadLayout->addWidget(m_drawerIcon, 0, Qt::AlignVCenter);
+    auto *nameBlock = new QVBoxLayout;
+    nameBlock->setSpacing(1);
+    nameBlock->addWidget(m_drawerName);
+    nameBlock->addWidget(m_drawerId);
+    devHeadLayout->addLayout(nameBlock, 1);
+    drawerLayout->addLayout(devHeadLayout);
+
     drawerLayout->addWidget(m_drawerMetrics);
+
     m_thresholdTitle->setObjectName(QStringLiteral("drawerSectionTitle"));
     drawerLayout->addWidget(m_thresholdTitle);
-    auto *thresholdWidget = new QWidget(m_drawer);
-    thresholdWidget->setLayout(m_thresholdForm);
+
+    auto *thresholdWidget = new QWidget(drawerBody);
+    thresholdWidget->setLayout(m_thresholdGrid);
+    m_thresholdGrid->setContentsMargins(0, 0, 0, 0);
+    m_thresholdGrid->setHorizontalSpacing(8);
+    m_thresholdGrid->setVerticalSpacing(6);
     drawerLayout->addWidget(thresholdWidget);
-    m_samplingInterval->setRange(1, 3600);
-    m_samplingInterval->setSuffix(tr(" giây"));
-    m_thresholdForm->addRow(tr("Chu kỳ gửi"), m_samplingInterval);
+
     m_saveThresholds->setObjectName(QStringLiteral("saveDeviceConfigButton"));
+    m_saveThresholds->setCursor(Qt::PointingHandCursor);
     drawerLayout->addWidget(m_saveThresholds);
-    drawerLayout->addStretch();
+
+    drawerLayout->addSpacing(2);
     m_releaseDevice->setObjectName(QStringLiteral("releaseDeviceButton"));
+    m_releaseDevice->setCursor(Qt::PointingHandCursor);
     drawerLayout->addWidget(m_releaseDevice);
+    drawerLayout->addStretch();
+
+    drawerScroll->setWidget(drawerBody);
+    drawerOuterLayout->addWidget(drawerScroll, 1);
+
     m_drawer->hide();
     outer->addWidget(mainPanel, 1);
     outer->addWidget(m_drawer);
@@ -393,19 +366,22 @@ void DeviceManagementPage::resizeEvent(QResizeEvent *event)
 
 void DeviceManagementPage::applyResponsiveLayout()
 {
-    const bool compact = width() <= 800;
-    const int columns = compact ? 1 : 2;
-    if (m_compact == compact && m_gridColumns == columns)
-        return;
+    const int w = width();
+    int columns = 2;
+    if (w >= 1100) columns = 4;
+    else if (w >= 780) columns = 3;
+    else if (w >= 450) columns = 2;
+    else columns = 1;
 
-    m_compact = compact;
-    m_gridColumns = columns;
-    // Luôn giữ drawer bên phải (LeftToRight), không đổi hướng theo width
-    m_outerLayout->setDirection(QBoxLayout::LeftToRight);
-    if (m_drawer->isVisible() && width() < 500)
-        m_drawer->hide();
-    rebuildOwnedGrid();
-    rebuildAvailableGrid();
+    m_compact = (columns <= 2);
+    if (m_gridColumns != columns) {
+        m_gridColumns = columns;
+        m_outerLayout->setDirection(QBoxLayout::LeftToRight);
+        if (m_drawer->isVisible() && width() < 500)
+            m_drawer->hide();
+        rebuildOwnedGrid();
+        rebuildAvailableGrid();
+    }
 }
 
 void DeviceManagementPage::setOwnedDevices(const QJsonArray &devices)
@@ -598,115 +574,122 @@ QWidget *DeviceManagementPage::createOwnedCard(const QJsonObject &device)
 {
     auto *card = new ClickableFrame(this);
     card->setObjectName(QStringLiteral("ownedDeviceCard"));
-    const QJsonArray capabilities = device.value(QStringLiteral("capabilities")).toArray();
-    bool hasRelay = false;
-    for (const QJsonValue &capability : capabilities)
-        hasRelay = hasRelay || capability.toString() == QStringLiteral("relay");
-    if (m_compact) {
-        card->setMinimumHeight(136);
-        card->setMaximumHeight(QWIDGETSIZE_MAX);
-        card->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
-    } else {
-        card->setFixedSize(200, 156);
-    }
+
+    card->setMinimumWidth(200);
+    card->setMaximumWidth(450);
+    card->setMinimumHeight(92);
+    card->setMaximumHeight(115);
+    card->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
     card->setCursor(Qt::PointingHandCursor);
+
     auto *layout = new QVBoxLayout(card);
-    layout->setContentsMargins(14, 13, 14, 13);
-    layout->setSpacing(6);
+    layout->setContentsMargins(10, 8, 10, 8);
+    layout->setSpacing(4);
 
     const QString type = device.value(QStringLiteral("device_type")).toString();
     card->setProperty("deviceType", type);
     const bool online = device.value(QStringLiteral("online")).toBool();
     const QString deviceId = device.value(QStringLiteral("device_id")).toString();
     const QJsonObject metricsObject = device.value(QStringLiteral("metrics")).toObject();
+    const QString addedBy = device.value(QStringLiteral("added_by")).toString();
+    const QString displayName = device.value(QStringLiteral("name")).toString();
+
+    // Top Header: Icon + Info (Name, ID) + Status pill
     auto *top = new QHBoxLayout;
-    top->setSpacing(12);
+    top->setSpacing(8);
+
     auto *icon = new QLabel(deviceIcon(type), card);
     icon->setObjectName(QStringLiteral("deviceTypeIcon"));
     icon->setProperty("deviceType", type);
     icon->setAlignment(Qt::AlignCenter);
-    auto *metricBlock = new QVBoxLayout;
-    metricBlock->setContentsMargins(0, 0, 0, 0);
-    metricBlock->setSpacing(1);
-    QString primaryMetric = QStringLiteral("--");
-    QString secondaryMetric;
-    if (metricsObject.contains(QStringLiteral("flow_l_min")))
-        primaryMetric = QStringLiteral("%1 L/min").arg(metricsObject.value(QStringLiteral("flow_l_min")).toDouble(), 0, 'f', 2);
-    else if (metricsObject.contains(QStringLiteral("distance_cm")))
-        primaryMetric = QStringLiteral("%1 cm").arg(metricsObject.value(QStringLiteral("distance_cm")).toDouble(), 0, 'f', 1);
-    else if (metricsObject.contains(QStringLiteral("temperature_c")))
-        primaryMetric = QStringLiteral("%1°C").arg(metricsObject.value(QStringLiteral("temperature_c")).toDouble(), 0, 'f', 1);
-    else if (metricsObject.contains(QStringLiteral("uv_index")))
-        primaryMetric = QStringLiteral("UV %1").arg(metricsObject.value(QStringLiteral("uv_index")).toDouble(), 0, 'f', 1);
-    else if (metricsObject.contains(QStringLiteral("pressure_hpa")))
-        primaryMetric = QStringLiteral("%1 hPa").arg(metricsObject.value(QStringLiteral("pressure_hpa")).toDouble(), 0, 'f', 0);
-    if (metricsObject.contains(QStringLiteral("total_liters")))
-        secondaryMetric = tr("Tổng %1 L").arg(metricsObject.value(QStringLiteral("total_liters")).toDouble(), 0, 'f', 2);
-    else if (metricsObject.contains(QStringLiteral("pump_on")))
-        secondaryMetric = metricsObject.value(QStringLiteral("pump_on")).toBool() ? tr("Bơm đang bật") : tr("Bơm đang tắt");
-    else if (metricsObject.contains(QStringLiteral("sound_vpp")))
-        secondaryMetric = QStringLiteral("%1 Vpp").arg(metricsObject.value(QStringLiteral("sound_vpp")).toDouble(), 0, 'f', 3);
-    else if (metricsObject.contains(QStringLiteral("pressure_hpa")))
-        secondaryMetric = QStringLiteral("%1 hPa").arg(metricsObject.value(QStringLiteral("pressure_hpa")).toDouble(), 0, 'f', 0);
-    auto *primary = new QLabel(primaryMetric, card);
-    primary->setObjectName(QStringLiteral("devicePrimaryMetric"));
-    auto *secondary = new QLabel(secondaryMetric.isEmpty() ? deviceTypeName(type) : secondaryMetric, card);
-    secondary->setObjectName(QStringLiteral("deviceSecondaryMetric"));
-    metricBlock->addWidget(primary);
-    metricBlock->addWidget(secondary);
-    auto *status = new QLabel(online ? tr("●  Online") : tr("●  Offline"), card);
+
+    auto *infoLayout = new QVBoxLayout;
+    infoLayout->setContentsMargins(0, 0, 0, 0);
+    infoLayout->setSpacing(1);
+
+    auto *name = new QLabel(displayName.isEmpty() ? deviceTypeName(type) : displayName, card);
+    name->setObjectName(QStringLiteral("deviceCardName"));
+    name->setWordWrap(true);
+
+    auto *id = new QLabel(addedBy.isEmpty()
+        ? tr("ID: %1").arg(deviceId)
+        : tr("ID: %1 · %2").arg(deviceId, addedBy), card);
+    id->setObjectName(QStringLiteral("deviceCardId"));
+
+    infoLayout->addWidget(name);
+    infoLayout->addWidget(id);
+
+    auto *status = new QLabel(online ? tr("● Online") : tr("● Offline"), card);
     status->setObjectName(online ? QStringLiteral("onlinePill") : QStringLiteral("offlinePill"));
-    top->addWidget(icon);
-    top->addLayout(metricBlock, 1);
-    top->addSpacing(8);
+    status->setAlignment(Qt::AlignCenter);
+
+    top->addWidget(icon, 0, Qt::AlignVCenter);
+    top->addLayout(infoLayout, 1);
     top->addWidget(status, 0, Qt::AlignTop | Qt::AlignRight);
     layout->addLayout(top);
 
-    auto *name = new QLabel(device.value(QStringLiteral("name")).toString(), card);
-    name->setObjectName(QStringLiteral("deviceCardName"));
-    name->setWordWrap(true);
-    name->setFixedHeight(42);
-    name->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
-    const QString addedBy = device.value(QStringLiteral("added_by")).toString();
-    auto *id = new QLabel(addedBy.isEmpty()
-        ? tr("ID  %1").arg(deviceId)
-        : tr("ID  %1 · Thêm bởi: %2").arg(deviceId, addedBy), card);
-    id->setObjectName(QStringLiteral("deviceCardId"));
-    id->setFixedHeight(17);
-    id->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
-    layout->addWidget(name);
-    layout->addWidget(id);
+    // Metrics / Telemetry Chip
+    QString metricSummaryText;
+    if (metricsObject.contains(QStringLiteral("voltage_v")) || metricsObject.contains(QStringLiteral("power_w"))) {
+        metricSummaryText = tr("⚡ %1 V · %2 A · %3 W")
+            .arg(metricsObject.value(QStringLiteral("voltage_v")).toDouble(), 0, 'f', 1)
+            .arg(metricsObject.value(QStringLiteral("current_a")).toDouble(), 0, 'f', 2)
+            .arg(metricsObject.value(QStringLiteral("power_w")).toDouble(), 0, 'f', 1);
+    } else if (metricsObject.contains(QStringLiteral("flow_l_min"))) {
+        metricSummaryText = tr("💧 %1 L/min%2")
+            .arg(metricsObject.value(QStringLiteral("flow_l_min")).toDouble(), 0, 'f', 2)
+            .arg(metricsObject.contains(QStringLiteral("total_liters"))
+                ? tr(" (Tổng %1 L)").arg(metricsObject.value(QStringLiteral("total_liters")).toDouble(), 0, 'f', 1)
+                : QString());
+    } else if (metricsObject.contains(QStringLiteral("distance_cm"))) {
+        metricSummaryText = tr("📏 Khoảng cách: %1 cm").arg(metricsObject.value(QStringLiteral("distance_cm")).toDouble(), 0, 'f', 1);
+    } else if (metricsObject.contains(QStringLiteral("temperature_c"))) {
+        metricSummaryText = tr("🌡️ Nhiệt độ: %1 °C").arg(metricsObject.value(QStringLiteral("temperature_c")).toDouble(), 0, 'f', 1);
+        if (metricsObject.contains(QStringLiteral("sound_vpp"))) {
+            metricSummaryText += tr(" · ♫ %1 Vpp").arg(metricsObject.value(QStringLiteral("sound_vpp")).toDouble(), 0, 'f', 2);
+        }
+    } else if (metricsObject.contains(QStringLiteral("uv_index"))) {
+        metricSummaryText = tr("☀ UV: %1").arg(metricsObject.value(QStringLiteral("uv_index")).toDouble(), 0, 'f', 1);
+        if (metricsObject.contains(QStringLiteral("pressure_hpa"))) {
+            metricSummaryText += tr(" · %1 hPa").arg(metricsObject.value(QStringLiteral("pressure_hpa")).toDouble(), 0, 'f', 0);
+        }
+    } else if (metricsObject.contains(QStringLiteral("pressure_hpa"))) {
+        metricSummaryText = tr("☁ Áp suất: %1 hPa").arg(metricsObject.value(QStringLiteral("pressure_hpa")).toDouble(), 0, 'f', 0);
+    }
+
+    if (!metricSummaryText.isEmpty()) {
+        auto *metricLabel = new QLabel(metricSummaryText, card);
+        metricLabel->setObjectName(QStringLiteral("devicePrimaryMetric"));
+        layout->addWidget(metricLabel);
+    } else {
+        auto *typeHint = new QLabel(deviceTypeName(type), card);
+        typeHint->setObjectName(QStringLiteral("deviceSecondaryMetric"));
+        layout->addWidget(typeHint);
+    }
+
     layout->addStretch();
+
+    // Bottom Action / Settings trigger
     auto *actionSlot = new QWidget(card);
-    actionSlot->setFixedHeight(34);
     auto *actionLayout = new QVBoxLayout(actionSlot);
     actionLayout->setContentsMargins(0, 0, 0, 0);
     actionLayout->setSpacing(0);
-    if (hasRelay) {
-        const QJsonObject stateObject = device.value(QStringLiteral("state")).toObject();
-        const bool relayOn = stateObject.contains(QStringLiteral("relay"))
-                                 ? stateObject.value(QStringLiteral("relay")).toBool(false)
-                                 : metricsObject.value(QStringLiteral("pump_on")).toBool(false);
-        auto *relayButton = new RelayToggle(relayOn,
-                                            (type == QStringLiteral("pump_distance") || type == QStringLiteral("water_flow_pump")) ? tr("Bơm") : tr("Relay"),
-                                            card);
-        relayButton->setEnabled(online);
-        actionLayout->addWidget(relayButton);
-        connect(relayButton, &QPushButton::clicked, this,
-                [this, deviceId, relayOn, relayButton] {
-                    relayButton->setPending();
-                    emit relayControlRequested(deviceId, !relayOn);
-                });
-    } else if (metricsObject.contains(QStringLiteral("ir_detected"))) {
+
+    if (metricsObject.contains(QStringLiteral("ir_detected"))) {
         const bool irDetected = metricsObject.value(QStringLiteral("ir_detected")).toInt() != 0;
         auto *irStatus = new QLabel(
-            irDetected ? tr("●  Có vật")
-                       : tr("●  Không có vật"), card);
+            irDetected ? tr("● Phát hiện vật cản")
+                       : tr("● Không có vật cản"), card);
         irStatus->setObjectName(irDetected ? QStringLiteral("irDetectedStatus")
                                            : QStringLiteral("irClearStatus"));
         irStatus->setAlignment(Qt::AlignCenter);
         actionLayout->addWidget(irStatus);
+    } else {
+        auto *hint = new QLabel(tr("⚙ Cài đặt ngưỡng & xem chi tiết →"), card);
+        hint->setObjectName(QStringLiteral("deviceCardActionHint"));
+        actionLayout->addWidget(hint);
     }
+
     layout->addWidget(actionSlot);
     card->clicked = [this, device] { openDeviceDrawer(device); };
     return card;
@@ -716,46 +699,58 @@ QWidget *DeviceManagementPage::createAvailableCard(const QJsonObject &device)
 {
     auto *card = new QFrame(this);
     card->setObjectName(QStringLiteral("availableDeviceCard"));
-    if (m_compact) {
-        card->setMinimumHeight(164);
-        card->setMaximumHeight(QWIDGETSIZE_MAX);
-        card->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
-    } else {
-        card->setFixedSize(210, 178);
-    }
+    card->setMinimumWidth(200);
+    card->setMaximumWidth(450);
+    card->setMinimumHeight(92);
+    card->setMaximumHeight(115);
+    card->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+
     auto *layout = new QVBoxLayout(card);
-    layout->setContentsMargins(14, 13, 14, 13);
-    layout->setSpacing(7);
+    layout->setContentsMargins(10, 8, 10, 8);
+    layout->setSpacing(4);
+
     const QString deviceId = device.value(QStringLiteral("device_id")).toString();
     const QString type = device.value(QStringLiteral("device_type")).toString();
     card->setProperty("deviceType", type);
 
+    // Top Header: Icon + Info (ID, Type) + Status pill
     auto *top = new QHBoxLayout;
+    top->setSpacing(8);
+
     auto *icon = new QLabel(deviceIcon(type), card);
     icon->setObjectName(QStringLiteral("availableDeviceIcon"));
     icon->setProperty("deviceType", type);
     icon->setAlignment(Qt::AlignCenter);
-    auto *status = new QLabel(tr("●  Online"), card);
-    status->setObjectName(QStringLiteral("onlinePill"));
-    top->addWidget(icon);
-    top->addStretch();
-    top->addWidget(status);
-    layout->addLayout(top);
+
+    auto *infoLayout = new QVBoxLayout;
+    infoLayout->setContentsMargins(0, 0, 0, 0);
+    infoLayout->setSpacing(1);
 
     auto *id = new QLabel(deviceId, card);
     id->setObjectName(QStringLiteral("availableDeviceId"));
     id->setWordWrap(true);
+
     auto *typeName = new QLabel(deviceTypeName(type), card);
     typeName->setObjectName(QStringLiteral("deviceCardType"));
     typeName->setWordWrap(true);
-    auto *hint = new QLabel(tr("Thiết bị đang chờ liên kết"), card);
-    hint->setObjectName(QStringLiteral("availableDeviceHint"));
-    auto *button = new QPushButton(tr("+  Thêm thiết bị"), card);
-    button->setObjectName(QStringLiteral("claimDeviceButton"));
-    layout->addWidget(id);
-    layout->addWidget(typeName);
-    layout->addWidget(hint);
+
+    infoLayout->addWidget(id);
+    infoLayout->addWidget(typeName);
+
+    auto *status = new QLabel(tr("● Online"), card);
+    status->setObjectName(QStringLiteral("onlinePill"));
+    status->setAlignment(Qt::AlignCenter);
+
+    top->addWidget(icon, 0, Qt::AlignVCenter);
+    top->addLayout(infoLayout, 1);
+    top->addWidget(status, 0, Qt::AlignTop | Qt::AlignRight);
+    layout->addLayout(top);
+
     layout->addStretch();
+
+    auto *button = new QPushButton(tr("+ Thêm vào tài khoản"), card);
+    button->setObjectName(QStringLiteral("claimDeviceButton"));
+    button->setCursor(Qt::PointingHandCursor);
     layout->addWidget(button);
 
     connect(button, &QPushButton::clicked, this, [this, deviceId, type] {
@@ -855,13 +850,13 @@ void DeviceManagementPage::rebuildOwnedGrid()
     m_ownedEmpty->setText(m_currentUsername.isEmpty()
         ? tr("Bạn chưa thêm thiết bị nào.")
         : tr("Tài khoản '%1' chưa thêm thiết bị nào vào danh sách điều khiển.").arg(m_currentUsername));
-    const int columns = m_gridColumns;
+    const int columns = qMax(1, m_gridColumns);
     for (int i = 0; i < userDevices.size(); ++i)
         m_ownedGrid->addWidget(createOwnedCard(userDevices.at(i).toObject()),
-                               i / columns, i % columns,
-                               m_compact ? Qt::AlignTop : Qt::AlignLeft | Qt::AlignTop);
-    m_ownedGrid->setColumnStretch(0, m_compact ? 1 : 0);
-    m_ownedGrid->setColumnStretch(columns, m_compact ? 0 : 1);
+                               i / columns, i % columns);
+
+    for (int c = 0; c < columns; ++c)
+        m_ownedGrid->setColumnStretch(c, 1);
 }
 
 void DeviceManagementPage::rebuildAvailableGrid()
@@ -869,13 +864,13 @@ void DeviceManagementPage::rebuildAvailableGrid()
     clearGrid(m_availableGrid);
     m_availableEmpty->setVisible(m_availableDevices.isEmpty());
     m_availableEmpty->setText(tr("Không có thiết bị online nào đang chờ thêm."));
-    const int columns = m_gridColumns;
+    const int columns = qMax(1, m_gridColumns);
     for (int i = 0; i < m_availableDevices.size(); ++i)
         m_availableGrid->addWidget(createAvailableCard(m_availableDevices.at(i).toObject()),
-                                   i / columns, i % columns,
-                                   m_compact ? Qt::AlignTop : Qt::AlignLeft | Qt::AlignTop);
-    m_availableGrid->setColumnStretch(0, m_compact ? 1 : 0);
-    m_availableGrid->setColumnStretch(columns, m_compact ? 0 : 1);
+                                   i / columns, i % columns);
+
+    for (int c = 0; c < columns; ++c)
+        m_availableGrid->setColumnStretch(c, 1);
 }
 
 void DeviceManagementPage::openDeviceDrawer(const QJsonObject &device)
@@ -904,8 +899,10 @@ void DeviceManagementPage::openDeviceDrawer(const QJsonObject &device)
 
 void DeviceManagementPage::rebuildThresholdForm(const QJsonObject &device)
 {
-    while (QLayoutItem *item = m_thresholdForm->takeAt(0)) {
-        delete item->widget();
+    while (QLayoutItem *item = m_thresholdGrid->takeAt(0)) {
+        if (QWidget *w = item->widget()) {
+            delete w;
+        }
         delete item;
     }
     m_thresholdInputs.clear();
@@ -915,63 +912,106 @@ void DeviceManagementPage::rebuildThresholdForm(const QJsonObject &device)
     const QString addedBy = device.value(QStringLiteral("added_by")).toString();
     const bool isOwner = (m_currentUsername.isEmpty() || addedBy.isEmpty() || addedBy.compare(m_currentUsername, Qt::CaseInsensitive) == 0);
 
-    auto addThreshold = [this, &savedThresholds, isOwner](const QString &key, const QString &label,
-                                                          double fallback, double minimum,
-                                                          double maximum, const QString &suffix) {
+    int fieldCount = 0;
+    auto addThreshold = [this, &savedThresholds, isOwner, &fieldCount](const QString &key, const QString &label,
+                                                                      double fallback, double minimum,
+                                                                      double maximum, const QString &suffix,
+                                                                      int decimals = 1, double singleStep = 1.0) {
         const QStringList parts = key.split('.');
         double value = fallback;
         if (parts.size() == 2)
             value = savedThresholds.value(parts.at(0)).toObject()
                         .value(parts.at(1)).toDouble(fallback);
-        auto *input = new QDoubleSpinBox(m_drawer);
+
+        auto *cell = new QWidget(m_drawer);
+        auto *cellLayout = new QVBoxLayout(cell);
+        cellLayout->setContentsMargins(0, 0, 0, 0);
+        cellLayout->setSpacing(2);
+
+        auto *lbl = new QLabel(label, cell);
+        lbl->setObjectName(QStringLiteral("thresholdFieldLabel"));
+
+        auto *input = new QDoubleSpinBox(cell);
         input->setRange(minimum, maximum);
-        input->setDecimals(2);
+        input->setDecimals(decimals);
+        input->setSingleStep(singleStep);
         input->setValue(value);
         input->setSuffix(suffix);
         input->setEnabled(isOwner);
+        VirtualKeyboardDialog::attachToDoubleSpinBox(input, label);
+
+        cellLayout->addWidget(lbl);
+        cellLayout->addWidget(input);
+
         m_thresholdInputs.insert(key, input);
-        m_thresholdForm->addRow(label, input);
+        const int row = fieldCount / 2;
+        const int col = fieldCount % 2;
+        m_thresholdGrid->addWidget(cell, row, col);
+        ++fieldCount;
     };
 
-    if (type == QStringLiteral("uv_pressure")) {
-        addThreshold(QStringLiteral("uv_index.warning_above"), tr("UV cảnh báo"), 6, 0, 20, QString());
-        addThreshold(QStringLiteral("uv_index.critical_above"), tr("UV nguy hiểm"), 8, 0, 20, QString());
-        addThreshold(QStringLiteral("pressure_hpa.min"), tr("Áp suất thấp"), 990, 100, 1500, tr(" hPa"));
-        addThreshold(QStringLiteral("pressure_hpa.max"), tr("Áp suất cao"), 1030, 100, 1500, tr(" hPa"));
+    if (type == QStringLiteral("power_monitor") || type == QStringLiteral("electric_power")) {
+        addThreshold(QStringLiteral("voltage_v.min"), tr("⚡ V thấp"), 180.0, 0, 300, tr(" V"), 1, 1.0);
+        addThreshold(QStringLiteral("voltage_v.max"), tr("⚡ V cao"), 245.0, 0, 300, tr(" V"), 1, 1.0);
+        addThreshold(QStringLiteral("current_a.max"), tr("🔌 Dòng tải max"), 15.0, 0, 100, tr(" A"), 2, 0.1);
+        addThreshold(QStringLiteral("power_w.max"), tr("💡 Công suất max"), 3000.0, 0, 25000, tr(" W"), 1, 50.0);
+    } else if (type == QStringLiteral("uv_pressure")) {
+        addThreshold(QStringLiteral("uv_index.warning_above"), tr("☀ UV cảnh báo"), 6, 0, 20, QString(), 1, 0.5);
+        addThreshold(QStringLiteral("uv_index.critical_above"), tr("☀ UV nguy hiểm"), 8, 0, 20, QString(), 1, 0.5);
+        addThreshold(QStringLiteral("pressure_hpa.min"), tr("☁ Áp suất thấp"), 990, 100, 1500, tr(" hPa"), 0, 1.0);
+        addThreshold(QStringLiteral("pressure_hpa.max"), tr("☁ Áp suất cao"), 1030, 100, 1500, tr(" hPa"), 0, 1.0);
     } else if (type == QStringLiteral("temperature_sound")) {
-        addThreshold(QStringLiteral("temperature_c.warning_above"), tr("Nhiệt độ cảnh báo"), 40, -40, 150, tr(" °C"));
-        addThreshold(QStringLiteral("temperature_c.critical_above"), tr("Nhiệt độ nguy hiểm"), 50, -40, 150, tr(" °C"));
-        addThreshold(QStringLiteral("sound_vpp.warning_above"), tr("Âm thanh cảnh báo"), 1.5, 0, 3.3, tr(" Vpp"));
+        addThreshold(QStringLiteral("temperature_c.warning_above"), tr("🌡️ Nhiệt độ báo"), 40, -40, 150, tr(" °C"), 1, 1.0);
+        addThreshold(QStringLiteral("temperature_c.critical_above"), tr("🌡️ Nhiệt độ nguy"), 50, -40, 150, tr(" °C"), 1, 1.0);
+        addThreshold(QStringLiteral("sound_vpp.warning_above"), tr("♫ Âm thanh báo"), 1.5, 0, 3.3, tr(" Vpp"), 2, 0.1);
     } else if (type == QStringLiteral("weather_pressure")) {
-        addThreshold(QStringLiteral("temperature_c.min"), tr("Nhiệt độ thấp"), 0, -40, 150, tr(" °C"));
-        addThreshold(QStringLiteral("temperature_c.max"), tr("Nhiệt độ cao"), 50, -40, 150, tr(" °C"));
-        addThreshold(QStringLiteral("pressure_hpa.min"), tr("Áp suất thấp"), 990, 100, 1500, tr(" hPa"));
-        addThreshold(QStringLiteral("pressure_hpa.max"), tr("Áp suất cao"), 1030, 100, 1500, tr(" hPa"));
+        addThreshold(QStringLiteral("temperature_c.min"), tr("🌡️ Nhiệt độ thấp"), 0, -40, 150, tr(" °C"), 1, 1.0);
+        addThreshold(QStringLiteral("temperature_c.max"), tr("🌡️ Nhiệt độ cao"), 50, -40, 150, tr(" °C"), 1, 1.0);
+        addThreshold(QStringLiteral("pressure_hpa.min"), tr("☁ Áp suất thấp"), 990, 100, 1500, tr(" hPa"), 0, 1.0);
+        addThreshold(QStringLiteral("pressure_hpa.max"), tr("☁ Áp suất cao"), 1030, 100, 1500, tr(" hPa"), 0, 1.0);
     } else if (type == QStringLiteral("water_flow_pump") || type == QStringLiteral("pump_distance")) {
-        addThreshold(QStringLiteral("flow_l_min.min"), tr("Lưu lượng tối thiểu"), 0.20, 0, 60, tr(" L/min"));
-        addThreshold(QStringLiteral("flow_l_min.max"), tr("Lưu lượng tối đa"), 20.00, 0, 60, tr(" L/min"));
-        addThreshold(QStringLiteral("total_liters.max"), tr("Tổng nước cảnh báo"), 100.00, 0, 100000, tr(" L"));
+        addThreshold(QStringLiteral("flow_l_min.min"), tr("💧 Lưu lượng min"), 0.20, 0, 60, tr(" L/m"), 2, 0.1);
+        addThreshold(QStringLiteral("flow_l_min.max"), tr("💧 Lưu lượng max"), 20.00, 0, 60, tr(" L/m"), 2, 0.5);
+        addThreshold(QStringLiteral("total_liters.max"), tr("💧 Tổng nước max"), 100.00, 0, 100000, tr(" L"), 1, 10.0);
+    } else {
+        addThreshold(QStringLiteral("value.min"), tr("Min"), 0.0, -100000, 100000, QString(), 2, 1.0);
+        addThreshold(QStringLiteral("value.max"), tr("Max"), 100.0, -100000, 100000, QString(), 2, 1.0);
     }
 
-    m_samplingInterval = new QSpinBox(m_drawer);
+    auto *samplingCell = new QWidget(m_drawer);
+    auto *sLayout = new QVBoxLayout(samplingCell);
+    sLayout->setContentsMargins(0, 0, 0, 0);
+    sLayout->setSpacing(2);
+    auto *sLbl = new QLabel(tr("⏱ Chu kỳ gửi"), samplingCell);
+    sLbl->setObjectName(QStringLiteral("thresholdFieldLabel"));
+    m_samplingInterval = new QSpinBox(samplingCell);
     m_samplingInterval->setRange(1, 3600);
-    m_samplingInterval->setSuffix(tr(" giây"));
+    m_samplingInterval->setSuffix(tr(" s"));
     m_samplingInterval->setValue(saved.value(QStringLiteral("sampling_interval_ms"))
                                      .toInt(2000) / 1000);
     m_samplingInterval->setEnabled(isOwner);
-    const bool hasThresholds = !m_thresholdInputs.isEmpty();
-    m_thresholdForm->addRow(tr("Chu kỳ gửi"), m_samplingInterval);
-    m_thresholdForm->setRowVisible(m_samplingInterval, hasThresholds);
-    m_saveThresholds->setVisible(hasThresholds);
+    VirtualKeyboardDialog::attachToSpinBox(m_samplingInterval, tr("Chu kỳ gửi dữ liệu (giây)"));
+    sLayout->addWidget(sLbl);
+    sLayout->addWidget(m_samplingInterval);
+
+    const int sRow = fieldCount / 2;
+    const int sCol = fieldCount % 2;
+    if (sCol == 0) {
+        m_thresholdGrid->addWidget(samplingCell, sRow, 0, 1, 2);
+    } else {
+        m_thresholdGrid->addWidget(samplingCell, sRow, 1);
+    }
+
+    m_saveThresholds->setVisible(true);
     m_saveThresholds->setEnabled(isOwner);
-    m_thresholdTitle->setVisible(hasThresholds);
+    m_thresholdTitle->setVisible(true);
 
     if (!isOwner) {
-        m_thresholdTitle->setText(tr("Ngưỡng cảnh báo (Sở hữu: %1 · Chỉ xem)").arg(addedBy));
-        m_saveThresholds->setText(tr("Chỉ '%1' mới được đổi ngưỡng").arg(addedBy));
+        m_thresholdTitle->setText(tr("⚙ Ngưỡng cảnh báo (Chỉ xem)"));
+        m_saveThresholds->setText(tr("Chỉ '%1' mới được đổi").arg(addedBy));
     } else {
-        m_thresholdTitle->setText(tr("Ngưỡng cảnh báo"));
-        m_saveThresholds->setText(tr("Lưu & gửi xuống thiết bị"));
+        m_thresholdTitle->setText(tr("⚙ Ngưỡng cảnh báo"));
+        m_saveThresholds->setText(tr("💾 Lưu cấu hình xuống thiết bị"));
     }
 }
 

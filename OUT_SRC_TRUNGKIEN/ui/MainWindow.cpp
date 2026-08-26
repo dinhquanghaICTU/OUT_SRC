@@ -238,7 +238,7 @@ void MainWindow::setSidebarExpanded(bool expanded)
 {
     m_sidebarExpanded = expanded;
     const bool compact = ui->sideBar->property("compactNavigation").toBool();
-    const int width = expanded ? 175 : 54;
+    const int width = expanded ? 145 : 48;
     ui->sideBar->setMinimumWidth(compact ? 0 : width);
     ui->sideBar->setMaximumWidth(compact ? QWIDGETSIZE_MAX : width);
     ui->sideBar->setProperty("expanded", expanded);
@@ -259,15 +259,15 @@ void MainWindow::setCompactNavigation(bool compact)
         return;
 
     ui->sideBar->setProperty("compactNavigation", compact);
-    ui->sideBarLayout->setContentsMargins(compact ? 4 : 8, compact ? 4 : 12,
-                                           compact ? 4 : 8, compact ? 4 : 12);
-    ui->sideBarLayout->setSpacing(compact ? 2 : 8);
+    ui->sideBarLayout->setContentsMargins(compact ? 4 : 6, compact ? 4 : 8,
+                                           compact ? 4 : 6, compact ? 4 : 8);
+    ui->sideBarLayout->setSpacing(compact ? 2 : 6);
     ui->sideLogo->setVisible(!compact);
     m_sidebarToggleButton->setVisible(!compact);
-    ui->sideBar->setMinimumWidth(compact ? 0 : (m_sidebarExpanded ? 175 : 54));
-    ui->sideBar->setMaximumWidth(compact ? QWIDGETSIZE_MAX : (m_sidebarExpanded ? 175 : 54));
-    ui->sideBar->setMaximumHeight(compact ? 44 : QWIDGETSIZE_MAX);
-    ui->sideBar->setMinimumHeight(compact ? 44 : 0);
+    ui->sideBar->setMinimumWidth(compact ? 0 : (m_sidebarExpanded ? 145 : 48));
+    ui->sideBar->setMaximumWidth(compact ? QWIDGETSIZE_MAX : (m_sidebarExpanded ? 145 : 48));
+    ui->sideBar->setMaximumHeight(compact ? 40 : QWIDGETSIZE_MAX);
+    ui->sideBar->setMinimumHeight(compact ? 40 : 0);
     ui->mainLayout->setDirection(compact ? QBoxLayout::TopToBottom : QBoxLayout::LeftToRight);
     ui->sideBarLayout->setDirection(compact ? QBoxLayout::LeftToRight : QBoxLayout::TopToBottom);
     ui->navSpacer->changeSize(0, 0, QSizePolicy::Expanding,
@@ -293,8 +293,8 @@ void MainWindow::refreshSidebarButtonText()
                                                         : QStringLiteral("›"),
                m_sidebarExpanded ? tr("Thu gọn") : tr("Mở rộng"));
     setNavText(ui->dashboardButton, QStringLiteral("⌂"), tr("Trang chủ"));
-    setNavText(ui->devicesButton, QStringLiteral("◆"), tr("Quản lý thiết bị"));
-    setNavText(ui->historyButton, QStringLiteral("▤"), tr("Lịch sử dữ liệu"));
-    setNavText(ui->usersButton, QStringLiteral("♟"), tr("Quản lý tài khoản"));
+    setNavText(ui->devicesButton, QStringLiteral("◆"), tr("Thiết bị"));
+    setNavText(ui->historyButton, QStringLiteral("▤"), tr("Lịch sử"));
+    setNavText(ui->usersButton, QStringLiteral("♟"), tr("Tài khoản"));
     setNavText(ui->logoutButton, QStringLiteral("↪"), tr("Đăng xuất"));
 }

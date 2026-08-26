@@ -80,6 +80,7 @@ signals:
     void claimDeviceRequested(const QString &deviceId, const QString &deviceName);
     void releaseDeviceRequested(const QString &deviceId);
     void relayControlRequested(const QString &deviceId, bool state);
+    void deviceConfigRequested(const QString &deviceId, const QJsonObject &config);
     void refreshDevicesRequested();
 
 private:
@@ -93,6 +94,8 @@ private:
     QString m_deviceName = "";
     bool m_hasDevice = false;
     bool m_isOnline = false;
+    double m_minLuxThreshold = 50.0;
+    double m_maxLuxThreshold = 500.0;
 
     QJsonArray m_availableDevices;
     QPointer<SelectOnlineDeviceDialog> m_currentSelectDialog;
@@ -128,4 +131,5 @@ private:
     bool m_isRelayPending = false;
     bool m_pendingRelayState = false;
     QTimer *m_relayPendingTimer = nullptr;
+    QTimer *m_autoOffTimer = nullptr;
 };

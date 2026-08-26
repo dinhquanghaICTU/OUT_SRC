@@ -7,12 +7,103 @@
 #include <inttypes.h>
 #include <mqtt_client.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 static esp_mqtt_client_handle_t mqtt_client = NULL;
 static bool mqtt_started = false;
 static bool mqtt_connected = false;
 static uint32_t mqtt_boot_id = 0;
 static uint32_t telemetry_sequence = 0;
+
+static uint32_t s_sampling_interval_ms = SAMPLE_INTERVAL_MS;
+static float s_uv_warning_above = 15.0f;
+static float s_uv_critical_above = 20.0f;
+static float s_pressure_min = 500.0f;
+static float s_pressure_max = 2000.0f;
+
+static bool parse_json_double(const char *payload, const char *field, double *out)
+{
+    if (payload == NULL || field == NULL || out == NULL)
+        return false;
+
+    char key[64];
+    snprintf(key, sizeof(key), "\"%s\"", field);
+    const char *p = strstr(payload, key);
+    if (!p)
+        return false;
+    p = strchr(p + strlen(key), ':');
+    if (!p)
+        return false;
+    p++;
+    while (*p == ' ' || *p == '\t' || *p == '\r' || *p == '\n')
+        p++;
+    *out = atof(p);
+    return true;
+}
+
+uint32_t mqtt_manager_get_sampling_interval_ms(void)
+{
+    return s_sampling_interval_ms > 0 ? s_sampling_interval_ms : SAMPLE_INTERVAL_MS;
+}
+
+float mqtt_manager_get_uv_warning(void)
+{
+    return s_uv_warning_above;
+}
+
+float mqtt_manager_get_uv_critical(void)
+{
+    return s_uv_critical_above;
+}
+
+float mqtt_manager_get_pressure_min(void)
+{
+    return s_pressure_min;
+}
+
+float mqtt_manager_get_pressure_max(void)
+{
+    return s_pressure_max;
+}
+
+bool mqtt_manager_publish_config_reported(uint32_t config_version)
+{
+    char payload[384];
+    int length;
+
+    if (!mqtt_connected || mqtt_client == NULL)
+        return false;
+
+    length = snprintf(payload,
+                      sizeof(payload),
+                      "{\"schema_version\":1,"
+                      "\"device_id\":\"%s\","
+                      "\"config_version\":%" PRIu32 ","
+                      "\"sampling_interval_ms\":%" PRIu32 ","
+                      "\"thresholds\":{"
+                      "\"uv_index\":{\"warning_above\":%.2f,\"critical_above\":%.2f},"
+                      "\"pressure_hpa\":{\"min\":%.2f,\"max\":%.2f}}}",
+                      PRODUCT_ID,
+                      config_version,
+                      s_sampling_interval_ms,
+                      s_uv_warning_above,
+                      s_uv_critical_above,
+                      s_pressure_min,
+                      s_pressure_max);
+
+    if (length <= 0 || length >= (int)sizeof(payload))
+        return false;
+
+    const int message_id =
+        esp_mqtt_client_publish(mqtt_client, MQTT_PUB_CONFIG_REPORTED_TOPIC, payload, length, 1, 1);
+
+    if (message_id < 0)
+        return false;
+
+    printf("[MQTT] Reported config published msg_id=%d: %s\n", message_id, payload);
+    return true;
+}
 
 static void
 mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_t event_id, void *event_data)
@@ -33,6 +124,8 @@ mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_t event_id, 
         printf("[MQTT] Subscribe topic=%s, msg_id=%d\n",
                MQTT_SUB_CONFIG_DESIRED_TOPIC,
                message_id);
+
+        mqtt_manager_publish_config_reported(1);
         break;
 
     case MQTT_EVENT_DISCONNECTED:
@@ -44,12 +137,54 @@ mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_t event_id, 
         mqtt_connected = false;
         printf("[MQTT] Loi ket noi broker\n");
         break;
+
     case MQTT_EVENT_DATA:
     {
         printf("[MQTT] Topic: %.*s\n", event->topic_len, event->topic);
-
         printf("[MQTT] Payload: %.*s\n", event->data_len, event->data);
 
+        // Check if config desired topic
+        if (event->topic_len == (int)strlen(MQTT_SUB_CONFIG_DESIRED_TOPIC) &&
+            memcmp(event->topic, MQTT_SUB_CONFIG_DESIRED_TOPIC, event->topic_len) == 0)
+        {
+            char payload[512];
+            int len = event->data_len < (int)(sizeof(payload) - 1) ? event->data_len : (int)(sizeof(payload) - 1);
+            memcpy(payload, event->data, len);
+            payload[len] = '\0';
+
+            double val = 0;
+            if (parse_json_double(payload, "sampling_interval_ms", &val))
+            {
+                if (val >= 500)
+                    s_sampling_interval_ms = (uint32_t)val;
+            }
+
+            if (parse_json_double(payload, "warning_above", &val))
+            {
+                s_uv_warning_above = (float)val;
+            }
+            if (parse_json_double(payload, "critical_above", &val))
+            {
+                s_uv_critical_above = (float)val;
+            }
+
+            if (parse_json_double(payload, "min", &val))
+            {
+                s_pressure_min = (float)val;
+            }
+            if (parse_json_double(payload, "max", &val))
+            {
+                s_pressure_max = (float)val;
+            }
+
+            double ver = 1;
+            parse_json_double(payload, "config_version", &ver);
+
+            printf("[CONFIG] Nhan cau hinh: Interval=%" PRIu32 "ms, UV_Warn=%.2f, UV_Crit=%.2f, P_Min=%.2f, P_Max=%.2f\n",
+                   s_sampling_interval_ms, s_uv_warning_above, s_uv_critical_above, s_pressure_min, s_pressure_max);
+
+            mqtt_manager_publish_config_reported((uint32_t)ver);
+        }
         break;
     }
     default:

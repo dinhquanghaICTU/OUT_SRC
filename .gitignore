@@ -5,11 +5,15 @@
 # Build directories (desktop, rpi, subprojects)
 [Bb]uild/
 [Bb]uild-*/
+**/[Bb]uild/
+**/[Bb]uild-*/
 cmake-build-*/
+**/cmake-build-*/
 Testing/
 
 # CMake artifacts
 CMakeFiles/
+**/CMakeFiles/
 CMakeCache.txt
 CMakeCache.txt.prev
 cmake_install.cmake
@@ -18,6 +22,8 @@ CTestTestfile.cmake
 qtcsettings.cmake
 CMakeConfigureLog.yaml
 TargetDirectories.txt
+compile_commands.json
+**/compile_commands.json
 
 # Ninja artifacts
 *.ninja
@@ -33,6 +39,7 @@ TargetDirectories.txt
 .qtc_clangd/
 .qt/
 *_autogen/
+**/_autogen/
 
 # Qt intermediate generated files
 moc_*.cpp
@@ -59,6 +66,10 @@ qrc_*.cpp
 *.so.*
 *.dylib
 *.dll
+*.rar
+*.zip
+*.7z
+*.tar.gz
 
 # Executables & Debug artifacts
 *.exe
@@ -70,7 +81,7 @@ qrc_*.cpp
 *.ilk
 run_test_bin
 
-# Firmware / Embedded (PlatformIO, Arduino, ESP32)
+# Firmware / Embedded (PlatformIO, Arduino, ESP32, ESP-IDF)
 .pio/
 .pioenvs/
 .piolibdeps/
@@ -78,12 +89,15 @@ run_test_bin
 *.bin
 *.elf
 *.map
+managed_components/
+**/managed_components/
 
 # IDEs and Editors
 .idea/
+.vscode/
+**/.vscode/
 *.sublime-project
 *.sublime-workspace
-
 
 # OS & Temporary files
 *~

@@ -11,7 +11,68 @@
 
 #define ACS712_SENSITIVITY_V_PER_A 0.185f
 #define ZMPT101B_CALIBRATION 628.57f
-#define RELAY_PIN 5
+
+typedef struct {
+    float voltage_min;
+    float voltage_max;
+    float current_max;
+    float power_max;
+    uint32_t sample_interval_ms;
+} device_thresholds_t;
+
+typedef struct {
+    bool is_alert;
+    bool over_voltage;
+    bool under_voltage;
+    bool over_current;
+    bool over_power;
+    const char *alert_msg;
+} alert_status_t;
+
+static device_thresholds_t test_thresholds = {
+    .voltage_min = 180.0f,
+    .voltage_max = 245.0f,
+    .current_max = 15.0f,
+    .power_max = 3000.0f,
+    .sample_interval_ms = 2000
+};
+
+alert_status_t check_thresholds(float currentA, float voltageV, float powerW, const device_thresholds_t *th) {
+    alert_status_t status = {
+        .is_alert = false,
+        .over_voltage = false,
+        .under_voltage = false,
+        .over_current = false,
+        .over_power = false,
+        .alert_msg = "normal"
+    };
+
+    if (voltageV > 10.0f) {
+        if (voltageV < th->voltage_min) {
+            status.under_voltage = true;
+            status.is_alert = true;
+            status.alert_msg = "under_voltage";
+        } else if (voltageV > th->voltage_max) {
+            status.over_voltage = true;
+            status.is_alert = true;
+            status.alert_msg = "over_voltage";
+        }
+    }
+
+    if (currentA > th->current_max) {
+        status.over_current = true;
+        status.is_alert = true;
+        status.alert_msg = "over_current";
+    }
+
+    if (powerW > th->power_max) {
+        status.over_power = true;
+        status.is_alert = true;
+        status.alert_msg = "over_power";
+    }
+
+    return status;
+}
 
 // ACS712 RMS Current calculation
 float acs712_calc_current(float sensor_rms_v) {
@@ -35,8 +96,10 @@ float smooth_deadband(float previous, float current, float deadband, float alpha
 
 // MQTT Telemetry Builder
 int mqtt_build_telemetry_theanh(char *buf, size_t max_len, uint32_t seq, uint32_t boot_id,
-                                float current_a, float voltage_v, bool relay_on) {
+                                float current_a, float voltage_v) {
     float power_w = power_calc_watts(current_a, voltage_v);
+    alert_status_t alert = check_thresholds(current_a, voltage_v, power_w, &test_thresholds);
+
     return snprintf(buf, max_len,
         "{\"schema_version\":1,"
         "\"device_id\":\"%s\","
@@ -51,14 +114,15 @@ int mqtt_build_telemetry_theanh(char *buf, size_t max_len, uint32_t seq, uint32_
         "\"voltage\":%.2f,"
         "\"power_w\":%.2f,"
         "\"power\":%.2f,"
-        "\"relay_on\":%s,"
-        "\"relay\":%s}}",
+        "\"alert\":%s,"
+        "\"alert_msg\":\"%s\"}}",
         PRODUCT_ID, PRODUCT_ID, boot_id, seq, seq,
         (unsigned long long)mock_hal_get_time_ms(), FIRMWARE_VERSION,
         current_a, current_a,
         voltage_v, voltage_v,
         power_w, power_w,
-        relay_on ? "true" : "false", relay_on ? "true" : "false");
+        alert.is_alert ? "true" : "false",
+        alert.alert_msg);
 }
 
 void setUp(void) {
@@ -89,25 +153,53 @@ void test_theanh_zmpt101b_voltage_and_power_math(void) {
 
 void test_theanh_smooth_deadband_filter(void) {
     float prev = 220.0f;
-    // Small noise 0.05V within deadband 0.1V -> Keeps previous
     float filtered_noise = smooth_deadband(prev, 220.05f, 0.1f, 0.2f);
     TEST_ASSERT_FLOAT_WITHIN(0.001f, 220.0f, filtered_noise);
 
-    // Large step change 230V (> 0.1V) -> Filters smoothly
     float filtered_step = smooth_deadband(prev, 230.0f, 0.1f, 0.5f);
     TEST_ASSERT_FLOAT_WITHIN(0.1f, 225.0f, filtered_step);
+}
+
+void test_theanh_threshold_and_alert_logic(void) {
+    // 1. Normal state: 220V, 2A, 440W -> No Alert
+    alert_status_t normal = check_thresholds(2.0f, 220.0f, 440.0f, &test_thresholds);
+    TEST_ASSERT_FALSE(normal.is_alert);
+    TEST_ASSERT_EQUAL_STRING("normal", normal.alert_msg);
+
+    // 2. Under Voltage: 165V (< 180V) -> Alert
+    alert_status_t under_v = check_thresholds(2.0f, 165.0f, 330.0f, &test_thresholds);
+    TEST_ASSERT_TRUE(under_v.is_alert);
+    TEST_ASSERT_TRUE(under_v.under_voltage);
+    TEST_ASSERT_EQUAL_STRING("under_voltage", under_v.alert_msg);
+
+    // 3. Over Voltage: 255V (> 245V) -> Alert
+    alert_status_t over_v = check_thresholds(1.0f, 255.0f, 255.0f, &test_thresholds);
+    TEST_ASSERT_TRUE(over_v.is_alert);
+    TEST_ASSERT_TRUE(over_v.over_voltage);
+    TEST_ASSERT_EQUAL_STRING("over_voltage", over_v.alert_msg);
+
+    // 4. Over Current: 18A (> 15A) -> Alert
+    alert_status_t over_i = check_thresholds(18.0f, 220.0f, 3960.0f, &test_thresholds);
+    TEST_ASSERT_TRUE(over_i.is_alert);
+    TEST_ASSERT_TRUE(over_i.over_current);
+
+    // 5. Over Power: 3500W (> 3000W) -> Alert
+    alert_status_t over_p = check_thresholds(14.0f, 230.0f, 3220.0f, &test_thresholds);
+    TEST_ASSERT_TRUE(over_p.is_alert);
+    TEST_ASSERT_TRUE(over_p.over_power);
 }
 
 void test_theanh_mqtt_telemetry_schema(void) {
     char payload[512];
     mock_hal_set_time_ms(50000);
-    int len = mqtt_build_telemetry_theanh(payload, sizeof(payload), 77, 0x445566, 3.2f, 220.0f, true);
+    int len = mqtt_build_telemetry_theanh(payload, sizeof(payload), 77, 0x445566, 3.2f, 220.0f);
     TEST_ASSERT_TRUE(len > 0);
 
     TEST_ASSERT_TRUE(json_has_key(payload, "current_a"));
     TEST_ASSERT_TRUE(json_has_key(payload, "voltage_v"));
     TEST_ASSERT_TRUE(json_has_key(payload, "power_w"));
-    TEST_ASSERT_TRUE(json_has_key(payload, "relay_on"));
+    TEST_ASSERT_TRUE(json_has_key(payload, "alert"));
+    TEST_ASSERT_TRUE(json_has_key(payload, "alert_msg"));
 
     char dev_id[64];
     json_extract_string(payload, "device_id", dev_id, sizeof(dev_id));
@@ -123,6 +215,7 @@ int main(void) {
     RUN_TEST(test_theanh_acs712_current_math);
     RUN_TEST(test_theanh_zmpt101b_voltage_and_power_math);
     RUN_TEST(test_theanh_smooth_deadband_filter);
+    RUN_TEST(test_theanh_threshold_and_alert_logic);
     RUN_TEST(test_theanh_mqtt_telemetry_schema);
     return UNITY_END();
 }

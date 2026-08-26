@@ -2,6 +2,7 @@
 #define MQTT_MANAGER_H
 
 #include <stdbool.h>
+#include <stdint.h>
 
 #ifdef __cplusplus
 extern "C"
@@ -13,6 +14,7 @@ extern "C"
     bool mqtt_manager_is_connected(void);
     bool mqtt_manager_publish_sensor(float flow_l_min, float total_liters, bool pump_on, float distance_cm);
     bool mqtt_manager_publish_relay(bool state, const char *changed_by);
+    bool mqtt_manager_publish_config_reported(uint32_t config_version);
 
 #ifdef __cplusplus
 }
