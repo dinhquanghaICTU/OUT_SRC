@@ -32,6 +32,7 @@ public:
     void startRealtime();
     void stopRealtime();
     void configSaved(const QString &deviceId, bool mqttPublished);
+    void onDeviceReleased(const QString &deviceId);
 
 signals:
     void claimDeviceRequested(const QString &deviceId, const QString &name);

@@ -11,8 +11,10 @@ idf_component_register(
         "mqtt"
         "ble"
         "flash"
+        "."
     REQUIRES 
         esp_https_ota
+        esp_http_client
         app_update
         esp_wifi
         nvs_flash
@@ -20,4 +22,9 @@ idf_component_register(
         esp-tls
         mbedtls
         bt
+        esp_timer
+        third_party
+    PRIV_REQUIRES
+        hardware
+        application
 )

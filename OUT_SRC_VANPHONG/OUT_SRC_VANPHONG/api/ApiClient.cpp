@@ -130,12 +130,14 @@ void ApiClient::claimDevice(const QString &deviceId, const QString &name)
         QJsonDocument(QJsonObject{{"device_id", deviceId}, {"name", name}}).toJson());
 
     connect(reply, &QNetworkReply::finished, this, [this, reply] {
-        reply->deleteLater();
         const QByteArray body = reply->readAll();
+        reply->deleteLater();
         if (reply->error() != QNetworkReply::NoError) {
             emit operationFailed(responseError(body, tr("Không thể thêm thiết bị")));
             return;
         }
+        m_devicesRequestInFlight = false;
+        m_availableRequestInFlight = false;
         emit deviceClaimed(QJsonDocument::fromJson(body).object());
     });
 }
@@ -147,11 +149,14 @@ void ApiClient::releaseDevice(const QString &deviceId)
         QJsonDocument(QJsonObject{{"device_id", deviceId}}).toJson());
 
     connect(reply, &QNetworkReply::finished, this, [this, deviceId, reply] {
+        const QByteArray body = reply->readAll();
         reply->deleteLater();
         if (reply->error() != QNetworkReply::NoError) {
-            emit operationFailed(responseError(reply->readAll(), tr("Không thể gỡ thiết bị")));
+            emit operationFailed(responseError(body, tr("Không thể gỡ thiết bị")));
             return;
         }
+        m_devicesRequestInFlight = false;
+        m_availableRequestInFlight = false;
         emit deviceReleased(deviceId);
     });
 }

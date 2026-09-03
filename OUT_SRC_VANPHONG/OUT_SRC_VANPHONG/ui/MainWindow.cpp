@@ -152,7 +152,8 @@ void MainWindow::setupNavigation()
         m_apiClient->requestAvailableDevices();
         statusBar()->showMessage(tr("Đã thêm bộ tưới vào vườn thành công"), 4000);
     });
-    connect(m_apiClient, &ApiClient::deviceReleased, this, [this] {
+    connect(m_apiClient, &ApiClient::deviceReleased, this, [this](const QString &deviceId) {
+        m_deviceManagementPage->onDeviceReleased(deviceId);
         m_apiClient->requestMyDevice();
         m_apiClient->requestAvailableDevices();
         statusBar()->showMessage(tr("Đã gỡ thiết bị khỏi tài khoản"), 4000);

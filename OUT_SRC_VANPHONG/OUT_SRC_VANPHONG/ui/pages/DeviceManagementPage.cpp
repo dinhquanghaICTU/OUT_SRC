@@ -186,6 +186,8 @@ DeviceManagementPage::DeviceManagementPage(QWidget *parent)
             did = m_ownedDevices.first().toObject().value(QStringLiteral("device_id")).toString();
         }
         if (!did.isEmpty()) {
+            m_releaseDevBtn->setEnabled(false);
+            m_releaseDevBtn->setText(tr("Đang gỡ..."));
             emit releaseDeviceRequested(did);
         }
     });
@@ -228,14 +230,60 @@ void DeviceManagementPage::setCurrentUser(const QString &username, bool isAdmin)
 void DeviceManagementPage::setOwnedDevices(const QJsonArray &devices)
 {
     m_ownedDevices = devices;
+    if (m_ownedDevices.isEmpty()) {
+        m_selectedDevice = {};
+        m_drawerId->setText(tr("Chọn thiết bị để chỉnh sửa ngưỡng"));
+        m_releaseDevBtn->setEnabled(false);
+    } else {
+        m_releaseDevBtn->setEnabled(true);
+        m_releaseDevBtn->setText(tr("🗑️ Gỡ thiết bị"));
+        bool selectedStillExists = false;
+        const QString curSelId = m_selectedDevice.value(QStringLiteral("device_id")).toString();
+        for (const auto &val : m_ownedDevices) {
+            if (val.toObject().value(QStringLiteral("device_id")).toString() == curSelId) {
+                selectedStillExists = true;
+                break;
+            }
+        }
+        if (!selectedStillExists) {
+            openDeviceDrawer(m_ownedDevices.first().toObject());
+        }
+    }
     rebuildOwnedGrid();
     rebuildLogTable();
 }
 
 void DeviceManagementPage::setAvailableDevices(const QJsonArray &devices)
 {
-    m_availableDevices = devices;
+    QSet<QString> ownedIds;
+    for (const auto &val : m_ownedDevices) {
+        ownedIds.insert(val.toObject().value(QStringLiteral("device_id")).toString().trimmed().toLower());
+    }
+
+    QJsonArray filtered;
+    for (const auto &val : devices) {
+        const QString did = val.toObject().value(QStringLiteral("device_id")).toString().trimmed().toLower();
+        if (!did.isEmpty() && !ownedIds.contains(did)) {
+            filtered.append(val);
+        }
+    }
+    m_availableDevices = filtered;
     rebuildAvailableGrid();
+}
+
+void DeviceManagementPage::onDeviceReleased(const QString &deviceId)
+{
+    m_releaseDevBtn->setEnabled(true);
+    m_releaseDevBtn->setText(tr("🗑️ Gỡ thiết bị"));
+
+    const QString normId = deviceId.trimmed().toLower();
+    QJsonArray remaining;
+    for (const auto &val : m_ownedDevices) {
+        if (val.toObject().value(QStringLiteral("device_id")).toString().trimmed().toLower() != normId) {
+            remaining.append(val);
+        }
+    }
+    setOwnedDevices(remaining);
 }
 
 void DeviceManagementPage::startRealtime()
@@ -325,7 +373,9 @@ QWidget *DeviceManagementPage::createOwnedCard(const QJsonObject &device)
 
     auto *btnRelease = new QPushButton(tr("🗑️ Gỡ"), card);
     btnRelease->setStyleSheet(QStringLiteral("background: #991b1b; color: white; border: none; border-radius: 4px; padding: 4px 10px; font-weight: 600; font-size: 10px;"));
-    connect(btnRelease, &QPushButton::clicked, this, [this, id] {
+    connect(btnRelease, &QPushButton::clicked, this, [this, btnRelease, id] {
+        btnRelease->setEnabled(false);
+        btnRelease->setText(tr("Đang gỡ..."));
         emit releaseDeviceRequested(id);
     });
     btnRow->addWidget(btnRelease);
@@ -352,7 +402,9 @@ QWidget *DeviceManagementPage::createAvailableCard(const QJsonObject &device)
 
     auto *btnClaim = new QPushButton(tr("+ Thêm vào vườn"), card);
     btnClaim->setStyleSheet(QStringLiteral("background: #10b981; color: white; border: none; border-radius: 5px; padding: 5px 12px; font-weight: 700; font-size: 11px;"));
-    connect(btnClaim, &QPushButton::clicked, this, [this, id] {
+    connect(btnClaim, &QPushButton::clicked, this, [this, btnClaim, id] {
+        btnClaim->setEnabled(false);
+        btnClaim->setText(tr("Đang thêm..."));
         emit claimDeviceRequested(id, id);
     });
     layout->addWidget(btnClaim);

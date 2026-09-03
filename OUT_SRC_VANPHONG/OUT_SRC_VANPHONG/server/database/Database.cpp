@@ -90,6 +90,8 @@ bool Database::migrate(QString *error)
                        "last_seen_at TEXT NOT NULL)"),
         QStringLiteral("CREATE INDEX IF NOT EXISTS idx_devices_owner "
                        "ON devices(owner_user_id)"),
+        QStringLiteral("CREATE UNIQUE INDEX IF NOT EXISTS idx_devices_unique_id "
+                       "ON devices(device_id COLLATE NOCASE)"),
         QStringLiteral("CREATE TABLE IF NOT EXISTS per_device_config ("
                        "device_id TEXT PRIMARY KEY COLLATE NOCASE,"
                        "config_json TEXT NOT NULL, updated_at TEXT NOT NULL,"
@@ -338,14 +340,25 @@ QJsonArray Database::users(QString *error) const
 bool Database::claimDevice(const QString &username, const QString &deviceId, const QString &name,
                            QString *errorCode, QString *error)
 {
-    if (deviceId.trimmed() != QStringLiteral("Vanphong-190782")) {
+    const QString trimmedId = deviceId.trimmed();
+    if (trimmedId.compare(QStringLiteral("Vanphong-190782"), Qt::CaseInsensitive) != 0) {
         if (errorCode) *errorCode = QStringLiteral("INVALID_DEVICE_ID");
         if (error) *error = QStringLiteral("Chỉ cho phép thêm thiết bị có ID trong firmware (Vanphong-190782)");
         return false;
     }
 
+    // Check if device is ALREADY claimed by any user:
+    QSqlQuery checkQuery(m_db);
+    checkQuery.prepare(QStringLiteral("SELECT 1 FROM devices WHERE device_id = :did COLLATE NOCASE"));
+    checkQuery.bindValue(QStringLiteral(":did"), trimmedId);
+    if (checkQuery.exec() && checkQuery.next()) {
+        if (errorCode) *errorCode = QStringLiteral("DEVICE_ALREADY_CLAIMED");
+        if (error) *error = QStringLiteral("Thiết bị này đã được thêm vào hệ thống trước đó!");
+        return false;
+    }
+
     QSqlQuery userQuery(m_db);
-    userQuery.prepare(QStringLiteral("SELECT id FROM users WHERE username = :u"));
+    userQuery.prepare(QStringLiteral("SELECT id FROM users WHERE username = :u COLLATE NOCASE"));
     userQuery.bindValue(QStringLiteral(":u"), username.trimmed());
     if (!userQuery.exec() || !userQuery.next()) {
         if (errorCode) *errorCode = QStringLiteral("USER_NOT_FOUND");
@@ -358,8 +371,8 @@ bool Database::claimDevice(const QString &username, const QString &deviceId, con
     claimQuery.prepare(QStringLiteral(
         "INSERT INTO devices (device_id, name, owner_user_id, created_at) "
         "VALUES (:did, :name, :uid, :now)"));
-    claimQuery.bindValue(QStringLiteral(":did"), deviceId.trimmed());
-    claimQuery.bindValue(QStringLiteral(":name"), name.trimmed().isEmpty() ? deviceId : name.trimmed());
+    claimQuery.bindValue(QStringLiteral(":did"), trimmedId);
+    claimQuery.bindValue(QStringLiteral(":name"), name.trimmed().isEmpty() ? trimmedId : name.trimmed());
     claimQuery.bindValue(QStringLiteral(":uid"), userId);
     claimQuery.bindValue(QStringLiteral(":now"), QDateTime::currentDateTimeUtc().toString(Qt::ISODateWithMs));
 
@@ -374,8 +387,9 @@ bool Database::claimDevice(const QString &username, const QString &deviceId, con
 bool Database::releaseDevice(const QString &username, const QString &deviceId,
                              QString *errorCode, QString *error)
 {
+    const QString trimmedId = deviceId.trimmed();
     QSqlQuery roleQuery(m_db);
-    roleQuery.prepare(QStringLiteral("SELECT role, id FROM users WHERE username = :u"));
+    roleQuery.prepare(QStringLiteral("SELECT role, id FROM users WHERE username = :u COLLATE NOCASE"));
     roleQuery.bindValue(QStringLiteral(":u"), username.trimmed());
     QString role;
     int userId = -1;
@@ -385,12 +399,12 @@ bool Database::releaseDevice(const QString &username, const QString &deviceId,
     }
 
     QSqlQuery query(m_db);
-    if (role == QStringLiteral("admin")) {
-        query.prepare(QStringLiteral("DELETE FROM devices WHERE device_id = :did"));
-        query.bindValue(QStringLiteral(":did"), deviceId.trimmed());
+    if (role.compare(QStringLiteral("admin"), Qt::CaseInsensitive) == 0) {
+        query.prepare(QStringLiteral("DELETE FROM devices WHERE device_id = :did COLLATE NOCASE"));
+        query.bindValue(QStringLiteral(":did"), trimmedId);
     } else {
-        query.prepare(QStringLiteral("DELETE FROM devices WHERE device_id = :did AND owner_user_id = :uid"));
-        query.bindValue(QStringLiteral(":did"), deviceId.trimmed());
+        query.prepare(QStringLiteral("DELETE FROM devices WHERE device_id = :did COLLATE NOCASE AND owner_user_id = :uid"));
+        query.bindValue(QStringLiteral(":did"), trimmedId);
         query.bindValue(QStringLiteral(":uid"), userId);
     }
 
@@ -399,6 +413,19 @@ bool Database::releaseDevice(const QString &username, const QString &deviceId,
         if (error) *error = query.lastError().text();
         return false;
     }
+
+    // Clean up per_device_config
+    QSqlQuery cfgDel(m_db);
+    cfgDel.prepare(QStringLiteral("DELETE FROM per_device_config WHERE device_id = :did COLLATE NOCASE"));
+    cfgDel.bindValue(QStringLiteral(":did"), trimmedId);
+    cfgDel.exec();
+
+    // Clean up discovered_devices so it doesn't immediately linger as active until rediscovered
+    QSqlQuery discDel(m_db);
+    discDel.prepare(QStringLiteral("DELETE FROM discovered_devices WHERE device_id = :did COLLATE NOCASE"));
+    discDel.bindValue(QStringLiteral(":did"), trimmedId);
+    discDel.exec();
+
     return true;
 }
 
@@ -406,16 +433,35 @@ QJsonArray Database::devicesForUser(const QString &username, int onlineWindowSec
                                     QString *error) const
 {
     QJsonArray result;
+    QSqlQuery roleQuery(m_db);
+    roleQuery.prepare(QStringLiteral("SELECT role FROM users WHERE username = :u COLLATE NOCASE"));
+    roleQuery.bindValue(QStringLiteral(":u"), username.trimmed());
+    bool isAdmin = false;
+    if (roleQuery.exec() && roleQuery.next()) {
+        isAdmin = (roleQuery.value(0).toString().compare(QStringLiteral("admin"), Qt::CaseInsensitive) == 0);
+    }
+
     QSqlQuery query(m_db);
-    query.prepare(QStringLiteral(
-        "SELECT d.device_id, d.name, disc.online, disc.device_type, disc.metrics_json, disc.state_json, "
-        "disc.last_seen_at, cfg.config_json "
-        "FROM devices d "
-        "JOIN users u ON d.owner_user_id = u.id "
-        "LEFT JOIN discovered_devices disc ON disc.device_id = d.device_id "
-        "LEFT JOIN per_device_config cfg ON cfg.device_id = d.device_id "
-        "WHERE u.username = :u AND d.device_id = 'Vanphong-190782' ORDER BY d.id ASC"));
-    query.bindValue(QStringLiteral(":u"), username.trimmed());
+    if (isAdmin) {
+        query.prepare(QStringLiteral(
+            "SELECT d.device_id, d.name, disc.online, disc.device_type, disc.metrics_json, disc.state_json, "
+            "disc.last_seen_at, cfg.config_json "
+            "FROM devices d "
+            "LEFT JOIN users u ON d.owner_user_id = u.id "
+            "LEFT JOIN discovered_devices disc ON disc.device_id = d.device_id COLLATE NOCASE "
+            "LEFT JOIN per_device_config cfg ON cfg.device_id = d.device_id COLLATE NOCASE "
+            "ORDER BY d.id ASC"));
+    } else {
+        query.prepare(QStringLiteral(
+            "SELECT d.device_id, d.name, disc.online, disc.device_type, disc.metrics_json, disc.state_json, "
+            "disc.last_seen_at, cfg.config_json "
+            "FROM devices d "
+            "JOIN users u ON d.owner_user_id = u.id "
+            "LEFT JOIN discovered_devices disc ON disc.device_id = d.device_id COLLATE NOCASE "
+            "LEFT JOIN per_device_config cfg ON cfg.device_id = d.device_id COLLATE NOCASE "
+            "WHERE u.username = :u COLLATE NOCASE ORDER BY d.id ASC"));
+        query.bindValue(QStringLiteral(":u"), username.trimmed());
+    }
 
     if (!query.exec()) {
         if (error) *error = query.lastError().text();
@@ -582,7 +628,8 @@ QJsonArray Database::availableDevices(int onlineWindowSeconds, QString *error) c
     if (!query.exec(QStringLiteral(
             "SELECT disc.device_id, disc.online, disc.device_type, disc.metrics_json, disc.state_json, "
             "disc.last_seen_at FROM discovered_devices disc "
-            "WHERE disc.device_id NOT IN (SELECT device_id FROM devices) AND disc.device_id = 'Vanphong-190782'"))) {
+            "WHERE NOT EXISTS (SELECT 1 FROM devices d WHERE d.device_id = disc.device_id COLLATE NOCASE) "
+            "AND disc.device_id = 'Vanphong-190782' COLLATE NOCASE"))) {
         if (error) *error = query.lastError().text();
         return result;
     }

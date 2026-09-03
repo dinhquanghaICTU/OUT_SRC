@@ -59,6 +59,10 @@ static void wifi_event_handler(void *arg, esp_event_base_t event_base,
       }
       break;
 
+    case WIFI_STATE_RECONNECTING:
+      wifi_set_state(WIFI_STATE_RECONNECTING);
+      break;
+
     default:
       break;
     }
@@ -89,7 +93,9 @@ esp_err_t wifi_init(void) {
     return err;
   }
 
-  esp_netif_create_default_wifi_sta();
+  if (esp_netif_get_handle_from_ifkey("WIFI_STA_DEF") == NULL) {
+    esp_netif_create_default_wifi_sta();
+  }
 
   wifi_init_config_t cfg = WIFI_INIT_CONFIG_DEFAULT();
   ESP_ERROR_CHECK(esp_wifi_init(&cfg));
@@ -98,6 +104,9 @@ esp_err_t wifi_init(void) {
       WIFI_EVENT, ESP_EVENT_ANY_ID, &wifi_event_handler, NULL, NULL));
   ESP_ERROR_CHECK(esp_event_handler_instance_register(
       IP_EVENT, IP_EVENT_STA_GOT_IP, &wifi_event_handler, NULL, NULL));
+
+  ESP_ERROR_CHECK(esp_wifi_set_mode(WIFI_MODE_STA));
+  ESP_ERROR_CHECK(esp_wifi_start());
 
   return ESP_OK;
 }
@@ -114,15 +123,36 @@ esp_err_t wifi_connect_sta(const app_wifi_config_t *config) {
   strncpy((char *)wifi_cfg.sta.ssid, config->ssid, sizeof(wifi_cfg.sta.ssid));
   strncpy((char *)wifi_cfg.sta.password, config->password,
           sizeof(wifi_cfg.sta.password));
-  wifi_cfg.sta.threshold.authmode = WIFI_AUTH_WPA2_PSK;
+  wifi_cfg.sta.threshold.authmode = WIFI_AUTH_WPA_PSK;
+  wifi_cfg.sta.scan_method = WIFI_FAST_SCAN;
+  wifi_cfg.sta.sort_method = WIFI_CONNECT_AP_BY_SIGNAL;
+  wifi_cfg.sta.threshold.rssi = -127;
+  wifi_cfg.sta.pmf_cfg.capable = true;
+  wifi_cfg.sta.pmf_cfg.required = false;
 
-  ESP_ERROR_CHECK(esp_wifi_set_mode(WIFI_MODE_STA));
-  ESP_ERROR_CHECK(esp_wifi_set_config(WIFI_IF_STA, &wifi_cfg));
-  return esp_wifi_start();
+  if (s_wifi_event_group) {
+    xEventGroupClearBits(s_wifi_event_group,
+                         WIFI_CONNECTED_BIT | WIFI_FAIL_BIT | WIFI_DISCONNECTED_BIT);
+  }
+
+  esp_wifi_disconnect();
+  vTaskDelay(pdMS_TO_TICKS(100));
+
+  esp_err_t err = esp_wifi_set_config(WIFI_IF_STA, &wifi_cfg);
+  if (err != ESP_OK) {
+    ESP_LOGW(TAG, "esp_wifi_set_config: %s (bỏ qua để không crash)",
+             esp_err_to_name(err));
+  }
+  return esp_wifi_connect();
 }
 
 esp_err_t wifi_disconnect(void) {
   s_is_reconnect_en = false;
+  wifi_set_state(WIFI_STATE_DISCONNECTED);
+  if (s_wifi_event_group) {
+    xEventGroupClearBits(s_wifi_event_group, WIFI_CONNECTED_BIT);
+    xEventGroupSetBits(s_wifi_event_group, WIFI_DISCONNECTED_BIT);
+  }
   return esp_wifi_disconnect();
 }
 
@@ -139,7 +169,7 @@ bool wifi_wait_for_connected(TickType_t timeout_ticks) {
   if (!s_wifi_event_group)
     return false;
   EventBits_t bits = xEventGroupWaitBits(s_wifi_event_group,
-                                         WIFI_CONNECTED_BIT | WIFI_FAIL_BIT,
+                                         WIFI_CONNECTED_BIT,
                                          pdFALSE, pdFALSE, timeout_ticks);
   return (bits & WIFI_CONNECTED_BIT) != 0;
 }

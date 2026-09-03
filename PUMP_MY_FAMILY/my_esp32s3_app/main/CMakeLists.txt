@@ -1,10 +1,10 @@
 idf_component_register(
     SRCS 
         "main.c"
-        
     INCLUDE_DIRS "."
     REQUIRES 
-        led
+        application
+        hardware
         middle
         driver
         espressif__led_strip
