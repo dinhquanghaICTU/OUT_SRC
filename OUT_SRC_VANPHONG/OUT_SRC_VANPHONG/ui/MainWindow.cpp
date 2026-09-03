@@ -131,6 +131,16 @@ void MainWindow::setupNavigation()
 
     // Dashboard Actions
     connect(m_dashboardPage, &DashboardPage::pumpCommandRequested, this, &MainWindow::onPumpCommandFromDashboard);
+    connect(m_dashboardPage, &DashboardPage::autoModeChanged, this, [this](bool enabled) {
+        m_sensorService->setAutoIrrigationMode(enabled);
+        if (!m_authService->isOfflineMode()) {
+            QJsonObject cfg;
+            cfg.insert(QStringLiteral("auto_watering"), enabled);
+            m_apiClient->updatePerDeviceConfig(m_activeDeviceId, cfg);
+        }
+        statusBar()->showMessage(enabled ? tr("⚡ Đã chuyển sang chế độ TỰ ĐỘNG tưới")
+                                         : tr("🖐 Đã chuyển sang chế độ THỦ CÔNG"), 3000);
+    });
     connect(m_dashboardPage, &DashboardPage::simDrySoilRequested, m_sensorService, &SensorService::triggerSimDrySoil);
     connect(m_dashboardPage, &DashboardPage::simMoistSoilRequested, m_sensorService, &SensorService::triggerSimMoistSoil);
 
@@ -144,6 +154,14 @@ void MainWindow::setupNavigation()
         m_apiClient->requestAvailableDevices();
     });
 
+    connect(m_apiClient, &ApiClient::devicesReceived, this, [this](const QJsonArray &devs) {
+        if (!devs.isEmpty()) {
+            const QString did = devs.first().toObject().value(QStringLiteral("device_id")).toString();
+            if (!did.isEmpty()) {
+                m_activeDeviceId = did;
+            }
+        }
+    });
     connect(m_apiClient, &ApiClient::devicesReceived, m_deviceManagementPage, &DeviceManagementPage::setOwnedDevices);
     connect(m_apiClient, &ApiClient::devicesReceived, m_historyPage, &HistoryPage::setDevices);
     connect(m_apiClient, &ApiClient::availableDevicesReceived, m_deviceManagementPage, &DeviceManagementPage::setAvailableDevices);

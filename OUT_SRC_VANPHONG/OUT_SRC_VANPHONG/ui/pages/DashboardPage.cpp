@@ -34,6 +34,7 @@ DashboardPage::DashboardPage(QWidget *parent)
 
     connect(ui->btnAutoModeCapsule, &QPushButton::toggled, this, [this](bool checked) {
         ui->btnAutoModeCapsule->setText(checked ? tr("⚡ TỰ ĐỘNG THEO ĐỘ ẨM: BẬT") : tr("🖐 CHẾ ĐỘ THỦ CÔNG"));
+        emit autoModeChanged(checked);
     });
 
     connect(ui->btnSimDrySoil, &QPushButton::clicked, this, [this] {

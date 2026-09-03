@@ -61,6 +61,10 @@ bool MqttDiscoveryService::publishRelayCommand(const QString &deviceId,
 {
     if (m_socket.state() != QAbstractSocket::ConnectedState)
         return false;
+
+    const qint64 now = QDateTime::currentMSecsSinceEpoch();
+    m_lastRelayCommandMs.insert(deviceId, state ? now : (now + 30000));
+
     const QByteArray topic = QByteArrayLiteral("iot/v1/devices/")
         + deviceId.toUtf8() + QByteArrayLiteral("/commands");
     const QByteArray payload = QJsonDocument(QJsonObject{
@@ -297,13 +301,13 @@ void MqttDiscoveryService::processPublish(quint8 flags, const QByteArray &body)
 
         // Auto Irrigation Check based on Config:
         const QJsonObject devCfg = m_database->configForDevice(deviceId);
-        const bool autoWatering = devCfg.value(QStringLiteral("auto_watering")).toBool(true);
+        const bool autoWatering = devCfg.value(QStringLiteral("auto_watering")).toBool(false);
         const double minSoil = devCfg.value(QStringLiteral("min_soil_moisture")).toDouble(40.0);
         const double maxSoil = devCfg.value(QStringLiteral("max_soil_moisture")).toDouble(75.0);
 
         if (autoWatering && soilMoisture >= 0.0 && soilMoisture <= 100.0) {
             const qint64 nowMs = QDateTime::currentMSecsSinceEpoch();
-            if (nowMs - m_lastRelayCommandMs.value(deviceId, 0) >= 3000) {
+            if (nowMs - m_lastRelayCommandMs.value(deviceId, 0) >= 5000) {
                 if (soilMoisture <= minSoil && !pumpActive) {
                     const QString cmdId = QUuid::createUuid().toString(QUuid::WithoutBraces);
                     if (publishRelayCommand(deviceId, cmdId, true)) {

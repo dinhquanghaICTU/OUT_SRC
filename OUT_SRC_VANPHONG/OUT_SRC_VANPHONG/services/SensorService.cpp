@@ -95,6 +95,12 @@ void SensorService::setPumpManual(bool active)
     }
 }
 
+void SensorService::setAutoIrrigationMode(bool enabled)
+{
+    m_currentReading.autoIrrigationMode = enabled;
+    emit readingUpdated(m_currentReading);
+}
+
 void SensorService::triggerSimDrySoil()
 {
     m_currentReading.soilMoisturePct = 32.0;

@@ -23,6 +23,7 @@ public:
 
 signals:
     void pumpCommandRequested(bool state);
+    void autoModeChanged(bool enabled);
     void simDrySoilRequested();
     void simMoistSoilRequested();
 

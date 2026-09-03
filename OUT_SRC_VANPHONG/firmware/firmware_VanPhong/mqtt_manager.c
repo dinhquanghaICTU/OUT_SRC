@@ -268,25 +268,26 @@ bool mqtt_manager_publish_sensor(float temperature, float humidity,
   if (!mqtt_connected || mqtt_client == NULL)
     return false;
 
-  length = snprintf(payload, sizeof(payload),
-                    "{\"schema_version\":1,"
-                    "\"device_id\":\"%s\","
-                    "\"message_id\":\"%s-%08" PRIx32 "-%" PRIu32 "\","
-                    "\"sequence\":%" PRIu32 ","
-                    "\"uptime_ms\":%" PRIu64 ","
-                    "\"firmware_version\":\"%s\","
-                    "\"metrics\":{"
-                    "\"temperature\":%.2f,"
-                    "\"temperature_c\":%.2f,"
-                    "\"humidity\":%.2f,"
-                    "\"humidity_pct\":%.2f,"
-                    "\"soil_moisture\":55.0,"
-                    "\"pump_active\":%s,"
-                    "\"water_tank_level\":85.0"
-                    "}}",
-                    PRODUCT_ID, PRODUCT_ID, mqtt_boot_id, sequence, sequence,
-                    uptime_ms, FIRMWARE_VERSION, temperature, temperature,
-                    humidity, humidity, relay_get_state() ? "true" : "false");
+  length =
+      snprintf(payload, sizeof(payload),
+               "{\"schema_version\":1,"
+               "\"device_id\":\"%s\","
+               "\"message_id\":\"%s-%08" PRIx32 "-%" PRIu32 "\","
+               "\"sequence\":%" PRIu32 ","
+               "\"uptime_ms\":%" PRIu64 ","
+               "\"firmware_version\":\"%s\","
+               "\"metrics\":{"
+               "\"temperature\":%.2f,"
+               "\"temperature_c\":%.2f,"
+               "\"humidity\":%.2f,"
+               "\"humidity_pct\":%.2f,"
+               "\"soil_moisture\":%.2f,"
+               "\"pump_active\":%s,"
+               "\"water_tank_level\":85.0"
+               "}}",
+               PRODUCT_ID, PRODUCT_ID, mqtt_boot_id, sequence, sequence,
+               uptime_ms, FIRMWARE_VERSION, temperature, temperature, humidity,
+               humidity, soil_moisture, relay_get_state() ? "true" : "false");
 
   if (length <= 0 || length >= (int)sizeof(payload))
     return false;

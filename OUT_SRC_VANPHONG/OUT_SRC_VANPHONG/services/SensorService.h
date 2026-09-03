@@ -17,6 +17,7 @@ public:
     void start();
     void stop();
     void setPumpManual(bool active);
+    void setAutoIrrigationMode(bool enabled);
     void triggerSimDrySoil();
     void triggerSimMoistSoil();
 

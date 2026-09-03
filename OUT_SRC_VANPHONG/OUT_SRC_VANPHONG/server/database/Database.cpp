@@ -604,13 +604,18 @@ bool Database::updateDeviceConfig(const QString &username, const QString &device
                                   const QJsonObject &config, QString *errorCode, QString *error)
 {
     Q_UNUSED(username);
+    QJsonObject merged = configForDevice(deviceId);
+    for (auto it = config.begin(); it != config.end(); ++it) {
+        merged.insert(it.key(), it.value());
+    }
+
     QSqlQuery query(m_db);
     query.prepare(QStringLiteral(
         "INSERT INTO per_device_config (device_id, config_json, updated_at) "
         "VALUES (:did, :cfg, :now) "
         "ON CONFLICT(device_id) DO UPDATE SET config_json = :cfg, updated_at = :now"));
     query.bindValue(QStringLiteral(":did"), deviceId.trimmed());
-    query.bindValue(QStringLiteral(":cfg"), QString::fromUtf8(QJsonDocument(config).toJson(QJsonDocument::Compact)));
+    query.bindValue(QStringLiteral(":cfg"), QString::fromUtf8(QJsonDocument(merged).toJson(QJsonDocument::Compact)));
     query.bindValue(QStringLiteral(":now"), QDateTime::currentDateTimeUtc().toString(Qt::ISODateWithMs));
 
     if (!query.exec()) {
