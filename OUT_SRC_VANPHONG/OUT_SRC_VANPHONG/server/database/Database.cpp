@@ -485,10 +485,11 @@ QJsonArray Database::devicesForUser(const QString &username, int onlineWindowSec
 
         obj.insert(QStringLiteral("online"), isOnline);
         obj.insert(QStringLiteral("device_type"), query.value(3).toString().isEmpty() ? QStringLiteral("smart_irrigation") : query.value(3).toString());
-        obj.insert(QStringLiteral("metrics"), QJsonDocument::fromJson(query.value(4).toByteArray()).object());
-        obj.insert(QStringLiteral("state"), QJsonDocument::fromJson(query.value(5).toByteArray()).object());
-        obj.insert(QStringLiteral("last_seen_at"), lastSeenStr);
-        obj.insert(QStringLiteral("config"), QJsonDocument::fromJson(query.value(7).toByteArray()).object());
+        QJsonObject devConfig = QJsonDocument::fromJson(query.value(7).toByteArray()).object();
+        if (devConfig.isEmpty()) {
+            devConfig = config(nullptr);
+        }
+        obj.insert(QStringLiteral("config"), devConfig);
         result.append(obj);
     }
     return result;

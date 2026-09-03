@@ -236,11 +236,12 @@ void DeviceManagementPage::setOwnedDevices(const QJsonArray &devices)
         m_releaseDevBtn->setEnabled(false);
     } else {
         m_releaseDevBtn->setEnabled(true);
-        m_releaseDevBtn->setText(tr("🗑️ Gỡ thiết bị"));
         bool selectedStillExists = false;
         const QString curSelId = m_selectedDevice.value(QStringLiteral("device_id")).toString();
         for (const auto &val : m_ownedDevices) {
-            if (val.toObject().value(QStringLiteral("device_id")).toString() == curSelId) {
+            const QJsonObject devObj = val.toObject();
+            if (devObj.value(QStringLiteral("device_id")).toString().compare(curSelId, Qt::CaseInsensitive) == 0) {
+                m_selectedDevice = devObj;
                 selectedStillExists = true;
                 break;
             }
@@ -467,13 +468,21 @@ void DeviceManagementPage::rebuildLogTable()
 
 void DeviceManagementPage::openDeviceDrawer(const QJsonObject &device)
 {
-    m_selectedDevice = device;
     const QString did = device.value(QStringLiteral("device_id")).toString();
-    const QString name = device.value(QStringLiteral("name")).toString(did);
+    QJsonObject target = device;
+    for (const auto &val : m_ownedDevices) {
+        const QJsonObject d = val.toObject();
+        if (d.value(QStringLiteral("device_id")).toString().compare(did, Qt::CaseInsensitive) == 0) {
+            target = d;
+            break;
+        }
+    }
+    m_selectedDevice = target;
 
+    const QString name = target.value(QStringLiteral("name")).toString(did);
     m_drawerId->setText(QStringLiteral("Bộ tưới: %1 [%2]").arg(name, did));
 
-    const QJsonObject cfg = device.value(QStringLiteral("config")).toObject();
+    const QJsonObject cfg = target.value(QStringLiteral("config")).toObject();
     m_inputMinSoil->setValue(cfg.value(QStringLiteral("min_soil_moisture")).toDouble(40.0));
     m_inputMaxSoil->setValue(cfg.value(QStringLiteral("max_soil_moisture")).toDouble(75.0));
     m_inputMaxRuntime->setValue(cfg.value(QStringLiteral("max_pump_runtime_m")).toInt(5));
@@ -490,6 +499,16 @@ void DeviceManagementPage::saveThresholds()
     cfg.insert(QStringLiteral("max_soil_moisture"), m_inputMaxSoil->value());
     cfg.insert(QStringLiteral("max_pump_runtime_m"), m_inputMaxRuntime->value());
     cfg.insert(QStringLiteral("auto_watering"), m_chkAutoWatering->isChecked());
+
+    m_selectedDevice.insert(QStringLiteral("config"), cfg);
+    for (int i = 0; i < m_ownedDevices.size(); ++i) {
+        QJsonObject d = m_ownedDevices[i].toObject();
+        if (d.value(QStringLiteral("device_id")).toString().compare(did, Qt::CaseInsensitive) == 0) {
+            d.insert(QStringLiteral("config"), cfg);
+            m_ownedDevices[i] = d;
+            break;
+        }
+    }
 
     emit deviceConfigRequested(did, cfg);
 }

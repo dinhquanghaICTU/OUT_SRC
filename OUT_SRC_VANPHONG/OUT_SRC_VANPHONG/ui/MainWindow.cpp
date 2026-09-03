@@ -176,6 +176,12 @@ void MainWindow::setupNavigation()
         m_apiClient->requestAvailableDevices();
         statusBar()->showMessage(tr("Đã gỡ thiết bị khỏi tài khoản"), 4000);
     });
+    connect(m_apiClient, &ApiClient::deviceConfigSaved, this, [this](const QString &deviceId, bool mqttPublished) {
+        Q_UNUSED(deviceId);
+        Q_UNUSED(mqttPublished);
+        m_apiClient->requestMyDevice();
+        statusBar()->showMessage(tr("Cấu hình ngưỡng đã lưu thành công"), 3000);
+    });
 
     // History
     connect(m_historyPage, &HistoryPage::historyRequested, m_apiClient, &ApiClient::requestDeviceHistory);
