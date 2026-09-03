@@ -7,6 +7,7 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QRandomGenerator>
+#include <QUuid>
 
 MqttDiscoveryService::MqttDiscoveryService(Database *database, QObject *parent)
     : QObject(parent), m_database(database)
@@ -285,13 +286,45 @@ void MqttDiscoveryService::processPublish(quint8 flags, const QByteArray &body)
             metrics.value(QStringLiteral("temperature")).toDouble(27.5));
         const double humPct = metrics.value(QStringLiteral("humidity")).toDouble(
             metrics.value(QStringLiteral("humidity_pct")).toDouble(65.0));
-        const double soilMoisture = metrics.value(QStringLiteral("soil_moisture")).toDouble(55.0);
+        const double soilMoisture = metrics.value(QStringLiteral("soil_moisture")).toDouble(
+            metrics.value(QStringLiteral("humidity")).toDouble(55.0));
         const bool pumpActive = metrics.value(QStringLiteral("pump_active")).toBool(
             metrics.value(QStringLiteral("relay")).toBool(false));
         const double tankLevel = metrics.value(QStringLiteral("water_tank_level")).toDouble(85.0);
 
         m_database->insertReading(soilMoisture, tempC, humPct, pumpActive, tankLevel,
                                   QDateTime::currentDateTime().toString(Qt::ISODateWithMs), nullptr);
+
+        // Auto Irrigation Check based on Config:
+        const QJsonObject devCfg = m_database->configForDevice(deviceId);
+        const bool autoWatering = devCfg.value(QStringLiteral("auto_watering")).toBool(true);
+        const double minSoil = devCfg.value(QStringLiteral("min_soil_moisture")).toDouble(40.0);
+        const double maxSoil = devCfg.value(QStringLiteral("max_soil_moisture")).toDouble(75.0);
+
+        if (autoWatering && soilMoisture >= 0.0 && soilMoisture <= 100.0) {
+            const qint64 nowMs = QDateTime::currentMSecsSinceEpoch();
+            if (nowMs - m_lastRelayCommandMs.value(deviceId, 0) >= 3000) {
+                if (soilMoisture <= minSoil && !pumpActive) {
+                    const QString cmdId = QUuid::createUuid().toString(QUuid::WithoutBraces);
+                    if (publishRelayCommand(deviceId, cmdId, true)) {
+                        m_lastRelayCommandMs.insert(deviceId, nowMs);
+                        m_database->addAlert(QStringLiteral("AUTO_WATERING"), QStringLiteral("warning"),
+                                             QStringLiteral("Tự động BẬT bơm tưới"),
+                                             QStringLiteral("Độ ẩm đất thấp (%1% <= %2%)").arg(soilMoisture, 0, 'f', 1).arg(minSoil, 0, 'f', 1),
+                                             nullptr);
+                    }
+                } else if (soilMoisture >= maxSoil && pumpActive) {
+                    const QString cmdId = QUuid::createUuid().toString(QUuid::WithoutBraces);
+                    if (publishRelayCommand(deviceId, cmdId, false)) {
+                        m_lastRelayCommandMs.insert(deviceId, nowMs);
+                        m_database->addAlert(QStringLiteral("AUTO_WATERING"), QStringLiteral("info"),
+                                             QStringLiteral("Tự động TẮT bơm tưới"),
+                                             QStringLiteral("Độ ẩm đất đạt chuẩn (%1% >= %2%)").arg(soilMoisture, 0, 'f', 1).arg(maxSoil, 0, 'f', 1),
+                                             nullptr);
+                    }
+                }
+            }
+        }
 
         const qint64 nowMs = QDateTime::currentMSecsSinceEpoch();
         if (nowMs - m_lastTelemetryLogMs.value(deviceId, 0) >= 1000) {

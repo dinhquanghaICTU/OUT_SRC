@@ -1,16 +1,16 @@
 #ifndef __LM393_H__
 #define __LM393_H__
 
-#define LM393_PIN 26
+#define LM393_PIN 34
 
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
 
-    void LM393_init();
-    float get_data_LM393();
+void LM393_init();
+float get_data_LM393();
 
+float get_soil_moisture_percent();
 #ifdef __cplusplus
 }
 #endif

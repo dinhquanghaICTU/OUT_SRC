@@ -794,6 +794,19 @@ QJsonObject Database::config(QString *error) const
     return obj;
 }
 
+QJsonObject Database::configForDevice(const QString &deviceId) const
+{
+    QSqlQuery query(m_db);
+    query.prepare(QStringLiteral("SELECT config_json FROM per_device_config WHERE device_id = :did COLLATE NOCASE"));
+    query.bindValue(QStringLiteral(":did"), deviceId.trimmed());
+    if (query.exec() && query.next()) {
+        const QJsonObject obj = QJsonDocument::fromJson(query.value(0).toByteArray()).object();
+        if (!obj.isEmpty())
+            return obj;
+    }
+    return config(nullptr);
+}
+
 bool Database::updateConfig(const QJsonObject &config, QString *error)
 {
     QSqlQuery query(m_db);

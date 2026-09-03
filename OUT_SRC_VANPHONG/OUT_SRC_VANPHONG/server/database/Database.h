@@ -49,6 +49,7 @@ public:
                   const QString &message, QString *error);
 
     QJsonObject config(QString *error) const;
+    QJsonObject configForDevice(const QString &deviceId) const;
     bool updateConfig(const QJsonObject &config, QString *error);
     bool isOpen() const;
 
