@@ -4,7 +4,7 @@
  <widget class="QMainWindow" name="MainWindow">
   <property name="geometry"><rect><x>0</x><y>0</y><width>800</width><height>480</height></rect></property>
   <property name="minimumSize"><size><width>480</width><height>320</height></size></property>
-  <property name="windowTitle"><string>LeNam Control Center</string></property>
+  <property name="windowTitle"><string>Hoàng Minh Control Center</string></property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QVBoxLayout" name="mainLayout">
     <property name="spacing"><number>0</number></property>

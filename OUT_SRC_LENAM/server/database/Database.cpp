@@ -495,7 +495,7 @@ bool Database::claimDevice(const QString &username, const QString &deviceId, con
     const QString normalizedId = deviceId.trimmed();
     if (normalizedId.compare(QStringLiteral("190782"), Qt::CaseInsensitive) != 0) {
         if (errorCode) *errorCode = QStringLiteral("invalid_device");
-        if (error) *error = QStringLiteral("Chỉ cho phép thêm thiết bị ID '190782' (Firmware Lê Nam)");
+        if (error) *error = QStringLiteral("Chỉ cho phép thêm thiết bị ID '190782' (Firmware Hoàng Minh)");
         return false;
     }
     if (!m_db.transaction()) {

@@ -1,6 +1,6 @@
-# MQTT API - Thiết bị Lê Nam
+# MQTT API - Thiết bị Hoàng Minh
 
-Tài liệu này định nghĩa giao tiếp MQTT giữa firmware thiết bị Lê Nam và
+Tài liệu này định nghĩa giao tiếp MQTT giữa firmware thiết bị Hoàng Minh và
 server. Mọi thay đổi firmware và server phải tuân theo contract này.
 
 ## 1. Thông tin thiết bị

@@ -652,7 +652,7 @@ void UserManagementPage::setUsers(const QJsonArray &users)
         const QStringList deviceIds = deviceIdsForUser(user);
         totalDevices += deviceIds.size();
 
-        ui->usersTable->setItem(row, 0, new QTableWidgetItem(QStringLiteral("%1\n%2@lenam.local").arg(username, username)));
+        ui->usersTable->setItem(row, 0, new QTableWidgetItem(QStringLiteral("%1\n%2@hoangminh.local").arg(username, username)));
         ui->usersTable->setItem(row, 1, new QTableWidgetItem(roleLabel(role)));
         ui->usersTable->setItem(row, 2, new QTableWidgetItem(tr("%1 thiết bị").arg(deviceIds.size())));
         if (username.compare(selectedUsername, Qt::CaseInsensitive) == 0)

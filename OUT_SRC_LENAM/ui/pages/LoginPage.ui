@@ -38,7 +38,7 @@
          </item>
          <item>
           <widget class="QLabel" name="artTitleLabel">
-           <property name="text"><string>LeNam IoT Workspace</string></property>
+           <property name="text"><string>Hoàng Minh IoT Workspace</string></property>
            <property name="alignment"><set>Qt::AlignCenter</set></property>
           </widget>
          </item>
@@ -68,7 +68,7 @@
          </item>
          <item>
           <widget class="QLabel" name="subtitleLabel">
-           <property name="text"><string>Sign in to LeNam Control Center</string></property>
+           <property name="text"><string>Sign in to Hoàng Minh Control Center</string></property>
            <property name="alignment"><set>Qt::AlignCenter</set></property>
           </widget>
          </item>

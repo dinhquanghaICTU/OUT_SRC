@@ -8,7 +8,7 @@
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
-    QApplication::setApplicationName(QStringLiteral("LeNam Smart Monitor"));
+    QApplication::setApplicationName(QStringLiteral("Hoàng Minh Smart Monitor"));
 
     QFile styleFile(QStringLiteral(":/styles/app.qss"));
     if (styleFile.open(QIODevice::ReadOnly | QIODevice::Text))

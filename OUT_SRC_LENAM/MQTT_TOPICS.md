@@ -1,6 +1,6 @@
 # MQTT Topics
 
-Tài liệu topic MQTT của firmware LeNam. Ví dụ bên dưới sử dụng thiết bị có
+Tài liệu topic MQTT của firmware Hoàng Minh. Ví dụ bên dưới sử dụng thiết bị có
 `PRODUCT_ID = 190782` và broker `192.168.12.1:1883`.
 
 ## Quy ước
