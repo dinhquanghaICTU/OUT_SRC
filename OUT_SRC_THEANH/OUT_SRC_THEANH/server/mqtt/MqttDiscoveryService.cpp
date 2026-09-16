@@ -7,6 +7,7 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QRandomGenerator>
+#include <QUuid>
 
 MqttDiscoveryService::MqttDiscoveryService(Database *database, QObject *parent)
     : QObject(parent), m_database(database)
@@ -236,6 +237,113 @@ void MqttDiscoveryService::processPublish(quint8 flags, const QByteArray &body)
                 qWarning().noquote() << "Cannot store telemetry log:" << logError;
             else
                 m_lastTelemetryLogMs.insert(deviceId, nowMs);
+        }
+
+        // Tu dong kiem tra nguong an toan va kich hoat coi bao dong chan D25
+        const QJsonObject devConfig = m_database->configForDevice(deviceId);
+        const QJsonObject thresholds = devConfig.value(QStringLiteral("thresholds")).toObject();
+
+        bool isExceeded = false;
+        QString reason;
+        double alertVal = 0.0;
+
+        // 1. Kiem tra ap suat khi quyen (pressure_hpa)
+        if (metrics.contains(QStringLiteral("pressure_hpa"))) {
+            const double press = metrics.value(QStringLiteral("pressure_hpa")).toDouble();
+            const QJsonObject pThresh = thresholds.value(QStringLiteral("pressure_hpa")).toObject();
+            const double minP = pThresh.value(QStringLiteral("min")).toDouble(990.0);
+            const double maxP = pThresh.value(QStringLiteral("max")).toDouble(1030.0);
+            if (press > 0.0 && (press < minP || press > maxP)) {
+                isExceeded = true;
+                reason = QStringLiteral("Áp suất bất thường (%1 hPa ngoài dải %2 - %3 hPa)")
+                             .arg(press, 0, 'f', 1).arg(minP, 0, 'f', 1).arg(maxP, 0, 'f', 1);
+                alertVal = press;
+            }
+        }
+
+        // 2. Kiem tra chi so UV (uv_index)
+        if (!isExceeded && metrics.contains(QStringLiteral("uv_index"))) {
+            const double uv = metrics.value(QStringLiteral("uv_index")).toDouble();
+            const QJsonObject uvThresh = thresholds.value(QStringLiteral("uv_index")).toObject();
+            const double critUv = uvThresh.value(QStringLiteral("critical_above")).toDouble(
+                uvThresh.value(QStringLiteral("warning_above")).toDouble(8.0));
+            if (uv >= critUv) {
+                isExceeded = true;
+                reason = QStringLiteral("Chỉ số UV nguy hiểm (%1 >= %2)")
+                             .arg(uv, 0, 'f', 1).arg(critUv, 0, 'f', 1);
+                alertVal = uv;
+            }
+        }
+
+        // 3. Kiem tra dien ap AC (voltage_v)
+        if (!isExceeded && metrics.contains(QStringLiteral("voltage_v"))) {
+            const double volt = metrics.value(QStringLiteral("voltage_v")).toDouble();
+            const QJsonObject vThresh = thresholds.value(QStringLiteral("voltage_v")).toObject();
+            const double minV = vThresh.value(QStringLiteral("min")).toDouble(180.0);
+            const double maxV = vThresh.value(QStringLiteral("max")).toDouble(245.0);
+            if (volt > 0.0 && (volt < minV || volt > maxV)) {
+                isExceeded = true;
+                reason = QStringLiteral("Điện áp lưới bất thường (%1 V ngoài dải %2 - %3 V)")
+                             .arg(volt, 0, 'f', 1).arg(minV, 0, 'f', 1).arg(maxV, 0, 'f', 1);
+                alertVal = volt;
+            }
+        }
+
+        // 4. Kiem tra dong dien AC (current_a)
+        if (!isExceeded && metrics.contains(QStringLiteral("current_a"))) {
+            const double cur = metrics.value(QStringLiteral("current_a")).toDouble();
+            const QJsonObject cThresh = thresholds.value(QStringLiteral("current_a")).toObject();
+            const double maxCur = cThresh.value(QStringLiteral("max")).toDouble(15.0);
+            if (cur > maxCur) {
+                isExceeded = true;
+                reason = QStringLiteral("Dòng tải vượt định mức (%1 A > %2 A)")
+                             .arg(cur, 0, 'f', 2).arg(maxCur, 0, 'f', 2);
+                alertVal = cur;
+            }
+        }
+
+        // 5. Kiem tra cong suat tieu thu (power_w)
+        if (!isExceeded && metrics.contains(QStringLiteral("power_w"))) {
+            const double pow = metrics.value(QStringLiteral("power_w")).toDouble();
+            const QJsonObject pwrThresh = thresholds.value(QStringLiteral("power_w")).toObject();
+            const double maxPow = pwrThresh.value(QStringLiteral("max")).toDouble(3000.0);
+            if (pow > maxPow) {
+                isExceeded = true;
+                reason = QStringLiteral("Công suất tải vượt định mức (%1 W > %2 W)")
+                             .arg(pow, 0, 'f', 1).arg(maxPow, 0, 'f', 1);
+                alertVal = pow;
+            }
+        }
+
+        // Dieu khien coi bao dong chan D25 qua MQTT commands
+        const qint64 now = QDateTime::currentMSecsSinceEpoch();
+        const bool currentBuzzer = m_buzzerState.value(deviceId, false);
+        if (now - m_lastBuzzerCommandMs.value(deviceId, 0) >= 2000) {
+            if (isExceeded && !currentBuzzer) {
+                const QString cmdId = QUuid::createUuid().toString(QUuid::WithoutBraces);
+                if (publishRelayCommand(deviceId, cmdId, true)) {
+                    m_buzzerState.insert(deviceId, true);
+                    m_lastBuzzerCommandMs.insert(deviceId, now);
+                    m_database->addAlert(QStringLiteral("CRITICAL"),
+                                         QStringLiteral("VƯỢT NGƯỠNG AN TOÀN - BẬT CÒI: %1").arg(reason),
+                                         alertVal,
+                                         QDateTime::currentDateTime().toString(QStringLiteral("dd/MM HH:mm:ss")),
+                                         nullptr);
+                    qInfo() << "[BUZZER] Exceeded threshold -> Activated buzzer on D25 for" << deviceId << ":" << reason;
+                }
+            } else if (!isExceeded && currentBuzzer) {
+                const QString cmdId = QUuid::createUuid().toString(QUuid::WithoutBraces);
+                if (publishRelayCommand(deviceId, cmdId, false)) {
+                    m_buzzerState.insert(deviceId, false);
+                    m_lastBuzzerCommandMs.insert(deviceId, now);
+                    m_database->addAlert(QStringLiteral("INFO"),
+                                         QStringLiteral("Thông số đã trở về mức an toàn - Tắt còi"),
+                                         0.0,
+                                         QDateTime::currentDateTime().toString(QStringLiteral("dd/MM HH:mm:ss")),
+                                         nullptr);
+                    qInfo() << "[BUZZER] Normal -> Turned off buzzer on D25 for" << deviceId;
+                }
+            }
         }
     }
 

@@ -79,6 +79,21 @@ void loop()
 
         Serial.printf("[UV]  voltage=%.3fV -> UV Index=%.2f\n", uvVoltage, uvIndex);
 
+        // Tu dong kiem tra nguong vuot muc an toan tren bo mach:
+        bool local_exceeded = false;
+        if (uvIndex >= 8.0f) {
+            local_exceeded = true;
+            Serial.printf("[CANH BAO] Chi so UV nguy hiem: %.2f >= 8.0\n", uvIndex);
+        }
+        if (pressureHpa > 0.0f && (pressureHpa < 990.0f || pressureHpa > 1030.0f)) {
+            local_exceeded = true;
+            Serial.printf("[CANH BAO] Ap suat vuot nguong an toan: %.2f hPa\n", pressureHpa);
+        }
+
+        if (local_exceeded) {
+            turn_on_ring();
+        }
+
         if (wifi_manager_get_state() == WIFI_MANAGER_CONNECTED && mqtt_manager_is_connected())
         {
             mqtt_manager_publish_sensor(uvVoltage, uvIndex, pressureHpa);

@@ -238,8 +238,10 @@ void MqttDiscoveryService::processPublish(quint8 flags, const QByteArray &body)
     }
 
     const qint64 presenceNow = QDateTime::currentMSecsSinceEpoch();
-    if (channel == QStringLiteral("telemetry")
-        && presenceNow - m_lastPresenceWriteMs.value(deviceId, 0) < 500)
+    const bool isAlert = metrics.value(QStringLiteral("alert")).toBool(false)
+                      || metrics.value(QStringLiteral("ir_detected")).toDouble() >= 0.5;
+    if (channel == QStringLiteral("telemetry") && !isAlert
+        && presenceNow - m_lastPresenceWriteMs.value(deviceId, 0) < 300)
         return;
     QString error;
     if (!m_database->recordDevicePresence(deviceId, online, metrics, &error))

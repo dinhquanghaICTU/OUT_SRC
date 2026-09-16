@@ -20,7 +20,7 @@ else
 fi
 
 echo -e "\033[1;34m============================================================\033[0m"
-echo -e "\033[1;34m  BUILDING & RUNNING UNITY TEST: Le Nam (LM35 + Sound Microphone)\033[0m"
+echo -e "\033[1;34m  BUILDING & RUNNING UNITY TEST: Le Nam (BMP180 + IR Sensor)\033[0m"
 echo -e "\033[1;34m  Project: OUT_SRC_LENAM\033[0m"
 echo -e "\033[1;34m  Test dir: $TEST_DIR\033[0m"
 echo -e "\033[1;34m============================================================\033[0m"

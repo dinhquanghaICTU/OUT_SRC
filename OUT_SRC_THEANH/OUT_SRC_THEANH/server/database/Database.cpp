@@ -1219,3 +1219,33 @@ bool Database::isOpen() const
 {
     return m_db.isOpen();
 }
+
+bool Database::addAlert(const QString &type, const QString &message, double value,
+                        const QString &createdAt, QString *error)
+{
+    QSqlQuery query(m_db);
+    query.prepare(QStringLiteral(
+        "INSERT INTO alert_log(created_at,type,message,value) VALUES(?,?,?,?)"));
+    query.addBindValue(createdAt.isEmpty() ? QDateTime::currentDateTime().toString(QStringLiteral("dd/MM HH:mm:ss")) : createdAt);
+    query.addBindValue(type);
+    query.addBindValue(message);
+    query.addBindValue(value);
+    if (!query.exec()) {
+        if (error) *error = query.lastError().text();
+        return false;
+    }
+    return true;
+}
+
+QJsonObject Database::configForDevice(const QString &deviceId) const
+{
+    QSqlQuery query(m_db);
+    query.prepare(QStringLiteral("SELECT config_json FROM per_device_config WHERE device_id = ? COLLATE NOCASE"));
+    query.addBindValue(deviceId.trimmed());
+    if (query.exec() && query.next()) {
+        const QJsonObject obj = QJsonDocument::fromJson(query.value(0).toByteArray()).object();
+        if (!obj.isEmpty())
+            return obj;
+    }
+    return config(nullptr);
+}

@@ -6,8 +6,8 @@ SCRIPT_PATH="$(readlink -f "${BASH_SOURCE[0]}")"
 BASE_DIR="$(cd "$(dirname "$SCRIPT_PATH")" && pwd)"
 
 PROJECTS=(
-    "OUT_SRC_HOANGANH"
     "OUT_SRC_LENAM"
+    "OUT_SRC_HOANGMINH"
     "OUT_SRC_TRUNGKIEN"
     "OUT_SRC_SON"
     "OUT_SRC_THEANH"

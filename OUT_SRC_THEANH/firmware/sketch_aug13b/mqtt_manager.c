@@ -1,4 +1,5 @@
 #include "mqtt_manager.h"
+#include "buzzer.h"
 #include "config.h"
 #include "wifiAP.h"
 
@@ -92,9 +93,9 @@ static void handle_config_payload(const char *payload, int len)
     if (v_pos)
     {
         float v_min = 0, v_max = 0;
-        if (parse_json_number(v_pos, "min", &v_min) && v_min > 0)
+        if (parse_json_number(v_pos, "min", &v_min) && v_min >= 0)
             current_thresholds.voltage_min = v_min;
-        if (parse_json_number(v_pos, "max", &v_max) && v_max > 0)
+        if (parse_json_number(v_pos, "max", &v_max) && v_max >= 0)
             current_thresholds.voltage_max = v_max;
     }
 
@@ -139,9 +140,14 @@ mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_t event_id, 
             esp_mqtt_client_subscribe(mqtt_client, MQTT_CONFIG_DESIRED_TOPIC, 1);
 
         printf("[MQTT] Connected to broker successfully\n");
+        const int cmd_message_id =
+            esp_mqtt_client_subscribe(mqtt_client, MQTT_COMMAND_TOPIC, 1);
         printf("[MQTT] Subscribed to topic=%s (msg_id=%d)\n",
                MQTT_CONFIG_DESIRED_TOPIC,
                config_message_id);
+        printf("[MQTT] Subscribed to topic=%s (msg_id=%d)\n",
+               MQTT_COMMAND_TOPIC,
+               cmd_message_id);
         break;
     }
 
@@ -162,6 +168,31 @@ mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_t event_id, 
             strncmp(event->topic, MQTT_CONFIG_DESIRED_TOPIC, event->topic_len) == 0)
         {
             handle_config_payload(event->data, event->data_len);
+        }
+        else if (event->topic_len == (int)strlen(MQTT_COMMAND_TOPIC) &&
+                 strncmp(event->topic, MQTT_COMMAND_TOPIC, event->topic_len) == 0)
+        {
+            char payload[256];
+            int len = event->data_len < 255 ? event->data_len : 255;
+            memcpy(payload, event->data, len);
+            payload[len] = '\0';
+
+            if (strstr(payload, "\"state\":true") != NULL ||
+                strstr(payload, "\"state\": true") != NULL ||
+                strstr(payload, "\"buzzer\":true") != NULL ||
+                strstr(payload, "\"buzzer\": true") != NULL)
+            {
+                printf("[BUZZER] Bat coi canh bao tu Server (GPIO %d)\n", BUZZER_PIN);
+                buzzer_on();
+            }
+            else if (strstr(payload, "\"state\":false") != NULL ||
+                     strstr(payload, "\"state\": false") != NULL ||
+                     strstr(payload, "\"buzzer\":false") != NULL ||
+                     strstr(payload, "\"buzzer\": false") != NULL)
+            {
+                printf("[BUZZER] Tat coi canh bao tu Server (GPIO %d)\n", BUZZER_PIN);
+                buzzer_off();
+            }
         }
         break;
     }

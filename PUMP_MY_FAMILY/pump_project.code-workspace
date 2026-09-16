@@ -1,0 +1,32 @@
+{
+  "folders": [
+    {
+      "name": "Android App (Kotlin/Compose)",
+      "path": "pump_android_app"
+    },
+    {
+      "name": "ESP32-S3 Firmware",
+      "path": "my_esp32s3_app"
+    },
+    {
+      "name": "Project Root",
+      "path": "."
+    },
+    {
+      "path": ".."
+    },
+    {
+      "path": "../../website/LADIU"
+    }
+  ],
+  "settings": {
+    "kotlin.java.home": "/home/quanghaictu/.local/share/jvm/jdk-17",
+    "java.home": "/home/quanghaictu/.local/share/jvm/jdk-17",
+    "kotlin.languageServer.enabled": true,
+    "kotlin.diagnostics.enabled": false,
+    "C_Cpp.default.compileCommands": "${workspaceFolder:ESP32-S3 Firmware}/build/compile_commands.json",
+    "clangd.arguments": [
+      "--compile-commands-dir=${workspaceFolder:ESP32-S3 Firmware}/build"
+    ]
+  }
+}

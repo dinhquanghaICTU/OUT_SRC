@@ -11,8 +11,7 @@ void LM393_init() {
 
 float get_soil_moisture_percent() {
   int raw = analogRead(LM393_PIN);
-
-  float percent = map(raw, 4095, 0, 0, 100);
+  float percent = map(raw, 4095, 1600, 0, 100);
   percent = constrain(percent, 0.0, 100.0);
   return percent;
 }

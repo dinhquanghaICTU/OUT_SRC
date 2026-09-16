@@ -1,6 +1,7 @@
 #include "ACS712.h"
 #include "ZMPT101B.h"
 #include "config.h"
+#include "buzzer.h"
 #include "led.h"
 #include "mqtt_manager.h"
 #include "product_ID.h"
@@ -16,6 +17,11 @@ void setup() {
   acs712_init();
   zmpt101b_init();
   init_led();
+  buzzer_init();
+  // Test bíp còi 300ms lúc khởi động để kiểm tra phần cứng chân D25
+  buzzer_on();
+  delay(300);
+  buzzer_off();
   mqtt_manager_init();
 
   if (save_product_id()) {
@@ -44,9 +50,11 @@ void loop() {
     if (alert.is_alert) {
       Serial.printf("[WARNING] %s | Voltage: %.2f V | Current: %.3f A | Power: %.2f W\r\n",
                     alert.alert_msg, voltageV, currentA, powerW);
+      buzzer_on(); // Kích hoạt còi kêu chân D25 khi vượt ngưỡng
     } else {
       Serial.printf("[SENSOR] Voltage: %.2f V | Current: %.3f A | Power: %.2f W\r\n",
                     voltageV, currentA, powerW);
+      buzzer_off(); // Tắt còi khi an toàn
     }
 
     if (wifi_manager_get_state() == WIFI_MANAGER_CONNECTED &&
@@ -66,6 +74,9 @@ void loop() {
   float voltageV = zmpt101b_get_voltage_v();
   float powerW = voltageV * currentA;
   alert_status_t alert = mqtt_manager_check_thresholds(currentA, voltageV, powerW);
+  if (alert.is_alert) {
+    buzzer_on();
+  }
 
   switch (wifi_manager_get_state()) {
   case WIFI_MANAGER_AP_CONFIG:

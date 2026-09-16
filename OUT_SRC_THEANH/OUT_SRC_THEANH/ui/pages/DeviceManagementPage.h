@@ -30,6 +30,7 @@ public:
     void startRealtime();
     void stopRealtime();
     void configSaved(const QString &deviceId, bool mqttPublished);
+    void configSaveFailed(const QString &error);
 
 protected:
     void resizeEvent(QResizeEvent *event) override;

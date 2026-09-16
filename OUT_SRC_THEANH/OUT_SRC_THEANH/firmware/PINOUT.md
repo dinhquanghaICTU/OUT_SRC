@@ -20,10 +20,10 @@ bo mạch thẳng đứng, anten ở phía trên và cổng Micro-USB ở phía 
           GPIO35  ● │                 │ ● GPIO21
           GPIO32  ● │                 │ ● GPIO19
           GPIO33  ● │                 │ ● GPIO18
-          GPIO25  ● │                 │ ● GPIO5
+          GPIO25  ● │   CÒI (D25)     │ ● GPIO5
           GPIO26  ● │                 │ ● GPIO17  TX2
           GPIO27  ● │                 │ ● GPIO16  RX2
-          GPIO14  ● │                 │ ● GPIO4   <- CÒI
+          GPIO14  ● │                 │ ● GPIO4
           GPIO12  ● │                 │ ● GPIO2
           GPIO13  ● │                 │ ● GPIO15
              GND  ● │                 │ ● GND
@@ -60,7 +60,7 @@ GPIO6 đến GPIO11 thường nối với flash bên trong module ESP-WROOM-32 v
 | BMP180/GY-68 | SDA | GPIO22 | I/O, I2C data | `BMP180_SDA_PIN` |
 | BMP180/GY-68 | SCL | GPIO23 | Output, I2C clock | `BMP180_SCL_PIN` |
 | Cảm biến hồng ngoại | OUT/SIGNAL | GPIO34 | Input | `CAM_BIEN_HONG_NGOAI` |
-| Còi/buzzer | IN/SIGNAL | GPIO4 | Output | `RING_PIN` |
+| Còi/buzzer | IN/SIGNAL | GPIO25 | Output | `RING_PIN` |
 | LED trạng thái | IN/anode | GPIO2 | Output | `LED_PIN` |
 | Nút cấu hình | Một đầu nút | GPIO15 | Input pull-up | `BUTTON_PIN` |
 | Tất cả module | GND | GND | Nguồn | GND chung |
@@ -85,7 +85,7 @@ ESP32                         Buzzer module
 -----                         -------------
 Nguồn theo module ----------> VCC
 GND   ----------------------> GND
-GPIO4 ----------------------> IN / SIGNAL
+GPIO25 ---------------------> IN / SIGNAL
 
 ESP32                         Nút cấu hình
 -----                         ------------
@@ -117,7 +117,7 @@ như nhiều GPIO khác của ESP32. Module phải cung cấp mức logic ổn �
 
 ### Còi
 
-| GPIO4 | Trạng thái hiện tại |
+| GPIO25 | Trạng thái hiện tại |
 |---:|---|
 | `LOW` / `0` | Tắt còi |
 | `HIGH` / `1` | Bật còi |
@@ -145,7 +145,7 @@ trong `ring.c`.
 
 ```text
 sketch_aug3a/BMP180.h : GPIO22, GPIO23, GPIO34
-sketch_aug3a/ring.h   : GPIO4
+sketch_aug3a/ring.h   : GPIO25
 ```
 
 Sau khi đổi chân, build lại firmware bằng `Ctrl+Shift+B` trong VS Code.

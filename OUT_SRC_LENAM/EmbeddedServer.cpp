@@ -67,7 +67,7 @@ bool EmbeddedServer::start(const Config &config, QString *error)
     m_mqtt->start(m_config.mqttHost, m_config.mqttPort);
     m_started = true;
 
-    qInfo().noquote() << QStringLiteral("HoangAnh app embedded API listening on %1").arg(baseUrl());
+    qInfo().noquote() << QStringLiteral("LeNam IoT embedded API listening on %1").arg(baseUrl());
     qInfo().noquote() << QStringLiteral("SQLite: %1").arg(m_databasePath);
     qInfo().noquote() << QStringLiteral("MQTT broker: %1:%2").arg(m_config.mqttHost).arg(m_config.mqttPort);
     return true;

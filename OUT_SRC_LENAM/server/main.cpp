@@ -13,12 +13,12 @@
 int main(int argc, char *argv[])
 {
     QCoreApplication app(argc, argv);
-    QCoreApplication::setApplicationName(QStringLiteral("HoangAnh IoT Server"));
+    QCoreApplication::setApplicationName(QStringLiteral("LeNam Atmosphere & Motion IoT Server"));
     QCoreApplication::setApplicationVersion(QStringLiteral("1.0.0"));
 
     QCommandLineParser parser;
     parser.setApplicationDescription(QStringLiteral(
-        "Raspberry Pi sensor API and SQLite service"));
+        "Raspberry Pi sensor API and SQLite service - Le Nam Real-time Atmosphere & Motion Monitoring"));
     parser.addHelpOption();
     parser.addVersionOption();
     QCommandLineOption portOption({QStringLiteral("p"), QStringLiteral("port")},
@@ -115,7 +115,7 @@ int main(int argc, char *argv[])
 
     mqttDiscovery.start(parser.value(mqttHostOption), quint16(mqttPortValue));
 
-    qInfo().noquote() << QStringLiteral("HoangAnh server listening on 0.0.0.0:%1").arg(portValue);
+    qInfo().noquote() << QStringLiteral("LeNam IoT server listening on 0.0.0.0:%1").arg(portValue);
     qInfo().noquote() << QStringLiteral("SQLite: %1").arg(databasePath);
     qInfo().noquote() << QStringLiteral("MQTT discovery local broker: %1:%2")
                             .arg(parser.value(mqttHostOption)).arg(mqttPortValue);

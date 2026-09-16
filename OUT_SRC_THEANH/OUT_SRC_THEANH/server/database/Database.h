@@ -46,6 +46,9 @@ public:
     QJsonArray pressureHistory(int limit, QString *error) const;
     QJsonArray distanceHistory(int limit, QString *error) const;
     QJsonArray alerts(int limit, QString *error) const;
+    bool addAlert(const QString &type, const QString &message, double value,
+                  const QString &createdAt, QString *error);
+    QJsonObject configForDevice(const QString &deviceId) const;
 
     QJsonObject config(QString *error) const;
     bool updateConfig(const QJsonObject &config, QString *error);

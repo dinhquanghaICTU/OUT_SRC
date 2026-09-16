@@ -142,6 +142,8 @@ MainWindow::MainWindow(QWidget *parent)
             });
     connect(m_apiClient, &ApiClient::deviceConfigSaved,
             m_deviceManagementPage, &DeviceManagementPage::configSaved);
+    connect(m_apiClient, &ApiClient::operationFailed,
+            m_deviceManagementPage, &DeviceManagementPage::configSaveFailed);
 
     // History Page Connections
     connect(m_historyPage, &HistoryPage::historyRequested,

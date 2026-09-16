@@ -566,8 +566,16 @@ void DeviceManagementPage::configSaved(const QString &deviceId, bool mqttPublish
         ? tr("Đã lưu và gửi xuống thiết bị")
         : tr("Đã lưu · MQTT đang offline"));
     QTimer::singleShot(1800, this, [this] {
-        m_saveThresholds->setText(tr("Lưu & gửi xuống thiết bị"));
+        m_saveThresholds->setText(tr("💾 Lưu cấu hình xuống thiết bị"));
     });
+}
+
+void DeviceManagementPage::configSaveFailed(const QString &error)
+{
+    m_saveThresholds->setEnabled(true);
+    m_saveThresholds->setText(tr("💾 Lưu cấu hình xuống thiết bị"));
+    QMessageBox::warning(this, tr("Lỗi lưu cấu hình"),
+                         error.isEmpty() ? tr("Không thể lưu cấu hình xuống thiết bị.") : error);
 }
 
 QWidget *DeviceManagementPage::createOwnedCard(const QJsonObject &device)
@@ -1027,6 +1035,21 @@ void DeviceManagementPage::saveThresholds()
         QJsonObject sensor = thresholds.value(parts.at(0)).toObject();
         sensor.insert(parts.at(1), it.value()->value());
         thresholds.insert(parts.at(0), sensor);
+    }
+    // Kiem tra hop le min < max
+    // Kiem tra hop le min < max
+    for (auto it = thresholds.begin(); it != thresholds.end(); ++it) {
+        const QJsonObject s = it.value().toObject();
+        if (s.contains(QStringLiteral("min")) && s.contains(QStringLiteral("max"))) {
+            const double minVal = s.value(QStringLiteral("min")).toDouble();
+            const double maxVal = s.value(QStringLiteral("max")).toDouble();
+            if (minVal >= maxVal) {
+                QMessageBox::warning(this, tr("Ngưỡng không hợp lệ"),
+                    tr("Ngưỡng thấp (%1) không được lớn hơn hoặc bằng ngưỡng cao (%2)! Vui lòng giảm ngưỡng thấp xuống (ví dụ: đặt V thấp = 0 V).")
+                    .arg(QString::number(minVal, 'f', 1), QString::number(maxVal, 'f', 1)));
+                return;
+            }
+        }
     }
     const QJsonObject config{{"sampling_interval_ms", m_samplingInterval->value() * 1000},
                              {"thresholds", thresholds}};

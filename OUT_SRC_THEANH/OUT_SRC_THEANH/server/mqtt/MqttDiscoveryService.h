@@ -39,4 +39,6 @@ private:
     bool m_stopping = false;
     QHash<QString, qint64> m_lastPresenceWriteMs;
     QHash<QString, qint64> m_lastTelemetryLogMs;
+    QHash<QString, qint64> m_lastBuzzerCommandMs;
+    QHash<QString, bool> m_buzzerState;
 };

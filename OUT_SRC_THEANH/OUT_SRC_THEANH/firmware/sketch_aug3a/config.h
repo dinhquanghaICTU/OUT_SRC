@@ -19,5 +19,6 @@
 #define MQTT_TOPIC_PREFIX "iot/v1/devices/" PRODUCT_ID
 #define MQTT_PUB_TELEMETRY_TOPIC MQTT_TOPIC_PREFIX "/telemetry"
 #define MQTT_SUB_CONFIG_DESIRED_TOPIC MQTT_TOPIC_PREFIX "/config/desired"
+#define MQTT_SUB_COMMAND_TOPIC MQTT_TOPIC_PREFIX "/commands"
 
 #endif // CONFIG_H

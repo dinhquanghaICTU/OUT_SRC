@@ -2,11 +2,14 @@ idf_component_register(
     SRCS 
         "AJ-SR04M/AJ-SR04M.c"
         "led/led.c"
+        "battery/battery.c"
     INCLUDE_DIRS 
         "AJ-SR04M"
         "led"
+        "battery"
         "."
     REQUIRES 
         driver
         esp_timer
+        esp_adc
 )
