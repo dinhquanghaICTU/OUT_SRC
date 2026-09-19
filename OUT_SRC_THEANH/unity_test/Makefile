@@ -1,4 +1,6 @@
-CC = gcc
+.PHONY: all clean
+
+CC ?= gcc
 CFLAGS = -Wall -Wextra -O2 -I.
 LDFLAGS = -lm
 
