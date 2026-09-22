@@ -66,6 +66,36 @@ static bool parse_json_uint(const char *json, const char *key, uint32_t *out_val
     return false;
 }
 
+static bool parse_json_number_in_obj(const char *json_obj, const char *key, float *out_val)
+{
+    if (!json_obj || !key || !out_val)
+        return false;
+
+    const char *obj_end = strchr(json_obj, '}');
+
+    char search_key[64];
+    snprintf(search_key, sizeof(search_key), "\"%s\"", key);
+    const char *pos = strstr(json_obj, search_key);
+    if (!pos || (obj_end && pos > obj_end))
+        return false;
+
+    pos = strchr(pos + strlen(search_key), ':');
+    if (!pos || (obj_end && pos > obj_end))
+        return false;
+
+    pos++;
+    while (*pos == ' ' || *pos == '\t' || *pos == '\r' || *pos == '\n')
+        pos++;
+
+    char *endptr = NULL;
+    float val = strtof(pos, &endptr);
+    if (endptr == pos)
+        return false;
+
+    *out_val = val;
+    return true;
+}
+
 static void handle_config_payload(const char *payload, int len)
 {
     if (!payload || len <= 0)
@@ -93,9 +123,9 @@ static void handle_config_payload(const char *payload, int len)
     if (v_pos)
     {
         float v_min = 0, v_max = 0;
-        if (parse_json_number(v_pos, "min", &v_min) && v_min >= 0)
+        if (parse_json_number_in_obj(v_pos, "min", &v_min) && v_min >= 0)
             current_thresholds.voltage_min = v_min;
-        if (parse_json_number(v_pos, "max", &v_max) && v_max >= 0)
+        if (parse_json_number_in_obj(v_pos, "max", &v_max) && v_max >= 0)
             current_thresholds.voltage_max = v_max;
     }
 
@@ -103,7 +133,7 @@ static void handle_config_payload(const char *payload, int len)
     if (i_pos)
     {
         float i_max = 0;
-        if (parse_json_number(i_pos, "max", &i_max) && i_max > 0)
+        if (parse_json_number_in_obj(i_pos, "max", &i_max) && i_max > 0)
             current_thresholds.current_max = i_max;
     }
 
@@ -111,7 +141,7 @@ static void handle_config_payload(const char *payload, int len)
     if (p_pos)
     {
         float p_max = 0;
-        if (parse_json_number(p_pos, "max", &p_max) && p_max > 0)
+        if (parse_json_number_in_obj(p_pos, "max", &p_max) && p_max > 0)
             current_thresholds.power_max = p_max;
     }
 

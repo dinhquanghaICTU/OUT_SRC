@@ -76,6 +76,8 @@ void loop() {
   alert_status_t alert = mqtt_manager_check_thresholds(currentA, voltageV, powerW);
   if (alert.is_alert) {
     buzzer_on();
+  } else {
+    buzzer_off();
   }
 
   switch (wifi_manager_get_state()) {
