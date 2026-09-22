@@ -1107,7 +1107,7 @@ void DeviceManagementPage::rebuildThresholdForm(const QJsonObject &device)
     };
 
     if (type == QStringLiteral("power_monitor") || type == QStringLiteral("electric_power")) {
-        addThreshold(QStringLiteral("voltage_v.min"), tr("⚡ V thấp"), 180.0, 0, 300, tr(" V"), 1, 1.0);
+        addThreshold(QStringLiteral("voltage_v.min"), tr("⚡ V thấp"), 10.0, 0, 300, tr(" V"), 1, 1.0);
         addThreshold(QStringLiteral("voltage_v.max"), tr("⚡ V cao"), 245.0, 0, 300, tr(" V"), 1, 1.0);
         addThreshold(QStringLiteral("current_a.max"), tr("🔌 Dòng tải max"), 15.0, 0, 100, tr(" A"), 2, 0.1);
         addThreshold(QStringLiteral("power_w.max"), tr("💡 Công suất max"), 3000.0, 0, 25000, tr(" W"), 1, 50.0);

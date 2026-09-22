@@ -403,7 +403,7 @@ void DashboardPage::setupUiCustom()
 
     // Left Y Axis: Voltage & Power
     m_axisY_Voltage = new QValueAxis(m_chart);
-    m_axisY_Voltage->setRange(180, 260);
+    m_axisY_Voltage->setRange(0, 260);
     m_axisY_Voltage->setTickCount(4);
     m_axisY_Voltage->setLabelFormat(QStringLiteral("%.0f"));
     m_axisY_Voltage->setLabelsColor(QColor("#38bdf8"));
@@ -502,14 +502,14 @@ void DashboardPage::updateVoltageDisplay(double voltageV)
     m_voltageBar->setValue(qBound(0, static_cast<int>(voltageV), 300));
     m_voltagePeakLabel->setText(QStringLiteral("%1 V").arg(QString::number(voltageV * 1.4142, 'f', 1)));
 
-    if (voltageV < 180.0) {
+    if (voltageV < 10.0) {
         m_voltageStatusBadge->setText(tr("⚠️ Sụt áp lưới!"));
         m_voltageStatusBadge->setObjectName(QStringLiteral("badgeWarning"));
     } else if (voltageV > 245.0) {
         m_voltageStatusBadge->setText(tr("🚨 Quá áp lưới!"));
         m_voltageStatusBadge->setObjectName(QStringLiteral("badgeDanger"));
     } else {
-        m_voltageStatusBadge->setText(tr("220V Chuẩn (Ổn định)"));
+        m_voltageStatusBadge->setText(tr("Điện áp ổn định"));
         m_voltageStatusBadge->setObjectName(QStringLiteral("badgeNormal"));
     }
     m_voltageStatusBadge->style()->unpolish(m_voltageStatusBadge);
@@ -720,7 +720,7 @@ void DashboardPage::openVoltageDetail()
         QStringLiteral("#38bdf8"),
         m_voltageHistory,
         this,
-        180.0,
+        10.0,
         250.0
     );
     dlg.exec();

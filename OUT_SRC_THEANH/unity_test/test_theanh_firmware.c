@@ -30,7 +30,7 @@ typedef struct {
 } alert_status_t;
 
 static device_thresholds_t test_thresholds = {
-    .voltage_min = 180.0f,
+    .voltage_min = 10.0f,
     .voltage_max = 245.0f,
     .current_max = 15.0f,
     .power_max = 3000.0f,
@@ -47,7 +47,7 @@ alert_status_t check_thresholds(float currentA, float voltageV, float powerW, co
         .alert_msg = "normal"
     };
 
-    if (voltageV > 10.0f) {
+    if (voltageV > 2.0f) {
         if (voltageV < th->voltage_min) {
             status.under_voltage = true;
             status.is_alert = true;
@@ -166,8 +166,8 @@ void test_theanh_threshold_and_alert_logic(void) {
     TEST_ASSERT_FALSE(normal.is_alert);
     TEST_ASSERT_EQUAL_STRING("normal", normal.alert_msg);
 
-    // 2. Under Voltage: 165V (< 180V) -> Alert
-    alert_status_t under_v = check_thresholds(2.0f, 165.0f, 330.0f, &test_thresholds);
+    // 2. Under Voltage: 8V (< 10V) -> Alert
+    alert_status_t under_v = check_thresholds(2.0f, 8.0f, 16.0f, &test_thresholds);
     TEST_ASSERT_TRUE(under_v.is_alert);
     TEST_ASSERT_TRUE(under_v.under_voltage);
     TEST_ASSERT_EQUAL_STRING("under_voltage", under_v.alert_msg);

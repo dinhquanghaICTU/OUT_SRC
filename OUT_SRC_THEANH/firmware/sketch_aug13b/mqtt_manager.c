@@ -18,7 +18,7 @@ static uint32_t mqtt_boot_id = 0;
 static uint32_t telemetry_sequence = 0;
 
 static device_thresholds_t current_thresholds = {
-    .voltage_min = 180.0f,
+    .voltage_min = 10.0f,
     .voltage_max = 245.0f,
     .current_max = 15.0f,
     .power_max = 3000.0f,
@@ -233,7 +233,7 @@ mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_t event_id, 
 
 void mqtt_manager_init(void)
 {
-    current_thresholds.voltage_min = 180.0f;
+    current_thresholds.voltage_min = 10.0f;
     current_thresholds.voltage_max = 245.0f;
     current_thresholds.current_max = 15.0f;
     current_thresholds.power_max = 3000.0f;
@@ -314,8 +314,8 @@ alert_status_t mqtt_manager_check_thresholds(float currentA, float voltageV, flo
         .over_power = false,
         .alert_msg = "normal"};
 
-    // Ignore 0V offline/disconnected readings
-    if (voltageV > 10.0f)
+    // Ignore 0V offline/disconnected readings (< 2.0V)
+    if (voltageV > 2.0f)
     {
         if (voltageV < current_thresholds.voltage_min)
         {

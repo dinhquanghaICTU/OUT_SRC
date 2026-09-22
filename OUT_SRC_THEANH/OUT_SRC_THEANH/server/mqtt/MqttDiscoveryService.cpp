@@ -279,7 +279,7 @@ void MqttDiscoveryService::processPublish(quint8 flags, const QByteArray &body)
         if (!isExceeded && metrics.contains(QStringLiteral("voltage_v"))) {
             const double volt = metrics.value(QStringLiteral("voltage_v")).toDouble();
             const QJsonObject vThresh = thresholds.value(QStringLiteral("voltage_v")).toObject();
-            const double minV = vThresh.value(QStringLiteral("min")).toDouble(180.0);
+            const double minV = vThresh.value(QStringLiteral("min")).toDouble(10.0);
             const double maxV = vThresh.value(QStringLiteral("max")).toDouble(245.0);
             if (volt > 0.0 && (volt < minV || volt > maxV)) {
                 isExceeded = true;
