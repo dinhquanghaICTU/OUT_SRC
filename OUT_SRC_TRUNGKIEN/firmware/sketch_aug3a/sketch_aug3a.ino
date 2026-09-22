@@ -113,14 +113,27 @@ void loop()
             }
         }
 
-        if (s_is_alert)
+        int manualBuzzer = mqtt_manager_get_manual_buzzer();
+        if (manualBuzzer == 1)
         {
-            turn_on_ring(); // Coi keu canh bao
-            turn_on_led();  // Den sang dung yen (khong can nhap nhay)
+            turn_on_ring(); // Coi keu khi bat thu cong
+            turn_on_led();
+        }
+        else if (manualBuzzer == 0)
+        {
+            turn_off_ring(); // Tat coi thu cong
         }
         else
         {
-            turn_off_ring(); // Binh thuong tat coi
+            if (s_is_alert)
+            {
+                turn_on_ring(); // Coi keu canh bao
+                turn_on_led();  // Den sang dung yen (khong can nhap nhay)
+            }
+            else
+            {
+                turn_off_ring(); // Binh thuong tat coi
+            }
         }
     }
 
@@ -149,9 +162,9 @@ void loop()
     else
         mqtt_manager_stop();
 
-    if (s_is_alert)
+    if (s_is_alert || mqtt_manager_get_manual_buzzer() == 1)
     {
-        // Khi vuot nguong: Den sang dung yen (khong can nhap nhay)
+        // Khi vuot nguong hoac bat coi thu cong: Den sang dung yen (khong can nhap nhay)
         turn_on_led();
     }
     else

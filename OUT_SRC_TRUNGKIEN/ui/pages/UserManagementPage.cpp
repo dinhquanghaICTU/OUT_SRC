@@ -71,9 +71,9 @@ UserManagementPage::UserManagementPage(QWidget *parent)
     ui->usersTable->setHorizontalHeaderLabels(
         {tr("Tài khoản"), tr("Quyền"), tr("Thiết bị"), tr("Trạng thái")});
     ui->usersTable->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Stretch);
-    ui->usersTable->horizontalHeader()->setSectionResizeMode(1, QHeaderView::ResizeToContents);
+    ui->usersTable->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch);
     ui->usersTable->horizontalHeader()->setSectionResizeMode(2, QHeaderView::Stretch);
-    ui->usersTable->horizontalHeader()->setSectionResizeMode(3, QHeaderView::ResizeToContents);
+    ui->usersTable->horizontalHeader()->setSectionResizeMode(3, QHeaderView::Stretch);
     ui->usersTable->horizontalHeader()->setMinimumHeight(28);
     ui->usersTable->verticalHeader()->hide();
     ui->usersTable->verticalHeader()->setDefaultSectionSize(36);

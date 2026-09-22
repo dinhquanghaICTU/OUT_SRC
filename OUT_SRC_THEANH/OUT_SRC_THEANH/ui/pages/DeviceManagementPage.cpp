@@ -79,6 +79,13 @@ DeviceManagementPage::DeviceManagementPage(QWidget *parent)
     topBar->setContentsMargins(0, 0, 0, 0);
     topBar->setSpacing(8);
 
+    auto *backBtn = new QPushButton(tr("← Giám sát"), this);
+    backBtn->setObjectName(QStringLiteral("deviceBackButton"));
+    backBtn->setCursor(Qt::PointingHandCursor);
+    backBtn->setToolTip(tr("Quay lại màn hình giám sát SCADA"));
+    connect(backBtn, &QPushButton::clicked, this, &DeviceManagementPage::backToDashboardRequested);
+    topBar->addWidget(backBtn);
+
     auto *title = new QLabel(tr("🖲 THIẾT BỊ"), this);
     title->setObjectName(QStringLiteral("devicePageTitle"));
     topBar->addWidget(title);
@@ -149,7 +156,13 @@ DeviceManagementPage::DeviceManagementPage(QWidget *parent)
     m_deviceLogTable->setSelectionBehavior(QAbstractItemView::SelectRows);
     m_deviceLogTable->setSelectionMode(QAbstractItemView::SingleSelection);
     m_deviceLogTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
-    m_deviceLogTable->setAlternatingRowColors(true);
+    m_deviceLogTable->setAlternatingRowColors(false);
+    QPalette devTablePal = m_deviceLogTable->palette();
+    devTablePal.setColor(QPalette::Base, QColor("#070d1e"));
+    devTablePal.setColor(QPalette::AlternateBase, QColor("#0f1c3f"));
+    devTablePal.setColor(QPalette::Text, QColor("#f8fafc"));
+    devTablePal.setColor(QPalette::WindowText, QColor("#f8fafc"));
+    m_deviceLogTable->setPalette(devTablePal);
     logLayout->addWidget(m_deviceLogTable, 1);
 
     m_logEmptyLabel = new QLabel(tr("Chưa có thiết bị nào trong danh sách."), logPage);
@@ -224,6 +237,111 @@ DeviceManagementPage::DeviceManagementPage(QWidget *parent)
 
     m_drawer->setObjectName(QStringLiteral("deviceDrawer"));
     m_drawer->setFixedWidth(300);
+
+    QPalette drwPal = m_drawer->palette();
+    drwPal.setColor(QPalette::Window, QColor("#081026"));
+    drwPal.setColor(QPalette::Base, QColor("#081026"));
+    drwPal.setColor(QPalette::Text, QColor("#f8fafc"));
+    drwPal.setColor(QPalette::WindowText, QColor("#f8fafc"));
+    m_drawer->setPalette(drwPal);
+    m_drawer->setAutoFillBackground(true);
+
+    m_drawer->setStyleSheet(QStringLiteral(
+        "QFrame#deviceDrawer, QWidget#deviceDrawer { "
+        "  background-color: #081026; "
+        "  border-left: 1.5px solid #1c2b54; "
+        "} "
+        "QScrollArea#drawerScrollArea, QWidget#drawerBodyWidget, QWidget#drawerThresholdWidget { "
+        "  background-color: #081026; "
+        "  border: none; "
+        "} "
+        "QLabel#drawerTitle { "
+        "  color: #38bdf8; "
+        "  font-size: 13px; "
+        "  font-weight: 800; "
+        "} "
+        "QPushButton#closeDrawerButton { "
+        "  background: #0f1c3f; "
+        "  color: #94a3b8; "
+        "  border: 1px solid #1c2b54; "
+        "  border-radius: 4px; "
+        "  font-size: 11px; "
+        "  font-weight: bold; "
+        "  padding: 3px 8px; "
+        "} "
+        "QPushButton#closeDrawerButton:hover { "
+        "  background: #dc2626; "
+        "  color: #ffffff; "
+        "} "
+        "QLabel#drawerDeviceName { "
+        "  color: #f8fafc; "
+        "  font-size: 12px; "
+        "  font-weight: 800; "
+        "} "
+        "QLabel#drawerDeviceId { "
+        "  color: #38bdf8; "
+        "  font-size: 9px; "
+        "  font-weight: 600; "
+        "} "
+        "QLabel#drawerMetrics { "
+        "  color: #7dd3fc; "
+        "  font-size: 10px; "
+        "  background-color: #0f1c3f; "
+        "  border: 1px solid #1c2b54; "
+        "  border-radius: 6px; "
+        "  padding: 6px; "
+        "} "
+        "QLabel#drawerSectionTitle { "
+        "  color: #38bdf8; "
+        "  font-size: 11px; "
+        "  font-weight: 800; "
+        "  padding-top: 6px; "
+        "} "
+        "QLabel#thresholdFieldLabel { "
+        "  color: #cbd5e1; "
+        "  font-size: 10px; "
+        "  font-weight: 700; "
+        "} "
+        "QDoubleSpinBox, QSpinBox { "
+        "  background-color: #0f1c3f; "
+        "  color: #38bdf8; "
+        "  border: 1.5px solid #1c2b54; "
+        "  border-radius: 5px; "
+        "  padding: 5px 6px; "
+        "  font-size: 11px; "
+        "  font-weight: 800; "
+        "} "
+        "QDoubleSpinBox:focus, QSpinBox:focus { "
+        "  border-color: #0284c7; "
+        "  background-color: #1e293b; "
+        "} "
+        "QPushButton#saveDeviceConfigButton { "
+        "  background: qlineargradient(x1:0, y1:0, x2:1, y2:0, stop:0 #0284c7, stop:1 #0369a1); "
+        "  color: #ffffff; "
+        "  border: 1px solid #38bdf8; "
+        "  border-radius: 6px; "
+        "  font-size: 11px; "
+        "  font-weight: 800; "
+        "  padding: 8px 10px; "
+        "} "
+        "QPushButton#saveDeviceConfigButton:hover { "
+        "  background: #0284c7; "
+        "} "
+        "QPushButton#releaseDeviceButton { "
+        "  background: #1e1b4b; "
+        "  color: #f87171; "
+        "  border: 1px solid #7f1d1d; "
+        "  border-radius: 6px; "
+        "  font-size: 10px; "
+        "  font-weight: 700; "
+        "  padding: 6px 10px; "
+        "} "
+        "QPushButton#releaseDeviceButton:hover { "
+        "  background: #dc2626; "
+        "  color: #ffffff; "
+        "} "
+    ));
+
     auto *drawerOuterLayout = new QVBoxLayout(m_drawer);
     drawerOuterLayout->setContentsMargins(10, 10, 10, 10);
     drawerOuterLayout->setSpacing(4);
@@ -240,10 +358,18 @@ DeviceManagementPage::DeviceManagementPage(QWidget *parent)
     drawerOuterLayout->addLayout(drawerTop);
 
     auto *drawerScroll = new QScrollArea(m_drawer);
+    drawerScroll->setObjectName(QStringLiteral("drawerScrollArea"));
     drawerScroll->setWidgetResizable(true);
     drawerScroll->setFrameShape(QFrame::NoFrame);
     drawerScroll->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    drawerScroll->setPalette(drwPal);
+    drawerScroll->viewport()->setPalette(drwPal);
+    drawerScroll->viewport()->setAutoFillBackground(true);
+
     auto *drawerBody = new QWidget(drawerScroll);
+    drawerBody->setObjectName(QStringLiteral("drawerBodyWidget"));
+    drawerBody->setPalette(drwPal);
+    drawerBody->setAutoFillBackground(true);
     auto *drawerLayout = new QVBoxLayout(drawerBody);
     drawerLayout->setContentsMargins(0, 0, 2, 0);
     drawerLayout->setSpacing(6);
@@ -273,6 +399,9 @@ DeviceManagementPage::DeviceManagementPage(QWidget *parent)
     drawerLayout->addWidget(m_thresholdTitle);
 
     auto *thresholdWidget = new QWidget(drawerBody);
+    thresholdWidget->setObjectName(QStringLiteral("drawerThresholdWidget"));
+    thresholdWidget->setPalette(drwPal);
+    thresholdWidget->setAutoFillBackground(true);
     thresholdWidget->setLayout(m_thresholdGrid);
     m_thresholdGrid->setContentsMargins(0, 0, 0, 0);
     m_thresholdGrid->setHorizontalSpacing(8);
@@ -460,30 +589,47 @@ void DeviceManagementPage::rebuildLogTable()
             ? lastSeenDt.toLocalTime().toString(QStringLiteral("dd/MM/yyyy HH:mm:ss"))
             : (lastSeen.isEmpty() ? QStringLiteral("--") : lastSeen);
 
+        const QColor rowBg = (displayedRow % 2 == 0) ? QColor("#070d1e") : QColor("#0f1c3f");
+        const QColor textColor = QColor("#f8fafc");
+
         auto *sttItem = new QTableWidgetItem(QString::number(displayedRow + 1));
         sttItem->setTextAlignment(Qt::AlignCenter);
+        sttItem->setBackground(rowBg);
+        sttItem->setForeground(textColor);
 
         auto *nameItem = new QTableWidgetItem(name.isEmpty() ? devId : name);
         nameItem->setFont(QFont(font().family(), 10, QFont::Bold));
+        nameItem->setBackground(rowBg);
+        nameItem->setForeground(textColor);
 
         auto *idItem = new QTableWidgetItem(devId);
         idItem->setTextAlignment(Qt::AlignCenter);
+        idItem->setBackground(rowBg);
+        idItem->setForeground(textColor);
 
         auto *typeItem = new QTableWidgetItem(deviceTypeName(type));
+        typeItem->setBackground(rowBg);
+        typeItem->setForeground(textColor);
 
         auto *userItem = new QTableWidgetItem(addedBy.isEmpty() ? QStringLiteral("Chưa gán") : addedBy);
         userItem->setTextAlignment(Qt::AlignCenter);
-        userItem->setForeground(QColor("#15945a"));
+        userItem->setBackground(rowBg);
+        userItem->setForeground(QColor("#38bdf8"));
 
         auto *timeItem = new QTableWidgetItem(createdStr);
         timeItem->setTextAlignment(Qt::AlignCenter);
+        timeItem->setBackground(rowBg);
+        timeItem->setForeground(textColor);
 
         auto *statusItem = new QTableWidgetItem(isOnline ? tr("●  Online") : tr("○  Offline"));
         statusItem->setTextAlignment(Qt::AlignCenter);
-        statusItem->setForeground(isOnline ? QColor("#15945a") : QColor("#8a9992"));
+        statusItem->setBackground(rowBg);
+        statusItem->setForeground(isOnline ? QColor("#22c55e") : QColor("#94a3b8"));
 
         auto *lastSeenItem = new QTableWidgetItem(lastSeenStr);
         lastSeenItem->setTextAlignment(Qt::AlignCenter);
+        lastSeenItem->setBackground(rowBg);
+        lastSeenItem->setForeground(textColor);
 
         m_deviceLogTable->setItem(displayedRow, 0, sttItem);
         m_deviceLogTable->setItem(displayedRow, 1, nameItem);
@@ -932,12 +1078,14 @@ void DeviceManagementPage::rebuildThresholdForm(const QJsonObject &device)
                         .value(parts.at(1)).toDouble(fallback);
 
         auto *cell = new QWidget(m_drawer);
+        cell->setStyleSheet(QStringLiteral("background: transparent;"));
         auto *cellLayout = new QVBoxLayout(cell);
         cellLayout->setContentsMargins(0, 0, 0, 0);
         cellLayout->setSpacing(2);
 
         auto *lbl = new QLabel(label, cell);
         lbl->setObjectName(QStringLiteral("thresholdFieldLabel"));
+        lbl->setStyleSheet(QStringLiteral("color: #cbd5e1; font-weight: 700; font-size: 10px;"));
 
         auto *input = new QDoubleSpinBox(cell);
         input->setRange(minimum, maximum);
@@ -987,11 +1135,13 @@ void DeviceManagementPage::rebuildThresholdForm(const QJsonObject &device)
     }
 
     auto *samplingCell = new QWidget(m_drawer);
+    samplingCell->setStyleSheet(QStringLiteral("background: transparent;"));
     auto *sLayout = new QVBoxLayout(samplingCell);
     sLayout->setContentsMargins(0, 0, 0, 0);
     sLayout->setSpacing(2);
     auto *sLbl = new QLabel(tr("⏱ Chu kỳ gửi"), samplingCell);
     sLbl->setObjectName(QStringLiteral("thresholdFieldLabel"));
+    sLbl->setStyleSheet(QStringLiteral("color: #cbd5e1; font-weight: 700; font-size: 10px;"));
     m_samplingInterval = new QSpinBox(samplingCell);
     m_samplingInterval->setRange(1, 3600);
     m_samplingInterval->setSuffix(tr(" s"));

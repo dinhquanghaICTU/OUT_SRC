@@ -2,5 +2,7 @@
  <qresource prefix="/">
   <file alias="styles/app.qss">styles/app.qss</file>
   <file alias="images/logo_ictu.png">image/logo_ictu.png</file>
+  <file alias="images/zmpt101b.png">image/zmpt101b.png</file>
+  <file alias="images/acs712.png">image/acs712.png</file>
  </qresource>
 </RCC>

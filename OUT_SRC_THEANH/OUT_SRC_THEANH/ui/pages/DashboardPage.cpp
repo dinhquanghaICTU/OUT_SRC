@@ -1,273 +1,69 @@
 #include "DashboardPage.h"
 #include "ui_DashboardPage.h"
 
+#include <QChart>
+#include <QChartView>
+#include <QDateTime>
 #include <QFrame>
 #include <QGridLayout>
 #include <QHBoxLayout>
 #include <QLabel>
+#include <QLineSeries>
 #include <QPainter>
-#include <QPainterPath>
-#include <QPaintEvent>
+#include <QPixmap>
 #include <QProgressBar>
 #include <QPushButton>
-#include <QStackedWidget>
+#include <QResizeEvent>
+#include <QScrollArea>
+#include <QScroller>
+#include <QStyle>
+#include <QValueAxis>
 #include <QVBoxLayout>
-#include <QtMath>
 
-// ============================================================================
-// 1. CircularGaugeWidget (Card 1)
-// ============================================================================
-CircularGaugeWidget::CircularGaugeWidget(QWidget *parent) : QWidget(parent)
+namespace {
+
+QFrame *makeFrame(const char *objectName = "scadaCard")
 {
-    setMinimumSize(110, 110);
-    setCursor(Qt::PointingHandCursor);
+    auto *card = new QFrame;
+    card->setObjectName(QString::fromLatin1(objectName));
+    card->setFrameShape(QFrame::NoFrame);
+    return card;
 }
 
-void CircularGaugeWidget::setValue(double val, double minVal, double maxVal, const QString &unit)
+QLabel *makeLabel(const QString &text, const char *objectName = nullptr, bool bold = false)
 {
-    m_value = val;
-    m_min = minVal;
-    m_max = maxVal;
-    m_unit = unit;
-    update();
-}
-
-void CircularGaugeWidget::paintEvent(QPaintEvent *event)
-{
-    Q_UNUSED(event);
-    QPainter p(this);
-    p.setRenderHint(QPainter::Antialiasing, true);
-
-    const int side = qMin(width(), height()) - 16;
-    const int x = (width() - side) / 2;
-    const int y = (height() - side) / 2;
-    const QRectF rect(x, y, side, side);
-
-    // Track Background
-    QPen trackPen(QColor(QStringLiteral("#1e1b4b")), 7, Qt::SolidLine, Qt::RoundCap);
-    p.setPen(trackPen);
-    p.drawEllipse(rect);
-
-    // Active Glowing Ring
-    double pct = (m_value > 0) ? qBound(0.0, (m_value - m_min) / (m_max - m_min), 1.0) : 0.0;
-    int spanAngle = static_cast<int>(pct * 360 * 16);
-
-    if (spanAngle > 0) {
-        QLinearGradient grad(rect.topLeft(), rect.bottomRight());
-        grad.setColorAt(0.0, QColor(QStringLiteral("#38bdf8")));
-        grad.setColorAt(1.0, QColor(QStringLiteral("#818cf8")));
-        QPen activePen(grad, 7, Qt::SolidLine, Qt::RoundCap);
-        p.setPen(activePen);
-        p.drawArc(rect, 90 * 16, -spanAngle);
+    auto *lbl = new QLabel(text);
+    if (objectName)
+        lbl->setObjectName(QString::fromLatin1(objectName));
+    lbl->setWordWrap(false);
+    if (bold) {
+        QFont f = lbl->font();
+        f.setBold(true);
+        lbl->setFont(f);
     }
-
-    // Text in center
-    p.setPen(QColor(QStringLiteral("#ffffff")));
-    QFont font = p.font();
-    font.setPointSize(14);
-    font.setBold(true);
-    p.setFont(font);
-
-    if (m_value > 0) {
-        p.drawText(rect, Qt::AlignCenter, QStringLiteral("%1\n%2").arg(QString::number(m_value, 'f', 1), m_unit));
-    } else {
-        p.setPen(QColor(QStringLiteral("#94a3b8")));
-        p.drawText(rect, Qt::AlignCenter, QStringLiteral("--\n%1").arg(m_unit));
-    }
+    return lbl;
 }
 
-// ============================================================================
-// 2. SemiCircleGaugeWidget (Card 6)
-// ============================================================================
-SemiCircleGaugeWidget::SemiCircleGaugeWidget(QWidget *parent) : QWidget(parent)
-{
-    setMinimumSize(130, 80);
-    setCursor(Qt::PointingHandCursor);
-}
-
-void SemiCircleGaugeWidget::setValue(double val, double maxVal, const QString &unit)
-{
-    m_value = val;
-    m_max = maxVal;
-    m_unit = unit;
-    update();
-}
-
-void SemiCircleGaugeWidget::paintEvent(QPaintEvent *event)
-{
-    Q_UNUSED(event);
-    QPainter p(this);
-    p.setRenderHint(QPainter::Antialiasing, true);
-
-    const int side = qMin(width(), height() * 2) - 16;
-    const int x = (width() - side) / 2;
-    const int y = 6;
-    const QRectF rect(x, y, side, side);
-
-    // Track Arc
-    QPen trackPen(QColor(QStringLiteral("#1e1b4b")), 8, Qt::SolidLine, Qt::RoundCap);
-    p.setPen(trackPen);
-    p.drawArc(rect, 0 * 16, 180 * 16);
-
-    // Value Arc
-    double pct = (m_value > 0) ? qBound(0.0, m_value / m_max, 1.0) : 0.0;
-    int spanAngle = static_cast<int>(pct * 180 * 16);
-
-    if (spanAngle > 0) {
-        QLinearGradient grad(rect.bottomLeft(), rect.topRight());
-        grad.setColorAt(0.0, QColor(QStringLiteral("#10b981")));
-        grad.setColorAt(1.0, QColor(QStringLiteral("#6366f1")));
-        QPen activePen(grad, 8, Qt::SolidLine, Qt::RoundCap);
-        p.setPen(activePen);
-        p.drawArc(rect, 180 * 16, -spanAngle);
-    }
-
-    // Center Value
-    p.setPen(QColor(QStringLiteral("#ffffff")));
-    QFont font = p.font();
-    font.setPointSize(18);
-    font.setBold(true);
-    p.setFont(font);
-
-    if (m_value > 0) {
-        p.drawText(QRectF(0, y + side / 4, width(), side / 2), Qt::AlignCenter, QString::number(static_cast<int>(m_value)));
-    } else {
-        p.setPen(QColor(QStringLiteral("#94a3b8")));
-        p.drawText(QRectF(0, y + side / 4, width(), side / 2), Qt::AlignCenter, QStringLiteral("--"));
-    }
-}
-
-// ============================================================================
-// 3. NeonAreaChartWidget (Card 3)
-// ============================================================================
-NeonAreaChartWidget::NeonAreaChartWidget(QWidget *parent) : QWidget(parent)
-{
-    setMinimumSize(220, 110);
-    setCursor(Qt::PointingHandCursor);
-}
-
-void NeonAreaChartWidget::addPoint(double val1, double val2)
-{
-    m_data1.append(val1);
-    m_data2.append(val2);
-    if (m_data1.size() > 24) m_data1.removeFirst();
-    if (m_data2.size() > 24) m_data2.removeFirst();
-    update();
-}
-
-void NeonAreaChartWidget::paintEvent(QPaintEvent *event)
-{
-    Q_UNUSED(event);
-    QPainter p(this);
-    p.setRenderHint(QPainter::Antialiasing, true);
-
-    const int w = width();
-    const int h = height();
-    const int padBottom = 16;
-    const int padLeft = 24;
-    const int plotW = w - padLeft - 10;
-    const int plotH = h - padBottom - 10;
-
-    // Grid lines
-    p.setPen(QPen(QColor(QStringLiteral("#282352")), 1, Qt::SolidLine));
-    for (int i = 0; i <= 4; ++i) {
-        int y = 10 + (plotH * i) / 4;
-        p.drawLine(padLeft, y, w - 10, y);
-        p.setPen(QColor(QStringLiteral("#64748b")));
-        QFont f = p.font();
-        f.setPointSize(7);
-        p.setFont(f);
-        p.drawText(QRect(0, y - 6, padLeft - 4, 12), Qt::AlignRight | Qt::AlignVCenter, QString::number(100 - i * 25));
-        p.setPen(QPen(QColor(QStringLiteral("#282352")), 1, Qt::SolidLine));
-    }
-
-    if (m_data1.isEmpty()) {
-        p.setPen(QColor(QStringLiteral("#64748b")));
-        p.drawText(rect(), Qt::AlignCenter, QStringLiteral("Đang chờ kết nối cảm biến ESP32..."));
-        return;
-    }
-
-    if (m_data1.size() < 2) return;
-
-    // 1. Draw Area Fill for Data 1
-    QPainterPath areaPath;
-    const double stepX = static_cast<double>(plotW) / (m_data1.size() - 1);
-
-    areaPath.moveTo(padLeft, h - padBottom);
-    for (int i = 0; i < m_data1.size(); ++i) {
-        double px = padLeft + i * stepX;
-        double py = (h - padBottom) - (qBound(0.0, m_data1[i], 100.0) / 100.0) * plotH;
-        areaPath.lineTo(px, py);
-    }
-    areaPath.lineTo(padLeft + (m_data1.size() - 1) * stepX, h - padBottom);
-    areaPath.closeSubpath();
-
-    QLinearGradient areaGrad(0, 0, 0, h);
-    areaGrad.setColorAt(0.0, QColor(QStringLiteral("#6366f1")));
-    areaGrad.setColorAt(1.0, QColor(QStringLiteral("#1b173d")));
-    p.fillPath(areaPath, areaGrad);
-
-    // 2. Draw Wave Line
-    QPainterPath wavePath;
-    int peakIdx = 0;
-    double maxVal = 0;
-
-    for (int i = 0; i < m_data1.size(); ++i) {
-        double px = padLeft + i * stepX;
-        double py = (h - padBottom) - (qBound(0.0, m_data1[i], 100.0) / 100.0) * plotH;
-        if (i == 0) wavePath.moveTo(px, py);
-        else wavePath.lineTo(px, py);
-
-        if (m_data1[i] > maxVal) {
-            maxVal = m_data1[i];
-            peakIdx = i;
+struct ClickFilter : public QObject {
+    std::function<void()> onClick;
+    ClickFilter(QObject *parent, std::function<void()> cb) : QObject(parent), onClick(cb) {}
+    bool eventFilter(QObject *watched, QEvent *event) override {
+        if (event->type() == QEvent::MouseButtonRelease) {
+            if (onClick) onClick();
+            return true;
         }
+        return QObject::eventFilter(watched, event);
     }
-    p.setPen(QPen(QColor(QStringLiteral("#10b981")), 2.2, Qt::SolidLine, Qt::RoundCap));
-    p.drawPath(wavePath);
+};
 
-    // 3. Peak Badges
-    double peakX = padLeft + peakIdx * stepX;
-    double peakY = (h - padBottom) - (qBound(0.0, maxVal, 100.0) / 100.0) * plotH;
+} // namespace
 
-    p.setBrush(QColor(QStringLiteral("#6366f1")));
-    p.setPen(Qt::NoPen);
-    p.drawRoundedRect(QRectF(peakX - 10, peakY - 24, 20, 12), 3, 3);
-    p.setPen(QColor(QStringLiteral("#ffffff")));
-    QFont f = p.font();
-    f.setPointSize(7);
-    f.setBold(true);
-    p.setFont(f);
-    p.drawText(QRectF(peakX - 10, peakY - 24, 20, 12), Qt::AlignCenter, QString::number(static_cast<int>(maxVal)));
-
-    p.setBrush(QColor(QStringLiteral("#10b981")));
-    p.setPen(Qt::NoPen);
-    p.drawRoundedRect(QRectF(peakX - 10, peakY - 10, 20, 12), 3, 3);
-    p.setPen(QColor(QStringLiteral("#ffffff")));
-    p.drawText(QRectF(peakX - 10, peakY - 10, 20, 12), Qt::AlignCenter, QString::number(static_cast<int>(maxVal * 0.7)));
-}
-
-// ============================================================================
-// 4. DashboardPage Implementation
-// ============================================================================
 DashboardPage::DashboardPage(QWidget *parent)
-    : QWidget(parent), ui(new Ui::DashboardPage)
+    : QWidget(parent),
+      ui(new Ui::DashboardPage)
 {
     ui->setupUi(this);
-    setStyleSheet("background: qlineargradient(x1:0, y1:0, x2:1, y2:1, stop:0 #1a1638, stop:1 #120e2e); color: #ecf2ff; font-family: sans-serif;");
-
-    m_deviceId = QStringLiteral("Theanh-190782");
-    m_deviceName = QStringLiteral("Bộ Đo AC RMS & Công Suất Tải THEANH");
-    m_hasDevice = true;
-    m_isOnline = true;
-    m_curVoltage = 221.8;
-    m_curCurrent = 2.35;
-    m_curPower = 521.23;
-    m_relayState = true;
-
-    setupCustomDashboard();
-    updateDeviceCardState();
-    updateSensorStatusBadges();
+    setupUiCustom();
 }
 
 DashboardPage::~DashboardPage()
@@ -280,12 +76,595 @@ void DashboardPage::setUsername(const QString &username)
     m_username = username;
 }
 
-void DashboardPage::setDeviceId(const QString &deviceId)
+void DashboardPage::setupUiCustom()
 {
-    m_deviceId = deviceId;
-    m_hasDevice = !deviceId.isEmpty();
-    updateDeviceCardState();
-    updateSensorStatusBadges();
+    setStyleSheet(QStringLiteral(
+        "QWidget#DashboardPage { background-color: #060b18; color: #ecf2ff; font-family: sans-serif; } "
+        "QFrame#scadaCard { background-color: #0b1329; border: 1.5px solid #1c2b54; border-radius: 8px; } "
+        "QFrame#sensorBlock { background-color: #0f1c3d; border: 1px solid #23386b; border-radius: 6px; } "
+        "QFrame#sensorBlock:hover { border-color: #38bdf8; background-color: #13244e; } "
+        "QFrame#busGridFrame { background-color: #09132c; border: 1px dashed #0284c7; border-radius: 5px; } "
+        "QLabel#panelHeader { color: #38bdf8; font-size: 11px; font-weight: 900; letter-spacing: 0.5px; text-transform: uppercase; } "
+        "QLabel#blockHeader { color: #cbd5e1; font-size: 10px; font-weight: 800; } "
+        "QLabel#busLabel { color: #38bdf8; font-size: 10px; font-weight: 900; letter-spacing: 0.5px; } "
+        "QLabel#bigValVoltage { color: #38bdf8; font-size: 24px; font-weight: 900; font-family: monospace; } "
+        "QLabel#bigValCurrent { color: #f59e0b; font-size: 24px; font-weight: 900; font-family: monospace; } "
+        "QLabel#bigValPower { color: #10b981; font-size: 22px; font-weight: 900; font-family: monospace; } "
+        "QLabel#metaKey { color: #94a3b8; font-size: 9px; font-weight: 600; } "
+        "QLabel#metaVal { color: #ffffff; font-size: 10px; font-weight: 800; } "
+        "QLabel#badgeNormal { background-color: rgba(16, 185, 129, 0.2); color: #34d399; border: 1px solid #059669; border-radius: 4px; padding: 2px 6px; font-size: 9px; font-weight: 800; } "
+        "QLabel#badgeWarning { background-color: rgba(234, 179, 8, 0.2); color: #fde047; border: 1px solid #ca8a04; border-radius: 4px; padding: 2px 6px; font-size: 9px; font-weight: 800; } "
+        "QLabel#badgeDanger { background-color: rgba(239, 68, 68, 0.2); color: #f87171; border: 1px solid #dc2626; border-radius: 4px; padding: 2px 6px; font-size: 9px; font-weight: 800; } "
+        "QLabel#sensorPhoto { border: 1.5px solid #23386b; border-radius: 6px; background-color: #060b18; } "
+        "QProgressBar#voltageBar { background-color: #111d3d; border: 1px solid #1c2b54; border-radius: 3px; max-height: 7px; text-align: center; } "
+        "QProgressBar#voltageBar::chunk { background: qlineargradient(x1:0, y1:0, x2:1, y2:0, stop:0 #eab308, stop:0.65 #10b981, stop:0.85 #10b981, stop:1.0 #ef4444); border-radius: 2px; } "
+        "QProgressBar#currentBar { background-color: #111d3d; border: 1px solid #1c2b54; border-radius: 3px; max-height: 7px; text-align: center; } "
+        "QProgressBar#currentBar::chunk { background: qlineargradient(x1:0, y1:0, x2:1, y2:0, stop:0 #10b981, stop:0.5 #f59e0b, stop:0.85 #ef4444); border-radius: 2px; } "
+        "QPushButton#chartTab { background: #0e1938; color: #94a3b8; border: 1px solid #223565; border-radius: 4px; padding: 3px 8px; font-size: 9px; font-weight: 800; } "
+        "QPushButton#chartTab:hover { background: #172554; color: #ffffff; } "
+        "QPushButton#chartTabActive { background: #0284c7; color: #ffffff; border: 1px solid #38bdf8; border-radius: 4px; padding: 3px 8px; font-size: 9px; font-weight: 900; } "
+        "QPushButton#actionButton { background: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #0284c7, stop:1 #0369a1); color: #ffffff; border: 1px solid #38bdf8; border-radius: 5px; padding: 5px 10px; font-size: 9px; font-weight: 900; } "
+        "QPushButton#actionButton:hover { background: #0284c7; } "
+        "QPushButton#relayOnBtn { background: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #10b981, stop:1 #059669); color: #ffffff; border: 1px solid #34d399; border-radius: 5px; padding: 5px 10px; font-size: 9px; font-weight: 900; } "
+        "QPushButton#relayOffBtn { background: #1f1422; color: #f87171; border: 1px solid #7f1d1d; border-radius: 5px; padding: 5px 10px; font-size: 9px; font-weight: 900; } "
+        "QLabel#adviceBanner { color: #cbd5e1; font-size: 9px; font-weight: 600; padding: 4px; border-radius: 4px; background: rgba(30, 41, 59, 0.4); border: 1px solid #1e293b; }"
+    ));
+
+    ui->verticalLayout->setContentsMargins(6, 6, 6, 6);
+    ui->verticalLayout->setSpacing(0);
+
+    auto *scrollArea = new QScrollArea(this);
+    scrollArea->setWidgetResizable(true);
+    scrollArea->setFrameShape(QFrame::NoFrame);
+    scrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    scrollArea->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+    scrollArea->setStyleSheet(QStringLiteral("QScrollArea { background: transparent; border: none; }"));
+    QScroller::grabGesture(scrollArea->viewport(), QScroller::LeftMouseButtonGesture);
+
+    auto *container = new QWidget(scrollArea);
+    container->setObjectName(QStringLiteral("dashboardContainer"));
+    container->setStyleSheet(QStringLiteral("QWidget#dashboardContainer { background: #060b18; }"));
+
+    m_masterHLayout = new QHBoxLayout(container);
+    m_masterHLayout->setContentsMargins(0, 0, 0, 0);
+    m_masterHLayout->setSpacing(8);
+
+    // =========================================================================
+    // KHỐI TRÁI: SƠ ĐỒ NGUYÊN LÝ BIỂU TRƯNG & CẢM BIẾN (Width ~345px)
+    // =========================================================================
+    m_leftPanel = makeFrame("scadaCard");
+    m_leftPanel->setFixedWidth(345);
+    auto *leftLayout = new QVBoxLayout(m_leftPanel);
+    leftLayout->setContentsMargins(8, 8, 8, 8);
+    leftLayout->setSpacing(6);
+
+    auto *leftHeadRow = new QHBoxLayout;
+    leftHeadRow->addWidget(makeLabel(tr("⚡ SƠ ĐỒ MẠCH NGUYÊN LÝ & CẢM BIẾN"), "panelHeader", true));
+    leftHeadRow->addStretch();
+    leftLayout->addLayout(leftHeadRow);
+
+    // 1. AC Grid Bus Bar (Biểu trưng nguồn lưới)
+    auto *busFrame = makeFrame("busGridFrame");
+    auto *busLayout = new QHBoxLayout(busFrame);
+    busLayout->setContentsMargins(8, 4, 8, 4);
+    busLayout->addWidget(makeLabel(tr("∿ NGUỒN LƯỚI AC: 220V - 50Hz (TCVN)"), "busLabel", true));
+    busLayout->addStretch();
+    busLayout->addWidget(makeLabel(tr("ĐẦU VÀO"), "metaKey"));
+    leftLayout->addWidget(busFrame);
+
+    // 2. Sensor 1: ZMPT101B (Biến áp cảm ứng đo áp)
+    m_blockZmpt = makeFrame("sensorBlock");
+    m_blockZmpt->setCursor(Qt::PointingHandCursor);
+    m_blockZmpt->installEventFilter(new ClickFilter(m_blockZmpt, [this] { openVoltageDetail(); }));
+    auto *zmptLayout = new QVBoxLayout(m_blockZmpt);
+    zmptLayout->setContentsMargins(8, 6, 8, 6);
+    zmptLayout->setSpacing(3);
+
+    auto *zTop = new QHBoxLayout;
+    zTop->addWidget(makeLabel(tr("⚡ ĐIỆN ÁP (ZMPT101B)"), "blockHeader", true));
+    zTop->addStretch();
+    m_voltageStatusBadge = makeLabel(tr("220V Ổn định"), "badgeNormal", true);
+    zTop->addWidget(m_voltageStatusBadge);
+    zmptLayout->addLayout(zTop);
+
+    auto *zMid = new QHBoxLayout;
+    m_voltageValLabel = makeLabel(QStringLiteral("221.8"), "bigValVoltage", true);
+    zMid->addWidget(m_voltageValLabel);
+    zMid->addWidget(makeLabel(tr("V"), "metaKey"), 0, Qt::AlignBottom);
+    zMid->addSpacing(10);
+
+    auto *zMeta = new QVBoxLayout;
+    zMeta->setSpacing(1);
+    auto *zFRow = new QHBoxLayout;
+    zFRow->addWidget(makeLabel(tr("Tần số:"), "metaKey"));
+    m_voltageFreqLabel = makeLabel(QStringLiteral("50.0 Hz"), "metaVal", true);
+    zFRow->addWidget(m_voltageFreqLabel);
+    zMeta->addLayout(zFRow);
+
+    auto *zPkRow = new QHBoxLayout;
+    zPkRow->addWidget(makeLabel(tr("V_đỉnh:"), "metaKey"));
+    m_voltagePeakLabel = makeLabel(QStringLiteral("313.6 V"), "metaVal");
+    zPkRow->addWidget(m_voltagePeakLabel);
+    zMeta->addLayout(zPkRow);
+    zMid->addLayout(zMeta);
+    zMid->addStretch();
+
+    m_voltageImageLabel = new QLabel(m_blockZmpt);
+    m_voltageImageLabel->setObjectName(QStringLiteral("sensorPhoto"));
+    m_voltageImageLabel->setFixedSize(44, 44);
+    m_voltageImageLabel->setScaledContents(true);
+    QPixmap p1(QStringLiteral(":/images/zmpt101b.png"));
+    if (!p1.isNull()) {
+        m_voltageImageLabel->setPixmap(p1.scaled(44, 44, Qt::KeepAspectRatio, Qt::SmoothTransformation));
+    }
+    m_voltageImageLabel->setToolTip(tr("Biến áp đo điện áp ZMPT101B - Nhấn xem chi tiết"));
+    zMid->addWidget(m_voltageImageLabel, 0, Qt::AlignVCenter);
+    zmptLayout->addLayout(zMid);
+    leftLayout->addWidget(m_blockZmpt);
+
+    // 3. Sensor 2: ACS712 (Cảm biến dòng Hall)
+    m_blockAcs = makeFrame("sensorBlock");
+    m_blockAcs->setCursor(Qt::PointingHandCursor);
+    m_blockAcs->installEventFilter(new ClickFilter(m_blockAcs, [this] { openCurrentDetail(); }));
+    auto *acsLayout = new QVBoxLayout(m_blockAcs);
+    acsLayout->setContentsMargins(8, 6, 8, 6);
+    acsLayout->setSpacing(3);
+
+    auto *aTop = new QHBoxLayout;
+    aTop->addWidget(makeLabel(tr("🔌 DÒNG TẢI (ACS712)"), "blockHeader", true));
+    aTop->addStretch();
+    m_currentStatusBadge = makeLabel(tr("An toàn (<16A)"), "badgeNormal", true);
+    aTop->addWidget(m_currentStatusBadge);
+    acsLayout->addLayout(aTop);
+
+    auto *aMid = new QHBoxLayout;
+    m_currentValLabel = makeLabel(QStringLiteral("2.35"), "bigValCurrent", true);
+    aMid->addWidget(m_currentValLabel);
+    aMid->addWidget(makeLabel(tr("A"), "metaKey"), 0, Qt::AlignBottom);
+    aMid->addSpacing(10);
+
+    auto *aMeta = new QVBoxLayout;
+    aMeta->setSpacing(1);
+    auto *aMxRow = new QHBoxLayout;
+    aMxRow->addWidget(makeLabel(tr("Dòng max:"), "metaKey"));
+    m_currentMaxLabel = makeLabel(QStringLiteral("30.0 A"), "metaVal", true);
+    aMxRow->addWidget(m_currentMaxLabel);
+    aMeta->addLayout(aMxRow);
+
+    auto *aSnRow = new QHBoxLayout;
+    aSnRow->addWidget(makeLabel(tr("Độ nhạy:"), "metaKey"));
+    m_currentSensLabel = makeLabel(QStringLiteral("66 mV/A"), "metaVal");
+    aSnRow->addWidget(m_currentSensLabel);
+    aMeta->addLayout(aSnRow);
+    aMid->addLayout(aMeta);
+    aMid->addStretch();
+
+    m_currentImageLabel = new QLabel(m_blockAcs);
+    m_currentImageLabel->setObjectName(QStringLiteral("sensorPhoto"));
+    m_currentImageLabel->setFixedSize(44, 44);
+    m_currentImageLabel->setScaledContents(true);
+    QPixmap p2(QStringLiteral(":/images/acs712.png"));
+    if (!p2.isNull()) {
+        m_currentImageLabel->setPixmap(p2.scaled(44, 44, Qt::KeepAspectRatio, Qt::SmoothTransformation));
+    }
+    m_currentImageLabel->setToolTip(tr("Cảm biến dòng điện ACS712 - Nhấn xem chi tiết"));
+    aMid->addWidget(m_currentImageLabel, 0, Qt::AlignVCenter);
+    acsLayout->addLayout(aMid);
+    leftLayout->addWidget(m_blockAcs);
+
+    // 4. Phụ tải & Rơ-le bảo vệ
+    m_blockLoadRelay = makeFrame("sensorBlock");
+    auto *loadLayout = new QVBoxLayout(m_blockLoadRelay);
+    loadLayout->setContentsMargins(8, 6, 8, 6);
+    loadLayout->setSpacing(3);
+
+    auto *lTop = new QHBoxLayout;
+    lTop->addWidget(makeLabel(tr("💡 PHỤ TẢI & CÔNG SUẤT"), "blockHeader", true));
+    lTop->addStretch();
+    m_powerValLabel = makeLabel(QStringLiteral("518"), "bigValPower", true);
+    lTop->addWidget(m_powerValLabel);
+    lTop->addWidget(makeLabel(tr("W"), "metaKey"), 0, Qt::AlignBottom);
+    loadLayout->addLayout(lTop);
+
+    auto *lMetaRow = new QHBoxLayout;
+    m_powerFactorLabel = makeLabel(tr("cosφ ≈ 0.98"), "metaVal", true);
+    m_energyKwhLabel = makeLabel(tr("0.12 kWh"), "metaVal", true);
+    lMetaRow->addWidget(makeLabel(tr("Hệ số:"), "metaKey"));
+    lMetaRow->addWidget(m_powerFactorLabel);
+    lMetaRow->addSpacing(10);
+    lMetaRow->addWidget(makeLabel(tr("Điện năng:"), "metaKey"));
+    lMetaRow->addWidget(m_energyKwhLabel);
+    lMetaRow->addStretch();
+    loadLayout->addLayout(lMetaRow);
+
+    auto *btnRow = new QHBoxLayout;
+    btnRow->setSpacing(4);
+
+    m_relayButton = new QPushButton(tr("⚡ RƠ LE: ĐÓNG TẢI"), m_blockLoadRelay);
+    m_relayButton->setObjectName(QStringLiteral("relayOnBtn"));
+    m_relayButton->setCursor(Qt::PointingHandCursor);
+    connect(m_relayButton, &QPushButton::clicked, this, [this] {
+        m_relayActive = !m_relayActive;
+        m_relayButton->setObjectName(m_relayActive ? QStringLiteral("relayOnBtn") : QStringLiteral("relayOffBtn"));
+        m_relayButton->setText(m_relayActive ? tr("⚡ RƠ LE: ĐÓNG TẢI") : tr("🚨 RƠ LE: NGẮT TẢI"));
+        m_relayButton->style()->unpolish(m_relayButton);
+        m_relayButton->style()->polish(m_relayButton);
+        emit relayControlRequested(m_deviceId, m_relayActive);
+    });
+    btnRow->addWidget(m_relayButton, 1);
+
+    m_viewHistoryButton = new QPushButton(tr("📊 LỊCH SỬ"), m_blockLoadRelay);
+    m_viewHistoryButton->setObjectName(QStringLiteral("actionButton"));
+    m_viewHistoryButton->setCursor(Qt::PointingHandCursor);
+    connect(m_viewHistoryButton, &QPushButton::clicked, this, &DashboardPage::historyPageRequested);
+    btnRow->addWidget(m_viewHistoryButton, 1);
+
+    m_devicesButton = new QPushButton(tr("⚙️ THIẾT BỊ"), m_blockLoadRelay);
+    m_devicesButton->setObjectName(QStringLiteral("chartTab"));
+    m_devicesButton->setCursor(Qt::PointingHandCursor);
+    connect(m_devicesButton, &QPushButton::clicked, this, [this] {
+        emit devicesPageRequested();
+    });
+    btnRow->addWidget(m_devicesButton, 0);
+
+    loadLayout->addLayout(btnRow);
+    leftLayout->addWidget(m_blockLoadRelay);
+
+    leftLayout->addStretch();
+    m_masterHLayout->addWidget(m_leftPanel, 0);
+
+    // =========================================================================
+    // KHỐI PHẢI: TRUNG TÂM BIỂU ĐỒ DIỄN BIẾN THỜI GIAN THỰC (Không co rít)
+    // =========================================================================
+    m_rightPanel = makeFrame("scadaCard");
+    auto *rightLayout = new QVBoxLayout(m_rightPanel);
+    rightLayout->setContentsMargins(10, 8, 10, 8);
+    rightLayout->setSpacing(6);
+
+    // Chart Header row with filter tabs
+    auto *chartHeader = new QHBoxLayout;
+    chartHeader->setSpacing(3);
+    chartHeader->addWidget(makeLabel(tr("📈 BIỂU ĐỒ DIỄN BIẾN"), "panelHeader", true));
+    chartHeader->addStretch();
+
+    m_chartFilterAll = new QPushButton(tr("Tất cả"), m_rightPanel);
+    m_chartFilterAll->setObjectName(QStringLiteral("chartTabActive"));
+    m_chartFilterVoltage = new QPushButton(tr("U (V)"), m_rightPanel);
+    m_chartFilterVoltage->setObjectName(QStringLiteral("chartTab"));
+    m_chartFilterCurrent = new QPushButton(tr("I (A)"), m_rightPanel);
+    m_chartFilterCurrent->setObjectName(QStringLiteral("chartTab"));
+    m_chartFilterPower = new QPushButton(tr("P (W)"), m_rightPanel);
+    m_chartFilterPower->setObjectName(QStringLiteral("chartTab"));
+
+    const auto setChartFilter = [this](int mode) {
+        m_chartMode = mode;
+        m_chartFilterAll->setObjectName(mode == 0 ? QStringLiteral("chartTabActive") : QStringLiteral("chartTab"));
+        m_chartFilterVoltage->setObjectName(mode == 1 ? QStringLiteral("chartTabActive") : QStringLiteral("chartTab"));
+        m_chartFilterCurrent->setObjectName(mode == 2 ? QStringLiteral("chartTabActive") : QStringLiteral("chartTab"));
+        m_chartFilterPower->setObjectName(mode == 3 ? QStringLiteral("chartTabActive") : QStringLiteral("chartTab"));
+
+        for (auto *b : {m_chartFilterAll, m_chartFilterVoltage, m_chartFilterCurrent, m_chartFilterPower}) {
+            b->style()->unpolish(b);
+            b->style()->polish(b);
+        }
+
+        if (m_voltageSeries) m_voltageSeries->setVisible(mode == 0 || mode == 1);
+        if (m_currentSeries) m_currentSeries->setVisible(mode == 0 || mode == 2);
+        if (m_powerSeries) m_powerSeries->setVisible(mode == 0 || mode == 3);
+
+        if (m_axisY_Voltage) m_axisY_Voltage->setVisible(mode == 0 || mode == 1 || mode == 3);
+        if (m_axisY_Current) m_axisY_Current->setVisible(mode == 0 || mode == 2);
+    };
+
+    connect(m_chartFilterAll, &QPushButton::clicked, this, [=] { setChartFilter(0); });
+    connect(m_chartFilterVoltage, &QPushButton::clicked, this, [=] { setChartFilter(1); });
+    connect(m_chartFilterCurrent, &QPushButton::clicked, this, [=] { setChartFilter(2); });
+    connect(m_chartFilterPower, &QPushButton::clicked, this, [=] { setChartFilter(3); });
+
+    chartHeader->addWidget(m_chartFilterAll);
+    chartHeader->addWidget(m_chartFilterVoltage);
+    chartHeader->addWidget(m_chartFilterCurrent);
+    chartHeader->addWidget(m_chartFilterPower);
+    rightLayout->addLayout(chartHeader);
+
+    // QChart and QChartView
+    m_chart = new QChart;
+    m_chart->legend()->hide();
+    m_chart->setBackgroundVisible(false);
+    m_chart->setMargins(QMargins(0, 0, 0, 0));
+
+    m_voltageSeries = new QLineSeries(this);
+    m_voltageSeries->setPen(QPen(QColor("#38bdf8"), 2.2)); // Voltage Cyan
+
+    m_currentSeries = new QLineSeries(this);
+    m_currentSeries->setPen(QPen(QColor("#f59e0b"), 2.2)); // Current Amber
+
+    m_powerSeries = new QLineSeries(this);
+    m_powerSeries->setPen(QPen(QColor("#10b981"), 2.2)); // Power Emerald
+
+    m_chart->addSeries(m_voltageSeries);
+    m_chart->addSeries(m_currentSeries);
+    m_chart->addSeries(m_powerSeries);
+
+    QFont axisF;
+    axisF.setPixelSize(8);
+
+    m_axisX = new QValueAxis(m_chart);
+    m_axisX->setRange(0, 24);
+    m_axisX->setTickCount(5);
+    m_axisX->setLabelFormat(QStringLiteral("%d"));
+    m_axisX->setGridLineColor(QColor("#1c2b54"));
+    m_axisX->setLabelsColor(QColor("#64748b"));
+    m_axisX->setLabelsFont(axisF);
+    m_chart->addAxis(m_axisX, Qt::AlignBottom);
+    m_voltageSeries->attachAxis(m_axisX);
+    m_currentSeries->attachAxis(m_axisX);
+    m_powerSeries->attachAxis(m_axisX);
+
+    // Left Y Axis: Voltage & Power
+    m_axisY_Voltage = new QValueAxis(m_chart);
+    m_axisY_Voltage->setRange(180, 260);
+    m_axisY_Voltage->setTickCount(4);
+    m_axisY_Voltage->setLabelFormat(QStringLiteral("%.0f"));
+    m_axisY_Voltage->setLabelsColor(QColor("#38bdf8"));
+    m_axisY_Voltage->setLabelsFont(axisF);
+    m_axisY_Voltage->setGridLineColor(QColor("#1c2b54"));
+    m_chart->addAxis(m_axisY_Voltage, Qt::AlignLeft);
+    m_voltageSeries->attachAxis(m_axisY_Voltage);
+    m_powerSeries->attachAxis(m_axisY_Voltage);
+
+    // Right Y Axis: Current
+    m_axisY_Current = new QValueAxis(m_chart);
+    m_axisY_Current->setRange(0, 10);
+    m_axisY_Current->setTickCount(4);
+    m_axisY_Current->setLabelFormat(QStringLiteral("%.1f"));
+    m_axisY_Current->setLabelsColor(QColor("#f59e0b"));
+    m_axisY_Current->setLabelsFont(axisF);
+    m_axisY_Current->setGridLineColor(QColor("#1c2b54"));
+    m_chart->addAxis(m_axisY_Current, Qt::AlignRight);
+    m_currentSeries->attachAxis(m_axisY_Current);
+
+    m_chartView = new QChartView(m_chart, m_rightPanel);
+    m_chartView->setRenderHint(QPainter::Antialiasing);
+    m_chartView->setMinimumHeight(180);
+    m_chartView->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    m_chartView->setStyleSheet(QStringLiteral("background: transparent; border: none;"));
+    rightLayout->addWidget(m_chartView, 1);
+
+    // Safety & Range Bars
+    auto *meterGrid = new QGridLayout;
+    meterGrid->setContentsMargins(0, 0, 0, 0);
+    meterGrid->setHorizontalSpacing(8);
+    meterGrid->setVerticalSpacing(3);
+
+    meterGrid->addWidget(makeLabel(tr("⚡ Điện áp AC (0 - 300V):"), "metaKey"), 0, 0);
+    m_voltageBar = new QProgressBar(m_rightPanel);
+    m_voltageBar->setObjectName(QStringLiteral("voltageBar"));
+    m_voltageBar->setRange(0, 300);
+    m_voltageBar->setValue(222);
+    m_voltageBar->setTextVisible(false);
+    meterGrid->addWidget(m_voltageBar, 0, 1);
+
+    meterGrid->addWidget(makeLabel(tr("🔌 Dòng tải AC (0 - 30A):"), "metaKey"), 1, 0);
+    m_currentBar = new QProgressBar(m_rightPanel);
+    m_currentBar->setObjectName(QStringLiteral("currentBar"));
+    m_currentBar->setRange(0, 300);
+    m_currentBar->setValue(24);
+    m_currentBar->setTextVisible(false);
+    meterGrid->addWidget(m_currentBar, 1, 1);
+
+    rightLayout->addLayout(meterGrid);
+
+    // Diagnostics & Advice banner
+    auto *botRow = new QHBoxLayout;
+    botRow->setSpacing(6);
+    m_statusAdviceLabel = makeLabel(tr("💡 Lưới điện 220V và phụ tải ổn định trong tiêu chuẩn an toàn TCVN."), "adviceBanner");
+    m_statusAdviceLabel->setWordWrap(true);
+    botRow->addWidget(m_statusAdviceLabel, 1);
+
+    m_lastUpdatedLabel = makeLabel(tr("🕒 --:--:--"), "metaKey");
+    m_lastUpdatedLabel->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+    botRow->addWidget(m_lastUpdatedLabel, 0, Qt::AlignVCenter);
+
+    rightLayout->addLayout(botRow);
+
+    m_masterHLayout->addWidget(m_rightPanel, 1);
+
+    scrollArea->setWidget(container);
+    ui->verticalLayout->addWidget(scrollArea);
+}
+
+void DashboardPage::resizeEvent(QResizeEvent *event)
+{
+    QWidget::resizeEvent(event);
+    applyResponsiveLayout();
+}
+
+void DashboardPage::applyResponsiveLayout()
+{
+    if (!m_masterHLayout)
+        return;
+
+    const bool compact = width() < 640;
+    if (compact) {
+        m_masterHLayout->setDirection(QBoxLayout::TopToBottom);
+        if (m_leftPanel) m_leftPanel->setFixedWidth(QWIDGETSIZE_MAX);
+    } else {
+        m_masterHLayout->setDirection(QBoxLayout::LeftToRight);
+        if (m_leftPanel) m_leftPanel->setFixedWidth(345);
+    }
+}
+
+void DashboardPage::updateVoltageDisplay(double voltageV)
+{
+    m_curVoltage = voltageV;
+    m_voltageValLabel->setText(voltageV > 0.0 ? QString::number(voltageV, 'f', 1) : QStringLiteral("--"));
+    m_voltageBar->setValue(qBound(0, static_cast<int>(voltageV), 300));
+    m_voltagePeakLabel->setText(QStringLiteral("%1 V").arg(QString::number(voltageV * 1.4142, 'f', 1)));
+
+    if (voltageV < 180.0) {
+        m_voltageStatusBadge->setText(tr("⚠️ Sụt áp lưới!"));
+        m_voltageStatusBadge->setObjectName(QStringLiteral("badgeWarning"));
+    } else if (voltageV > 245.0) {
+        m_voltageStatusBadge->setText(tr("🚨 Quá áp lưới!"));
+        m_voltageStatusBadge->setObjectName(QStringLiteral("badgeDanger"));
+    } else {
+        m_voltageStatusBadge->setText(tr("220V Chuẩn (Ổn định)"));
+        m_voltageStatusBadge->setObjectName(QStringLiteral("badgeNormal"));
+    }
+    m_voltageStatusBadge->style()->unpolish(m_voltageStatusBadge);
+    m_voltageStatusBadge->style()->polish(m_voltageStatusBadge);
+}
+
+void DashboardPage::updateCurrentDisplay(double currentA)
+{
+    m_curCurrent = currentA;
+    m_currentValLabel->setText(currentA >= 0.0 ? QString::number(currentA, 'f', 2) : QStringLiteral("--"));
+    m_currentBar->setValue(qBound(0, static_cast<int>(currentA * 10.0), 300));
+
+    if (currentA > 20.0) {
+        m_currentStatusBadge->setText(tr("🚨 Quá dòng (>20A)!"));
+        m_currentStatusBadge->setObjectName(QStringLiteral("badgeDanger"));
+    } else if (currentA > 15.0) {
+        m_currentStatusBadge->setText(tr("⚠️ Tải cao (>15A)"));
+        m_currentStatusBadge->setObjectName(QStringLiteral("badgeWarning"));
+    } else {
+        m_currentStatusBadge->setText(tr("Tải an toàn (<16A)"));
+        m_currentStatusBadge->setObjectName(QStringLiteral("badgeNormal"));
+    }
+    m_currentStatusBadge->style()->unpolish(m_currentStatusBadge);
+    m_currentStatusBadge->style()->polish(m_currentStatusBadge);
+}
+
+void DashboardPage::updatePowerDisplay(double powerW)
+{
+    m_curPower = powerW;
+    m_powerValLabel->setText(powerW >= 0.0 ? QString::number(static_cast<int>(powerW)) : QStringLiteral("--"));
+    double kwh = (powerW * 0.5) / 1000.0;
+    m_energyKwhLabel->setText(QStringLiteral("%1 kWh").arg(QString::number(kwh, 'f', 2)));
+}
+
+void DashboardPage::updateRealtimeChart(double voltageV, double currentA, double powerW)
+{
+    m_voltageSeries->append(m_sampleCount, voltageV);
+    m_currentSeries->append(m_sampleCount, currentA);
+    m_powerSeries->append(m_sampleCount, powerW);
+
+    while (m_voltageSeries->count() > 25) {
+        m_voltageSeries->remove(0);
+        m_currentSeries->remove(0);
+        m_powerSeries->remove(0);
+    }
+
+    if (m_axisY_Voltage && !m_voltageSeries->points().isEmpty()) {
+        if (m_chartMode == 3) {
+            // Power only
+            double minP = m_powerSeries->points().first().y();
+            double maxP = minP;
+            for (const QPointF &pt : m_powerSeries->points()) {
+                minP = qMin(minP, pt.y());
+                maxP = qMax(maxP, pt.y());
+            }
+            const double diff = maxP - minP;
+            const double pad = qMax(20.0, (diff == 0.0 ? 50.0 : diff * 0.2));
+            m_axisY_Voltage->setRange(qMax(0.0, minP - pad), maxP + pad);
+        } else {
+            // Voltage or All
+            double minV = m_voltageSeries->points().first().y();
+            double maxV = minV;
+            for (const QPointF &pt : m_voltageSeries->points()) {
+                minV = qMin(minV, pt.y());
+                maxV = qMax(maxV, pt.y());
+            }
+            const double diff = maxV - minV;
+            const double pad = qMax(5.0, (diff == 0.0 ? 10.0 : diff * 0.2));
+            m_axisY_Voltage->setRange(qMax(0.0, minV - pad), maxV + pad);
+        }
+    }
+
+    if (m_axisY_Current && !m_currentSeries->points().isEmpty()) {
+        double maxC = 5.0;
+        for (const QPointF &pt : m_currentSeries->points()) {
+            maxC = qMax(maxC, pt.y());
+        }
+        m_axisY_Current->setRange(0.0, qMax(6.0, maxC * 1.3));
+    }
+
+    m_axisX->setRange(qMax(0, m_sampleCount - 24), qMax(24, m_sampleCount));
+    ++m_sampleCount;
+}
+
+void DashboardPage::updateReading(const SensorReading &reading)
+{
+    const QDateTime measured = reading.measuredAt.isValid()
+        ? reading.measuredAt.toLocalTime()
+        : QDateTime::currentDateTime();
+
+    m_lastUpdatedLabel->setText(tr("Cập nhật: %1").arg(measured.toString(QStringLiteral("HH:mm:ss"))));
+
+    double v = reading.pressureHpa > 0 ? reading.pressureHpa : 220.0;
+    double a = reading.distanceCm >= 0 ? reading.distanceCm : 2.35;
+    double p = reading.temperatureC > 0 ? reading.temperatureC : (v * a * 0.98);
+
+    m_voltageHistory.append({measured, v});
+    m_currentHistory.append({measured, a});
+    m_powerHistory.append({measured, p});
+
+    if (m_voltageHistory.size() > 100) m_voltageHistory.removeFirst();
+    if (m_currentHistory.size() > 100) m_currentHistory.removeFirst();
+    if (m_powerHistory.size() > 100) m_powerHistory.removeFirst();
+
+    updateVoltageDisplay(v);
+    updateCurrentDisplay(a);
+    updatePowerDisplay(p);
+    updateRealtimeChart(v, a, p);
+}
+
+void DashboardPage::updateDeviceMetrics(const QJsonObject &metrics)
+{
+    double v = m_curVoltage;
+    double a = m_curCurrent;
+    double p = m_curPower;
+
+    if (metrics.contains(QStringLiteral("voltage_v"))) {
+        v = metrics.value(QStringLiteral("voltage_v")).toDouble();
+    } else if (metrics.contains(QStringLiteral("pressure_hpa"))) {
+        v = metrics.value(QStringLiteral("pressure_hpa")).toDouble();
+    }
+
+    if (metrics.contains(QStringLiteral("current_a"))) {
+        a = metrics.value(QStringLiteral("current_a")).toDouble();
+    } else if (metrics.contains(QStringLiteral("distance_cm"))) {
+        a = metrics.value(QStringLiteral("distance_cm")).toDouble();
+    }
+
+    if (metrics.contains(QStringLiteral("power_w"))) {
+        p = metrics.value(QStringLiteral("power_w")).toDouble();
+    } else {
+        p = v * a * 0.98;
+    }
+
+    if (metrics.contains(QStringLiteral("relay_on"))) {
+        m_relayActive = metrics.value(QStringLiteral("relay_on")).toBool();
+        m_relayButton->setObjectName(m_relayActive ? QStringLiteral("relayOnBtn") : QStringLiteral("relayOffBtn"));
+        m_relayButton->setText(m_relayActive ? tr("⚡ RƠ LE: ĐÓNG TẢI") : tr("🚨 RƠ LE: NGẮT TẢI"));
+        m_relayButton->style()->unpolish(m_relayButton);
+        m_relayButton->style()->polish(m_relayButton);
+    }
+
+    const QDateTime now = QDateTime::currentDateTime();
+    m_voltageHistory.append({now, v});
+    m_currentHistory.append({now, a});
+    m_powerHistory.append({now, p});
+
+    if (m_voltageHistory.size() > 100) m_voltageHistory.removeFirst();
+    if (m_currentHistory.size() > 100) m_currentHistory.removeFirst();
+    if (m_powerHistory.size() > 100) m_powerHistory.removeFirst();
+
+    updateVoltageDisplay(v);
+    updateCurrentDisplay(a);
+    updatePowerDisplay(p);
+    updateRealtimeChart(v, a, p);
 }
 
 void DashboardPage::setAvailableDevices(const QJsonArray &devices)
@@ -298,204 +677,85 @@ void DashboardPage::setAvailableDevices(const QJsonArray &devices)
 
 void DashboardPage::setOwnedDevices(const QJsonArray &devices)
 {
-    if (!devices.isEmpty()) {
-        const auto first = devices.first().toObject();
-        m_deviceId = first.value(QStringLiteral("device_id")).toString();
-        m_deviceName = first.value(QStringLiteral("name")).toString(m_deviceId);
-        m_isOnline = first.value(QStringLiteral("is_online")).toBool(true);
-        m_hasDevice = true;
-
-        if (first.contains(QStringLiteral("metrics"))) {
-            updateDeviceMetrics(first.value(QStringLiteral("metrics")).toObject());
-        }
-    } else {
+    if (devices.isEmpty()) {
         m_hasDevice = false;
-        m_deviceId = "";
-        m_curVoltage = 0.0;
-        m_curCurrent = 0.0;
-        m_curPower = 0.0;
+        m_isOnline = false;
+        return;
     }
-    updateDeviceCardState();
-    updateSensorStatusBadges();
+
+    m_hasDevice = true;
+    for (const QJsonValue &v : devices) {
+        const QJsonObject dev = v.toObject();
+        const QString devId = dev.value(QStringLiteral("device_id")).toString();
+        if (devId.contains(QStringLiteral("Theanh"), Qt::CaseInsensitive) || devId == m_deviceId || m_deviceId.isEmpty()) {
+            m_deviceId = devId;
+            const QString devName = dev.value(QStringLiteral("name")).toString();
+            if (!devName.isEmpty()) {
+                m_deviceName = devName;
+            }
+            m_isOnline = dev.value(QStringLiteral("is_online")).toBool(true);
+
+            if (dev.contains(QStringLiteral("relay_on"))) {
+                m_relayActive = dev.value(QStringLiteral("relay_on")).toBool();
+                m_relayButton->setObjectName(m_relayActive ? QStringLiteral("relayOnBtn") : QStringLiteral("relayOffBtn"));
+                m_relayButton->setText(m_relayActive ? tr("⚡ RƠ LE: ĐÓNG TẢI") : tr("🚨 RƠ LE: NGẮT TẢI"));
+                m_relayButton->style()->unpolish(m_relayButton);
+                m_relayButton->style()->polish(m_relayButton);
+            }
+            break;
+        }
+    }
 }
 
-void DashboardPage::updateReading(const SensorReading &reading)
+void DashboardPage::setDeviceId(const QString &deviceId)
 {
-    if (reading.pressureHpa > 0) m_curVoltage = reading.pressureHpa;
-    if (reading.distanceCm >= 0) m_curCurrent = reading.distanceCm;
-    m_curPower = m_curVoltage * m_curCurrent;
-
-    const QDateTime now = QDateTime::currentDateTime();
-    m_voltageHistory.append({now, m_curVoltage});
-    m_currentHistory.append({now, m_curCurrent});
-    m_powerHistory.append({now, m_curPower});
-
-    if (m_voltageHistory.size() > 100) m_voltageHistory.removeFirst();
-    if (m_currentHistory.size() > 100) m_currentHistory.removeFirst();
-    if (m_powerHistory.size() > 100) m_powerHistory.removeFirst();
-
-    if (m_circularGauge) m_circularGauge->setValue(m_curVoltage, 0, 300, QStringLiteral("V"));
-    if (m_semiCircleGauge) m_semiCircleGauge->setValue(m_curPower, 2000, QStringLiteral("W"));
-    if (m_areaChart) {
-        m_areaChart->addPoint(qBound(0.0, (m_curPower / 2000.0) * 100.0, 100.0),
-                              qBound(0.0, (m_curCurrent / 10.0) * 100.0, 100.0));
-    }
-
-    if (m_voltageValLbl) m_voltageValLbl->setText(m_curVoltage > 0 ? QStringLiteral("%1 V").arg(QString::number(m_curVoltage, 'f', 1)) : QStringLiteral("-- V"));
-    if (m_currentValLbl) m_currentValLbl->setText(m_curCurrent > 0 ? QStringLiteral("%1 A").arg(QString::number(m_curCurrent, 'f', 2)) : QStringLiteral("0.00 A"));
-    if (m_powerBigLbl) m_powerBigLbl->setText(m_curPower > 0 ? QString::number(static_cast<int>(m_curPower)) : QStringLiteral("0"));
-
-    if (m_devVoltageLbl) m_devVoltageLbl->setText(QStringLiteral("⚡ Điện áp: <b>%1 V</b>").arg(QString::number(m_curVoltage, 'f', 1)));
-    if (m_devCurrentLbl) m_devCurrentLbl->setText(QStringLiteral("💡 Dòng tải: <b>%1 A</b>").arg(QString::number(m_curCurrent, 'f', 2)));
-
-    // Update Progress Bars & Analytics (Card 4)
-    const int vPct = qBound(0, static_cast<int>((m_curVoltage / 260.0) * 100.0), 100);
-    const int aPct = qBound(0, static_cast<int>((m_curCurrent / 10.0) * 100.0), 100);
-    const int pPct = qBound(0, static_cast<int>((m_curPower / 2000.0) * 100.0), 100);
-    const int sPct = m_relayState ? 98 : 100;
-
-    if (m_voltageBar) m_voltageBar->setValue(vPct);
-    if (m_voltagePctLbl) m_voltagePctLbl->setText(QStringLiteral("%1%").arg(vPct));
-    if (m_currentBar) m_currentBar->setValue(aPct);
-    if (m_currentPctLbl) m_currentPctLbl->setText(QStringLiteral("%1%").arg(aPct));
-    if (m_powerBar) m_powerBar->setValue(pPct);
-    if (m_powerPctLbl) m_powerPctLbl->setText(QStringLiteral("%1%").arg(pPct));
-    if (m_safetyBar) m_safetyBar->setValue(sPct);
-    if (m_safetyPctLbl) m_safetyPctLbl->setText(QStringLiteral("%1%").arg(sPct));
-
-    // Update Activity Log (Card 5)
-    const QString curTimeStr = now.toString(QStringLiteral("HH:mm:ss"));
-    if (m_timelineDesc1) m_timelineDesc1->setText(QStringLiteral("Hệ thống đo AC RMS & Dòng tải"));
-    if (m_timelineTime1) m_timelineTime1->setText(QStringLiteral("📍 Hoạt động   🕒 %1").arg(curTimeStr));
-    if (m_timelineDesc2) m_timelineDesc2->setText(QStringLiteral("Điện áp RMS: %1 V (50Hz)").arg(QString::number(m_curVoltage, 'f', 1)));
-    if (m_timelineTime2) m_timelineTime2->setText(QStringLiteral("📍 Lưới AC   🕒 %1").arg(curTimeStr));
-
-    updateSensorStatusBadges();
-}
-
-void DashboardPage::updateDeviceMetrics(const QJsonObject &metrics)
-{
-    if (metrics.contains(QStringLiteral("voltage_v"))) {
-        m_curVoltage = metrics.value(QStringLiteral("voltage_v")).toDouble();
-    } else if (metrics.contains(QStringLiteral("pressure_hpa"))) {
-        m_curVoltage = metrics.value(QStringLiteral("pressure_hpa")).toDouble();
-    }
-
-    if (metrics.contains(QStringLiteral("current_a"))) {
-        m_curCurrent = metrics.value(QStringLiteral("current_a")).toDouble();
-    } else if (metrics.contains(QStringLiteral("distance_cm"))) {
-        m_curCurrent = metrics.value(QStringLiteral("distance_cm")).toDouble();
-    }
-
-    if (metrics.contains(QStringLiteral("power_w"))) {
-        m_curPower = metrics.value(QStringLiteral("power_w")).toDouble();
-    } else {
-        m_curPower = m_curVoltage * m_curCurrent;
-    }
-
-    if (metrics.contains(QStringLiteral("relay_on"))) {
-        m_relayState = metrics.value(QStringLiteral("relay_on")).toBool();
-    }
-
-    const QDateTime now = QDateTime::currentDateTime();
-    if (m_curVoltage > 0) m_voltageHistory.append({now, m_curVoltage});
-    if (m_curCurrent > 0) m_currentHistory.append({now, m_curCurrent});
-    if (m_curPower > 0) m_powerHistory.append({now, m_curPower});
-
-    if (m_voltageHistory.size() > 100) m_voltageHistory.removeFirst();
-    if (m_currentHistory.size() > 100) m_currentHistory.removeFirst();
-    if (m_powerHistory.size() > 100) m_powerHistory.removeFirst();
-
-    if (m_circularGauge) m_circularGauge->setValue(m_curVoltage, 0, 300, QStringLiteral("V"));
-    if (m_semiCircleGauge) m_semiCircleGauge->setValue(m_curPower, 2000, QStringLiteral("W"));
-    if (m_areaChart) {
-        m_areaChart->addPoint(qBound(0.0, (m_curPower / 2000.0) * 100.0, 100.0),
-                              qBound(0.0, (m_curCurrent / 10.0) * 100.0, 100.0));
-    }
-
-    if (m_voltageValLbl) m_voltageValLbl->setText(m_curVoltage > 0 ? QStringLiteral("%1 V").arg(QString::number(m_curVoltage, 'f', 1)) : QStringLiteral("-- V"));
-    if (m_currentValLbl) m_currentValLbl->setText(m_curCurrent > 0 ? QStringLiteral("%1 A").arg(QString::number(m_curCurrent, 'f', 2)) : QStringLiteral("0.00 A"));
-    if (m_powerBigLbl) m_powerBigLbl->setText(m_curPower > 0 ? QString::number(static_cast<int>(m_curPower)) : QStringLiteral("0"));
-
-    if (m_devVoltageLbl) m_devVoltageLbl->setText(QStringLiteral("⚡ Điện áp: <b>%1 V</b>").arg(QString::number(m_curVoltage, 'f', 1)));
-    if (m_devCurrentLbl) m_devCurrentLbl->setText(QStringLiteral("💡 Dòng tải: <b>%1 A</b>").arg(QString::number(m_curCurrent, 'f', 2)));
-
-    // Update Progress Bars & Analytics (Card 4)
-    const int vPct = qBound(0, static_cast<int>((m_curVoltage / 260.0) * 100.0), 100);
-    const int aPct = qBound(0, static_cast<int>((m_curCurrent / 10.0) * 100.0), 100);
-    const int pPct = qBound(0, static_cast<int>((m_curPower / 2000.0) * 100.0), 100);
-    const int sPct = 100;
-
-    if (m_voltageBar) m_voltageBar->setValue(vPct);
-    if (m_voltagePctLbl) m_voltagePctLbl->setText(QStringLiteral("%1%").arg(vPct));
-    if (m_currentBar) m_currentBar->setValue(aPct);
-    if (m_currentPctLbl) m_currentPctLbl->setText(QStringLiteral("%1%").arg(aPct));
-    if (m_powerBar) m_powerBar->setValue(pPct);
-    if (m_powerPctLbl) m_powerPctLbl->setText(QStringLiteral("%1%").arg(pPct));
-    if (m_safetyBar) m_safetyBar->setValue(sPct);
-    if (m_safetyPctLbl) m_safetyPctLbl->setText(QStringLiteral("%1%").arg(sPct));
-
-    // Update Activity Log (Card 5)
-    const QString curTimeStr = now.toString(QStringLiteral("HH:mm:ss"));
-    if (m_timelineDesc1) m_timelineDesc1->setText(QStringLiteral("Hệ thống đo AC RMS & Dòng tải"));
-    if (m_timelineTime1) m_timelineTime1->setText(QStringLiteral("📍 Hoạt động   🕒 %1").arg(curTimeStr));
-    if (m_timelineDesc2) m_timelineDesc2->setText(QStringLiteral("Điện áp RMS: %1 V (50Hz)").arg(QString::number(m_curVoltage, 'f', 1)));
-    if (m_timelineTime2) m_timelineTime2->setText(QStringLiteral("📍 Lưới AC   🕒 %1").arg(curTimeStr));
-
-    updateSensorStatusBadges();
-}
-
-void DashboardPage::updateSensorStatusBadges()
-{
-    if (!m_voltageBadge || !m_voltageSubLbl) return;
-
-    if (!m_hasDevice || m_deviceId.isEmpty() || m_curVoltage <= 0.0) {
-        m_voltageBadge->setText(QStringLiteral("🔴 CHƯA CÓ THIẾT BỊ"));
-        m_voltageBadge->setStyleSheet("background: #451a24; color: #f87171; border: 1px solid #7f1d1d; font-weight: 900; font-size: 8px; border-radius: 4px; padding: 2px 6px;");
-        m_voltageSubLbl->setText(QStringLiteral("Chưa nhận tín hiệu ESP32\nNhấn xem Bảng & Biểu đồ"));
-    } else {
-        m_voltageBadge->setText(QStringLiteral("🟢 ỔN ĐỊNH"));
-        m_voltageBadge->setStyleSheet("background: #10b981; color: #ffffff; font-weight: 900; font-size: 9px; border-radius: 4px; padding: 2px 8px;");
-        m_voltageSubLbl->setText(QStringLiteral("Điện áp RMS lưới điện\nNhấn xem Bảng & Biểu đồ"));
-    }
+    m_deviceId = deviceId;
 }
 
 void DashboardPage::openVoltageDetail()
 {
-    SensorDetailDialog dlg(QStringLiteral("Điện Áp AC (ZMPT101B)"),
-                           QStringLiteral("V"),
-                           QStringLiteral("#38bdf8"),
-                           m_voltageHistory,
-                           this,
-                           180.0, 240.0);
+    SensorDetailDialog dlg(
+        tr("Điện Áp AC Lưới Điện (ZMPT101B)"),
+        QStringLiteral("V"),
+        QStringLiteral("#38bdf8"),
+        m_voltageHistory,
+        this,
+        180.0,
+        250.0
+    );
     dlg.exec();
 }
 
 void DashboardPage::openCurrentDetail()
 {
-    SensorDetailDialog dlg(QStringLiteral("Dòng Điện Tải (ACS712)"),
-                           QStringLiteral("A"),
-                           QStringLiteral("#10b981"),
-                           m_currentHistory,
-                           this,
-                           0.1, 15.0);
+    SensorDetailDialog dlg(
+        tr("Dòng Điện Phụ Tải (ACS712)"),
+        QStringLiteral("A"),
+        QStringLiteral("#f59e0b"),
+        m_currentHistory,
+        this,
+        0.0,
+        20.0
+    );
     dlg.exec();
 }
 
 void DashboardPage::openPowerDetail()
 {
-    SensorDetailDialog dlg(QStringLiteral("Công Suất Tiêu Thụ Tức Thời"),
-                           QStringLiteral("W"),
-                           QStringLiteral("#818cf8"),
-                           m_powerHistory,
-                           this,
-                           0.0, 2500.0);
+    SensorDetailDialog dlg(
+        tr("Công Suất Tiêu Thụ Tức Thời (W)"),
+        QStringLiteral("W"),
+        QStringLiteral("#10b981"),
+        m_powerHistory,
+        this,
+        0.0,
+        2200.0
+    );
     dlg.exec();
 }
 
 void DashboardPage::openAddDeviceDialog()
 {
-    emit refreshDevicesRequested();
     auto *dlg = new SelectOnlineDeviceDialog(m_availableDevices, this);
     m_currentSelectDialog = dlg;
 
@@ -505,316 +765,4 @@ void DashboardPage::openAddDeviceDialog()
     });
     dlg->exec();
     delete dlg;
-}
-
-void DashboardPage::updateDeviceCardState()
-{
-    if (!m_deviceCardStack) return;
-
-    if (!m_hasDevice || m_deviceId.isEmpty()) {
-        m_deviceCardStack->setCurrentIndex(0);
-    } else {
-        m_deviceCardStack->setCurrentIndex(1);
-        if (m_devIdLbl) m_devIdLbl->setText(QStringLiteral("🖲 Thiết Bị: %1").arg(m_deviceId));
-        if (m_devOnlineBadge) {
-            m_devOnlineBadge->setText(m_isOnline ? QStringLiteral("🟢 ONLINE") : QStringLiteral("🔴 OFFLINE"));
-            m_devOnlineBadge->setStyleSheet(m_isOnline
-                ? "color: #10b981; font-size: 8px; font-weight: 900; background: rgba(16, 185, 129, 0.15); border-radius: 3px; padding: 1px 5px;"
-                : "color: #ef4444; font-size: 8px; font-weight: 900; background: rgba(239, 68, 68, 0.15); border-radius: 3px; padding: 1px 5px;");
-        }
-    }
-}
-
-void DashboardPage::setupCustomDashboard()
-{
-    while (QLayoutItem *item = ui->verticalLayout->takeAt(0)) {
-        if (item->widget()) delete item->widget();
-        delete item;
-    }
-
-    auto *mainLayout = ui->verticalLayout;
-    mainLayout->setContentsMargins(10, 8, 10, 8);
-    mainLayout->setSpacing(6);
-
-    auto makeCard = [](const QString &title = QString()) {
-        auto *c = new QFrame;
-        c->setStyleSheet(
-            "QFrame { "
-            "  background-color: rgba(30, 26, 68, 0.85); "
-            "  border: 1px solid #312966; "
-            "  border-radius: 8px; "
-            "} "
-            "QFrame:hover { "
-            "  border-color: #4c3f99; "
-            "}"
-        );
-        c->setCursor(Qt::PointingHandCursor);
-        auto *l = new QVBoxLayout(c);
-        l->setContentsMargins(8, 6, 8, 6);
-        l->setSpacing(4);
-
-        if (!title.isEmpty()) {
-            auto *tRow = new QHBoxLayout;
-            auto *tLbl = new QLabel(title);
-            tLbl->setStyleSheet("color: #cbd5e1; font-size: 10px; font-weight: 700; background: transparent;");
-            auto *xLbl = new QLabel(QStringLiteral("🔍"));
-            xLbl->setStyleSheet("color: #64748b; font-size: 9px; background: transparent;");
-            tRow->addWidget(tLbl);
-            tRow->addStretch();
-            tRow->addWidget(xLbl);
-            l->addLayout(tRow);
-        }
-        return qMakePair(c, l);
-    };
-
-    struct CardClickFilter : public QObject {
-        std::function<void()> onClick;
-        CardClickFilter(QObject *parent, std::function<void()> cb) : QObject(parent), onClick(cb) {}
-        bool eventFilter(QObject *watched, QEvent *event) override {
-            if (event->type() == QEvent::MouseButtonRelease) {
-                if (onClick) onClick();
-                return true;
-            }
-            return QObject::eventFilter(watched, event);
-        }
-    };
-
-    // ==========================================
-    // MAIN 2-ROW GRID
-    // ==========================================
-    auto *grid = new QGridLayout;
-    grid->setHorizontalSpacing(6);
-    grid->setVerticalSpacing(6);
-
-    // --- CARD 1 (Top Left): Voltage Circle Gauge ---
-    auto c1 = makeCard("Điện Áp ZMPT101B (Xem Chi Tiết)");
-    m_circularGauge = new CircularGaugeWidget;
-    m_circularGauge->setValue(m_curVoltage, 0, 300, QStringLiteral("V"));
-    c1.second->addWidget(m_circularGauge, 1, Qt::AlignCenter);
-
-    m_voltageSubLbl = new QLabel(QStringLiteral("Điện áp RMS lưới điện\nNhấn xem Bảng & Biểu đồ"));
-    m_voltageSubLbl->setAlignment(Qt::AlignCenter);
-    m_voltageSubLbl->setStyleSheet("color: #94a3b8; font-size: 8px; background: transparent;");
-    c1.second->addWidget(m_voltageSubLbl);
-
-    m_voltageBadge = new QLabel(QStringLiteral("🟢 ỔN ĐỊNH"));
-    m_voltageBadge->setAlignment(Qt::AlignCenter);
-    m_voltageBadge->setStyleSheet("background: #10b981; color: #ffffff; font-weight: 900; font-size: 9px; border-radius: 4px; padding: 2px 8px;");
-    c1.second->addWidget(m_voltageBadge, 0, Qt::AlignCenter);
-
-    c1.first->installEventFilter(new CardClickFilter(c1.first, [this] { openVoltageDetail(); }));
-    grid->addWidget(c1.first, 0, 0, 2, 1);
-
-    // --- CARD 2 (Top Middle): Dòng Điện & Sóng Neon ---
-    auto c2 = makeCard("Dòng Điện Tải ACS712 & Sóng Neon (Xem Chi Tiết)");
-    auto *statRow = new QHBoxLayout;
-    auto *iconGroup = new QLabel(QStringLiteral("⚡"));
-    iconGroup->setStyleSheet("font-size: 18px; color: #10b981; background: transparent;");
-    m_powerBigLbl = new QLabel(QString::number(static_cast<int>(m_curPower)));
-    m_powerBigLbl->setStyleSheet("color: #ffffff; font-size: 22px; font-weight: 900; background: transparent;");
-    statRow->addWidget(iconGroup);
-    statRow->addWidget(m_powerBigLbl);
-    statRow->addStretch();
-
-    auto *pillsCol1 = new QVBoxLayout;
-    pillsCol1->setSpacing(1);
-    auto *p1 = new QLabel(QStringLiteral("👤 ACS712   ↗ Live"));
-    p1->setStyleSheet("color: #10b981; font-size: 9px; font-weight: 700; background: transparent;");
-    auto *p2 = new QLabel(QStringLiteral("🏠 ESP32    📡 MQTT"));
-    p2->setStyleSheet("color: #818cf8; font-size: 9px; font-weight: 700; background: transparent;");
-    pillsCol1->addWidget(p1);
-    pillsCol1->addWidget(p2);
-    statRow->addLayout(pillsCol1);
-    c2.second->addLayout(statRow);
-
-    m_areaChart = new NeonAreaChartWidget;
-    for (int i = 0; i < m_powerHistory.size(); ++i) {
-        m_areaChart->addPoint(qBound(0.0, (m_powerHistory[i].value / 2000.0) * 100.0, 100.0),
-                              qBound(0.0, (m_currentHistory[i].value / 10.0) * 100.0, 100.0));
-    }
-    c2.second->addWidget(m_areaChart, 1);
-    c2.first->installEventFilter(new CardClickFilter(c2.first, [this] { openCurrentDetail(); }));
-    grid->addWidget(c2.first, 0, 1, 2, 2);
-
-    // --- CARD 4 (Top Right): 4 Progress Bars ---
-    auto c4 = makeCard("Chỉ số tải & Phân tích");
-    auto addProgressItem = [&](const QString &label, int initialVal, const QString &color,
-                               QProgressBar *&barPtr, QLabel *&valLblPtr) {
-        auto *row = new QHBoxLayout;
-        auto *lbl = new QLabel(label);
-        lbl->setStyleSheet("color: #cbd5e1; font-size: 9px; font-weight: 700; background: transparent;");
-        valLblPtr = new QLabel(QStringLiteral("%1%").arg(initialVal));
-        valLblPtr->setStyleSheet("color: #ffffff; font-size: 9px; font-weight: 900; background: transparent;");
-        row->addWidget(lbl);
-        row->addStretch();
-        row->addWidget(valLblPtr);
-        c4.second->addLayout(row);
-
-        barPtr = new QProgressBar;
-        barPtr->setRange(0, 100);
-        barPtr->setValue(initialVal);
-        barPtr->setTextVisible(false);
-        barPtr->setFixedHeight(8);
-        barPtr->setStyleSheet(QStringLiteral(
-            "QProgressBar { background: #1a1638; border: none; border-radius: 4px; } "
-            "QProgressBar::chunk { background: %1; border-radius: 4px; }").arg(color));
-        c4.second->addWidget(barPtr);
-    };
-
-    addProgressItem("Điện áp AC", 85, "#10b981", m_voltageBar, m_voltagePctLbl);
-    addProgressItem("Dòng điện tải", 24, "#38bdf8", m_currentBar, m_currentPctLbl);
-    addProgressItem("Công suất tải", 26, "#818cf8", m_powerBar, m_powerPctLbl);
-    addProgressItem("Hệ số an toàn", 98, "#10b981", m_safetyBar, m_safetyPctLbl);
-    grid->addWidget(c4.first, 0, 3, 2, 1);
-
-    // --- CARD 5 (Bottom Left): Activity Log / Timeline ---
-    auto c5 = makeCard("Nhật ký vận hành");
-    auto addTimelineItem = [&](const QString &text, const QString &time, bool checked,
-                               QLabel *&descPtr, QLabel *&timePtr, QLabel *&chkPtr) {
-        auto *row = new QHBoxLayout;
-        chkPtr = new QLabel(checked ? QStringLiteral("✅") : QStringLiteral("🔘"));
-        chkPtr->setStyleSheet("font-size: 10px; background: transparent;");
-        auto *tCol = new QVBoxLayout;
-        tCol->setSpacing(0);
-        descPtr = new QLabel(text);
-        descPtr->setStyleSheet("color: #ffffff; font-size: 9px; font-weight: 700; background: transparent;");
-        timePtr = new QLabel(time);
-        timePtr->setStyleSheet("color: #94a3b8; font-size: 8px; background: transparent;");
-        tCol->addWidget(descPtr);
-        tCol->addWidget(timePtr);
-        row->addWidget(chkPtr);
-        row->addLayout(tCol);
-        row->addStretch();
-        c5.second->addLayout(row);
-    };
-
-    const QDateTime now = QDateTime::currentDateTime();
-    addTimelineItem("Hệ thống đo AC RMS & Dòng tải", "📍 Hoạt động   🕒 Vừa xong", true, m_timelineDesc1, m_timelineTime1, m_timelineChk1);
-    addTimelineItem("Điện áp RMS: 221.8 V (50Hz)", QStringLiteral("📍 Lưới AC   🕒 %1").arg(now.toString("HH:mm:ss")), true, m_timelineDesc2, m_timelineTime2, m_timelineChk2);
-    addTimelineItem("ESP32 Theanh-190782 Trực tuyến", "📍 MQTT Broker   🕒 Vừa xong", true, m_timelineDesc3, m_timelineTime3, m_timelineChk3);
-    grid->addWidget(c5.first, 2, 0, 1, 1);
-
-    // --- CARD 6 (Bottom Middle): Instant Power Speedometer ---
-    auto c6 = makeCard("Công Suất Tức Thời W (Xem Chi Tiết)");
-    m_semiCircleGauge = new SemiCircleGaugeWidget;
-    m_semiCircleGauge->setValue(m_curPower, 2000, QStringLiteral("W"));
-    c6.second->addWidget(m_semiCircleGauge, 1, Qt::AlignCenter);
-
-    auto *legRow = new QHBoxLayout;
-    auto *l1 = new QLabel(QStringLiteral("🟦 Điện Áp"));
-    l1->setStyleSheet("color: #818cf8; font-size: 8px; font-weight: 700; background: transparent;");
-    auto *l2 = new QLabel(QStringLiteral("🟩 Dòng Điện"));
-    l2->setStyleSheet("color: #10b981; font-size: 8px; font-weight: 700; background: transparent;");
-    legRow->addWidget(l1);
-    legRow->addWidget(l2);
-    legRow->addStretch();
-    c6.second->addLayout(legRow);
-
-    c6.first->installEventFilter(new CardClickFilter(c6.first, [this] { openPowerDetail(); }));
-    grid->addWidget(c6.first, 2, 1, 1, 1);
-
-    // --- CARD 7 (Bottom Right): Add Device or Device Control ---
-    auto *c7Frame = new QFrame;
-    c7Frame->setStyleSheet(
-        "QFrame#c7Frame { "
-        "  background-color: rgba(30, 26, 68, 0.85); "
-        "  border: 1px solid #312966; "
-        "  border-radius: 8px; "
-        "} "
-        "QFrame#c7Frame:hover { "
-        "  border-color: #10b981; "
-        "}"
-    );
-    c7Frame->setObjectName(QStringLiteral("c7Frame"));
-    auto *c7Layout = new QVBoxLayout(c7Frame);
-    c7Layout->setContentsMargins(6, 6, 6, 6);
-
-    m_deviceCardStack = new QStackedWidget;
-
-    // View 0: No Device -> Big + Button
-    m_noDeviceWidget = new QWidget;
-    auto *noDevLayout = new QVBoxLayout(m_noDeviceWidget);
-    noDevLayout->setContentsMargins(8, 4, 8, 4);
-    noDevLayout->setSpacing(4);
-
-    auto *addBtn = new QPushButton(QStringLiteral("＋"));
-    addBtn->setCursor(Qt::PointingHandCursor);
-    addBtn->setFixedSize(54, 54);
-    addBtn->setStyleSheet(
-        "QPushButton { "
-        "  background: #15103a; "
-        "  color: #10b981; "
-        "  border: 2px dashed #10b981; "
-        "  border-radius: 27px; "
-        "  font-size: 26px; "
-        "  font-weight: 900; "
-        "} "
-        "QPushButton:hover { "
-        "  background: #10b981; "
-        "  color: #ffffff; "
-        "  border: 2px solid #34d399; "
-        "}"
-    );
-    connect(addBtn, &QPushButton::clicked, this, &DashboardPage::openAddDeviceDialog);
-
-    auto *noDevTitle = new QLabel(QStringLiteral("Chưa có thiết bị"));
-    noDevTitle->setStyleSheet("color: #ffffff; font-size: 11px; font-weight: 800;");
-    noDevTitle->setAlignment(Qt::AlignCenter);
-
-    auto *noDevSub = new QLabel(QStringLiteral("Nhấn <b>＋</b> để quét và thêm thiết bị ESP32"));
-    noDevSub->setStyleSheet("color: #94a3b8; font-size: 9px;");
-    noDevSub->setAlignment(Qt::AlignCenter);
-
-    noDevLayout->addStretch();
-    noDevLayout->addWidget(addBtn, 0, Qt::AlignCenter);
-    noDevLayout->addWidget(noDevTitle);
-    noDevLayout->addWidget(noDevSub);
-    noDevLayout->addStretch();
-
-    m_deviceCardStack->addWidget(m_noDeviceWidget);
-
-    // View 1: Has Device -> Device Control Card
-    m_hasDeviceWidget = new QWidget;
-    auto *hasDevLayout = new QVBoxLayout(m_hasDeviceWidget);
-    hasDevLayout->setContentsMargins(6, 4, 6, 4);
-    hasDevLayout->setSpacing(4);
-
-    auto *devHeader = new QHBoxLayout;
-    m_devIdLbl = new QLabel(QStringLiteral("🖲 Thiết Bị: %1").arg(m_deviceId));
-    m_devIdLbl->setStyleSheet("color: #38bdf8; font-size: 11px; font-weight: 800;");
-    m_devOnlineBadge = new QLabel(QStringLiteral("🟢 ONLINE"));
-    m_devOnlineBadge->setStyleSheet("color: #10b981; font-size: 8px; font-weight: 900; background: rgba(16, 185, 129, 0.15); border-radius: 3px; padding: 1px 5px;");
-    devHeader->addWidget(m_devIdLbl);
-    devHeader->addStretch();
-    devHeader->addWidget(m_devOnlineBadge);
-    hasDevLayout->addLayout(devHeader);
-
-    m_devVoltageLbl = new QLabel(QStringLiteral("⚡ Điện áp: <b>%1 V</b>").arg(QString::number(m_curVoltage, 'f', 1)));
-    m_devVoltageLbl->setStyleSheet("color: #cbd5e1; font-size: 10px;");
-    m_devCurrentLbl = new QLabel(QStringLiteral("💡 Dòng tải: <b>%1 A</b>").arg(QString::number(m_curCurrent, 'f', 2)));
-    m_devCurrentLbl->setStyleSheet("color: #cbd5e1; font-size: 10px;");
-
-    hasDevLayout->addWidget(m_devVoltageLbl);
-    hasDevLayout->addWidget(m_devCurrentLbl);
-    hasDevLayout->addSpacing(8);
-
-    auto *actionsRow = new QHBoxLayout;
-    auto *unbindBtn = new QPushButton(QStringLiteral("✕ Gỡ bỏ"));
-    unbindBtn->setCursor(Qt::PointingHandCursor);
-    unbindBtn->setStyleSheet("QPushButton { background: transparent; color: #ef4444; border: none; font-size: 9px; font-weight: 700; } QPushButton:hover { color: #f87171; text-decoration: underline; }");
-    connect(unbindBtn, &QPushButton::clicked, this, [this] {
-        if (!m_deviceId.isEmpty()) {
-            emit releaseDeviceRequested(m_deviceId);
-        }
-    });
-    actionsRow->addStretch();
-    actionsRow->addWidget(unbindBtn);
-    hasDevLayout->addLayout(actionsRow);
-
-    m_deviceCardStack->addWidget(m_hasDeviceWidget);
-
-    c7Layout->addWidget(m_deviceCardStack);
-    grid->addWidget(c7Frame, 2, 2, 1, 2);
-
-    mainLayout->addLayout(grid, 1);
 }

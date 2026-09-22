@@ -2,6 +2,7 @@
 
 #include "ui_HistoryPage.h"
 
+#include <QAreaSeries>
 #include <QBarCategoryAxis>
 #include <QBarSeries>
 #include <QBarSet>
@@ -19,6 +20,7 @@
 #include <QJsonObject>
 #include <QLabel>
 #include <QLegend>
+#include <QLinearGradient>
 #include <QLineSeries>
 #include <QMessageBox>
 #include <QMouseEvent>
@@ -29,8 +31,88 @@
 #include <QTableWidgetItem>
 #include <QValueAxis>
 #include <QVBoxLayout>
+#include <QTimer>
 
 #include <limits>
+
+static QString canonicalMetricKey(const QString &rawKey)
+{
+    if (rawKey == QStringLiteral("lux") || rawKey == QStringLiteral("light_lux"))
+        return QStringLiteral("light_lux");
+    if (rawKey == QStringLiteral("motion") || rawKey == QStringLiteral("motion_detected") || rawKey == QStringLiteral("detech"))
+        return QStringLiteral("motion_detected");
+    if (rawKey == QStringLiteral("relay") || rawKey == QStringLiteral("relay_on"))
+        return QStringLiteral("relay");
+    if (rawKey == QStringLiteral("temp") || rawKey == QStringLiteral("temperature_c"))
+        return QStringLiteral("temperature_c");
+    if (rawKey == QStringLiteral("humidity") || rawKey == QStringLiteral("humidity_percent"))
+        return QStringLiteral("humidity_percent");
+    return rawKey;
+}
+
+static QStringList getCanonicalMetricKeys(const QJsonArray &rawKeys)
+{
+    QStringList canonicalList;
+    for (const QJsonValue &k : rawKeys) {
+        const QString canon = canonicalMetricKey(k.toString());
+        if (!canonicalList.contains(canon)) {
+            canonicalList.append(canon);
+        }
+    }
+    return canonicalList;
+}
+
+static bool extractMetricValue(const QJsonObject &metrics, const QString &canonicalKey, double &outVal)
+{
+    auto tryKey = [&](const QString &k) -> bool {
+        if (metrics.contains(k)) {
+            const QJsonValue v = metrics.value(k);
+            if (v.isDouble()) {
+                outVal = v.toDouble();
+                return true;
+            }
+            if (v.isBool()) {
+                outVal = v.toBool() ? 1.0 : 0.0;
+                return true;
+            }
+            if (v.isString()) {
+                const QString s = v.toString().trimmed().toLower();
+                if (s == QStringLiteral("true") || s == QStringLiteral("on") || s == QStringLiteral("1")) {
+                    outVal = 1.0;
+                    return true;
+                }
+                if (s == QStringLiteral("false") || s == QStringLiteral("off") || s == QStringLiteral("0")) {
+                    outVal = 0.0;
+                    return true;
+                }
+                bool ok = false;
+                double d = s.toDouble(&ok);
+                if (ok) {
+                    outVal = d;
+                    return true;
+                }
+            }
+        }
+        return false;
+    };
+
+    if (canonicalKey == QStringLiteral("light_lux")) {
+        return tryKey(QStringLiteral("light_lux")) || tryKey(QStringLiteral("lux"));
+    }
+    if (canonicalKey == QStringLiteral("motion_detected")) {
+        return tryKey(QStringLiteral("motion_detected")) || tryKey(QStringLiteral("motion")) || tryKey(QStringLiteral("detech"));
+    }
+    if (canonicalKey == QStringLiteral("relay")) {
+        return tryKey(QStringLiteral("relay")) || tryKey(QStringLiteral("relay_on"));
+    }
+    if (canonicalKey == QStringLiteral("temperature_c")) {
+        return tryKey(QStringLiteral("temperature_c")) || tryKey(QStringLiteral("temp"));
+    }
+    if (canonicalKey == QStringLiteral("humidity_percent")) {
+        return tryKey(QStringLiteral("humidity_percent")) || tryKey(QStringLiteral("humidity"));
+    }
+    return tryKey(canonicalKey);
+}
 
 HistoryPage::HistoryPage(QWidget *parent)
     : QWidget(parent),
@@ -49,6 +131,35 @@ HistoryPage::HistoryPage(QWidget *parent)
       m_summaryStatCard(nullptr)
 {
     ui->setupUi(this);
+    setAttribute(Qt::WA_StyledBackground, true);
+    setStyleSheet(QStringLiteral(
+        "HistoryPage { background-color: #060b17; }"
+        "QLabel { color: #e2e8f0; font-family: 'Segoe UI', sans-serif; }"
+        "QFrame#historyChartCard { background-color: #0d1527; border: 1px solid #1e293b; border-radius: 8px; }"
+        "QFrame#historyStatCard { background-color: #0f172a; border: 1px solid #1e293b; border-radius: 8px; }"
+        "QFrame#historyStatCard:hover { border-color: #f59e0b; background-color: #111c33; }"
+        "QLabel#historyCardTitle { color: #f8fafc; font-size: 11px; font-weight: 800; }"
+        "QLabel#historyStatTitle { color: #94a3b8; font-size: 9px; font-weight: 700; }"
+        "QLabel#historyStatValue { color: #38bdf8; font-size: 12px; font-weight: 900; }"
+        "QLabel#historyStatIcon { font-size: 14px; color: #f59e0b; }"
+        "QPushButton#deviceViewTabButton { background: #0f172a; color: #64748b; border: 1px solid #1e293b; border-radius: 5px; font-size: 10px; font-weight: 700; padding: 4px 10px; }"
+        "QPushButton#deviceViewTabButton:hover { background: #1e293b; color: #ffffff; }"
+        "QPushButton#deviceViewTabButton:checked { background: #0284c7; color: #ffffff; border-color: #38bdf8; }"
+        "QPushButton#historySearchButton { background: #f59e0b; color: #020617; border: none; border-radius: 5px; font-size: 10px; font-weight: 800; padding: 4px 12px; }"
+        "QPushButton#historySearchButton:hover { background: #fbbf24; }"
+        "QPushButton#historyZoomButton { background: #1e293b; color: #38bdf8; border: 1px solid #0284c7; border-radius: 5px; font-size: 9px; font-weight: 700; padding: 3px 8px; }"
+        "QComboBox, QDateEdit { background: #0f172a; color: #f8fafc; border: 1px solid #1e293b; border-radius: 5px; padding: 2px 6px; font-size: 10px; }"
+        "QTableWidget#historyTableSmart { background-color: #0b1329; alternate-background-color: #111c38; border: 1px solid #1e293b; border-radius: 6px; gridline-color: #1e293b; color: #f8fafc; font-size: 11px; }"
+        "QTableWidget#historyTableSmart::item { padding: 6px 8px; color: #f8fafc; }"
+        "QTableWidget#historyTableSmart::item:alternate { background-color: #111c38; color: #f8fafc; }"
+        "QTableWidget#historyTableSmart::item:selected { background-color: #0284c7; color: #ffffff; }"
+        "QHeaderView::section { background-color: #080d1a; color: #94a3b8; font-weight: 800; padding: 6px 8px; border: none; border-bottom: 1.5px solid #1e293b; font-size: 10px; }"
+    ));
+    m_chart->setBackgroundBrush(QColor("#0d1527"));
+    m_chart->setPlotAreaBackgroundBrush(QColor("#080e1e"));
+    m_chart->setPlotAreaBackgroundVisible(true);
+    m_chart->legend()->setLabelColor(QColor("#94a3b8"));
+
     ui->recordCountLabel->setObjectName(QStringLiteral("historyRecordBadge"));
     ui->chartTabButton->setObjectName(QStringLiteral("deviceViewTabButton"));
     ui->tableTabButton->setObjectName(QStringLiteral("deviceViewTabButton"));
@@ -110,7 +221,7 @@ HistoryPage::HistoryPage(QWidget *parent)
     m_chartView->setToolTip(tr("Chạm vào biểu đồ để phóng to"));
     m_chartView->viewport()->installEventFilter(this);
     m_chart->setTitle(QString());
-    m_chart->setAnimationOptions(QChart::SeriesAnimations);
+    m_chart->setAnimationOptions(QChart::NoAnimation);
     m_chart->legend()->setAlignment(Qt::AlignBottom);
     m_chart->setMargins(QMargins(0, 0, 0, 0));
     m_chart->setBackgroundRoundness(0);
@@ -141,7 +252,7 @@ HistoryPage::HistoryPage(QWidget *parent)
     m_metricCombo->hide();
     m_chartHeaderLayout->addWidget(m_metricCombo, 0, Qt::AlignVCenter | Qt::AlignRight);
 
-    auto *zoomBtn = new QPushButton(tr("⛶ Phóng to"), m_chartCard);
+    auto *zoomBtn = new QPushButton(tr("Phóng to"), m_chartCard);
     zoomBtn->setObjectName(QStringLiteral("historyZoomButton"));
     zoomBtn->setCursor(Qt::PointingHandCursor);
     zoomBtn->setToolTip(tr("Phóng to biểu đồ"));
@@ -195,12 +306,15 @@ HistoryPage::HistoryPage(QWidget *parent)
             this, [this](int) { requestCurrentHistory(); });
     connect(ui->dateEdit, &QDateEdit::dateChanged,
             this, [this](const QDate &) { requestCurrentHistory(); });
-    connect(ui->deviceCombo, &QComboBox::currentIndexChanged,
-            this, [this](int) { requestCurrentHistory(); });
-    connect(ui->periodCombo, &QComboBox::currentIndexChanged,
-            this, [this](int) { requestCurrentHistory(); });
-    connect(ui->dateEdit, &QDateEdit::dateChanged,
-            this, [this](const QDate &) { requestCurrentHistory(); });
+
+    auto *refreshTimer = new QTimer(this);
+    refreshTimer->setInterval(30000);
+    connect(refreshTimer, &QTimer::timeout, this, [this]() {
+        if (isVisible() && !ui->deviceCombo->currentData().toString().isEmpty()) {
+            requestCurrentHistory();
+        }
+    });
+    refreshTimer->start();
 }
 
 bool HistoryPage::eventFilter(QObject *watched, QEvent *event)
@@ -211,23 +325,26 @@ bool HistoryPage::eventFilter(QObject *watched, QEvent *event)
             return true;
         }
         if (watched == m_primaryStatCard) {
+            const QStringList canonicalKeys = getCanonicalMetricKeys(m_cachedKeys);
             QStringList plotable;
-            for (const QJsonValue &k : m_cachedKeys)
-                if (k.toString() != QStringLiteral("ir_detected")) plotable.append(k.toString());
+            for (const QString &k : canonicalKeys)
+                if (k != QStringLiteral("ir_detected")) plotable.append(k);
             openChartZoomDialog(plotable.value(0, m_selectedMetricKey));
             return true;
         }
         if (watched == m_secondaryStatCard) {
+            const QStringList canonicalKeys = getCanonicalMetricKeys(m_cachedKeys);
             QStringList plotable;
-            for (const QJsonValue &k : m_cachedKeys)
-                if (k.toString() != QStringLiteral("ir_detected")) plotable.append(k.toString());
+            for (const QString &k : canonicalKeys)
+                if (k != QStringLiteral("ir_detected")) plotable.append(k);
             openChartZoomDialog(plotable.value(1, m_selectedMetricKey));
             return true;
         }
         if (watched == m_summaryStatCard) {
+            const QStringList canonicalKeys = getCanonicalMetricKeys(m_cachedKeys);
             QStringList plotable;
-            for (const QJsonValue &k : m_cachedKeys)
-                if (k.toString() != QStringLiteral("ir_detected")) plotable.append(k.toString());
+            for (const QString &k : canonicalKeys)
+                if (k != QStringLiteral("ir_detected")) plotable.append(k);
             openChartZoomDialog(plotable.value(2, QStringLiteral("all")));
             return true;
         }
@@ -265,6 +382,25 @@ HistoryPage::~HistoryPage()
 
 void HistoryPage::setDevices(const QJsonArray &devices)
 {
+    // Avoid re-requesting history every 1.5s poll if the device list has not changed
+    bool unchanged = (devices.size() == ui->deviceCombo->count());
+    if (unchanged && devices.size() > 0) {
+        for (int i = 0; i < devices.size(); ++i) {
+            const QJsonObject device = devices.at(i).toObject();
+            const QString id = device.value(QStringLiteral("device_id")).toString();
+            if (ui->deviceCombo->itemData(i).toString() != id) {
+                unchanged = false;
+                break;
+            }
+        }
+    } else {
+        unchanged = false;
+    }
+
+    if (unchanged) {
+        return;
+    }
+
     const QString selected = ui->deviceCombo->currentData().toString();
     ui->deviceCombo->blockSignals(true);
     ui->deviceCombo->clear();
@@ -286,6 +422,25 @@ void HistoryPage::setDevices(const QJsonArray &devices)
         ui->deviceCombo->setCurrentIndex(previous);
     ui->deviceCombo->blockSignals(false);
     requestCurrentHistory();
+}
+
+void HistoryPage::setPeriod(const QString &period)
+{
+    const int idx = ui->periodCombo->findData(period);
+    if (idx >= 0 && idx != ui->periodCombo->currentIndex()) {
+        ui->periodCombo->setCurrentIndex(idx);
+    }
+}
+
+void HistoryPage::showTableView(bool showTable)
+{
+    if (showTable) {
+        ui->tableTabButton->setChecked(true);
+        ui->viewStack->setCurrentIndex(1);
+    } else {
+        ui->chartTabButton->setChecked(true);
+        ui->viewStack->setCurrentIndex(0);
+    }
 }
 
 void HistoryPage::requestCurrentHistory()
@@ -312,23 +467,23 @@ void HistoryPage::updateMetricSelector()
     m_metricCombo->blockSignals(true);
     m_metricCombo->clear();
 
-    if (m_cachedKeys.isEmpty()) {
+    const QStringList canonicalKeys = getCanonicalMetricKeys(m_cachedKeys);
+    if (canonicalKeys.isEmpty()) {
         m_metricCombo->hide();
         m_metricCombo->blockSignals(false);
         return;
     }
 
     QStringList plotableKeys;
-    for (const QJsonValue &k : m_cachedKeys) {
-        const QString keyStr = k.toString();
+    for (const QString &keyStr : canonicalKeys) {
         if (keyStr != QStringLiteral("ir_detected"))
             plotableKeys.append(keyStr);
     }
 
     if (plotableKeys.size() > 1) {
-        m_metricCombo->addItem(tr("📊 Tất cả chỉ số"), QStringLiteral("all"));
+        m_metricCombo->addItem(tr("Tất cả chỉ số"), QStringLiteral("all"));
         for (const QString &key : plotableKeys) {
-            m_metricCombo->addItem(tr("📈 %1").arg(metricTitle(key)), key);
+            m_metricCombo->addItem(metricTitle(key), key);
         }
         int idx = m_metricCombo->findData(m_selectedMetricKey);
         if (idx >= 0) {
@@ -349,7 +504,7 @@ void HistoryPage::setHistory(const QJsonObject &history)
 {
     m_cachedKeys = history.value(QStringLiteral("metric_keys")).toArray();
     m_cachedRows = history.value(QStringLiteral("data")).toArray();
-    const QJsonArray keys = m_cachedKeys;
+    const QStringList canonicalKeys = getCanonicalMetricKeys(m_cachedKeys);
     const QJsonArray rows = m_cachedRows;
 
     const QString addedBy = history.value(QStringLiteral("added_by")).toString();
@@ -363,12 +518,36 @@ void HistoryPage::setHistory(const QJsonObject &history)
                 .arg(ui->deviceCombo->currentText(), addedBy, addTimeStr));
     }
 
+    const QString currentPeriod = ui->periodCombo->currentData().toString();
+    ui->historyTable->setUpdatesEnabled(false);
     ui->historyTable->clear();
     ui->historyTable->setRowCount(rows.size());
-    ui->historyTable->setColumnCount(keys.size() + 1);
-    QStringList headers{tr("Thời gian")};
-    for (const QJsonValue &key : keys)
-        headers.append(metricTitle(key.toString()));
+
+    // Build the ordered list of columns for the table:
+    // 1. Độ sáng (Lux)
+    // 2. Phát hiện người (PIR)
+    // 3. Trạng thái đèn
+    QStringList tableKeys;
+    tableKeys.append(QStringLiteral("light_lux"));
+    tableKeys.append(QStringLiteral("motion_detected"));
+    tableKeys.append(QStringLiteral("relay"));
+    for (const QString &k : canonicalKeys) {
+        if (!tableKeys.contains(k) && k != QStringLiteral("ir_detected")) {
+            tableKeys.append(k);
+        }
+    }
+
+    ui->historyTable->setColumnCount(tableKeys.size() + 1);
+    QStringList headers{currentPeriod == QStringLiteral("year") ? tr("Tháng") : (currentPeriod == QStringLiteral("month") ? tr("Ngày") : tr("Thời gian"))};
+    for (const QString &key : tableKeys) {
+        if (key == QStringLiteral("motion_detected")) {
+            headers.append(tr("Phát hiện người (PIR)"));
+        } else if (key == QStringLiteral("relay")) {
+            headers.append(tr("Trạng thái đèn"));
+        } else {
+            headers.append(metricTitle(key));
+        }
+    }
     ui->historyTable->setHorizontalHeaderLabels(headers);
     for (int row = 0; row < rows.size(); ++row) {
         const QJsonObject entry = rows.at(row).toObject();
@@ -379,31 +558,125 @@ void HistoryPage::setHistory(const QJsonObject &history)
         if (!time.isValid())
             time = QDateTime::fromString(recordedAtStr, QStringLiteral("yyyy-MM-dd HH:mm:ss"));
         time = time.toLocalTime();
-        ui->historyTable->setItem(row, 0, new QTableWidgetItem(
-            time.isValid() ? time.toString(QStringLiteral("dd/MM/yyyy HH:mm:ss")) : recordedAtStr));
+
+        QString displayTime;
+        if (entry.contains(QStringLiteral("bucket_label"))) {
+            displayTime = entry.value(QStringLiteral("bucket_label")).toString();
+        } else if (currentPeriod == QStringLiteral("year")) {
+            displayTime = time.isValid() ? time.toString(QStringLiteral("MM/yyyy")) : recordedAtStr;
+        } else if (currentPeriod == QStringLiteral("month")) {
+            displayTime = time.isValid() ? time.toString(QStringLiteral("dd/MM/yyyy")) : recordedAtStr;
+        } else {
+            displayTime = time.isValid() ? time.toString(QStringLiteral("dd/MM/yyyy HH:mm:ss")) : recordedAtStr;
+        }
+
+        auto *timeItem = new QTableWidgetItem(displayTime);
+        timeItem->setTextAlignment(Qt::AlignCenter);
+        timeItem->setForeground(QBrush(QColor("#f8fafc")));
+        ui->historyTable->setItem(row, 0, timeItem);
+
         const QJsonObject metrics = entry.value(QStringLiteral("metrics")).toObject();
-        for (int column = 0; column < keys.size(); ++column) {
-            const QJsonValue value = metrics.value(keys.at(column).toString());
-            ui->historyTable->setItem(row, column + 1, new QTableWidgetItem(
-                value.isDouble() ? QString::number(value.toDouble(), 'f', 2) : QStringLiteral("—")));
+        for (int col = 0; col < tableKeys.size(); ++col) {
+            const QString key = tableKeys.at(col);
+            double val = 0.0;
+            QTableWidgetItem *valItem = nullptr;
+            if (extractMetricValue(metrics, key, val)) {
+                if (key == QStringLiteral("motion_detected")) {
+                    if (currentPeriod == QStringLiteral("year") || currentPeriod == QStringLiteral("month")) {
+                        const bool hasMotion = (val > 0.01);
+                        valItem = new QTableWidgetItem(hasMotion ? tr("Có người (%1%)").arg(QString::number(val * 100, 'f', 0)) : tr("Không có"));
+                        valItem->setForeground(QBrush(hasMotion ? QColor("#f59e0b") : QColor("#94a3b8")));
+                    } else {
+                        const bool detected = (val >= 0.5);
+                        valItem = new QTableWidgetItem(detected ? tr("● Có người") : tr("○ Bình thường"));
+                        valItem->setForeground(QBrush(detected ? QColor("#f59e0b") : QColor("#94a3b8")));
+                    }
+                } else if (key == QStringLiteral("relay")) {
+                    if (currentPeriod == QStringLiteral("year") || currentPeriod == QStringLiteral("month")) {
+                        const bool hasRelay = (val > 0.01);
+                        valItem = new QTableWidgetItem(hasRelay ? tr("Bật (%1%)").arg(QString::number(val * 100, 'f', 0)) : tr("Tắt"));
+                        valItem->setForeground(QBrush(hasRelay ? QColor("#10b981") : QColor("#94a3b8")));
+                    } else {
+                        const bool on = (val >= 0.5);
+                        valItem = new QTableWidgetItem(on ? tr("● Đang Bật") : tr("○ Đang Tắt"));
+                        valItem->setForeground(QBrush(on ? QColor("#10b981") : QColor("#94a3b8")));
+                    }
+                } else {
+                    valItem = new QTableWidgetItem(QString::number(val, 'f', 2));
+                    valItem->setForeground(QBrush(QColor("#38bdf8")));
+                }
+            } else {
+                valItem = new QTableWidgetItem(QStringLiteral("—"));
+                valItem->setForeground(QBrush(QColor("#64748b")));
+            }
+            valItem->setTextAlignment(Qt::AlignCenter);
+            ui->historyTable->setItem(row, col + 1, valItem);
         }
     }
+    ui->historyTable->setUpdatesEnabled(true);
 
     const int total = history.value(QStringLiteral("total")).toInt();
     ui->recordCountLabel->setText(tr("%1 bản ghi").arg(total));
-    const QJsonObject averages = history.value(QStringLiteral("averages")).toObject();
-    QStringList summary;
-    for (const QJsonValue &key : keys) {
-        const QString name = key.toString();
-        if (averages.value(name).isDouble())
-            summary.append(tr("%1: %2").arg(metricTitle(name),
-                QString::number(averages.value(name).toDouble(), 'f', 2)));
+
+    if (!rows.isEmpty()) {
+        double latestLux = 0.0;
+        bool hasLux = false;
+        double minLux = std::numeric_limits<double>::max();
+        double maxLux = std::numeric_limits<double>::lowest();
+        double sumLux = 0.0;
+        int countLux = 0;
+
+        double latestMotion = 0.0;
+        bool hasMotion = false;
+        double latestRelay = 0.0;
+        bool hasRelay = false;
+
+        for (int r = 0; r < rows.size(); ++r) {
+            const QJsonObject metrics = rows.at(r).toObject().value(QStringLiteral("metrics")).toObject();
+            double v = 0.0;
+            if (extractMetricValue(metrics, QStringLiteral("light_lux"), v)) {
+                if (!hasLux) { latestLux = v; hasLux = true; }
+                minLux = qMin(minLux, v);
+                maxLux = qMax(maxLux, v);
+                sumLux += v;
+                ++countLux;
+            }
+            if (!hasMotion && extractMetricValue(metrics, QStringLiteral("motion_detected"), v)) {
+                latestMotion = v;
+                hasMotion = true;
+            }
+            if (!hasRelay && extractMetricValue(metrics, QStringLiteral("relay"), v)) {
+                latestRelay = v;
+                hasRelay = true;
+            }
+        }
+
+        if (hasLux) {
+            m_primaryStat->setText(tr("%1 Lux (Mới nhất)").arg(QString::number(latestLux, 'f', 1)));
+        } else {
+            m_primaryStat->setText(QStringLiteral("--"));
+        }
+
+        if (hasMotion) {
+            m_secondaryStat->setText(latestMotion >= 0.5 ? tr("● Có người") : tr("○ Bình thường"));
+        } else if (hasLux && countLux > 0) {
+            m_secondaryStat->setText(tr("Min: %1 · Max: %2 Lux").arg(QString::number(minLux, 'f', 1), QString::number(maxLux, 'f', 1)));
+        } else {
+            m_secondaryStat->setText(QStringLiteral("--"));
+        }
+
+        if (hasRelay) {
+            m_thirdStat->setText(latestRelay >= 0.5 ? tr("● Đèn Bật (%1 bg)").arg(total) : tr("○ Đèn Tắt (%1 bg)").arg(total));
+        } else if (hasLux && countLux > 0) {
+            m_thirdStat->setText(tr("TB: %1 Lux (%2 bg)").arg(QString::number(sumLux / countLux, 'f', 1), QString::number(total)));
+        } else {
+            m_thirdStat->setText(tr("%1 bản ghi").arg(total));
+        }
+    } else {
+        m_primaryStat->setText(QStringLiteral("--"));
+        m_secondaryStat->setText(QStringLiteral("--"));
+        m_thirdStat->setText(tr("0 bản ghi"));
     }
-    m_primaryStat->setText(summary.value(0, QStringLiteral("--")));
-    m_secondaryStat->setText(summary.value(1, QStringLiteral("--")));
-    m_thirdStat->setText(summary.size() > 2
-        ? summary.value(2)
-        : tr("%1 bản ghi").arg(total));
 
     updateMetricSelector();
     updateChart();
@@ -417,16 +690,16 @@ void HistoryPage::updateChart()
         m_chart->removeAxis(axis);
         axis->deleteLater();
     }
-    const QJsonArray &keys = m_cachedKeys;
+    const QStringList canonicalKeys = getCanonicalMetricKeys(m_cachedKeys);
     const QJsonArray &rows = m_cachedRows;
 
-    if (keys.isEmpty() || rows.isEmpty()) {
+    if (canonicalKeys.isEmpty() || rows.isEmpty()) {
         m_chartTitle->setText(tr("Không có dữ liệu"));
         m_chartHint->setText(tr("Không có dữ liệu trong khoảng thời gian đã chọn."));
         return;
     }
 
-    const bool isIrOnly = keys.size() == 1 && keys.at(0).toString() == QStringLiteral("ir_detected");
+    const bool isIrOnly = canonicalKeys.size() == 1 && canonicalKeys.at(0) == QStringLiteral("ir_detected");
     if (isIrOnly) {
         auto *set = new QBarSet(tr("Có vật"));
         set->setColor(QColor("#21a67a"));
@@ -440,8 +713,9 @@ void HistoryPage::updateChart()
                 time = QDateTime::fromString(recordedAtStr, Qt::ISODate);
             time = time.toLocalTime();
             categories << (time.isValid() ? time.toString(QStringLiteral("HH:mm:ss")) : QStringLiteral("--"));
-            *set << entry.value(QStringLiteral("metrics")).toObject()
-                        .value(QStringLiteral("ir_detected")).toInt();
+            double irVal = 0.0;
+            extractMetricValue(entry.value(QStringLiteral("metrics")).toObject(), QStringLiteral("ir_detected"), irVal);
+            *set << (int)irVal;
         }
         auto *series = new QBarSeries(m_chart);
         series->append(set);
@@ -465,40 +739,50 @@ void HistoryPage::updateChart()
     QFont axisFont;
     axisFont.setPixelSize(9);
     axisX->setLabelsFont(axisFont);
+    axisX->setLabelsColor(QColor("#94a3b8"));
+    QPen gridPen(QColor("#16233f"));
+    gridPen.setStyle(Qt::DashLine);
+    axisX->setGridLinePen(gridPen);
+    QPen linePen(QColor("#334155"));
+    axisX->setLinePen(linePen);
     m_chart->addAxis(axisX, Qt::AlignBottom);
 
     qint64 minimumTime = std::numeric_limits<qint64>::max();
     qint64 maximumTime = std::numeric_limits<qint64>::min();
-    const QList<QColor> colors{QColor("#15945a"), QColor("#2d9cdb"),
-                               QColor("#e0a025"), QColor("#6750d8"),
-                               QColor("#d84d76"), QColor("#64748b")};
+    const QList<QColor> colors{QColor("#f59e0b"), QColor("#38bdf8"),
+                               QColor("#10b981"), QColor("#a855f7"),
+                               QColor("#f43f5e"), QColor("#64748b")};
 
     QStringList activeKeys;
     if (m_selectedMetricKey.isEmpty() || m_selectedMetricKey == QStringLiteral("all")) {
-        for (const QJsonValue &k : keys) {
-            const QString keyStr = k.toString();
-            if (keyStr != QStringLiteral("ir_detected"))
-                activeKeys.append(keyStr);
+        for (const QString &k : canonicalKeys) {
+            if (k != QStringLiteral("ir_detected"))
+                activeKeys.append(k);
         }
     } else {
-        activeKeys.append(m_selectedMetricKey);
+        const QString canon = canonicalMetricKey(m_selectedMetricKey);
+        if (canonicalKeys.contains(canon))
+            activeKeys.append(canon);
+        else if (!canonicalKeys.isEmpty())
+            activeKeys.append(canonicalKeys.first());
     }
 
     int visibleSeries = 0;
     for (int metricIndex = 0; metricIndex < activeKeys.size(); ++metricIndex) {
         const QString key = activeKeys.at(metricIndex);
-        auto *series = new QLineSeries(m_chart);
-        series->setName(metricTitle(key));
-        series->setPointsVisible(true);
-        series->setMarkerSize(5.0);
-        QPen pen(colors.at(metricIndex % colors.size()));
-        pen.setWidthF(2.0);
-        series->setPen(pen);
+        auto *lineSeries = new QLineSeries;
+        lineSeries->setName(metricTitle(key));
+
         double minimum = std::numeric_limits<double>::max();
         double maximum = std::numeric_limits<double>::lowest();
+
         for (int row = rows.size() - 1; row >= 0; --row) {
             const QJsonObject entry = rows.at(row).toObject();
-            const QJsonValue value = entry.value(QStringLiteral("metrics")).toObject().value(key);
+            const QJsonObject metrics = entry.value(QStringLiteral("metrics")).toObject();
+            double number = 0.0;
+            if (!extractMetricValue(metrics, key, number))
+                continue;
+
             QString recordedAtStr = entry.value(QStringLiteral("recorded_at")).toString();
             QDateTime time = QDateTime::fromString(recordedAtStr, Qt::ISODateWithMs);
             if (!time.isValid())
@@ -506,38 +790,96 @@ void HistoryPage::updateChart()
             if (!time.isValid())
                 time = QDateTime::fromString(recordedAtStr, QStringLiteral("yyyy-MM-dd HH:mm:ss"));
             time = time.toLocalTime();
-            if (!value.isDouble() || !time.isValid())
+            if (!time.isValid())
                 continue;
+
             const qint64 timestamp = time.toMSecsSinceEpoch();
-            const double number = value.toDouble();
-            series->append(timestamp, number);
+            lineSeries->append(timestamp, number);
             minimumTime = qMin(minimumTime, timestamp);
             maximumTime = qMax(maximumTime, timestamp);
             minimum = qMin(minimum, number);
             maximum = qMax(maximum, number);
         }
-        if (series->count() == 0) {
-            delete series;
+
+        if (lineSeries->count() == 0) {
+            delete lineSeries;
             continue;
         }
-        m_chart->addSeries(series);
-        series->attachAxis(axisX);
+
+        // Show dots if point count is small, especially for month/year charts
+        const QString periodVal = ui->periodCombo->currentData().toString();
+        if (periodVal == QStringLiteral("year") || periodVal == QStringLiteral("month") || lineSeries->count() <= 25) {
+            lineSeries->setPointsVisible(true);
+            lineSeries->setMarkerSize(periodVal == QStringLiteral("year") ? 5.5 : 3.5);
+        } else {
+            lineSeries->setPointsVisible(false);
+        }
+
+        QColor baseColor = colors.at(metricIndex % colors.size());
+        if (key == QStringLiteral("light_lux")) {
+            baseColor = QColor("#f59e0b");
+        } else if (key == QStringLiteral("motion_detected")) {
+            baseColor = QColor("#10b981");
+        } else if (key == QStringLiteral("temperature_c")) {
+            baseColor = QColor("#f43f5e");
+        } else if (key == QStringLiteral("humidity_percent")) {
+            baseColor = QColor("#06b6d4");
+        }
+
+        QAbstractSeries *seriesToAdd = nullptr;
+        if (activeKeys.size() == 1) {
+            // Luminous gradient area chart for single metric
+            auto *areaSeries = new QAreaSeries(lineSeries);
+            lineSeries->setParent(areaSeries);
+            areaSeries->setName(metricTitle(key));
+
+            QLinearGradient gradient(QPointF(0, 0), QPointF(0, 1));
+            gradient.setCoordinateMode(QGradient::ObjectBoundingMode);
+            gradient.setColorAt(0.0, QColor(baseColor.red(), baseColor.green(), baseColor.blue(), 150));
+            gradient.setColorAt(0.8, QColor(baseColor.red(), baseColor.green(), baseColor.blue(), 25));
+            gradient.setColorAt(1.0, QColor(baseColor.red(), baseColor.green(), baseColor.blue(), 0));
+            areaSeries->setBrush(gradient);
+
+            QPen pen(baseColor);
+            pen.setWidthF(2.2);
+            areaSeries->setPen(pen);
+
+            seriesToAdd = areaSeries;
+        } else {
+            // Multi-metric line chart with clean strokes
+            QPen pen(baseColor);
+            pen.setWidthF(2.2);
+            lineSeries->setPen(pen);
+            seriesToAdd = lineSeries;
+        }
+
+        m_chart->addSeries(seriesToAdd);
+        seriesToAdd->attachAxis(axisX);
+
         auto *axisY = new QValueAxis(m_chart);
         axisY->setTitleText(compactMetricTitle(key));
-        axisY->setLabelsColor(colors.at(metricIndex % colors.size()));
-        axisY->setTitleBrush(colors.at(metricIndex % colors.size()));
+        axisY->setLabelsColor(QColor("#94a3b8"));
+        axisY->setTitleBrush(baseColor);
         axisY->setLabelsFont(axisFont);
         axisY->setTitleFont(axisFont);
+        axisY->setGridLinePen(gridPen);
+        axisY->setLinePen(linePen);
+        axisY->setTickCount(5);
+
         if (minimum > maximum) {
             minimum = 0;
             maximum = 10;
         }
         const double diff = maximum - minimum;
         const double padding = qMax(0.5, (diff == 0.0 ? (qAbs(maximum) > 0 ? qAbs(maximum) * 0.15 + 0.5 : 1.0) : diff * 0.15));
-        axisY->setRange(minimum - padding, maximum + padding);
+        double yMin = (minimum >= 0.0) ? qMax(0.0, minimum - padding) : (minimum - padding);
+        double yMax = maximum + padding;
+        if (yMax <= yMin) yMax = yMin + 10.0;
+        axisY->setRange(yMin, yMax);
         axisY->setLabelFormat("%.1f");
+
         m_chart->addAxis(axisY, visibleSeries == 0 ? Qt::AlignLeft : Qt::AlignRight);
-        series->attachAxis(axisY);
+        seriesToAdd->attachAxis(axisY);
         ++visibleSeries;
     }
 
@@ -547,7 +889,26 @@ void HistoryPage::updateChart()
         return;
     }
 
-    if (minimumTime <= maximumTime) {
+    const QString currentPeriod = ui->periodCombo->currentData().toString();
+    const QDate selectedDate = ui->dateEdit->date();
+
+    if (currentPeriod == QStringLiteral("year")) {
+        const int yr = selectedDate.year();
+        const QDateTime yearStart(QDate(yr, 1, 1), QTime(0, 0, 0));
+        const QDateTime yearEnd(QDate(yr, 12, 31), QTime(23, 59, 59));
+        axisX->setRange(yearStart, yearEnd);
+        axisX->setFormat(QStringLiteral("MM/yyyy"));
+        axisX->setTickCount(12);
+    } else if (currentPeriod == QStringLiteral("month")) {
+        const int yr = selectedDate.year();
+        const int mo = selectedDate.month();
+        const int daysInMonth = selectedDate.daysInMonth();
+        const QDateTime monthStart(QDate(yr, mo, 1), QTime(0, 0, 0));
+        const QDateTime monthEnd(QDate(yr, mo, daysInMonth), QTime(23, 59, 59));
+        axisX->setRange(monthStart, monthEnd);
+        axisX->setFormat(QStringLiteral("dd/MM"));
+        axisX->setTickCount(qMin(7, daysInMonth));
+    } else if (minimumTime <= maximumTime) {
         const qint64 timeSpan = maximumTime - minimumTime;
         if (timeSpan < 60 * 1000) { // under 1 min or single point
             minimumTime -= 30 * 1000;
@@ -556,21 +917,20 @@ void HistoryPage::updateChart()
             axisX->setTickCount(qMin(5, (int)rows.size() + 2));
         } else if (timeSpan < 3600 * 1000) { // under 1 hour
             axisX->setFormat(QStringLiteral("HH:mm:ss"));
-            axisX->setTickCount(6);
-        } else if (ui->periodCombo->currentData().toString() == QStringLiteral("day")) {
-            axisX->setFormat(QStringLiteral("HH:mm"));
-            axisX->setTickCount(6);
+            axisX->setTickCount(5);
         } else {
-            axisX->setFormat(QStringLiteral("dd/MM"));
+            axisX->setFormat(QStringLiteral("HH:mm"));
             axisX->setTickCount(6);
         }
         axisX->setRange(QDateTime::fromMSecsSinceEpoch(minimumTime),
                         QDateTime::fromMSecsSinceEpoch(maximumTime));
     }
 
+    m_chart->legend()->setVisible(activeKeys.size() > 1);
+
     if (activeKeys.size() == 1) {
         const QString k = activeKeys.first();
-        m_chartTitle->setText(tr("Biểu đồ %1").arg(metricTitle(k)));
+        m_chartTitle->setText(tr("Biểu đồ %1 · %2").arg(metricTitle(k), ui->deviceCombo->currentText()));
         m_chartHint->setText(tr("Đang hiển thị chỉ số %1 · Thiết bị: %2").arg(metricTitle(k), ui->deviceCombo->currentText()));
     } else {
         m_chartTitle->setText(tr("Thống kê · %1").arg(ui->deviceCombo->currentText()));
@@ -586,11 +946,14 @@ QString HistoryPage::currentDeviceType() const
 QString HistoryPage::metricTitle(const QString &key)
 {
     static const QHash<QString, QString> names{
+        {"light_lux", tr("Độ sáng (Lux)")}, {"lux", tr("Độ sáng (Lux)")},
+        {"motion_detected", tr("Chuyển động (PIR)")}, {"motion", tr("Chuyển động (PIR)")},
+        {"relay", tr("Đèn phòng")}, {"relay_on", tr("Đèn phòng")},
         {"temperature_c", tr("Nhiệt độ (°C)")}, {"humidity_percent", tr("Độ ẩm (%)")},
         {"pressure_hpa", tr("Áp suất (hPa)")}, {"uv_index", tr("UV Index")},
         {"uv_voltage", tr("Điện áp UV (V)")}, {"sound_vpp", tr("Âm thanh (Vpp)")},
         {"current_a", tr("Dòng điện (A)")}, {"voltage_v", tr("Điện áp (V)")},
-        {"distance_cm", tr("Khoảng cách (cm)")}, {"lux", tr("Độ sáng (Lux)")},
+        {"distance_cm", tr("Khoảng cách (cm)")},
         {"flow_l_min", tr("Lưu lượng (L/m)")}, {"total_liters", tr("Tổng nước (L)")},
         {"ir_detected", tr("IR")}};
     return names.value(key, key);
@@ -599,11 +962,14 @@ QString HistoryPage::metricTitle(const QString &key)
 QString HistoryPage::compactMetricTitle(const QString &key)
 {
     static const QHash<QString, QString> names{
+        {"light_lux", tr("Lux")}, {"lux", tr("Lux")},
+        {"motion_detected", tr("PIR")}, {"motion", tr("PIR")},
+        {"relay", tr("Đèn")}, {"relay_on", tr("Đèn")},
         {"temperature_c", tr("°C")}, {"humidity_percent", tr("%")},
         {"pressure_hpa", tr("hPa")}, {"uv_index", tr("UV")},
         {"uv_voltage", tr("V")}, {"sound_vpp", tr("Vpp")},
         {"current_a", tr("A")}, {"voltage_v", tr("V")},
-        {"distance_cm", tr("cm")}, {"lux", tr("Lux")},
+        {"distance_cm", tr("cm")},
         {"flow_l_min", tr("L/m")}, {"total_liters", tr("L")},
         {"ir_detected", tr("IR")}};
     return names.value(key, key);
@@ -652,23 +1018,24 @@ void HistoryPage::openChartZoomDialog(const QString &initialMetricKey)
     metricCombo->setObjectName(QStringLiteral("historyMetricCombo"));
     metricCombo->setMinimumWidth(180);
 
+    const QStringList canonicalKeys = getCanonicalMetricKeys(m_cachedKeys);
     QStringList plotableKeys;
-    for (const QJsonValue &k : m_cachedKeys) {
-        const QString keyStr = k.toString();
+    for (const QString &keyStr : canonicalKeys) {
         if (keyStr != QStringLiteral("ir_detected"))
             plotableKeys.append(keyStr);
     }
 
     if (plotableKeys.size() > 1) {
-        metricCombo->addItem(tr("📊 Tất cả chỉ số"), QStringLiteral("all"));
+        metricCombo->addItem(tr("Tất cả chỉ số"), QStringLiteral("all"));
         for (const QString &key : plotableKeys) {
-            metricCombo->addItem(tr("📈 %1").arg(metricTitle(key)), key);
+            metricCombo->addItem(metricTitle(key), key);
         }
     } else if (plotableKeys.size() == 1) {
-        metricCombo->addItem(tr("📈 %1").arg(metricTitle(plotableKeys.first())), plotableKeys.first());
+        metricCombo->addItem(metricTitle(plotableKeys.first()), plotableKeys.first());
     }
 
     QString selectedKey = initialMetricKey.isEmpty() ? m_selectedMetricKey : initialMetricKey;
+    selectedKey = canonicalMetricKey(selectedKey);
     if (selectedKey.isEmpty() || metricCombo->findData(selectedKey) < 0)
         selectedKey = plotableKeys.isEmpty() ? QStringLiteral("all") : plotableKeys.first();
 
@@ -686,9 +1053,12 @@ void HistoryPage::openChartZoomDialog(const QString &initialMetricKey)
     root->addLayout(headerLayout);
 
     auto *zoomChart = new QChart;
-    zoomChart->setAnimationOptions(QChart::SeriesAnimations);
+    zoomChart->setBackgroundBrush(QColor("#0d1527"));
+    zoomChart->setPlotAreaBackgroundBrush(QColor("#080e1e"));
+    zoomChart->setPlotAreaBackgroundVisible(true);
+    zoomChart->setAnimationOptions(QChart::NoAnimation);
     zoomChart->legend()->setAlignment(Qt::AlignBottom);
-    zoomChart->legend()->setVisible(true);
+    zoomChart->legend()->setLabelColor(QColor("#94a3b8"));
 
     auto *zoomChartView = new QChartView(zoomChart, &dialog);
     zoomChartView->setObjectName(QStringLiteral("chartZoomView"));
@@ -730,30 +1100,39 @@ void HistoryPage::openChartZoomDialog(const QString &initialMetricKey)
         }
 
         const QString activeMetric = metricCombo->currentData().toString();
-        const QJsonArray &keys = m_cachedKeys;
+        const QStringList canonicalKeys = getCanonicalMetricKeys(m_cachedKeys);
         const QJsonArray &rows = m_cachedRows;
 
         QStringList activeKeys;
         if (activeMetric.isEmpty() || activeMetric == QStringLiteral("all")) {
-            for (const QJsonValue &k : keys) {
-                const QString keyStr = k.toString();
-                if (keyStr != QStringLiteral("ir_detected"))
-                    activeKeys.append(keyStr);
+            for (const QString &k : canonicalKeys) {
+                if (k != QStringLiteral("ir_detected"))
+                    activeKeys.append(k);
             }
             dialogTitle->setText(tr("Biểu đồ tổng quan các chỉ số"));
         } else {
-            activeKeys.append(activeMetric);
-            dialogTitle->setText(tr("Biểu đồ chi tiết: %1").arg(metricTitle(activeMetric)));
+            const QString canon = canonicalMetricKey(activeMetric);
+            if (canonicalKeys.contains(canon))
+                activeKeys.append(canon);
+            else if (!canonicalKeys.isEmpty())
+                activeKeys.append(canonicalKeys.first());
+            dialogTitle->setText(tr("Biểu đồ chi tiết: %1").arg(metricTitle(activeKeys.first())));
         }
 
         auto *axisX = new QDateTimeAxis(zoomChart);
+        axisX->setLabelsColor(QColor("#94a3b8"));
+        QPen gridPen(QColor("#16233f"));
+        gridPen.setStyle(Qt::DashLine);
+        axisX->setGridLinePen(gridPen);
+        QPen linePen(QColor("#334155"));
+        axisX->setLinePen(linePen);
         zoomChart->addAxis(axisX, Qt::AlignBottom);
 
         qint64 minimumTime = std::numeric_limits<qint64>::max();
         qint64 maximumTime = std::numeric_limits<qint64>::min();
-        const QList<QColor> colors{QColor("#15945a"), QColor("#2d9cdb"),
-                                   QColor("#e0a025"), QColor("#6750d8"),
-                                   QColor("#d84d76"), QColor("#64748b")};
+        const QList<QColor> colors{QColor("#f59e0b"), QColor("#38bdf8"),
+                                   QColor("#10b981"), QColor("#a855f7"),
+                                   QColor("#f43f5e"), QColor("#64748b")};
 
         double overallMin = std::numeric_limits<double>::max();
         double overallMax = std::numeric_limits<double>::lowest();
@@ -763,20 +1142,19 @@ void HistoryPage::openChartZoomDialog(const QString &initialMetricKey)
         int visibleSeries = 0;
         for (int i = 0; i < activeKeys.size(); ++i) {
             const QString key = activeKeys.at(i);
-            auto *series = new QLineSeries(zoomChart);
-            series->setName(metricTitle(key));
-            series->setPointsVisible(true);
-            series->setMarkerSize(8.0);
-            QPen pen(colors.at(i % colors.size()));
-            pen.setWidthF(3.0);
-            series->setPen(pen);
+            auto *lineSeries = new QLineSeries;
+            lineSeries->setName(metricTitle(key));
 
             double minimum = std::numeric_limits<double>::max();
             double maximum = std::numeric_limits<double>::lowest();
 
             for (int r = rows.size() - 1; r >= 0; --r) {
                 const QJsonObject entry = rows.at(r).toObject();
-                const QJsonValue val = entry.value(QStringLiteral("metrics")).toObject().value(key);
+                const QJsonObject metrics = entry.value(QStringLiteral("metrics")).toObject();
+                double num = 0.0;
+                if (!extractMetricValue(metrics, key, num))
+                    continue;
+
                 QString recordedAtStr = entry.value(QStringLiteral("recorded_at")).toString();
                 QDateTime time = QDateTime::fromString(recordedAtStr, Qt::ISODateWithMs);
                 if (!time.isValid())
@@ -784,12 +1162,11 @@ void HistoryPage::openChartZoomDialog(const QString &initialMetricKey)
                 if (!time.isValid())
                     time = QDateTime::fromString(recordedAtStr, QStringLiteral("yyyy-MM-dd HH:mm:ss"));
                 time = time.toLocalTime();
-                if (!val.isDouble() || !time.isValid())
+                if (!time.isValid())
                     continue;
 
                 const qint64 ts = time.toMSecsSinceEpoch();
-                const double num = val.toDouble();
-                series->append(ts, num);
+                lineSeries->append(ts, num);
                 minimumTime = qMin(minimumTime, ts);
                 maximumTime = qMax(maximumTime, ts);
                 minimum = qMin(minimum, num);
@@ -800,29 +1177,100 @@ void HistoryPage::openChartZoomDialog(const QString &initialMetricKey)
                 ++overallCount;
             }
 
-            if (series->count() == 0) {
-                delete series;
+            if (lineSeries->count() == 0) {
+                delete lineSeries;
                 continue;
             }
 
-            zoomChart->addSeries(series);
-            series->attachAxis(axisX);
+            const QString periodVal = ui->periodCombo->currentData().toString();
+            if (periodVal == QStringLiteral("year") || periodVal == QStringLiteral("month") || lineSeries->count() <= 30) {
+                lineSeries->setPointsVisible(true);
+                lineSeries->setMarkerSize(periodVal == QStringLiteral("year") ? 5.5 : 4.0);
+            } else {
+                lineSeries->setPointsVisible(false);
+            }
+
+            QColor baseColor = colors.at(i % colors.size());
+            if (key == QStringLiteral("light_lux")) {
+                baseColor = QColor("#f59e0b");
+            } else if (key == QStringLiteral("motion_detected")) {
+                baseColor = QColor("#10b981");
+            } else if (key == QStringLiteral("temperature_c")) {
+                baseColor = QColor("#f43f5e");
+            } else if (key == QStringLiteral("humidity_percent")) {
+                baseColor = QColor("#06b6d4");
+            }
+
+            QAbstractSeries *seriesToAdd = nullptr;
+            if (activeKeys.size() == 1) {
+                auto *areaSeries = new QAreaSeries(lineSeries);
+                lineSeries->setParent(areaSeries);
+                areaSeries->setName(metricTitle(key));
+
+                QLinearGradient gradient(QPointF(0, 0), QPointF(0, 1));
+                gradient.setCoordinateMode(QGradient::ObjectBoundingMode);
+                gradient.setColorAt(0.0, QColor(baseColor.red(), baseColor.green(), baseColor.blue(), 150));
+                gradient.setColorAt(0.8, QColor(baseColor.red(), baseColor.green(), baseColor.blue(), 25));
+                gradient.setColorAt(1.0, QColor(baseColor.red(), baseColor.green(), baseColor.blue(), 0));
+                areaSeries->setBrush(gradient);
+
+                QPen pen(baseColor);
+                pen.setWidthF(2.4);
+                areaSeries->setPen(pen);
+
+                seriesToAdd = areaSeries;
+            } else {
+                QPen pen(baseColor);
+                pen.setWidthF(2.4);
+                lineSeries->setPen(pen);
+                seriesToAdd = lineSeries;
+            }
+
+            zoomChart->addSeries(seriesToAdd);
+            seriesToAdd->attachAxis(axisX);
 
             auto *axisY = new QValueAxis(zoomChart);
             axisY->setTitleText(compactMetricTitle(key));
-            axisY->setLabelsColor(colors.at(i % colors.size()));
-            axisY->setTitleBrush(colors.at(i % colors.size()));
+            axisY->setLabelsColor(QColor("#94a3b8"));
+            axisY->setTitleBrush(baseColor);
+            axisY->setGridLinePen(gridPen);
+            axisY->setLinePen(linePen);
+            axisY->setTickCount(5);
+
             if (minimum > maximum) { minimum = 0; maximum = 10; }
             const double diff = maximum - minimum;
             const double padding = qMax(0.5, (diff == 0.0 ? (qAbs(maximum) > 0 ? qAbs(maximum) * 0.15 + 0.5 : 1.0) : diff * 0.15));
-            axisY->setRange(minimum - padding, maximum + padding);
+            double yMin = (minimum >= 0.0) ? qMax(0.0, minimum - padding) : (minimum - padding);
+            double yMax = maximum + padding;
+            if (yMax <= yMin) yMax = yMin + 10.0;
+            axisY->setRange(yMin, yMax);
             axisY->setLabelFormat("%.2f");
+
             zoomChart->addAxis(axisY, visibleSeries == 0 ? Qt::AlignLeft : Qt::AlignRight);
-            series->attachAxis(axisY);
+            seriesToAdd->attachAxis(axisY);
             ++visibleSeries;
         }
 
-        if (minimumTime <= maximumTime) {
+        const QString currentPeriod = ui->periodCombo->currentData().toString();
+        const QDate selectedDate = ui->dateEdit->date();
+
+        if (currentPeriod == QStringLiteral("year")) {
+            const int yr = selectedDate.year();
+            const QDateTime yearStart(QDate(yr, 1, 1), QTime(0, 0, 0));
+            const QDateTime yearEnd(QDate(yr, 12, 31), QTime(23, 59, 59));
+            axisX->setRange(yearStart, yearEnd);
+            axisX->setFormat(QStringLiteral("MM/yyyy"));
+            axisX->setTickCount(12);
+        } else if (currentPeriod == QStringLiteral("month")) {
+            const int yr = selectedDate.year();
+            const int mo = selectedDate.month();
+            const int daysInMonth = selectedDate.daysInMonth();
+            const QDateTime monthStart(QDate(yr, mo, 1), QTime(0, 0, 0));
+            const QDateTime monthEnd(QDate(yr, mo, daysInMonth), QTime(23, 59, 59));
+            axisX->setRange(monthStart, monthEnd);
+            axisX->setFormat(QStringLiteral("dd/MM"));
+            axisX->setTickCount(qMin(7, daysInMonth));
+        } else if (minimumTime <= maximumTime) {
             const qint64 timeSpan = maximumTime - minimumTime;
             if (timeSpan < 60 * 1000) {
                 minimumTime -= 30 * 1000;
@@ -832,16 +1280,15 @@ void HistoryPage::openChartZoomDialog(const QString &initialMetricKey)
             } else if (timeSpan < 3600 * 1000) {
                 axisX->setFormat(QStringLiteral("HH:mm:ss"));
                 axisX->setTickCount(6);
-            } else if (ui->periodCombo->currentData().toString() == QStringLiteral("day")) {
-                axisX->setFormat(QStringLiteral("HH:mm"));
-                axisX->setTickCount(6);
             } else {
-                axisX->setFormat(QStringLiteral("dd/MM"));
+                axisX->setFormat(QStringLiteral("HH:mm"));
                 axisX->setTickCount(6);
             }
             axisX->setRange(QDateTime::fromMSecsSinceEpoch(minimumTime),
                             QDateTime::fromMSecsSinceEpoch(maximumTime));
         }
+
+        zoomChart->legend()->setVisible(activeKeys.size() > 1);
 
         if (overallCount > 0 && activeKeys.size() == 1) {
             const QString unit = compactMetricTitle(activeKeys.first());

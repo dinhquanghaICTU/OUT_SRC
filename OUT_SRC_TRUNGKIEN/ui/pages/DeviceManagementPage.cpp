@@ -100,6 +100,35 @@ private:
     bool m_pending = false;
     QString m_label;
 };
+
+static bool confirmDeleteDevice(QWidget *parent, const QString &title, const QString &text)
+{
+    QMessageBox msgBox(parent);
+    msgBox.setWindowTitle(title);
+    msgBox.setText(text);
+    msgBox.setIcon(QMessageBox::Warning);
+    auto *yesBtn = msgBox.addButton(QObject::tr("🗑 Xác nhận gỡ/xóa"), QMessageBox::YesRole);
+    auto *noBtn = msgBox.addButton(QObject::tr("✖ Hủy bỏ"), QMessageBox::NoRole);
+    msgBox.setDefaultButton(noBtn);
+    msgBox.setStyleSheet(QStringLiteral(
+        "QMessageBox { background-color: #0b152d; border: 1.5px solid #1c2b54; border-radius: 8px; } "
+        "QLabel { color: #f1f5f9; font-size: 12px; font-weight: 700; background: transparent; } "
+        "QPushButton { min-width: 100px; min-height: 30px; border-radius: 6px; font-size: 11px; font-weight: 800; padding: 6px 14px; } "
+    ));
+    yesBtn->setStyleSheet(QStringLiteral(
+        "QPushButton { background-color: #dc2626; color: #ffffff; border: 1px solid #ef4444; border-radius: 6px; padding: 6px 14px; font-weight: 800; } "
+        "QPushButton:hover { background-color: #b91c1c; } "
+        "QPushButton:pressed { background-color: #991b1b; }"
+    ));
+    noBtn->setStyleSheet(QStringLiteral(
+        "QPushButton { background-color: #1e293b; color: #cbd5e1; border: 1px solid #334155; border-radius: 6px; padding: 6px 14px; font-weight: 800; } "
+        "QPushButton:hover { background-color: #334155; color: #ffffff; } "
+        "QPushButton:pressed { background-color: #0f172a; }"
+    ));
+
+    msgBox.exec();
+    return msgBox.clickedButton() == yesBtn;
+}
 }
 
 DeviceManagementPage::DeviceManagementPage(QWidget *parent)
@@ -166,10 +195,10 @@ DeviceManagementPage::DeviceManagementPage(QWidget *parent)
 
     auto *header = new QHBoxLayout;
     auto *titles = new QVBoxLayout;
-    auto *title = new QLabel(tr("Quản lý thiết bị"), this);
+    auto *title = new QLabel(tr("Quản lý Trạm Đo & Thiết Bị"), this);
     title->setObjectName(QStringLiteral("devicePageTitle"));
     auto *subtitle = new QLabel(
-        tr("Theo dõi thiết bị, người thêm và điều khiển online."), this);
+        tr("Theo dõi trạm đo cường độ tia UV và áp suất không khí, cấu hình tham số đo."), this);
     subtitle->setObjectName(QStringLiteral("devicePageSubtitle"));
     titles->addWidget(title);
     titles->addWidget(subtitle);
@@ -237,17 +266,25 @@ DeviceManagementPage::DeviceManagementPage(QWidget *parent)
     m_deviceLogTable->setObjectName(QStringLiteral("deviceLogTable"));
     m_deviceLogTable->setColumnCount(7);
     m_deviceLogTable->setHorizontalHeaderLabels({
-        tr("STT"), tr("Tên thiết bị"), tr("Mã ID"), tr("Loại"),
-        tr("Người thêm"), tr("Trạng thái"), tr("Thao tác")
+        tr("STT"), tr("Tên thiết bị"), tr("Mã ID"), tr("Cảm biến"),
+        tr("User"), tr("Trạng thái"), tr("Thao tác")
     });
-    m_deviceLogTable->horizontalHeader()->setSectionResizeMode(0, QHeaderView::ResizeToContents);
+    m_deviceLogTable->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Fixed);
+    m_deviceLogTable->setColumnWidth(0, 32);
     m_deviceLogTable->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch);
-    m_deviceLogTable->horizontalHeader()->setSectionResizeMode(2, QHeaderView::ResizeToContents);
-    m_deviceLogTable->horizontalHeader()->setSectionResizeMode(3, QHeaderView::ResizeToContents);
-    m_deviceLogTable->horizontalHeader()->setSectionResizeMode(4, QHeaderView::ResizeToContents);
-    m_deviceLogTable->horizontalHeader()->setSectionResizeMode(5, QHeaderView::ResizeToContents);
-    m_deviceLogTable->horizontalHeader()->setSectionResizeMode(6, QHeaderView::ResizeToContents);
+    m_deviceLogTable->horizontalHeader()->setSectionResizeMode(2, QHeaderView::Interactive);
+    m_deviceLogTable->setColumnWidth(2, 105);
+    m_deviceLogTable->horizontalHeader()->setSectionResizeMode(3, QHeaderView::Interactive);
+    m_deviceLogTable->setColumnWidth(3, 80);
+    m_deviceLogTable->horizontalHeader()->setSectionResizeMode(4, QHeaderView::Interactive);
+    m_deviceLogTable->setColumnWidth(4, 52);
+    m_deviceLogTable->horizontalHeader()->setSectionResizeMode(5, QHeaderView::Interactive);
+    m_deviceLogTable->setColumnWidth(5, 78);
+    m_deviceLogTable->horizontalHeader()->setSectionResizeMode(6, QHeaderView::Fixed);
+    m_deviceLogTable->setColumnWidth(6, 120);
     m_deviceLogTable->verticalHeader()->setVisible(false);
+    m_deviceLogTable->verticalHeader()->setDefaultSectionSize(38);
+    m_deviceLogTable->setWordWrap(false);
     m_deviceLogTable->setSelectionBehavior(QAbstractItemView::SelectRows);
     m_deviceLogTable->setSelectionMode(QAbstractItemView::SingleSelection);
     m_deviceLogTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
@@ -317,8 +354,18 @@ DeviceManagementPage::DeviceManagementPage(QWidget *parent)
         rebuildLogTable();
     });
     connect(m_deviceLogTable, &QTableWidget::cellDoubleClicked, this, [this](int row, int) {
-        if (row >= 0 && row < m_ownedDevices.size()) {
-            openDeviceDrawer(m_ownedDevices.at(row).toObject());
+        if (row >= 0 && row < m_deviceLogTable->rowCount()) {
+            const auto *idItem = m_deviceLogTable->item(row, 2);
+            if (idItem) {
+                const QString devId = idItem->text().trimmed();
+                for (const QJsonValue &v : m_ownedDevices) {
+                    const QJsonObject d = v.toObject();
+                    if (d.value(QStringLiteral("device_id")).toString().compare(devId, Qt::CaseInsensitive) == 0) {
+                        openDeviceDrawer(d);
+                        break;
+                    }
+                }
+            }
         }
     });
 
@@ -339,7 +386,7 @@ void DeviceManagementPage::resizeEvent(QResizeEvent *event)
 
 void DeviceManagementPage::applyResponsiveLayout()
 {
-    const bool compact = width() <= 800;
+    const bool compact = width() <= 480;
     const int columns = compact ? 1 : 2;
     if (m_compact == compact && m_gridColumns == columns)
         return;
@@ -419,7 +466,14 @@ void DeviceManagementPage::rebuildLogTable()
         auto *sttItem = new QTableWidgetItem(QString::number(displayedRow + 1));
         sttItem->setTextAlignment(Qt::AlignCenter);
 
-        auto *nameItem = new QTableWidgetItem(name.isEmpty() ? devId : name);
+        QString cleanDisplayName = name;
+        if (cleanDisplayName.contains(QStringLiteral("Trung Kiên"), Qt::CaseInsensitive)
+            || cleanDisplayName.contains(QStringLiteral("Trạm Đo UV"), Qt::CaseInsensitive)) {
+            cleanDisplayName = tr("Trạm UV & Áp Suất");
+        } else if (cleanDisplayName.isEmpty()) {
+            cleanDisplayName = devId;
+        }
+        auto *nameItem = new QTableWidgetItem(cleanDisplayName);
         nameItem->setFont(QFont(font().family(), 10, QFont::Bold));
 
         auto *idItem = new QTableWidgetItem(devId);
@@ -452,17 +506,23 @@ void DeviceManagementPage::rebuildLogTable()
         auto *cfgBtn = new QPushButton(tr("⚙ Cấu hình"), actionWidget);
         cfgBtn->setObjectName(QStringLiteral("tableActionConfigBtn"));
         cfgBtn->setCursor(Qt::PointingHandCursor);
-        connect(cfgBtn, &QPushButton::clicked, this, [this, dev] {
-            openDeviceDrawer(dev);
+        connect(cfgBtn, &QPushButton::clicked, this, [this, devId] {
+            for (const QJsonValue &v : m_ownedDevices) {
+                const QJsonObject d = v.toObject();
+                if (d.value(QStringLiteral("device_id")).toString().compare(devId, Qt::CaseInsensitive) == 0) {
+                    openDeviceDrawer(d);
+                    return;
+                }
+            }
         });
 
         auto *delBtn = new QPushButton(tr("🗑 Gỡ"), actionWidget);
         delBtn->setObjectName(QStringLiteral("tableActionDeleteBtn"));
         delBtn->setCursor(Qt::PointingHandCursor);
         connect(delBtn, &QPushButton::clicked, this, [this, devId, name] {
-            if (QMessageBox::question(this, tr("Xác nhận gỡ thiết bị"),
-                    tr("Gỡ thiết bị '%1' (ID: %2) khỏi tài khoản?\nThiết bị sẽ trở lại danh sách có thể thêm.")
-                        .arg(name.isEmpty() ? devId : name, devId)) == QMessageBox::Yes) {
+            if (confirmDeleteDevice(this, tr("Xác nhận gỡ trạm đo"),
+                    tr("Bạn có chắc chắn muốn gỡ trạm đo '%1' (ID: %2) khỏi tài khoản?\nThiết bị sẽ trở lại danh sách có thể thêm.")
+                        .arg(name.isEmpty() ? devId : name, devId))) {
                 emit releaseDeviceRequested(devId);
             }
         });
@@ -607,6 +667,7 @@ QWidget *DeviceManagementPage::createOwnedCard(const QJsonObject &device)
                                  ? stateObject.value(QStringLiteral("relay")).toBool(false)
                                  : metricsObject.value(QStringLiteral("pump_on")).toBool(false);
         auto *relayButton = new RelayToggle(relayOn,
+                                            (type == QStringLiteral("uv_pressure")) ? tr("Còi") :
                                             (type == QStringLiteral("pump_distance") || type == QStringLiteral("water_flow_pump")) ? tr("Bơm") : tr("Relay"),
                                             card);
         relayButton->setEnabled(online);
@@ -627,7 +688,16 @@ QWidget *DeviceManagementPage::createOwnedCard(const QJsonObject &device)
         actionLayout->addWidget(irStatus);
     }
     layout->addWidget(actionSlot);
-    card->clicked = [this, device] { openDeviceDrawer(device); };
+    const QString devId = device.value(QStringLiteral("device_id")).toString();
+    card->clicked = [this, devId] {
+        for (const QJsonValue &v : m_ownedDevices) {
+            const QJsonObject d = v.toObject();
+            if (d.value(QStringLiteral("device_id")).toString().compare(devId, Qt::CaseInsensitive) == 0) {
+                openDeviceDrawer(d);
+                return;
+            }
+        }
+    };
     return card;
 }
 
@@ -676,12 +746,28 @@ QWidget *DeviceManagementPage::createAvailableCard(const QJsonObject &device)
     connect(button, &QPushButton::clicked, this, [this, deviceId, type] {
         QDialog dialog(this);
         dialog.setObjectName(QStringLiteral("claimDeviceDialog"));
-        dialog.setWindowTitle(tr("Đặt tên thiết bị"));
+        dialog.setWindowTitle(tr("Thêm & Đặt tên trạm đo"));
         dialog.setModal(true);
-        const int availableWidth = parentWidget() ? parentWidget()->width() - 24 : 420;
-        const int availableHeight = parentWidget() ? parentWidget()->height() - 16 : 480;
-        dialog.setFixedWidth(qBound(280, qMin(420, availableWidth), 520));
-        dialog.setMaximumHeight(qMax(300, availableHeight));
+        const int availableWidth = parentWidget() ? parentWidget()->width() - 24 : 440;
+        const int availableHeight = parentWidget() ? parentWidget()->height() - 16 : 400;
+        dialog.setFixedWidth(qBound(320, qMin(440, availableWidth), 500));
+        dialog.setMaximumHeight(qMax(280, availableHeight));
+
+        dialog.setStyleSheet(QStringLiteral(
+            "QDialog#claimDeviceDialog { background-color: #0b152d; border: 1.5px solid #1c2b54; border-radius: 10px; } "
+            "QWidget#claimBody { background-color: #0b152d; } "
+            "QScrollArea { background: transparent; border: none; } "
+            "QLabel#claimDeviceDialogTitle { color: #38bdf8; font-size: 15px; font-weight: 900; } "
+            "QLabel#claimDeviceDialogHint { color: #94a3b8; font-size: 11px; font-weight: 600; } "
+            "QLabel#claimDeviceDialogIcon { font-size: 26px; color: #38bdf8; background: #111d3d; border: 1px solid #233870; border-radius: 8px; padding: 6px 12px; } "
+            "QLabel#claimDeviceInfo { color: #f59e0b; font-size: 11px; font-weight: 700; background: rgba(245, 158, 11, 0.12); border: 1px solid #b45309; border-radius: 6px; padding: 6px 10px; } "
+            "QLineEdit#claimDeviceNameInput { background-color: #070d1e; color: #ffffff; border: 1.5px solid #233870; border-radius: 6px; padding: 6px 10px; font-size: 12px; font-weight: 700; min-height: 28px; } "
+            "QLineEdit#claimDeviceNameInput:focus { border-color: #38bdf8; background-color: #0f1c3f; } "
+            "QPushButton#claimDeviceCancelButton { background-color: #1e293b; color: #cbd5e1; border: 1px solid #334155; border-radius: 6px; padding: 8px 16px; font-size: 11px; font-weight: 800; min-height: 28px; } "
+            "QPushButton#claimDeviceCancelButton:hover { background-color: #334155; color: #ffffff; } "
+            "QPushButton#claimDeviceSaveButton { background: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #059669, stop:1 #047857); color: #ffffff; border: 1px solid #10b981; border-radius: 6px; padding: 8px 18px; font-size: 12px; font-weight: 900; min-height: 28px; } "
+            "QPushButton#claimDeviceSaveButton:hover { background: #059669; }"
+        ));
 
         auto *root = new QVBoxLayout(&dialog);
         root->setContentsMargins(14, 12, 14, 12);
@@ -690,6 +776,7 @@ QWidget *DeviceManagementPage::createAvailableCard(const QJsonObject &device)
         scroll->setWidgetResizable(true);
         scroll->setFrameShape(QFrame::NoFrame);
         auto *body = new QWidget(scroll);
+        body->setObjectName(QStringLiteral("claimBody"));
         auto *bodyLayout = new QVBoxLayout(body);
         bodyLayout->setContentsMargins(10, 10, 10, 10);
         bodyLayout->setSpacing(12);
@@ -702,9 +789,9 @@ QWidget *DeviceManagementPage::createAvailableCard(const QJsonObject &device)
         dialogIcon->setProperty("deviceType", type);
         dialogIcon->setAlignment(Qt::AlignCenter);
         auto *titleBlock = new QVBoxLayout;
-        auto *title = new QLabel(tr("Thêm thiết bị mới"), body);
+        auto *title = new QLabel(tr("Thêm trạm đo mới"), body);
         title->setObjectName(QStringLiteral("claimDeviceDialogTitle"));
-        auto *subtitle = new QLabel(tr("Đặt tên dễ nhớ để quản lý trên app."), body);
+        auto *subtitle = new QLabel(tr("Đặt tên gợi nhớ để quản lý trạm đo tia UV & áp suất."), body);
         subtitle->setObjectName(QStringLiteral("claimDeviceDialogHint"));
         subtitle->setWordWrap(true);
         titleBlock->addWidget(title);
@@ -720,15 +807,15 @@ QWidget *DeviceManagementPage::createAvailableCard(const QJsonObject &device)
 
         auto *name = new QLineEdit(deviceTypeName(type), body);
         name->setObjectName(QStringLiteral("claimDeviceNameInput"));
-        name->setPlaceholderText(tr("VD: Phòng khách, Khu A..."));
+        name->setPlaceholderText(tr("VD: Trạm Đo UV & Áp Suất Ban Công..."));
         name->selectAll();
         bodyLayout->addWidget(name);
-        VirtualKeyboardDialog::attachToLineEdit(name, tr("Nhập tên thiết bị"));
+        VirtualKeyboardDialog::attachToLineEdit(name, tr("Nhập tên trạm đo"));
 
         auto *actions = new QHBoxLayout;
         actions->setSpacing(10);
         auto *cancel = new QPushButton(tr("Hủy"), &dialog);
-        auto *save = new QPushButton(tr("Thêm thiết bị"), &dialog);
+        auto *save = new QPushButton(tr("✔ Thêm trạm đo"), &dialog);
         cancel->setObjectName(QStringLiteral("claimDeviceCancelButton"));
         save->setObjectName(QStringLiteral("claimDeviceSaveButton"));
         actions->addWidget(cancel);
@@ -793,13 +880,24 @@ void DeviceManagementPage::rebuildAvailableGrid()
 
 void DeviceManagementPage::openDeviceDrawer(const QJsonObject &device)
 {
-    m_selectedDevice = device;
-    const QString addedBy = device.value(QStringLiteral("added_by")).toString();
-    const bool isOwner = (m_currentUsername.isEmpty() || addedBy.isEmpty() || addedBy.compare(m_currentUsername, Qt::CaseInsensitive) == 0);
-    const QString type = device.value(QStringLiteral("device_type")).toString();
     const QString deviceId = device.value(QStringLiteral("device_id")).toString();
-    const QString name = device.value(QStringLiteral("name")).toString();
-    const QString createdAt = device.value(QStringLiteral("created_at")).toString();
+
+    // Luôn lấy đối tượng thiết bị mới nhất từ m_ownedDevices để không bị dùng dữ liệu snapshot cũ
+    QJsonObject currentDevice = device;
+    for (const QJsonValue &val : m_ownedDevices) {
+        const QJsonObject d = val.toObject();
+        if (d.value(QStringLiteral("device_id")).toString().compare(deviceId, Qt::CaseInsensitive) == 0) {
+            currentDevice = d;
+            break;
+        }
+    }
+
+    m_selectedDevice = currentDevice;
+    const QString addedBy = currentDevice.value(QStringLiteral("added_by")).toString();
+    const bool isOwner = (m_currentUsername.isEmpty() || addedBy.isEmpty() || addedBy.compare(m_currentUsername, Qt::CaseInsensitive) == 0);
+    const QString type = currentDevice.value(QStringLiteral("device_type")).toString();
+    const QString name = currentDevice.value(QStringLiteral("name")).toString();
+    const QString createdAt = currentDevice.value(QStringLiteral("created_at")).toString();
     QDateTime createdTime = QDateTime::fromString(createdAt, Qt::ISODateWithMs);
     if (!createdTime.isValid()) createdTime = QDateTime::fromString(createdAt, Qt::ISODate);
     const QString createdStr = createdTime.isValid() ? createdTime.toLocalTime().toString(QStringLiteral("dd/MM/yyyy HH:mm")) : createdAt;
@@ -849,7 +947,7 @@ void DeviceManagementPage::openDeviceDrawer(const QJsonObject &device)
     dlgLayout->addLayout(headLayout);
 
     // Metrics summary
-    auto *metricsLabel = new QLabel(tr("Dữ liệu hiện tại: %1").arg(metricsSummary(device.value(QStringLiteral("metrics")).toObject())), &dlg);
+    auto *metricsLabel = new QLabel(tr("Dữ liệu hiện tại: %1").arg(metricsSummary(currentDevice.value(QStringLiteral("metrics")).toObject())), &dlg);
     metricsLabel->setObjectName("dlgMetrics");
     metricsLabel->setWordWrap(true);
     dlgLayout->addWidget(metricsLabel);
@@ -869,7 +967,7 @@ void DeviceManagementPage::openDeviceDrawer(const QJsonObject &device)
     formLayout->setContentsMargins(0, 4, 0, 4);
     formLayout->setSpacing(8);
 
-    const QJsonObject saved = device.value(QStringLiteral("config")).toObject();
+    const QJsonObject saved = currentDevice.value(QStringLiteral("config")).toObject();
     const QJsonObject savedThresholds = saved.value(QStringLiteral("thresholds")).toObject();
     QHash<QString, QDoubleSpinBox *> inputs;
 
@@ -898,8 +996,8 @@ void DeviceManagementPage::openDeviceDrawer(const QJsonObject &device)
     if (type == QStringLiteral("uv_pressure")) {
         addThreshold(QStringLiteral("uv_index.warning_above"), tr("UV cảnh báo"), 6, 0, 200, QString());
         addThreshold(QStringLiteral("uv_index.critical_above"), tr("UV nguy hiểm"), 8, 0, 200, QString());
-        addThreshold(QStringLiteral("pressure_hpa.min"), tr("Áp suất thấp"), 990, 0, 3000, tr(" hPa"));
-        addThreshold(QStringLiteral("pressure_hpa.max"), tr("Áp suất cao"), 1030, 0, 3000, tr(" hPa"));
+        addThreshold(QStringLiteral("pressure_hpa.min"), tr("Áp suất thấp"), 990, 0, 10000, tr(" hPa"));
+        addThreshold(QStringLiteral("pressure_hpa.max"), tr("Áp suất cao"), 1030, 0, 10000, tr(" hPa"));
     } else if (type == QStringLiteral("temperature_sound")) {
         addThreshold(QStringLiteral("temperature_c.warning_above"), tr("Nhiệt độ cảnh báo"), 40, -40, 150, tr(" °C"));
         addThreshold(QStringLiteral("temperature_c.critical_above"), tr("Nhiệt độ nguy hiểm"), 50, -40, 150, tr(" °C"));
@@ -907,8 +1005,8 @@ void DeviceManagementPage::openDeviceDrawer(const QJsonObject &device)
     } else if (type == QStringLiteral("weather_pressure")) {
         addThreshold(QStringLiteral("temperature_c.min"), tr("Nhiệt độ thấp"), 0, -40, 150, tr(" °C"));
         addThreshold(QStringLiteral("temperature_c.max"), tr("Nhiệt độ cao"), 50, -40, 150, tr(" °C"));
-        addThreshold(QStringLiteral("pressure_hpa.min"), tr("Áp suất thấp"), 990, 0, 3000, tr(" hPa"));
-        addThreshold(QStringLiteral("pressure_hpa.max"), tr("Áp suất cao"), 1030, 0, 3000, tr(" hPa"));
+        addThreshold(QStringLiteral("pressure_hpa.min"), tr("Áp suất thấp"), 990, 0, 10000, tr(" hPa"));
+        addThreshold(QStringLiteral("pressure_hpa.max"), tr("Áp suất cao"), 1030, 0, 10000, tr(" hPa"));
     } else if (type == QStringLiteral("water_flow_pump") || type == QStringLiteral("pump_distance")) {
         addThreshold(QStringLiteral("flow_l_min.min"), tr("Lưu lượng tối thiểu"), 0.20, 0, 1000, tr(" L/min"));
         addThreshold(QStringLiteral("flow_l_min.max"), tr("Lưu lượng tối đa"), 20.00, 0, 1000, tr(" L/min"));
@@ -938,8 +1036,8 @@ void DeviceManagementPage::openDeviceDrawer(const QJsonObject &device)
     deleteBtn->setObjectName("deleteBtn");
     deleteBtn->setVisible(isOwner || m_isAdmin);
     connect(deleteBtn, &QPushButton::clicked, &dlg, [this, deviceId, name, &dlg] {
-        if (QMessageBox::question(&dlg, tr("Xác nhận xóa"),
-                tr("Xóa thiết bị '%1' khỏi tài khoản?").arg(name.isEmpty() ? deviceId : name)) == QMessageBox::Yes) {
+        if (confirmDeleteDevice(&dlg, tr("Xác nhận xóa trạm đo"),
+                tr("Xóa trạm đo '%1' khỏi tài khoản?\nTrạm đo sẽ trở lại danh sách có thể thêm.").arg(name.isEmpty() ? deviceId : name))) {
             emit releaseDeviceRequested(deviceId);
             dlg.accept();
         }
@@ -953,6 +1051,38 @@ void DeviceManagementPage::openDeviceDrawer(const QJsonObject &device)
     saveBtn->setObjectName("saveBtn");
     saveBtn->setVisible(isOwner);
     connect(saveBtn, &QPushButton::clicked, &dlg, [this, deviceId, samplingInput, inputs, &dlg] {
+        samplingInput->interpretText();
+        for (auto it = inputs.cbegin(); it != inputs.cend(); ++it) {
+            it.value()->interpretText();
+        }
+
+        // Kiểm tra logic ngưỡng UV
+        if (inputs.contains(QStringLiteral("uv_index.warning_above")) &&
+            inputs.contains(QStringLiteral("uv_index.critical_above"))) {
+            const double warn = inputs.value(QStringLiteral("uv_index.warning_above"))->value();
+            const double crit = inputs.value(QStringLiteral("uv_index.critical_above"))->value();
+            if (warn > crit) {
+                QMessageBox::warning(&dlg, tr("Ngưỡng UV không hợp lệ"),
+                    tr("Ngưỡng UV cảnh báo (%1) không được lớn hơn ngưỡng UV nguy hiểm (%2).\n"
+                       "Vui lòng tăng ngưỡng UV nguy hiểm hoặc giảm ngưỡng UV cảnh báo.")
+                        .arg(QString::number(warn, 'f', 2), QString::number(crit, 'f', 2)));
+                return;
+            }
+        }
+
+        // Kiểm tra logic ngưỡng Áp suất
+        if (inputs.contains(QStringLiteral("pressure_hpa.min")) &&
+            inputs.contains(QStringLiteral("pressure_hpa.max"))) {
+            const double pMin = inputs.value(QStringLiteral("pressure_hpa.min"))->value();
+            const double pMax = inputs.value(QStringLiteral("pressure_hpa.max"))->value();
+            if (pMin >= pMax) {
+                QMessageBox::warning(&dlg, tr("Ngưỡng áp suất không hợp lệ"),
+                    tr("Áp suất thấp (%1 hPa) phải nhỏ hơn áp suất cao (%2 hPa).")
+                        .arg(QString::number(pMin, 'f', 2), QString::number(pMax, 'f', 2)));
+                return;
+            }
+        }
+
         QJsonObject thresholds;
         for (auto it = inputs.cbegin(); it != inputs.cend(); ++it) {
             const QStringList parts = it.key().split('.');
@@ -965,7 +1095,7 @@ void DeviceManagementPage::openDeviceDrawer(const QJsonObject &device)
                               {"thresholds", thresholds}};
         for (int i = 0; i < m_ownedDevices.size(); ++i) {
             QJsonObject d = m_ownedDevices.at(i).toObject();
-            if (d.value(QStringLiteral("device_id")).toString() == deviceId) {
+            if (d.value(QStringLiteral("device_id")).toString().compare(deviceId, Qt::CaseInsensitive) == 0) {
                 d.insert(QStringLiteral("config"), cfg);
                 m_ownedDevices.replace(i, d);
                 break;
@@ -982,7 +1112,11 @@ void DeviceManagementPage::openDeviceDrawer(const QJsonObject &device)
     dlgLayout->addLayout(btnRow);
 
     m_refreshTimer->stop();
-    dlg.exec();
+    const int dlgResult = dlg.exec();
+    if (dlgResult == QDialog::Accepted) {
+        rebuildOwnedGrid();
+        rebuildLogTable();
+    }
     m_refreshTimer->start();
 }
 
@@ -1016,12 +1150,12 @@ QString DeviceManagementPage::deviceIcon(const QString &type)
 
 QString DeviceManagementPage::deviceTypeName(const QString &type)
 {
-    if (type == QStringLiteral("uv_pressure")) return tr("Cảm biến UV & áp suất");
-    if (type == QStringLiteral("temperature_sound")) return tr("Nhiệt độ & âm thanh");
-    if (type == QStringLiteral("weather_pressure")) return tr("Cảm biến môi trường");
-    if (type == QStringLiteral("electric_power")) return tr("Đo điện áp & dòng điện");
-    if (type == QStringLiteral("pump_distance")) return tr("Bơm nước & khoảng cách");
-    if (type == QStringLiteral("water_flow_pump")) return tr("Bơm & lưu lượng nước");
+    if (type == QStringLiteral("uv_pressure")) return tr("UV & Áp suất");
+    if (type == QStringLiteral("temperature_sound")) return tr("Nhiệt độ & Âm thanh");
+    if (type == QStringLiteral("weather_pressure")) return tr("Môi trường");
+    if (type == QStringLiteral("electric_power")) return tr("Điện áp & Dòng điện");
+    if (type == QStringLiteral("pump_distance")) return tr("Bơm & Khoảng cách");
+    if (type == QStringLiteral("water_flow_pump")) return tr("Bơm & Lưu lượng");
     return tr("Thiết bị IoT");
 }
 

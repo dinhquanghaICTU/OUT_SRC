@@ -1,6 +1,8 @@
 #include "mqtt_manager.h"
 #include "config.h"
 #include "wifiAP.h"
+#include "ring.h"
+#include "led.h"
 
 #include <esp_random.h>
 #include <esp_timer.h>
@@ -21,6 +23,7 @@ static float s_uv_warning_above = 15.0f;
 static float s_uv_critical_above = 20.0f;
 static float s_pressure_min = 500.0f;
 static float s_pressure_max = 2000.0f;
+static int s_manual_buzzer = -1;
 
 static bool parse_json_double(const char *payload, const char *field, double *out)
 {
@@ -125,7 +128,14 @@ mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_t event_id, 
                MQTT_SUB_CONFIG_DESIRED_TOPIC,
                message_id);
 
+        int cmd_msg_id =
+            esp_mqtt_client_subscribe(mqtt_client, MQTT_SUB_COMMANDS_TOPIC, 1);
+        printf("[MQTT] Subscribe topic=%s, msg_id=%d\n",
+               MQTT_SUB_COMMANDS_TOPIC,
+               cmd_msg_id);
+
         mqtt_manager_publish_config_reported(1);
+        mqtt_manager_publish_relay_state(s_manual_buzzer == 1);
         break;
 
     case MQTT_EVENT_DISCONNECTED:
@@ -184,6 +194,58 @@ mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_t event_id, 
                    s_sampling_interval_ms, s_uv_warning_above, s_uv_critical_above, s_pressure_min, s_pressure_max);
 
             mqtt_manager_publish_config_reported((uint32_t)ver);
+        }
+        else if (event->topic_len == (int)strlen(MQTT_SUB_COMMANDS_TOPIC) &&
+                 memcmp(event->topic, MQTT_SUB_COMMANDS_TOPIC, event->topic_len) == 0)
+        {
+            char payload[512];
+            int len = event->data_len < (int)(sizeof(payload) - 1) ? event->data_len : (int)(sizeof(payload) - 1);
+            memcpy(payload, event->data, len);
+            payload[len] = '\0';
+
+            printf("[MQTT] Nhan command payload: %s\n", payload);
+
+            bool target_state = false;
+            bool found_state = false;
+
+            const char *p = strstr(payload, "\"state\"");
+            if (p != NULL)
+            {
+                p += strlen("\"state\"");
+                p = strchr(p, ':');
+                if (p != NULL)
+                {
+                    p++;
+                    while (*p == ' ' || *p == '\t')
+                        p++;
+                    if (strncmp(p, "true", 4) == 0 || *p == '1')
+                    {
+                        target_state = true;
+                        found_state = true;
+                    }
+                    else if (strncmp(p, "false", 5) == 0 || *p == '0')
+                    {
+                        target_state = false;
+                        found_state = true;
+                    }
+                }
+            }
+
+            if (found_state)
+            {
+                s_manual_buzzer = target_state ? 1 : 0;
+                if (target_state)
+                {
+                    turn_on_ring();
+                    turn_on_led();
+                }
+                else
+                {
+                    turn_off_ring();
+                }
+                printf("[COMMAND] Nhan lenh coi: %s (manual=%d)\n", target_state ? "BAT" : "TAT", s_manual_buzzer);
+                mqtt_manager_publish_relay_state(target_state);
+            }
         }
         break;
     }
@@ -292,3 +354,33 @@ bool mqtt_manager_publish_sensor(float uv_voltage, float uv_index, float pressur
     printf("[MQTT] Payload: %s\n", payload);
     return true;
 }
+
+int mqtt_manager_get_manual_buzzer(void)
+{
+    return s_manual_buzzer;
+}
+
+void mqtt_manager_set_manual_buzzer(int state)
+{
+    s_manual_buzzer = state;
+}
+
+bool mqtt_manager_publish_relay_state(bool state)
+{
+    if (!mqtt_connected || mqtt_client == NULL)
+        return false;
+
+    char payload[64];
+    int length = snprintf(payload, sizeof(payload), "{\"relay\":%s}", state ? "true" : "false");
+    if (length <= 0)
+        return false;
+
+    int msg_id = esp_mqtt_client_publish(mqtt_client, MQTT_PUB_STATE_TOPIC, payload, length, 1, 1);
+    if (msg_id >= 0)
+    {
+        printf("[MQTT] Relay state published msg_id=%d: %s\n", msg_id, payload);
+        return true;
+    }
+    return false;
+}
+

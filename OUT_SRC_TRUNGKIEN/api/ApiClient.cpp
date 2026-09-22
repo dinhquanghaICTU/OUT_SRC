@@ -56,9 +56,11 @@ void ApiClient::requestLatestReading()
 
         const QJsonObject object = QJsonDocument::fromJson(reply->readAll()).object();
         SensorReading reading;
-        reading.pressureHpa = object.value(QStringLiteral("pressure_hpa")).toDouble();
-        reading.distanceCm = object.value(QStringLiteral("distance_cm")).toDouble();
-        reading.temperatureC = object.value(QStringLiteral("temperature_c")).toDouble();
+        reading.uvIndex = object.value(QStringLiteral("uv_index")).toDouble(0.0);
+        reading.uvVoltage = object.value(QStringLiteral("uv_voltage")).toDouble(0.0);
+        reading.pressureHpa = object.value(QStringLiteral("pressure_hpa")).toDouble(0.0);
+        reading.distanceCm = object.value(QStringLiteral("distance_cm")).toDouble(0.0);
+        reading.temperatureC = object.value(QStringLiteral("temperature_c")).toDouble(0.0);
         reading.measuredAt = QDateTime::fromString(
             object.value(QStringLiteral("measured_at")).toString(), Qt::ISODate);
         emit latestReadingReceived(reading);

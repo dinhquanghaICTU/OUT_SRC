@@ -137,13 +137,14 @@ static void pump_controler_task(void *pvParam) {
       }
     }
 
-    if (s_pump_ctx.mode == MODE_PUMP_AUTO && seconds_since_last > 120 &&
-        s_pump_ctx.is_pump_on) {
-      ESP_LOGW(TAG, "[CẢNH BÁO] Mất tín hiệu Node Bể > 120s khi đang bơm "
-                    "Auto -> Tạm dừng bơm an toàn!");
-      relay_turn_off();
-      s_pump_ctx.state_current = STATE_PUMP_ERROR_NODE_LOST;
-      continue;
+    // Bỏ cơ chế tự ngắt bơm / dry-run khi mất kết nối Node Bể:
+    // Khi Node Bể mất tín hiệu, máy bơm vẫn tiếp tục chạy bình thường (không tự động tắt sau vài phút)
+    if (seconds_since_last > 120 && s_pump_ctx.is_pump_on) {
+      static int s_node_lost_log_tick = 0;
+      if (++s_node_lost_log_tick >= 15) {
+        s_node_lost_log_tick = 0;
+        ESP_LOGW(TAG, "📡 [THÔNG BÁO] Node Bể mất kết nối nhưng máy bơm vẫn tiếp tục chạy (không tự tắt).");
+      }
     }
 
     if (s_pump_ctx.mode == MODE_PUMP_AUTO && !s_pump_ctx.child_lock &&
@@ -171,8 +172,7 @@ static void pump_controler_task(void *pvParam) {
 
     if (s_pump_ctx.is_pump_on) {
       s_pump_ctx.state_current = STATE_PUMP_RUNNING;
-    } else if (s_pump_ctx.state_current != STATE_PUMP_ERROR_TIMEOUT &&
-               s_pump_ctx.state_current != STATE_PUMP_ERROR_NODE_LOST) {
+    } else if (s_pump_ctx.state_current != STATE_PUMP_ERROR_TIMEOUT) {
       s_pump_ctx.state_current = STATE_PUMP_IDLE;
     }
 
@@ -202,8 +202,7 @@ static void pump_controler_task(void *pvParam) {
         ota_start(&s_pending_ota_cfg);
         continue;
       } else if (!s_pump_ctx.is_pump_on && s_pump_ctx.mode == MODE_PUMP_AUTO &&
-                 s_pump_ctx.state_current != STATE_PUMP_ERROR_TIMEOUT &&
-                 s_pump_ctx.state_current != STATE_PUMP_ERROR_NODE_LOST) {
+                 s_pump_ctx.state_current != STATE_PUMP_ERROR_TIMEOUT) {
         // Nếu bơm đang tắt mà nước chưa đầy: Chủ động bật bơm lên để bơm đầy nước
         ESP_LOGI(TAG, "🤖 [SMART AUTO OTA] Tự động bật máy bơm để làm đầy bể trước khi nạp OTA...");
         relay_turn_on();
@@ -232,9 +231,7 @@ static void pump_controler_task(void *pvParam) {
               ? "RUNNING"
               : (s_pump_ctx.state_current == STATE_PUMP_ERROR_TIMEOUT
                      ? "ERROR_TIMEOUT"
-                     : (s_pump_ctx.state_current == STATE_PUMP_ERROR_NODE_LOST
-                            ? "ERROR_NODE_LOST"
-                            : "IDLE")),
+                     : "IDLE"),
           ota_get_current_version(),
           ota_get_tank_version());
       app_mqtt_publish("pump/family/status", stat_json, 1, 0);

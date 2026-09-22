@@ -7,13 +7,9 @@
 
 class QBoxLayout;
 class QGridLayout;
-class QDoubleSpinBox;
-class QFormLayout;
-class QFrame;
 class QLabel;
 class QLineEdit;
 class QPushButton;
-class QSpinBox;
 class QStackedWidget;
 class QTableWidget;
 class QTimer;
@@ -48,15 +44,12 @@ private:
     void rebuildAvailableGrid();
     void rebuildLogTable();
     void applyResponsiveLayout();
-    void openDeviceDrawer(const QJsonObject &device);
-    void rebuildThresholdForm(const QJsonObject &device);
-    void saveThresholds();
+    void openDeviceConfigDialog(const QJsonObject &device);
     static void clearGrid(QGridLayout *layout);
     static QString deviceIcon(const QString &type);
     static QString deviceTypeName(const QString &type);
     static QString metricsSummary(const QJsonObject &metrics);
 
-    QBoxLayout *m_outerLayout = nullptr;
     QPushButton *m_logTabBtn = nullptr;
     QPushButton *m_cardsTabBtn = nullptr;
     QStackedWidget *m_viewStack = nullptr;
@@ -67,28 +60,17 @@ private:
     QLabel *m_statLinkedUsers = nullptr;
     QLabel *m_logEmptyLabel = nullptr;
 
-    QGridLayout *m_ownedGrid;
-    QGridLayout *m_availableGrid;
-    QLabel *m_ownedEmpty;
-    QLabel *m_availableEmpty;
-    QLabel *m_liveLabel;
-    QTimer *m_refreshTimer;
-    QFrame *m_drawer;
-    QLabel *m_drawerIcon;
-    QLabel *m_drawerName;
-    QLabel *m_drawerId;
-    QLabel *m_drawerMetrics;
-    QLabel *m_thresholdTitle;
-    QFormLayout *m_thresholdForm;
-    QSpinBox *m_samplingInterval;
-    QPushButton *m_saveThresholds;
-    QPushButton *m_releaseDevice;
-    QJsonObject m_selectedDevice;
-    QHash<QString, QDoubleSpinBox *> m_thresholdInputs;
+    QGridLayout *m_ownedGrid = nullptr;
+    QGridLayout *m_availableGrid = nullptr;
+    QLabel *m_ownedEmpty = nullptr;
+    QLabel *m_availableEmpty = nullptr;
+    QLabel *m_liveLabel = nullptr;
+    QTimer *m_refreshTimer = nullptr;
+
     QJsonArray m_ownedDevices;
     QJsonArray m_availableDevices;
     QString m_currentUsername;
     bool m_isAdmin = false;
     bool m_compact = false;
-    int m_gridColumns = 5;
+    int m_gridColumns = 2;
 };

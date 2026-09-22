@@ -54,29 +54,30 @@ void loop()
     {
         const bool isDark = (luxx > 0.0f && luxx <= cfg.lux_min);
         const bool isTooBright = (luxx >= cfg.lux_max && cfg.lux_max > 0.0f);
-        const bool shouldBeOn = detech || isDark;
+        const bool shouldBeOn = detech && !isTooBright;
+        const bool shouldBeOff = !detech || isTooBright;
 
         if (shouldBeOn)
         {
             if (!relay_get_state())
             {
                 relay_set(true);
-                Serial.printf("[AUTO] BAT Relay (Lux=%.2f <= Min=%.1f, Motion=%d)\n",
-                              luxx, cfg.lux_min, detech ? 1 : 0);
+                Serial.printf("[AUTO] Co nguoi -> BAT Relay (Lux=%.2f, Motion=%d)\n",
+                              luxx, detech ? 1 : 0);
                 if (wifi_manager_is_connected() && mqtt_manager_is_connected())
                 {
                     mqtt_manager_publish_relay(true, isDark ? "auto_lux" : "auto_pir");
                 }
             }
         }
-        else if (isTooBright && relay_get_state())
+        else if (shouldBeOff && relay_get_state())
         {
             relay_set(false);
-            Serial.printf("[AUTO] Troi sang -> TAT Relay (Lux=%.2f >= Max=%.1f)\n",
-                          luxx, cfg.lux_max);
+            Serial.printf("[AUTO] Nguoi roi di / Troi sang -> TAT Relay (Lux=%.2f, Motion=%d)\n",
+                          luxx, detech ? 1 : 0);
             if (wifi_manager_is_connected() && mqtt_manager_is_connected())
             {
-                mqtt_manager_publish_relay(false, "auto_lux_bright");
+                mqtt_manager_publish_relay(false, !detech ? "auto_no_motion" : "auto_lux_bright");
             }
         }
     }

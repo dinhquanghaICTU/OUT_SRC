@@ -94,6 +94,8 @@ qt_add_executable(OUT_SRC_SON
     ui/widgets/PressureCard.cpp
     ui/widgets/DistanceCard.h
     ui/widgets/DistanceCard.cpp
+    ui/widgets/WaterTankWidget.h
+    ui/widgets/WaterTankWidget.cpp
 
     resources/resources.qrc
 

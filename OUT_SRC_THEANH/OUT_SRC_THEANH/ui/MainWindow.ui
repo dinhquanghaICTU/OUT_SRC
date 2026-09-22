@@ -12,12 +12,18 @@
   </property>
   <property name="minimumSize">
    <size>
-    <width>320</width>
-    <height>240</height>
+    <width>480</width>
+    <height>320</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>16777215</width>
+    <height>16777215</height>
    </size>
   </property>
   <property name="windowTitle">
-   <string>THEANH IoT Hub - Power &amp; Environment Monitor</string>
+   <string>Hệ Thống Giám Sát Điện Năng (ACS712 &amp; ZMPT101B) - Thế Anh (ICTU)</string>
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QVBoxLayout" name="mainLayout">
@@ -37,72 +43,169 @@
      <number>0</number>
     </property>
 
-    <!-- TOP HEADER NAVBAR -->
+    <!-- TOP CONSOLE HEADER BAR -->
     <item>
-     <widget class="QFrame" name="topHeaderBar">
+     <widget class="QFrame" name="topConsoleBar">
       <property name="minimumSize">
        <size>
         <width>0</width>
-        <height>44</height>
+        <height>46</height>
        </size>
       </property>
       <property name="maximumSize">
        <size>
         <width>16777215</width>
-        <height>44</height>
+        <height>46</height>
        </size>
       </property>
       <property name="styleSheet">
-       <string notr="true">QFrame#topHeaderBar { background-color: #171333; border-bottom: 1.5px solid #2b235c; } QLabel#appLogoText { color: #38bdf8; font-size: 13px; font-weight: 900; } QPushButton#topNavBtn { background: transparent; color: #94a3b8; border: none; font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 6px; } QPushButton#topNavBtn:hover { color: #ffffff; background: #221c4b; } QPushButton#topNavBtn:checked { color: #ffffff; background: #2a225e; border-bottom: 2px solid #38bdf8; } QPushButton#topLogoutBtn { background: #3b1424; color: #f87171; border: 1px solid #7f1d1d; border-radius: 5px; font-size: 10px; font-weight: 800; padding: 3px 8px; } QPushButton#topLogoutBtn:hover { background: #dc2626; color: #ffffff; }</string>
+       <string notr="true">
+        QFrame#topConsoleBar {
+          background: qlineargradient(x1:0, y1:0, x2:1, y2:0, stop:0 #09132c, stop:1 #060b18);
+          border-bottom: 1.5px solid #1c2b54;
+        }
+        QLabel#appLogoLabel {
+          border-radius: 4px;
+        }
+        QLabel#mainAppTitle {
+          color: #38bdf8;
+          font-size: 11px;
+          font-weight: 900;
+          letter-spacing: 0.3px;
+        }
+        QLabel#mainAppSubtitle {
+          color: #94a3b8;
+          font-size: 9px;
+          font-weight: 600;
+        }
+        QLabel#headerBadgeGrid {
+          background-color: rgba(16, 185, 129, 0.15);
+          color: #34d399;
+          border: 1px solid #059669;
+          border-radius: 4px;
+          padding: 2px 6px;
+          font-size: 9px;
+          font-weight: 800;
+        }
+        QLabel#headerBadgeDevice {
+          background-color: rgba(56, 189, 248, 0.15);
+          color: #38bdf8;
+          border: 1px solid #0284c7;
+          border-radius: 4px;
+          padding: 2px 6px;
+          font-size: 9px;
+          font-weight: 800;
+        }
+        QPushButton#topNavDashboard,
+        QPushButton#topNavHistory,
+        QPushButton#topNavDevices,
+        QPushButton#topNavUsers {
+          background: #0f1c3f;
+          color: #94a3b8;
+          border: 1px solid #1c2b54;
+          border-radius: 4px;
+          font-size: 10px;
+          font-weight: 700;
+          padding: 4px 8px;
+        }
+        QPushButton#topNavDashboard:hover,
+        QPushButton#topNavHistory:hover,
+        QPushButton#topNavDevices:hover,
+        QPushButton#topNavUsers:hover {
+          background: #172554;
+          color: #38bdf8;
+          border-color: #38bdf8;
+        }
+        QPushButton#topNavDashboard:checked,
+        QPushButton#topNavHistory:checked,
+        QPushButton#topNavDevices:checked,
+        QPushButton#topNavUsers:checked {
+          background: qlineargradient(x1:0, y1:0, x2:1, y2:0, stop:0 #0284c7, stop:1 #0369a1);
+          color: #ffffff;
+          border-color: #38bdf8;
+          font-weight: 800;
+        }
+        QPushButton#topLogoutButton {
+          background: #1e1b4b;
+          color: #f87171;
+          border: 1px solid #7f1d1d;
+          border-radius: 4px;
+          font-size: 9px;
+          font-weight: 800;
+          padding: 3px 8px;
+        }
+        QPushButton#topLogoutButton:hover {
+          background: #dc2626;
+          color: #ffffff;
+        }
+       </string>
       </property>
       <layout class="QHBoxLayout" name="headerLayout">
        <property name="leftMargin">
-        <number>12</number>
+        <number>6</number>
        </property>
        <property name="topMargin">
-        <number>4</number>
+        <number>3</number>
        </property>
        <property name="rightMargin">
-        <number>12</number>
+        <number>6</number>
        </property>
        <property name="bottomMargin">
-        <number>4</number>
+        <number>3</number>
        </property>
        <property name="spacing">
-        <number>8</number>
+        <number>6</number>
        </property>
-
-       <!-- Brand Logo -->
        <item>
-        <widget class="QLabel" name="appLogoText">
-         <property name="text">
-          <string>⚡ THEANH IOT</string>
+        <widget class="QLabel" name="appLogoLabel">
+         <property name="minimumSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+         <property name="pixmap">
+          <pixmap resource="../resources/resources.qrc">:/images/logo_ictu.png</pixmap>
+         </property>
+         <property name="scaledContents">
+          <bool>true</bool>
          </property>
         </widget>
        </item>
-
        <item>
-        <spacer name="headerLeftSpacer">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
+        <layout class="QVBoxLayout" name="titleLayout">
+         <property name="spacing">
+          <number>0</number>
          </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>16</width>
-           <height>20</height>
-          </size>
-         </property>
-        </spacer>
+         <item>
+           <widget class="QLabel" name="mainAppTitle">
+            <property name="text">
+             <string>GIÁM SÁT ĐIỆN NĂNG</string>
+            </property>
+           </widget>
+          </item>
+           <item>
+           <widget class="QLabel" name="mainAppSubtitle">
+            <property name="text">
+             <string>ACS712 &amp; ZMPT101B · Thế Anh (ICTU)</string>
+            </property>
+           </widget>
+          </item>
+        </layout>
        </item>
-
-       <!-- Horizontal Nav Tabs -->
        <item>
-        <widget class="QPushButton" name="dashboardButton">
-         <property name="objectName">
-          <string>topNavBtn</string>
+        <widget class="QPushButton" name="topNavDashboard">
+         <property name="toolTip">
+          <string>Màn hình giám sát chính</string>
          </property>
          <property name="text">
-          <string>⌂ Trang chủ</string>
+          <string>📊 Giám sát</string>
          </property>
          <property name="checkable">
           <bool>true</bool>
@@ -110,39 +213,15 @@
          <property name="checked">
           <bool>true</bool>
          </property>
-         <property name="autoExclusive">
-          <bool>true</bool>
-         </property>
          <property name="cursor">
           <cursorShape>PointingHandCursor</cursorShape>
          </property>
         </widget>
        </item>
-
        <item>
-        <widget class="QPushButton" name="devicesButton">
-         <property name="objectName">
-          <string>topNavBtn</string>
-         </property>
-         <property name="text">
-          <string>📡 Thiết bị</string>
-         </property>
-         <property name="checkable">
-          <bool>true</bool>
-         </property>
-         <property name="autoExclusive">
-          <bool>true</bool>
-         </property>
-         <property name="cursor">
-          <cursorShape>PointingHandCursor</cursorShape>
-         </property>
-        </widget>
-       </item>
-
-       <item>
-        <widget class="QPushButton" name="historyButton">
-         <property name="objectName">
-          <string>topNavBtn</string>
+        <widget class="QPushButton" name="topNavHistory">
+         <property name="toolTip">
+          <string>Xem dữ liệu lịch sử đo lường</string>
          </property>
          <property name="text">
           <string>📈 Lịch sử</string>
@@ -150,27 +229,36 @@
          <property name="checkable">
           <bool>true</bool>
          </property>
-         <property name="autoExclusive">
-          <bool>true</bool>
-         </property>
          <property name="cursor">
           <cursorShape>PointingHandCursor</cursorShape>
          </property>
         </widget>
        </item>
-
        <item>
-        <widget class="QPushButton" name="usersButton">
-         <property name="objectName">
-          <string>topNavBtn</string>
+        <widget class="QPushButton" name="topNavDevices">
+         <property name="toolTip">
+          <string>Quản lý thiết bị và cài đặt ngưỡng cảnh báo</string>
          </property>
          <property name="text">
-          <string>♟ Tài khoản</string>
+          <string>⚙ Thiết bị</string>
          </property>
          <property name="checkable">
           <bool>true</bool>
          </property>
-         <property name="autoExclusive">
+         <property name="cursor">
+          <cursorShape>PointingHandCursor</cursorShape>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="topNavUsers">
+         <property name="toolTip">
+          <string>Quản lý tài khoản người dùng</string>
+         </property>
+         <property name="text">
+          <string>👤 Quản trị</string>
+         </property>
+         <property name="checkable">
           <bool>true</bool>
          </property>
          <property name="cursor">
@@ -178,60 +266,57 @@
          </property>
         </widget>
        </item>
-
        <item>
-        <spacer name="headerRightSpacer">
+        <spacer name="headerSpacer">
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
          </property>
          <property name="sizeHint" stdset="0">
           <size>
-           <width>40</width>
+           <width>10</width>
            <height>20</height>
           </size>
          </property>
         </spacer>
        </item>
-
-       <!-- Right User Badge & Logout -->
-       <item>
-        <widget class="QLabel" name="currentUserBadge">
-         <property name="text">
-          <string>👑 Admin</string>
-         </property>
-         <property name="styleSheet">
-          <string notr="true">color: #fbbf24; font-size: 10px; font-weight: 800; background: rgba(251, 191, 36, 0.12); border-radius: 4px; padding: 2px 6px;</string>
-         </property>
-        </widget>
-       </item>
-
-       <item>
-        <widget class="QPushButton" name="logoutButton">
-         <property name="objectName">
-          <string>topLogoutBtn</string>
-         </property>
-         <property name="text">
-          <string>Đăng xuất ↪</string>
-         </property>
-         <property name="cursor">
-          <cursorShape>PointingHandCursor</cursorShape>
-         </property>
-        </widget>
-       </item>
-
+        <item>
+         <widget class="QLabel" name="headerBadgeGrid">
+          <property name="text">
+           <string>🟢 220V</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="headerBadgeDevice">
+          <property name="text">
+           <string>⚡ Theanh</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="topLogoutButton">
+          <property name="toolTip">
+           <string>Đăng xuất tài khoản</string>
+          </property>
+          <property name="text">
+           <string>↪ Thoát</string>
+          </property>
+         </widget>
+        </item>
       </layout>
      </widget>
     </item>
 
-    <!-- Central Page View -->
+    <!-- CENTRAL STACKED WIDGET FOR PAGES -->
     <item>
      <widget class="QStackedWidget" name="pages"/>
     </item>
-
    </layout>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
  </widget>
- <resources/>
+ <resources>
+  <include location="../resources/resources.qrc"/>
+ </resources>
  <connections/>
 </ui>

@@ -198,10 +198,11 @@ void ApiServer::registerRoutes()
         }
         const QString commandId = QStringLiteral("cmd-")
             + QUuid::createUuid().toString(QUuid::Id128);
-        if (!m_mqtt->publishRelayCommand(
-                deviceId, commandId, body.value(QStringLiteral("state")).toBool()))
+        const bool relayState = body.value(QStringLiteral("state")).toBool();
+        if (!m_mqtt->publishRelayCommand(deviceId, commandId, relayState))
             return jsonError(Status::ServiceUnavailable, QStringLiteral("mqtt_unavailable"),
                              tr("Server chưa kết nối MQTT broker"));
+        m_database->recordDeviceState(deviceId, QJsonObject{{QStringLiteral("relay"), relayState}}, nullptr);
         return QHttpServerResponse(QJsonObject{{"status", "accepted"},
                                                {"command_id", commandId},
                                                {"device_id", deviceId}},
@@ -259,12 +260,17 @@ void ApiServer::registerRoutes()
                 && values.contains(QStringLiteral("critical_above")))
                 thresholdsValid = thresholdsValid
                     && values.value(QStringLiteral("warning_above")).toDouble()
-                       < values.value(QStringLiteral("critical_above")).toDouble();
+                       <= values.value(QStringLiteral("critical_above")).toDouble();
         }
         if (!ok || deviceId.isEmpty() || interval < 1000 || interval > 3600000
-            || !thresholdsValid)
+            || !thresholdsValid) {
+            qWarning().noquote() << "[API] PUT /api/devices/config REJECTED: deviceId=" << deviceId
+                                 << "ok=" << ok << "interval=" << interval
+                                 << "thresholdsValid=" << thresholdsValid
+                                 << "thresholds=" << QJsonDocument(thresholds).toJson(QJsonDocument::Compact);
             return jsonError(Status::BadRequest, QStringLiteral("validation_error"),
                              tr("Cấu hình ngưỡng không hợp lệ"));
+        }
 
         QString errorCode;
         QString error;

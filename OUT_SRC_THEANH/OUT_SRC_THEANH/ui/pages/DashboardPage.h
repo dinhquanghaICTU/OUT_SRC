@@ -4,6 +4,7 @@
 #include "ui/dialogs/SensorDetailDialog.h"
 #include "ui/dialogs/SelectOnlineDeviceDialog.h"
 
+#include <QDateTime>
 #include <QJsonArray>
 #include <QJsonObject>
 #include <QPointer>
@@ -11,54 +12,15 @@
 #include <QWidget>
 
 namespace Ui { class DashboardPage; }
-
+class QChart;
+class QChartView;
+class QHBoxLayout;
 class QLabel;
-class QPushButton;
+class QLineSeries;
 class QProgressBar;
-class QStackedWidget;
-
-// Custom Gauge & Visual Components
-class CircularGaugeWidget : public QWidget
-{
-    Q_OBJECT
-public:
-    explicit CircularGaugeWidget(QWidget *parent = nullptr);
-    void setValue(double val, double minVal = 0, double maxVal = 300, const QString &unit = "V");
-protected:
-    void paintEvent(QPaintEvent *event) override;
-private:
-    double m_value = 0.0;
-    double m_min = 0;
-    double m_max = 300;
-    QString m_unit = "V";
-};
-
-class SemiCircleGaugeWidget : public QWidget
-{
-    Q_OBJECT
-public:
-    explicit SemiCircleGaugeWidget(QWidget *parent = nullptr);
-    void setValue(double val, double maxVal = 2000, const QString &unit = "W");
-protected:
-    void paintEvent(QPaintEvent *event) override;
-private:
-    double m_value = 0.0;
-    double m_max = 2000;
-    QString m_unit = "W";
-};
-
-class NeonAreaChartWidget : public QWidget
-{
-    Q_OBJECT
-public:
-    explicit NeonAreaChartWidget(QWidget *parent = nullptr);
-    void addPoint(double val1, double val2);
-protected:
-    void paintEvent(QPaintEvent *event) override;
-private:
-    QVector<double> m_data1; // Power % wave
-    QVector<double> m_data2; // Current % wave
-};
+class QPushButton;
+class QResizeEvent;
+class QValueAxis;
 
 class DashboardPage : public QWidget
 {
@@ -86,74 +48,91 @@ signals:
     void releaseDeviceRequested(const QString &deviceId);
     void relayControlRequested(const QString &deviceId, bool state);
     void refreshDevicesRequested();
+    void historyPageRequested();
+    void devicesPageRequested();
+
+protected:
+    void resizeEvent(QResizeEvent *event) override;
 
 private:
-    void setupCustomDashboard();
-    void updateDeviceCardState();
-    void updateSensorStatusBadges();
+    void setupUiCustom();
+    void applyResponsiveLayout();
+    void updateVoltageDisplay(double voltageV);
+    void updateCurrentDisplay(double currentA);
+    void updatePowerDisplay(double powerW);
+    void updateRealtimeChart(double voltageV, double currentA, double powerW);
 
     Ui::DashboardPage *ui;
 
-    QString m_username = "Admin";
-    QString m_deviceId = "";
-    QString m_deviceName = "";
+    QString m_username = QStringLiteral("Admin");
+    QString m_deviceId = QStringLiteral("Theanh-190782");
+    QString m_deviceName = QStringLiteral("Trạm đo điện năng ACS712 & ZMPT101B");
     bool m_hasDevice = false;
     bool m_isOnline = false;
+    bool m_relayActive = true;
 
     QJsonArray m_availableDevices;
     QPointer<SelectOnlineDeviceDialog> m_currentSelectDialog;
 
-    // Visual Widgets
-    CircularGaugeWidget *m_circularGauge = nullptr;
-    SemiCircleGaugeWidget *m_semiCircleGauge = nullptr;
-    NeonAreaChartWidget *m_areaChart = nullptr;
+    // --- LEFT PANEL: Sơ đồ nguyên lý biểu trưng & Cảm biến ---
+    QWidget *m_leftPanel = nullptr;
 
-    QLabel *m_voltageValLbl = nullptr;
-    QLabel *m_voltageBadge = nullptr;
-    QLabel *m_voltageSubLbl = nullptr;
+    // ZMPT101B Block
+    QWidget *m_blockZmpt = nullptr;
+    QLabel *m_voltageValLabel = nullptr;
+    QLabel *m_voltageStatusBadge = nullptr;
+    QLabel *m_voltageFreqLabel = nullptr;
+    QLabel *m_voltagePeakLabel = nullptr;
+    QLabel *m_voltageImageLabel = nullptr;
 
-    QLabel *m_currentValLbl = nullptr;
-    QLabel *m_powerBigLbl = nullptr;
+    // ACS712 Block
+    QWidget *m_blockAcs = nullptr;
+    QLabel *m_currentValLabel = nullptr;
+    QLabel *m_currentStatusBadge = nullptr;
+    QLabel *m_currentMaxLabel = nullptr;
+    QLabel *m_currentSensLabel = nullptr;
+    QLabel *m_currentImageLabel = nullptr;
 
-    // Card 7 Widgets (Add Device or Device Control)
-    QStackedWidget *m_deviceCardStack = nullptr;
-    QWidget *m_noDeviceWidget = nullptr;
-    QWidget *m_hasDeviceWidget = nullptr;
+    // Load & Relay Block
+    QWidget *m_blockLoadRelay = nullptr;
+    QLabel *m_powerValLabel = nullptr;
+    QLabel *m_powerFactorLabel = nullptr;
+    QLabel *m_energyKwhLabel = nullptr;
+    QPushButton *m_relayButton = nullptr;
+    QPushButton *m_viewHistoryButton = nullptr;
+    QPushButton *m_devicesButton = nullptr;
 
-    QLabel *m_devIdLbl = nullptr;
-    QLabel *m_devOnlineBadge = nullptr;
-    QLabel *m_devVoltageLbl = nullptr;
-    QLabel *m_devCurrentLbl = nullptr;
-    QPushButton *m_relayBtn = nullptr;
+    // --- RIGHT PANEL: Biểu đồ thời gian thực (giống Trung Kiên - không co rít) ---
+    QWidget *m_rightPanel = nullptr;
+    QChartView *m_chartView = nullptr;
+    QChart *m_chart = nullptr;
+    QLineSeries *m_voltageSeries = nullptr;
+    QLineSeries *m_currentSeries = nullptr;
+    QLineSeries *m_powerSeries = nullptr;
+    QValueAxis *m_axisX = nullptr;
+    QValueAxis *m_axisY_Voltage = nullptr;
+    QValueAxis *m_axisY_Current = nullptr;
+    QPushButton *m_chartFilterAll = nullptr;
+    QPushButton *m_chartFilterVoltage = nullptr;
+    QPushButton *m_chartFilterCurrent = nullptr;
+    QPushButton *m_chartFilterPower = nullptr;
+    int m_chartMode = 0; // 0: All, 1: Voltage, 2: Current, 3: Power
+    int m_sampleCount = 0;
 
-    // Progress Bars & Analytics (Card 4)
+    // Safety & Range Bars
     QProgressBar *m_voltageBar = nullptr;
-    QLabel *m_voltagePctLbl = nullptr;
     QProgressBar *m_currentBar = nullptr;
-    QLabel *m_currentPctLbl = nullptr;
-    QProgressBar *m_powerBar = nullptr;
-    QLabel *m_powerPctLbl = nullptr;
-    QProgressBar *m_safetyBar = nullptr;
-    QLabel *m_safetyPctLbl = nullptr;
+    QLabel *m_statusAdviceLabel = nullptr;
+    QLabel *m_lastUpdatedLabel = nullptr;
 
-    // Timeline / Activity Log (Card 5)
-    QLabel *m_timelineDesc1 = nullptr;
-    QLabel *m_timelineTime1 = nullptr;
-    QLabel *m_timelineChk1 = nullptr;
-    QLabel *m_timelineDesc2 = nullptr;
-    QLabel *m_timelineTime2 = nullptr;
-    QLabel *m_timelineChk2 = nullptr;
-    QLabel *m_timelineDesc3 = nullptr;
-    QLabel *m_timelineTime3 = nullptr;
-    QLabel *m_timelineChk3 = nullptr;
+    QHBoxLayout *m_masterHLayout = nullptr;
 
-    // Real historical buffers from ESP32
+    // Sensor histories
     QVector<SensorDataPoint> m_voltageHistory;
     QVector<SensorDataPoint> m_currentHistory;
     QVector<SensorDataPoint> m_powerHistory;
 
-    double m_curVoltage = 221.8;
+    double m_curVoltage = 220.0;
     double m_curCurrent = 2.35;
-    double m_curPower = 521.23;
-    bool m_relayState = true;
+    double m_curPower = 517.0;
 };

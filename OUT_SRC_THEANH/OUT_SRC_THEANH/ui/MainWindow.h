@@ -19,6 +19,11 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow() override;
+    void loginAdminDirectly();
+    void showHistoryTable();
+    void showHistoryChart();
+    void showUserManagement();
+    void showDeviceDrawer();
 
 private:
     Ui::MainWindow *ui;

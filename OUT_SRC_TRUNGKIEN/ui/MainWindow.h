@@ -23,6 +23,9 @@ public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow() override;
 
+    void triggerLogin(const QString &username, const QString &password, int targetPageIndex = 0);
+    HistoryPage *historyPage() const { return m_historyPage; }
+
 protected:
     void resizeEvent(QResizeEvent *event) override;
 

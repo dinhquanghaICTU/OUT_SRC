@@ -31,6 +31,7 @@ MainWindow::MainWindow(QWidget *parent)
       m_userManagementPage(new UserManagementPage(this))
 {
     ui->setupUi(this);
+    setWindowTitle(tr("Hệ Thống Giám Sát Cường Độ Tia UV & Áp Suất Không Khí - Trung Kiên (ICTU)"));
     m_sidebarToggleButton = new QPushButton(ui->sideBar);
     m_sidebarToggleButton->setObjectName(QStringLiteral("sidebarToggleButton"));
     m_sidebarToggleButton->setToolTip(tr("Mở rộng/thu gọn thanh điều hướng"));
@@ -101,6 +102,13 @@ MainWindow::MainWindow(QWidget *parent)
     connect(m_apiClient, &ApiClient::devicesReceived,
             m_deviceManagementPage, &DeviceManagementPage::setOwnedDevices);
     connect(m_apiClient, &ApiClient::devicesReceived,
+            m_dashboardPage, &DashboardPage::setDevices);
+    connect(m_dashboardPage, &DashboardPage::historyPageRequested, this, [this] {
+        ui->historyButton->click();
+    });
+    connect(m_dashboardPage, &DashboardPage::relayToggleRequested,
+            m_apiClient, &ApiClient::setRelayState);
+    connect(m_apiClient, &ApiClient::devicesReceived,
             m_historyPage, &HistoryPage::setDevices);
     connect(m_historyPage, &HistoryPage::historyRequested,
             m_apiClient, &ApiClient::requestDeviceHistory);
@@ -132,7 +140,10 @@ MainWindow::MainWindow(QWidget *parent)
     connect(m_apiClient, &ApiClient::deviceConfigSaved,
             m_deviceManagementPage, &DeviceManagementPage::configSaved);
     connect(m_apiClient, &ApiClient::deviceConfigSaved, this,
-            [this](const QString &, bool) {
+            [this](const QString &deviceId, bool published) {
+                statusBar()->showMessage(published
+                    ? tr("Đã lưu và gửi cấu hình xuống thiết bị %1 qua MQTT").arg(deviceId)
+                    : tr("Đã lưu cấu hình thiết bị %1 vào Database").arg(deviceId), 4000);
                 if (!m_authService->isOfflineMode())
                     m_apiClient->requestMyDevice();
             });
@@ -234,11 +245,35 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+void MainWindow::triggerLogin(const QString &username, const QString &password, int targetPageIndex)
+{
+    connect(m_authService, &AuthService::authenticated, this, [this, targetPageIndex]() {
+        if (targetPageIndex == 3) {
+            ui->pages->setCurrentWidget(m_historyPage);
+            ui->historyButton->setChecked(true);
+            m_apiClient->requestMyDevice();
+        } else if (targetPageIndex == 2) {
+            ui->pages->setCurrentWidget(m_deviceManagementPage);
+            ui->devicesButton->setChecked(true);
+            m_apiClient->requestMyDevice();
+            m_apiClient->requestAvailableDevices();
+        } else if (targetPageIndex == 4) {
+            ui->pages->setCurrentWidget(m_userManagementPage);
+            ui->usersButton->setChecked(true);
+            m_apiClient->requestUsers();
+        } else {
+            ui->pages->setCurrentWidget(m_dashboardPage);
+            ui->dashboardButton->setChecked(true);
+        }
+    });
+    m_authService->login(username, password);
+}
+
 void MainWindow::setSidebarExpanded(bool expanded)
 {
     m_sidebarExpanded = expanded;
     const bool compact = ui->sideBar->property("compactNavigation").toBool();
-    const int width = expanded ? 145 : 48;
+    const int width = expanded ? 122 : 46;
     ui->sideBar->setMinimumWidth(compact ? 0 : width);
     ui->sideBar->setMaximumWidth(compact ? QWIDGETSIZE_MAX : width);
     ui->sideBar->setProperty("expanded", expanded);
@@ -259,13 +294,13 @@ void MainWindow::setCompactNavigation(bool compact)
         return;
 
     ui->sideBar->setProperty("compactNavigation", compact);
-    ui->sideBarLayout->setContentsMargins(compact ? 4 : 6, compact ? 4 : 8,
-                                           compact ? 4 : 6, compact ? 4 : 8);
+    ui->sideBarLayout->setContentsMargins(compact ? 4 : 5, compact ? 4 : 8,
+                                           compact ? 4 : 5, compact ? 4 : 8);
     ui->sideBarLayout->setSpacing(compact ? 2 : 6);
     ui->sideLogo->setVisible(!compact);
     m_sidebarToggleButton->setVisible(!compact);
-    ui->sideBar->setMinimumWidth(compact ? 0 : (m_sidebarExpanded ? 145 : 48));
-    ui->sideBar->setMaximumWidth(compact ? QWIDGETSIZE_MAX : (m_sidebarExpanded ? 145 : 48));
+    ui->sideBar->setMinimumWidth(compact ? 0 : (m_sidebarExpanded ? 122 : 46));
+    ui->sideBar->setMaximumWidth(compact ? QWIDGETSIZE_MAX : (m_sidebarExpanded ? 122 : 46));
     ui->sideBar->setMaximumHeight(compact ? 40 : QWIDGETSIZE_MAX);
     ui->sideBar->setMinimumHeight(compact ? 40 : 0);
     ui->mainLayout->setDirection(compact ? QBoxLayout::TopToBottom : QBoxLayout::LeftToRight);

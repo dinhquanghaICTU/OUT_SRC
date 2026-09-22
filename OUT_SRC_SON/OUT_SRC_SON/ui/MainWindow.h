@@ -24,11 +24,17 @@ public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow() override;
 
+    void triggerLogin(const QString &username, const QString &password, int targetPageIndex = 0);
+    HistoryPage *historyPage() const { return m_historyPage; }
+    DashboardPage *dashboardPage() const { return m_dashboardPage; }
+    DeviceManagementPage *deviceManagementPage() const { return m_deviceManagementPage; }
+    UserManagementPage *userManagementPage() const { return m_userManagementPage; }
+    void openSelectDeviceDialog();
+
 protected:
     void resizeEvent(QResizeEvent *event) override;
 
 private:
-    void openSelectDeviceDialog();
     void setSidebarExpanded(bool expanded);
     void setCompactNavigation(bool compact);
     void setShortHeight(bool shortHeight);

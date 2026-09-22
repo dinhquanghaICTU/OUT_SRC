@@ -109,6 +109,7 @@ managed_components/
 .DS_Store?
 ._*
 Thumbs.db
+*.db
 *.log
 core
 !core/

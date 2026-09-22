@@ -147,8 +147,8 @@ DeviceManagementPage::DeviceManagementPage(QWidget *parent)
     auto *toolbar = new QHBoxLayout;
     toolbar->setSpacing(8);
 
-    m_logTabBtn = new QPushButton(tr("📋  Nhật ký & Quản lý thiết bị"), this);
-    m_cardsTabBtn = new QPushButton(tr("⊞  Thẻ điều khiển & Ngưỡng"), this);
+    m_logTabBtn = new QPushButton(tr("📋  Danh sách thiết bị"), this);
+    m_cardsTabBtn = new QPushButton(tr("⊞  Thẻ điều khiển và Ngưỡng"), this);
     m_logTabBtn->setObjectName(QStringLiteral("deviceViewTabButton"));
     m_cardsTabBtn->setObjectName(QStringLiteral("deviceViewTabButton"));
     m_logTabBtn->setCheckable(true);

@@ -27,6 +27,7 @@ public:
     void setCurrentUser(const QString &username, bool isAdmin);
     void setOwnedDevices(const QJsonArray &devices);
     void setAvailableDevices(const QJsonArray &devices);
+    void openDeviceDrawer(const QJsonObject &device);
     void startRealtime();
     void stopRealtime();
     void configSaved(const QString &deviceId, bool mqttPublished);
@@ -36,6 +37,7 @@ protected:
     void resizeEvent(QResizeEvent *event) override;
 
 signals:
+    void backToDashboardRequested();
     void claimDeviceRequested(const QString &deviceId, const QString &name);
     void relayControlRequested(const QString &deviceId, bool state);
     void deviceConfigRequested(const QString &deviceId, const QJsonObject &config);
@@ -49,7 +51,6 @@ private:
     void rebuildAvailableGrid();
     void rebuildLogTable();
     void applyResponsiveLayout();
-    void openDeviceDrawer(const QJsonObject &device);
     void rebuildThresholdForm(const QJsonObject &device);
     void saveThresholds();
     static void clearGrid(QGridLayout *layout);

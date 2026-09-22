@@ -8,8 +8,8 @@ namespace Ui { class UserManagementPage; }
 
 class QLabel;
 class QPushButton;
-class QGridLayout;
-class QScrollArea;
+class QTableWidget;
+class QLineEdit;
 
 class UserManagementPage : public QWidget
 {
@@ -31,7 +31,7 @@ signals:
 
 private:
     void setupCustomUI();
-    void renderUserGrid();
+    void renderUserTable();
     void openEditDialog(const QJsonObject &user = QJsonObject());
     void confirmDeleteUser(const QJsonObject &user);
 
@@ -45,8 +45,15 @@ private:
     QPushButton *m_filterAllBtn = nullptr;
     QPushButton *m_filterAdminBtn = nullptr;
     QPushButton *m_filterUserBtn = nullptr;
+    QPushButton *m_addUserBtn = nullptr;
 
-    // Grid Container
-    QGridLayout *m_gridLayout = nullptr;
+    // Stat labels
+    QLabel *m_statTotal = nullptr;
+    QLabel *m_statAdmin = nullptr;
+    QLabel *m_statRegular = nullptr;
+
+    // Table
+    QTableWidget *m_userTable = nullptr;
     QLabel *m_emptyLabel = nullptr;
+    QLineEdit *m_searchEdit = nullptr;
 };

@@ -33,13 +33,13 @@
       </item>
       <item alignment="Qt::AlignHCenter">
        <widget class="QLabel" name="welcomeLabel">
-        <property name="text"><string>Đăng nhập hệ thống</string></property>
+        <property name="text"><string>HỆ THỐNG GIÁM SÁT TIA UV &amp; ÁP SUẤT</string></property>
         <property name="alignment"><set>Qt::AlignCenter</set></property>
        </widget>
       </item>
       <item alignment="Qt::AlignHCenter">
        <widget class="QLabel" name="subtitleLabel">
-        <property name="text"><string>ICTU Environmental Monitor</string></property>
+        <property name="text"><string>SVTH: Trung Kiên · Khoa ĐTVT - ICTU</string></property>
         <property name="alignment"><set>Qt::AlignCenter</set></property>
        </widget>
       </item>

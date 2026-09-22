@@ -22,6 +22,7 @@ public:
     void setAdminEnabled(bool enabled);
 
 signals:
+    void backToDashboardRequested();
     void createUserRequested(const QString &username, const QString &password, const QString &role);
     void updateUserRequested(const QString &oldUsername, const QString &username,
                              const QString &password, const QString &role, bool enabled);

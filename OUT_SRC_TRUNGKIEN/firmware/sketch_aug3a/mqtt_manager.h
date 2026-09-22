@@ -22,6 +22,9 @@ extern "C"
     float mqtt_manager_get_uv_critical(void);
     float mqtt_manager_get_pressure_min(void);
     float mqtt_manager_get_pressure_max(void);
+    int mqtt_manager_get_manual_buzzer(void);
+    void mqtt_manager_set_manual_buzzer(int state);
+    bool mqtt_manager_publish_relay_state(bool state);
 
     void test_mqtt();
 

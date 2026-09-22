@@ -390,7 +390,7 @@ void UserManagementPage::showUserDetails(const QJsonObject &user)
     auto *btnCol = new QVBoxLayout;
     btnCol->setSpacing(6);
 
-    auto *editBtn = new QPushButton(QStringLiteral("✏️ Chỉnh Sửa & Đổi Mật Khẩu"));
+    auto *editBtn = new QPushButton(QStringLiteral("✏️ Chỉnh Sửa và Đổi Mật Khẩu"));
     editBtn->setCursor(Qt::PointingHandCursor);
     editBtn->setMinimumHeight(30);
     editBtn->setStyleSheet("QPushButton { background: #1e3a8a; color: #ffffff; border: 1px solid #38bdf8; border-radius: 6px; font-size: 11px; font-weight: 800; } QPushButton:hover { background: #2563eb; }");

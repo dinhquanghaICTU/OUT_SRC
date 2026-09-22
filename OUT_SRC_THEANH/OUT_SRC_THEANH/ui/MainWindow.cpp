@@ -11,6 +11,7 @@
 #include "ui/pages/LoginPage.h"
 #include "ui/pages/UserManagementPage.h"
 
+#include <QButtonGroup>
 #include <QMessageBox>
 #include <QPushButton>
 #include <QResizeEvent>
@@ -32,29 +33,76 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
+    setWindowTitle(tr("Hệ Thống Giám Sát Điện Năng (ACS712 & ZMPT101B) - Thế Anh (ICTU)"));
+
     ui->pages->addWidget(m_loginPage);
     ui->pages->addWidget(m_dashboardPage);
     ui->pages->addWidget(m_deviceManagementPage);
     ui->pages->addWidget(m_historyPage);
     ui->pages->addWidget(m_userManagementPage);
     ui->pages->setCurrentWidget(m_loginPage);
-    ui->topHeaderBar->hide();
+    ui->topConsoleBar->hide();
+
+    // Top Navigation Tabs
+    auto *topNavGroup = new QButtonGroup(this);
+    topNavGroup->addButton(ui->topNavDashboard);
+    topNavGroup->addButton(ui->topNavHistory);
+    topNavGroup->addButton(ui->topNavDevices);
+    topNavGroup->addButton(ui->topNavUsers);
+    topNavGroup->setExclusive(true);
+
+    connect(ui->topNavDashboard, &QPushButton::clicked, this, [this] {
+        ui->pages->setCurrentWidget(m_dashboardPage);
+    });
+    connect(ui->topNavHistory, &QPushButton::clicked, this, [this] {
+        ui->pages->setCurrentWidget(m_historyPage);
+        if (!m_authService->isOfflineMode()) {
+            m_apiClient->requestMyDevice();
+        }
+    });
+    connect(ui->topNavDevices, &QPushButton::clicked, this, [this] {
+        ui->pages->setCurrentWidget(m_deviceManagementPage);
+        if (!m_authService->isOfflineMode()) {
+            m_apiClient->requestMyDevice();
+            m_apiClient->requestAvailableDevices();
+        }
+    });
+    connect(ui->topNavUsers, &QPushButton::clicked, this, [this] {
+        ui->pages->setCurrentWidget(m_userManagementPage);
+        if (!m_authService->isOfflineMode()) {
+            m_apiClient->requestUsers();
+        }
+    });
+
+    connect(ui->pages, &QStackedWidget::currentChanged, this, [this](int) {
+        QWidget *cur = ui->pages->currentWidget();
+        if (cur == m_dashboardPage) ui->topNavDashboard->setChecked(true);
+        else if (cur == m_historyPage) ui->topNavHistory->setChecked(true);
+        else if (cur == m_deviceManagementPage) ui->topNavDevices->setChecked(true);
+        else if (cur == m_userManagementPage) ui->topNavUsers->setChecked(true);
+    });
+
+    connect(m_deviceManagementPage, &DeviceManagementPage::backToDashboardRequested, this, [this] {
+        ui->pages->setCurrentWidget(m_dashboardPage);
+    });
+    connect(m_historyPage, &HistoryPage::backToDashboardRequested, this, [this] {
+        ui->pages->setCurrentWidget(m_dashboardPage);
+    });
+    connect(m_userManagementPage, &UserManagementPage::backToDashboardRequested, this, [this] {
+        ui->pages->setCurrentWidget(m_dashboardPage);
+    });
 
     connect(m_loginPage, &LoginPage::loginRequested,
             m_authService, &AuthService::login);
 
     connect(m_authService, &AuthService::authenticated, this, [this] {
-        ui->topHeaderBar->show();
-        ui->currentUserBadge->setText(
-            m_authService->isAdmin()
-                ? QStringLiteral("👑 %1 (Admin)").arg(m_authService->currentUsername())
-                : QStringLiteral("👤 %1").arg(m_authService->currentUsername()));
+        ui->topConsoleBar->show();
+        ui->topNavDashboard->setChecked(true);
+        ui->topNavUsers->setVisible(m_authService->isAdmin());
         m_dashboardPage->setUsername(m_authService->currentUsername());
         m_deviceManagementPage->setCurrentUser(m_authService->currentUsername(), m_authService->isAdmin());
-        ui->usersButton->setVisible(m_authService->isAdmin());
         m_userManagementPage->setAdminEnabled(m_authService->isAdmin());
         ui->pages->setCurrentWidget(m_dashboardPage);
-        ui->dashboardButton->setChecked(true);
 
         m_sensorService->start();
 
@@ -76,7 +124,11 @@ MainWindow::MainWindow(QWidget *parent)
     connect(m_sensorService, &SensorService::readingUpdated,
             m_dashboardPage, &DashboardPage::updateReading);
     connect(m_apiClient, &ApiClient::networkError, this,
-            [this](const QString &message) { statusBar()->showMessage(message, 5000); });
+            [this](const QString &message) {
+                if (!message.contains(QStringLiteral("readings/latest"), Qt::CaseInsensitive)) {
+                    statusBar()->showMessage(message, 5000);
+                }
+            });
 
     // Dashboard Device Claims & Control
     connect(m_dashboardPage, &DashboardPage::claimDeviceRequested,
@@ -87,6 +139,19 @@ MainWindow::MainWindow(QWidget *parent)
             m_apiClient, &ApiClient::setRelayState);
     connect(m_dashboardPage, &DashboardPage::refreshDevicesRequested,
             m_apiClient, &ApiClient::requestAvailableDevices);
+    connect(m_dashboardPage, &DashboardPage::historyPageRequested, this, [this] {
+        ui->pages->setCurrentWidget(m_historyPage);
+        if (!m_authService->isOfflineMode()) {
+            m_apiClient->requestMyDevice();
+        }
+    });
+    connect(m_dashboardPage, &DashboardPage::devicesPageRequested, this, [this] {
+        ui->pages->setCurrentWidget(m_deviceManagementPage);
+        if (!m_authService->isOfflineMode()) {
+            m_apiClient->requestMyDevice();
+            m_apiClient->requestAvailableDevices();
+        }
+    });
 
     connect(m_apiClient, &ApiClient::availableDevicesReceived,
             m_dashboardPage, &DashboardPage::setAvailableDevices);
@@ -204,35 +269,10 @@ MainWindow::MainWindow(QWidget *parent)
                 m_apiClient->requestMyDevice();
             });
 
-    // Top Header Navigation Tab Buttons
-    connect(ui->dashboardButton, &QPushButton::clicked, this,
-            [this] { ui->pages->setCurrentWidget(m_dashboardPage); });
-    connect(ui->devicesButton, &QPushButton::clicked, this,
-            [this] {
-                ui->pages->setCurrentWidget(m_deviceManagementPage);
-                if (m_authService->isOfflineMode())
-                    return;
-                m_apiClient->requestMyDevice();
-                m_apiClient->requestAvailableDevices();
-            });
-    connect(ui->historyButton, &QPushButton::clicked, this,
-            [this] {
-                ui->pages->setCurrentWidget(m_historyPage);
-                if (m_authService->isOfflineMode())
-                    return;
-                m_apiClient->requestMyDevice();
-            });
-    connect(ui->usersButton, &QPushButton::clicked, this,
-            [this] {
-                ui->pages->setCurrentWidget(m_userManagementPage);
-                if (m_authService->isOfflineMode())
-                    return;
-                m_apiClient->requestUsers();
-            });
-    connect(ui->logoutButton, &QPushButton::clicked, this, [this] {
+    connect(ui->topLogoutButton, &QPushButton::clicked, this, [this] {
         m_sensorService->stop();
         m_authService->logout();
-        ui->topHeaderBar->hide();
+        ui->topConsoleBar->hide();
         ui->pages->setCurrentWidget(m_loginPage);
     });
 }
@@ -240,4 +280,102 @@ MainWindow::MainWindow(QWidget *parent)
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+void MainWindow::loginAdminDirectly()
+{
+    m_authService->login(QStringLiteral("admin"), QStringLiteral("1"));
+}
+
+void MainWindow::showHistoryTable()
+{
+    loginAdminDirectly();
+    QTimer::singleShot(800, this, [this] {
+        ui->pages->setCurrentWidget(m_historyPage);
+        m_historyPage->showTableView();
+
+        QJsonObject sample;
+        sample[QStringLiteral("total")] = 8;
+        QJsonArray keys;
+        keys.append(QStringLiteral("current_a"));
+        keys.append(QStringLiteral("power_w"));
+        keys.append(QStringLiteral("voltage_v"));
+        sample[QStringLiteral("metric_keys")] = keys;
+
+        QJsonArray data;
+        for (int i = 0; i < 8; ++i) {
+            QJsonObject row;
+            row[QStringLiteral("recorded_at")] = QStringLiteral("2026-09-22 15:35:%1").arg(50 - i * 2, 2, 10, QLatin1Char('0'));
+            QJsonObject metrics;
+            metrics[QStringLiteral("current_a")] = 2.35 + (i * 0.05);
+            metrics[QStringLiteral("power_w")] = 518.2 + (i * 3.4);
+            metrics[QStringLiteral("voltage_v")] = 220.5 + (i % 3);
+            row[QStringLiteral("metrics")] = metrics;
+            data.append(row);
+        }
+        sample[QStringLiteral("data")] = data;
+        m_historyPage->setHistory(sample);
+    });
+}
+
+void MainWindow::showHistoryChart()
+{
+    loginAdminDirectly();
+    QTimer::singleShot(800, this, [this] {
+        ui->pages->setCurrentWidget(m_historyPage);
+        ui->topNavHistory->setChecked(true);
+
+        QJsonObject sample;
+        sample[QStringLiteral("total")] = 12;
+        sample[QStringLiteral("period")] = QStringLiteral("day");
+        sample[QStringLiteral("selected_date")] = QStringLiteral("2026-09-22");
+        QJsonArray keys;
+        keys.append(QStringLiteral("current_a"));
+        keys.append(QStringLiteral("power_w"));
+        keys.append(QStringLiteral("voltage_v"));
+        sample[QStringLiteral("metric_keys")] = keys;
+
+        QJsonArray data;
+        for (int i = 0; i < 12; ++i) {
+            QJsonObject row;
+            row[QStringLiteral("recorded_at")] = QStringLiteral("2026-09-22 15:%1:00").arg(10 + i * 4, 2, 10, QLatin1Char('0'));
+            QJsonObject metrics;
+            metrics[QStringLiteral("current_a")] = 2.20 + (i % 5) * 0.25;
+            metrics[QStringLiteral("power_w")] = 480.0 + (i % 5) * 55.0;
+            metrics[QStringLiteral("voltage_v")] = 219.0 + (i % 4) * 1.5;
+            row[QStringLiteral("metrics")] = metrics;
+            data.append(row);
+        }
+        sample[QStringLiteral("data")] = data;
+        m_historyPage->setHistory(sample);
+    });
+}
+
+void MainWindow::showUserManagement()
+{
+    loginAdminDirectly();
+    QTimer::singleShot(800, this, [this] {
+        ui->pages->setCurrentWidget(m_userManagementPage);
+        ui->topNavUsers->setChecked(true);
+    });
+}
+
+void MainWindow::showDeviceDrawer()
+{
+    loginAdminDirectly();
+    QTimer::singleShot(800, this, [this] {
+        ui->pages->setCurrentWidget(m_deviceManagementPage);
+        QJsonObject dev;
+        dev[QStringLiteral("device_id")] = QStringLiteral("Theanh-190782");
+        dev[QStringLiteral("name")] = QStringLiteral("Bộ Đo AC RMS & Công Suất Tải THEANH");
+        dev[QStringLiteral("device_type")] = QStringLiteral("power_monitor");
+        dev[QStringLiteral("added_by")] = QStringLiteral("admin");
+        dev[QStringLiteral("created_at")] = QStringLiteral("2026-09-22 15:34:00");
+        QJsonObject metrics;
+        metrics[QStringLiteral("voltage_v")] = 221.8;
+        metrics[QStringLiteral("current_a")] = 2.35;
+        metrics[QStringLiteral("power_w")] = 518.0;
+        dev[QStringLiteral("metrics")] = metrics;
+        m_deviceManagementPage->openDeviceDrawer(dev);
+    });
 }

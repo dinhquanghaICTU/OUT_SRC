@@ -76,10 +76,17 @@ void UserManagementPage::setupCustomUI()
     mainLayout->setSpacing(6);
 
     // ==========================================
-    // TOP COMMAND BAR (Title, Filter Tabs, Add)
+    // TOP COMMAND BAR (Back, Title, Filter Tabs, Add)
     // ==========================================
     auto *topBar = new QHBoxLayout;
     topBar->setSpacing(6);
+
+    auto *backBtn = new QPushButton(tr("← Giám sát"), this);
+    backBtn->setObjectName(QStringLiteral("usersBackButton"));
+    backBtn->setCursor(Qt::PointingHandCursor);
+    backBtn->setToolTip(tr("Quay lại màn hình giám sát SCADA"));
+    connect(backBtn, &QPushButton::clicked, this, &UserManagementPage::backToDashboardRequested);
+    topBar->addWidget(backBtn);
 
     auto *titleIcon = new QLabel(QStringLiteral("🛡️"));
     titleIcon->setStyleSheet("font-size: 14px; background: transparent;");

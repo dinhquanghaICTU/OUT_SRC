@@ -76,6 +76,11 @@ qt_add_executable(OUT_SRC_TUANANH
     ui/pages/DashboardPage.h
     ui/pages/DashboardPage.cpp
     ui/pages/DashboardPage.ui
+    ui/pages/DeviceManagementPage.h
+    ui/pages/DeviceManagementPage.cpp
+    ui/pages/HistoryPage.h
+    ui/pages/HistoryPage.cpp
+    ui/pages/HistoryPage.ui
     ui/pages/UserManagementPage.h
     ui/pages/UserManagementPage.cpp
     ui/pages/UserManagementPage.ui

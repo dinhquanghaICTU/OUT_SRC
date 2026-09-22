@@ -28,9 +28,12 @@ public:
 
     void setDevices(const QJsonArray &devices);
     void setHistory(const QJsonObject &history);
+    void setMetric(const QString &key);
     void openChartZoomDialog(const QString &initialMetricKey = QString());
+    void showTableView();
 
 signals:
+    void backToDashboardRequested();
     void historyRequested(const QString &deviceId, const QString &period,
                           const QString &date);
 
@@ -67,5 +70,7 @@ private:
     QString m_selectedMetricKey;
     QJsonArray m_cachedKeys;
     QJsonArray m_cachedRows;
+    QString m_cachedPeriod;
+    QString m_cachedSelectedDate;
 };
 

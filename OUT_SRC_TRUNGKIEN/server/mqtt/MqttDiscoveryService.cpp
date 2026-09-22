@@ -7,6 +7,7 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QRandomGenerator>
+#include <cmath>
 
 MqttDiscoveryService::MqttDiscoveryService(Database *database, QObject *parent)
     : QObject(parent), m_database(database)
@@ -28,6 +29,8 @@ MqttDiscoveryService::MqttDiscoveryService(Database *database, QObject *parent)
     connect(&m_socket, &QTcpSocket::disconnected, this, &MqttDiscoveryService::scheduleReconnect);
     connect(&m_socket, &QTcpSocket::errorOccurred, this,
             [this](QAbstractSocket::SocketError) { scheduleReconnect(); });
+
+    // Simulation timer removed: only real hardware MQTT packets should record telemetry and presence
 }
 
 void MqttDiscoveryService::start(const QString &host, quint16 port)
@@ -65,16 +68,20 @@ bool MqttDiscoveryService::publishRelayCommand(const QString &deviceId,
 bool MqttDiscoveryService::publishDeviceConfig(const QString &deviceId,
                                                const QJsonObject &config)
 {
-    if (m_socket.state() != QAbstractSocket::ConnectedState)
+    if (m_socket.state() != QAbstractSocket::ConnectedState) {
+        qWarning().noquote() << "[MQTT] publishDeviceConfig failed: broker socket not connected";
         return false;
+    }
     QJsonObject desired = config;
     desired.insert(QStringLiteral("config_version"),
-                   QDateTime::currentMSecsSinceEpoch());
+                   static_cast<qint64>(QDateTime::currentSecsSinceEpoch()));
     const QByteArray topic = QByteArrayLiteral("iot/v1/devices/")
         + deviceId.toUtf8() + QByteArrayLiteral("/config/desired");
     const QByteArray payload = QJsonDocument(desired).toJson(QJsonDocument::Compact);
     QByteArray body;
     appendUtf8(body, topic);
+    if (m_packetId == 0)
+        m_packetId = 1;
     const quint16 packetId = m_packetId++;
     body.append(char(packetId >> 8));
     body.append(char(packetId & 0xff));
@@ -82,7 +89,10 @@ bool MqttDiscoveryService::publishDeviceConfig(const QString &deviceId,
     QByteArray packet(1, char(0x33)); // PUBLISH QoS 1, retained
     packet.append(encodeRemainingLength(body.size()));
     packet.append(body);
-    return m_socket.write(packet) == packet.size();
+    const bool ok = (m_socket.write(packet) == packet.size());
+    qInfo().noquote() << QStringLiteral("[MQTT] Config desired published to %1 (result=%2): %3")
+                             .arg(QString::fromUtf8(topic), ok ? "OK" : "FAILED", QString::fromUtf8(payload));
+    return ok;
 }
 
 void MqttDiscoveryService::connectToBroker()
@@ -205,9 +215,12 @@ void MqttDiscoveryService::processPublish(quint8 flags, const QByteArray &body)
     if (parts.size() != 5 || parts.at(0) != QStringLiteral("iot")
         || parts.at(1) != QStringLiteral("v1") || parts.at(2) != QStringLiteral("devices"))
         return;
-    const QString deviceId = parts.at(3);
-    if (deviceId.compare(QStringLiteral("Trungkien-150304"), Qt::CaseInsensitive) != 0 && deviceId.compare(QStringLiteral("150304"), Qt::CaseInsensitive) != 0)
+    QString deviceId = parts.at(3);
+    if (deviceId.compare(QStringLiteral("150304"), Qt::CaseInsensitive) == 0)
+        deviceId = QStringLiteral("Trungkien-150304");
+    else if (deviceId.compare(QStringLiteral("Trungkien-150304"), Qt::CaseInsensitive) != 0)
         return;
+    m_lastRealMqttPacketMs = QDateTime::currentMSecsSinceEpoch();
     const QString channel = parts.at(4);
     bool online = true;
     QJsonObject metrics;
@@ -225,6 +238,7 @@ void MqttDiscoveryService::processPublish(quint8 flags, const QByteArray &body)
     } else {
         metrics = QJsonDocument::fromJson(payload).object()
                       .value(QStringLiteral("metrics")).toObject();
+        qInfo().noquote() << QStringLiteral("[MQTT THIET BI THAT]") << deviceId << QString::fromUtf8(QJsonDocument(metrics).toJson(QJsonDocument::Compact));
         const qint64 nowMs = QDateTime::currentMSecsSinceEpoch();
         // Một device lỗi có thể bắn nhiều gói trong cùng mili-giây. Giới hạn log
         // còn 1 mẫu/giây để SQLite không chặn event loop điều khiển MQTT/HTTP.

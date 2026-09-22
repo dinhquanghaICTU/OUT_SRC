@@ -850,16 +850,226 @@ QJsonObject Database::deviceTelemetryHistory(const QString &username, const QStr
         deviceCreatedAt = devInfo.value(2).toString();
     }
 
-    const int prefixLength = period == QStringLiteral("year") ? 4
-                           : period == QStringLiteral("month") ? 7 : 10;
-    const QString prefix = selectedDate.left(prefixLength);
+    const QDate selDate = QDate::fromString(selectedDate, Qt::ISODate);
+    const QDate today = QDate::currentDate();
+
+    // Future date check
+    bool isFuture = false;
+    if (period == QStringLiteral("day")) {
+        isFuture = (selDate > today);
+    } else if (period == QStringLiteral("month")) {
+        isFuture = (selDate.year() > today.year()) || (selDate.year() == today.year() && selDate.month() > today.month());
+    } else if (period == QStringLiteral("year")) {
+        isFuture = (selDate.year() > today.year());
+    }
+
+    if (isFuture) {
+        return QJsonObject{{"device_id", deviceId},
+                           {"device_name", deviceName},
+                           {"added_by", ownerUsername},
+                           {"added_at", deviceCreatedAt},
+                           {"period", period},
+                           {"selected_date", selectedDate},
+                           {"total", 0},
+                           {"metric_keys", QJsonArray{}},
+                           {"averages", QJsonObject{}},
+                           {"data", QJsonArray{}}};
+    }
+
+    if (period == QStringLiteral("month")) {
+        const QString prefix = selectedDate.left(7); // "yyyy-MM"
+        QSqlQuery query(m_db);
+        query.prepare(QStringLiteral(
+            "SELECT coalesce(substr(datetime(recorded_at, 'localtime'), 1, 10), substr(recorded_at, 1, 10)) as day_str, metrics_json FROM device_telemetry_log "
+            "WHERE device_id=? COLLATE NOCASE AND ("
+            "    coalesce(substr(datetime(recorded_at, 'localtime'), 1, 7), substr(recorded_at, 1, 7)) = ? "
+            "    OR substr(recorded_at, 1, 7) = ?"
+            ") "
+            "ORDER BY recorded_at ASC"));
+        query.addBindValue(deviceId.trimmed());
+        query.addBindValue(prefix);
+        query.addBindValue(prefix);
+        if (!query.exec()) {
+            if (error) *error = query.lastError().text();
+            return {};
+        }
+
+        QMap<QString, QHash<QString, double>> daySums;
+        QMap<QString, QHash<QString, int>> dayCounts;
+        QMap<QString, int> daySampleCount;
+        QSet<QString> metricKeys;
+        QHash<QString, double> overallSums;
+        QHash<QString, int> overallCounts;
+
+        while (query.next()) {
+            const QString dayStr = query.value(0).toString();
+            const QJsonObject metrics = QJsonDocument::fromJson(query.value(1).toByteArray()).object();
+            daySampleCount[dayStr] += 1;
+            for (auto it = metrics.begin(); it != metrics.end(); ++it) {
+                if (it.value().isDouble()) {
+                    const QString k = it.key();
+                    const double val = it.value().toDouble();
+                    metricKeys.insert(k);
+                    daySums[dayStr][k] += val;
+                    dayCounts[dayStr][k] += 1;
+                    overallSums[k] += val;
+                    overallCounts[k] += 1;
+                }
+            }
+        }
+
+        QStringList sortedKeys(metricKeys.begin(), metricKeys.end());
+        sortedKeys.sort();
+        QJsonArray keys;
+        for (const QString &k : sortedKeys)
+            keys.append(k);
+
+        QJsonObject averages;
+        for (const QString &k : sortedKeys) {
+            if (overallCounts.value(k) > 0)
+                averages.insert(k, std::round((overallSums.value(k) / overallCounts.value(k)) * 100.0) / 100.0);
+        }
+
+        QJsonArray rows;
+        QStringList dayList = daySums.keys();
+        std::sort(dayList.begin(), dayList.end(), std::greater<QString>());
+
+        for (const QString &dayStr : dayList) {
+            QJsonObject dayMetrics;
+            for (const QString &k : sortedKeys) {
+                if (dayCounts[dayStr].value(k) > 0) {
+                    const double avg = daySums[dayStr].value(k) / dayCounts[dayStr].value(k);
+                    dayMetrics.insert(k, std::round(avg * 100.0) / 100.0);
+                }
+            }
+            const QDate d = QDate::fromString(dayStr, QStringLiteral("yyyy-MM-dd"));
+            const QString label = d.isValid() ? QStringLiteral("Ngày %1").arg(d.toString(QStringLiteral("dd/MM"))) : dayStr;
+            rows.append(QJsonObject{
+                {QStringLiteral("recorded_at"), dayStr},
+                {QStringLiteral("label"), label},
+                {QStringLiteral("day"), d.isValid() ? d.day() : 0},
+                {QStringLiteral("sample_count"), daySampleCount.value(dayStr, 0)},
+                {QStringLiteral("metrics"), dayMetrics}
+            });
+        }
+
+        return QJsonObject{
+            {QStringLiteral("device_id"), deviceId},
+            {QStringLiteral("device_name"), deviceName},
+            {QStringLiteral("added_by"), ownerUsername},
+            {QStringLiteral("added_at"), deviceCreatedAt},
+            {QStringLiteral("period"), period},
+            {QStringLiteral("selected_date"), selectedDate},
+            {QStringLiteral("total"), rows.size()},
+            {QStringLiteral("metric_keys"), keys},
+            {QStringLiteral("averages"), averages},
+            {QStringLiteral("data"), rows}
+        };
+    }
+
+    if (period == QStringLiteral("year")) {
+        const QString prefix = selectedDate.left(4); // "yyyy"
+        QSqlQuery query(m_db);
+        query.prepare(QStringLiteral(
+            "SELECT coalesce(substr(datetime(recorded_at, 'localtime'), 1, 7), substr(recorded_at, 1, 7)) as month_str, metrics_json FROM device_telemetry_log "
+            "WHERE device_id=? COLLATE NOCASE AND ("
+            "    coalesce(substr(datetime(recorded_at, 'localtime'), 1, 4), substr(recorded_at, 1, 4)) = ? "
+            "    OR substr(recorded_at, 1, 4) = ?"
+            ") "
+            "ORDER BY recorded_at ASC"));
+        query.addBindValue(deviceId.trimmed());
+        query.addBindValue(prefix);
+        query.addBindValue(prefix);
+        if (!query.exec()) {
+            if (error) *error = query.lastError().text();
+            return {};
+        }
+
+        QMap<QString, QHash<QString, double>> monthSums;
+        QMap<QString, QHash<QString, int>> monthCounts;
+        QMap<QString, int> monthSampleCount;
+        QSet<QString> metricKeys;
+        QHash<QString, double> overallSums;
+        QHash<QString, int> overallCounts;
+
+        while (query.next()) {
+            const QString monthStr = query.value(0).toString();
+            const QJsonObject metrics = QJsonDocument::fromJson(query.value(1).toByteArray()).object();
+            monthSampleCount[monthStr] += 1;
+            for (auto it = metrics.begin(); it != metrics.end(); ++it) {
+                if (it.value().isDouble()) {
+                    const QString k = it.key();
+                    const double val = it.value().toDouble();
+                    metricKeys.insert(k);
+                    monthSums[monthStr][k] += val;
+                    monthCounts[monthStr][k] += 1;
+                    overallSums[k] += val;
+                    overallCounts[k] += 1;
+                }
+            }
+        }
+
+        QStringList sortedKeys(metricKeys.begin(), metricKeys.end());
+        sortedKeys.sort();
+        QJsonArray keys;
+        for (const QString &k : sortedKeys)
+            keys.append(k);
+
+        QJsonObject averages;
+        for (const QString &k : sortedKeys) {
+            if (overallCounts.value(k) > 0)
+                averages.insert(k, std::round((overallSums.value(k) / overallCounts.value(k)) * 100.0) / 100.0);
+        }
+
+        QJsonArray rows;
+        QStringList monthList = monthSums.keys();
+        std::sort(monthList.begin(), monthList.end(), std::greater<QString>());
+
+        for (const QString &monthStr : monthList) {
+            QJsonObject monthMetrics;
+            for (const QString &k : sortedKeys) {
+                if (monthCounts[monthStr].value(k) > 0) {
+                    const double avg = monthSums[monthStr].value(k) / monthCounts[monthStr].value(k);
+                    monthMetrics.insert(k, std::round(avg * 100.0) / 100.0);
+                }
+            }
+            const int monthNum = monthStr.mid(5, 2).toInt();
+            const QString label = QStringLiteral("Tháng %1").arg(monthNum, 2, 10, QChar('0'));
+            rows.append(QJsonObject{
+                {QStringLiteral("recorded_at"), monthStr},
+                {QStringLiteral("label"), label},
+                {QStringLiteral("month"), monthNum},
+                {QStringLiteral("sample_count"), monthSampleCount.value(monthStr, 0)},
+                {QStringLiteral("metrics"), monthMetrics}
+            });
+        }
+
+        return QJsonObject{
+            {QStringLiteral("device_id"), deviceId},
+            {QStringLiteral("device_name"), deviceName},
+            {QStringLiteral("added_by"), ownerUsername},
+            {QStringLiteral("added_at"), deviceCreatedAt},
+            {QStringLiteral("period"), period},
+            {QStringLiteral("selected_date"), selectedDate},
+            {QStringLiteral("total"), rows.size()},
+            {QStringLiteral("metric_keys"), keys},
+            {QStringLiteral("averages"), averages},
+            {QStringLiteral("data"), rows}
+        };
+    }
+
+    // Default period: "day" (second-level resolution)
+    const QString prefix = selectedDate.left(10);
     QSqlQuery query(m_db);
     query.prepare(QStringLiteral(
         "SELECT recorded_at,metrics_json FROM device_telemetry_log "
-        "WHERE device_id=? COLLATE NOCASE AND substr(recorded_at,1,?)=? "
+        "WHERE device_id=? COLLATE NOCASE AND ("
+        "    coalesce(substr(datetime(recorded_at, 'localtime'), 1, 10), substr(recorded_at, 1, 10)) = ? "
+        "    OR substr(recorded_at, 1, 10) = ?"
+        ") "
         "ORDER BY recorded_at DESC LIMIT ?"));
     query.addBindValue(deviceId.trimmed());
-    query.addBindValue(prefixLength);
+    query.addBindValue(prefix);
     query.addBindValue(prefix);
     query.addBindValue(safeLimit(limit));
     if (!query.exec()) {
@@ -881,9 +1091,12 @@ QJsonObject Database::deviceTelemetryHistory(const QString &username, const QStr
     QSqlQuery aggregate(m_db);
     aggregate.prepare(QStringLiteral(
         "SELECT metrics_json FROM device_telemetry_log "
-        "WHERE device_id=? COLLATE NOCASE AND substr(recorded_at,1,?)=?"));
+        "WHERE device_id=? COLLATE NOCASE AND ("
+        "    coalesce(substr(datetime(recorded_at, 'localtime'), 1, 10), substr(recorded_at, 1, 10)) = ? "
+        "    OR substr(recorded_at, 1, 10) = ?"
+        ")"));
     aggregate.addBindValue(deviceId.trimmed());
-    aggregate.addBindValue(prefixLength);
+    aggregate.addBindValue(prefix);
     aggregate.addBindValue(prefix);
     if (!aggregate.exec()) {
         if (error) *error = aggregate.lastError().text();
@@ -907,7 +1120,7 @@ QJsonObject Database::deviceTelemetryHistory(const QString &username, const QStr
     for (const QString &key : sortedKeys) {
         keys.append(key);
         if (counts.value(key) > 0)
-            averages.insert(key, sums.value(key) / counts.value(key));
+            averages.insert(key, std::round((sums.value(key) / counts.value(key)) * 100.0) / 100.0);
     }
     return QJsonObject{{"device_id", deviceId},
                        {"device_name", deviceName},

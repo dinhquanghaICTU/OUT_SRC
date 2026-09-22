@@ -281,16 +281,32 @@ VirtualKeyboardDialog::VirtualKeyboardDialog(QLineEdit *target, QWidget *parent,
             QObject *p = m_target->parent();
             while (p) {
                 if (auto *doubleSpin = qobject_cast<QDoubleSpinBox *>(p)) {
+                    QString cleaned = text;
+                    cleaned.replace(',', '.');
+                    QString numStr;
+                    for (QChar ch : cleaned) {
+                        if (ch.isDigit() || ch == '.' || ch == '-') numStr.append(ch);
+                    }
                     bool ok = false;
-                    double v = text.toDouble(&ok);
+                    double v = numStr.toDouble(&ok);
+                    if (!ok) {
+                        v = QLocale().toDouble(text, &ok);
+                    }
                     if (ok) {
                         doubleSpin->setValue(v);
                     }
                     break;
                 }
                 if (auto *intSpin = qobject_cast<QSpinBox *>(p)) {
+                    QString numStr;
+                    for (QChar ch : text) {
+                        if (ch.isDigit() || ch == '-') numStr.append(ch);
+                    }
                     bool ok = false;
-                    int v = text.toInt(&ok);
+                    int v = numStr.toInt(&ok);
+                    if (!ok) {
+                        v = QLocale().toInt(text, &ok);
+                    }
                     if (ok) {
                         intSpin->setValue(v);
                     }

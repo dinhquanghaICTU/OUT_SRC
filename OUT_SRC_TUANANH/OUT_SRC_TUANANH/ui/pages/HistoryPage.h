@@ -28,6 +28,8 @@ public:
 
     void setDevices(const QJsonArray &devices);
     void setHistory(const QJsonObject &history);
+    void setPeriod(const QString &period);
+    void showTableView(bool showTable = true);
     void openChartZoomDialog(const QString &initialMetricKey = QString());
 
 signals:

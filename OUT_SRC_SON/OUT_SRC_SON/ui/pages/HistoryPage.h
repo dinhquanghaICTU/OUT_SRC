@@ -7,9 +7,12 @@ class QComboBox;
 class QHBoxLayout;
 class QPushButton;
 class QStackedWidget;
+class QTimer;
 
 #include <QJsonArray>
 #include <QJsonObject>
+#include <QDate>
+#include <QHash>
 
 namespace Ui { class HistoryPage; }
 class QChart;
@@ -29,6 +32,10 @@ public:
     void setDevices(const QJsonArray &devices);
     void setHistory(const QJsonObject &history);
     void openChartZoomDialog(const QString &initialMetricKey = QString());
+    void setViewTab(int tabIndex);
+    void setPeriod(const QString &period);
+    void setDate(const QDate &date);
+    void setMetric(const QString &key);
 
 signals:
     void historyRequested(const QString &deviceId, const QString &period,
@@ -41,6 +48,8 @@ protected:
 private:
     void requestCurrentHistory();
     void applyResponsiveLayout();
+    void rebuildDateOptions();
+    QDate selectedDate() const;
     void updateChart();
     void updateMetricSelector();
     QString currentDeviceType() const;
@@ -51,12 +60,16 @@ private:
     Ui::HistoryPage *ui;
     QChart *m_chart;
     QChartView *m_chartView;
+    QLabel *m_primaryStatTitle = nullptr;
     QLabel *m_primaryStat;
+    QLabel *m_secondaryStatTitle = nullptr;
     QLabel *m_secondaryStat;
+    QLabel *m_summaryStatTitle = nullptr;
     QLabel *m_thirdStat;
     QLabel *m_chartTitle;
     QLabel *m_chartHint;
     QLabel *m_headerSubtitle;
+    QPushButton *m_zoomBtn = nullptr;
     QGridLayout *m_analyticsGrid;
     QFrame *m_chartCard;
     QFrame *m_primaryStatCard;
@@ -67,5 +80,9 @@ private:
     QString m_selectedMetricKey;
     QJsonArray m_cachedKeys;
     QJsonArray m_cachedRows;
+    QTimer *m_liveTimer = nullptr;
+    QString m_cachedPeriod;
+    QString m_cachedSelectedDate;
+    QDate m_selectedDate = QDate::currentDate();
+    QHash<QString, bool> m_deviceOnline;
 };
-

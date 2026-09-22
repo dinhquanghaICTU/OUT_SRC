@@ -77,9 +77,10 @@ class DeviceViewModel(private val repository: PumpRepository = PumpRepository())
 
     /**
      * Tự động kiểm tra cảnh báo Nước Đầy và Nước Cạn theo ngưỡng
+     * Bỏ qua khi Node Bể mất kết nối để tránh hiểu nhầm chạy khô / nước không tăng
      */
-    private fun checkWaterThresholds(waterPercent: Float, minPct: Int, maxPct: Int) {
-        if (waterPercent <= 0f) return
+    private fun checkWaterThresholds(waterPercent: Float, minPct: Int, maxPct: Int, isTankOnline: Boolean = true) {
+        if (!isTankOnline || waterPercent <= 0f) return
 
         if (waterPercent >= maxPct && lastWaterState != "FULL") {
             lastWaterState = "FULL"
@@ -136,7 +137,7 @@ class DeviceViewModel(private val repository: PumpRepository = PumpRepository())
                 }
 
                 if (current != null) {
-                    checkWaterThresholds(ui.waterPercent, ui.minWaterPercent, ui.maxWaterPercent)
+                    checkWaterThresholds(ui.waterPercent, ui.minWaterPercent, ui.maxWaterPercent, ui.isTankOnline)
                     loadLogs(current.id)
                 }
                 startPolling()
@@ -189,7 +190,7 @@ class DeviceViewModel(private val repository: PumpRepository = PumpRepository())
             }
 
             if (updatedCurrent != null) {
-                checkWaterThresholds(ui.waterPercent, ui.minWaterPercent, ui.maxWaterPercent)
+                checkWaterThresholds(ui.waterPercent, ui.minWaterPercent, ui.maxWaterPercent, ui.isTankOnline)
                 // Đồng bộ nhật ký sự kiện realtime liên tục từ Cloud
                 repository.getPumpLogs(updatedCurrent.id, 20).onSuccess { logsList ->
                     _state.update { it.copy(logs = logsList) }
@@ -207,7 +208,7 @@ class DeviceViewModel(private val repository: PumpRepository = PumpRepository())
                 deviceUiState = ui
             )
         }
-        checkWaterThresholds(ui.waterPercent, ui.minWaterPercent, ui.maxWaterPercent)
+        checkWaterThresholds(ui.waterPercent, ui.minWaterPercent, ui.maxWaterPercent, ui.isTankOnline)
         loadLogs(deviceId)
     }
 

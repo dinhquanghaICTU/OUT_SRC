@@ -1,5 +1,6 @@
 #include "DashboardPage.h"
 #include "ui_DashboardPage.h"
+#include "ui/widgets/WaterTankWidget.h"
 
 #include <QChart>
 #include <QChartView>
@@ -148,8 +149,10 @@ void DashboardPage::setHasDevice(bool hasDevice, const QString &deviceId, const 
         m_pumpCardStack->setCurrentIndex(hasDevice ? 1 : 0);
     }
 
-    if (m_pumpDeviceNameLbl && !m_deviceName.isEmpty()) {
-        m_pumpDeviceNameLbl->setText(m_deviceName);
+    if (m_pumpDeviceNameLbl) {
+        QString disp = m_deviceId;
+        if (disp.isEmpty()) disp = m_deviceName;
+        m_pumpDeviceNameLbl->setText(disp);
     }
 
     updateDisplays();
@@ -364,71 +367,88 @@ void DashboardPage::setupDashboardLayout()
     auto *heroHead = new QHBoxLayout;
     auto *dropIcon = new QLabel(QStringLiteral("💧"));
     dropIcon->setStyleSheet("font-size: 11px;");
-    auto *heroTitle = new QLabel(QStringLiteral("Son Environmental & Pump Monitor"));
+    auto *heroTitle = new QLabel(QStringLiteral("Trạm Bơm Tự Động & Đo Mực Nước - Sơn"));
     heroTitle->setStyleSheet("color: #cbd5e1; font-size: 11px; font-weight: 700;");
     heroHead->addWidget(dropIcon);
     heroHead->addWidget(heroTitle);
     heroHead->addStretch();
     heroLayout->addLayout(heroHead);
 
-    // Hero Center: Left AC Display Box + Right Metrics
+    // Hero Center: Left Distance Display Box + Right Metrics (Flow & Total Volume)
     auto *heroCenter = new QHBoxLayout;
     heroCenter->setSpacing(10);
 
-    // Left AC Badge Box
-    auto *acBox = new QFrame;
-    acBox->setStyleSheet(
+    // Left Distance/Level Badge Box (HC-SR04 with graphical Water Tank)
+    auto *distBox = new QFrame;
+    distBox->setStyleSheet(
         "QFrame { "
         "  background-color: rgba(14, 25, 58, 0.75); "
-        "  border: 1.5px solid rgba(52, 211, 153, 0.7); "
+        "  border: 1.5px solid rgba(56, 189, 248, 0.7); "
         "  border-radius: 12px; "
         "}"
     );
-    auto *acLayout = new QVBoxLayout(acBox);
-    acLayout->setContentsMargins(8, 4, 8, 4);
-    acLayout->setSpacing(1);
+    auto *distMainLayout = new QHBoxLayout(distBox);
+    distMainLayout->setContentsMargins(6, 4, 8, 4);
+    distMainLayout->setSpacing(8);
+
+    // Bể chứa nước đồ họa trực quan (Visual Water Reservoir Tank)
+    m_waterTankWidget = new WaterTankWidget(distBox);
+    distMainLayout->addWidget(m_waterTankWidget, 0, Qt::AlignVCenter);
+
+    auto *distDetailsLayout = new QVBoxLayout;
+    distDetailsLayout->setContentsMargins(0, 2, 0, 2);
+    distDetailsLayout->setSpacing(2);
 
     auto *onBadgeRow = new QHBoxLayout;
-    auto *onBadge = new QLabel(QStringLiteral("ON"));
-    onBadge->setStyleSheet("background-color: #10b981; color: #ffffff; font-size: 9px; font-weight: 900; border-radius: 8px; padding: 1px 6px;");
-    onBadgeRow->addWidget(onBadge);
+    onBadgeRow->setSpacing(4);
+    auto *distStatusBadge = new QLabel(QStringLiteral("HC-SR04"), distBox);
+    distStatusBadge->setStyleSheet("background-color: #0284c7; color: #ffffff; font-size: 8px; font-weight: 900; border-radius: 7px; padding: 1px 5px;");
+    onBadgeRow->addWidget(distStatusBadge);
+
+    m_heroTankStatusBadge = new QLabel(QStringLiteral("BÌNH THƯỜNG"), distBox);
+    m_heroTankStatusBadge->setStyleSheet("background-color: rgba(16, 185, 129, 0.2); color: #10b981; font-size: 8px; font-weight: 900; border: 1px solid rgba(16, 185, 129, 0.5); border-radius: 7px; padding: 1px 5px;");
+    onBadgeRow->addWidget(m_heroTankStatusBadge);
     onBadgeRow->addStretch();
-    acLayout->addLayout(onBadgeRow);
+    distDetailsLayout->addLayout(onBadgeRow);
 
-    auto *tempTitle = new QLabel(QStringLiteral("🌡 TEMPERATURE"));
-    tempTitle->setStyleSheet("color: #38bdf8; font-size: 9px; font-weight: 800; border: none; background: transparent;");
-    acLayout->addWidget(tempTitle);
+    auto *distTitle = new QLabel(QStringLiteral("📏 KHOẢNG CÁCH (HC-SR04)"), distBox);
+    distTitle->setStyleSheet("color: #94a3b8; font-size: 8px; font-weight: 800; border: none; background: transparent;");
+    distDetailsLayout->addWidget(distTitle);
 
-    m_heroTempValue = new QLabel(QStringLiteral("24.0 °C"));
-    m_heroTempValue->setStyleSheet("color: #ffffff; font-size: 20px; font-weight: 900; font-family: monospace; border: none; background: transparent;");
-    acLayout->addWidget(m_heroTempValue);
+    m_heroDistanceValue = new QLabel(QStringLiteral("18.5 cm"), distBox);
+    m_heroDistanceValue->setStyleSheet("color: #ffffff; font-size: 17px; font-weight: 900; font-family: monospace; border: none; background: transparent;");
+    distDetailsLayout->addWidget(m_heroDistanceValue);
 
-    auto *airWaves = new QLabel(QStringLiteral("SSS   | | |   SSS"));
-    airWaves->setStyleSheet("color: #64748b; font-size: 9px; font-weight: 900; letter-spacing: 2px; border: none; background: transparent;");
-    airWaves->setAlignment(Qt::AlignCenter);
-    acLayout->addWidget(airWaves);
+    auto *waterDepthTitle = new QLabel(QStringLiteral("🌊 MỰC NƯỚC BỂ"), distBox);
+    waterDepthTitle->setStyleSheet("color: #38bdf8; font-size: 8px; font-weight: 800; border: none; background: transparent;");
+    distDetailsLayout->addWidget(waterDepthTitle);
 
-    heroCenter->addWidget(acBox, 3);
+    m_heroWaterDepthValue = new QLabel(QStringLiteral("41.5 cm (69%)"), distBox);
+    m_heroWaterDepthValue->setStyleSheet("color: #38bdf8; font-size: 13px; font-weight: 900; font-family: monospace; border: none; background: transparent;");
+    distDetailsLayout->addWidget(m_heroWaterDepthValue);
 
-    // Right Metrics in Hero (Humidity + Pressure)
+    distMainLayout->addLayout(distDetailsLayout, 1);
+    heroCenter->addWidget(distBox, 3);
+
+    // Right Metrics in Hero (Lưu lượng nước + Tổng nước đã bơm)
     auto *heroRight = new QVBoxLayout;
     heroRight->setSpacing(2);
 
-    auto *humHeader = new QLabel(QStringLiteral("💧 HUMIDITY"));
-    humHeader->setStyleSheet("color: #38bdf8; font-size: 9px; font-weight: 800; background: transparent;");
-    heroRight->addWidget(humHeader);
+    auto *flowHeader = new QLabel(QStringLiteral("💧 LƯU LƯỢNG NƯỚC"));
+    flowHeader->setStyleSheet("color: #34d399; font-size: 9px; font-weight: 800; background: transparent;");
+    heroRight->addWidget(flowHeader);
 
-    m_heroHumidityValue = new QLabel(QStringLiteral("60.0 %"));
-    m_heroHumidityValue->setStyleSheet("color: #ffffff; font-size: 16px; font-weight: 900; font-family: monospace; background: transparent;");
-    heroRight->addWidget(m_heroHumidityValue);
+    m_heroFlowValue = new QLabel(QStringLiteral("15.40 L/min"));
+    m_heroFlowValue->setStyleSheet("color: #ffffff; font-size: 16px; font-weight: 900; font-family: monospace; background: transparent;");
+    heroRight->addWidget(m_heroFlowValue);
 
-    auto *pressHeader = new QLabel(QStringLiteral("⏱ PRESSURE"));
-    pressHeader->setStyleSheet("color: #38bdf8; font-size: 9px; font-weight: 800; background: transparent;");
-    heroRight->addWidget(pressHeader);
+    auto *totalHeader = new QLabel(QStringLiteral("🚰 TỔNG NƯỚC ĐÃ BƠM"));
+    totalHeader->setStyleSheet("color: #38bdf8; font-size: 9px; font-weight: 800; background: transparent;");
+    heroRight->addWidget(totalHeader);
 
-    m_heroPressureValue = new QLabel(QStringLiteral("1002 mbar"));
-    m_heroPressureValue->setStyleSheet("color: #ffffff; font-size: 16px; font-weight: 900; font-family: monospace; background: transparent;");
-    heroRight->addWidget(m_heroPressureValue);
+    m_heroTotalValue = new QLabel(QStringLiteral("1845.2 L"));
+    m_heroTotalValue->setStyleSheet("color: #ffffff; font-size: 16px; font-weight: 900; font-family: monospace; background: transparent;");
+    heroRight->addWidget(m_heroTotalValue);
 
     heroCenter->addLayout(heroRight, 2);
     heroLayout->addLayout(heroCenter);
@@ -452,12 +472,12 @@ void DashboardPage::setupDashboardLayout()
         return qMakePair(p, vLbl);
     };
 
-    auto p1 = makeGlassPill("AC OPERATION", "☼ Heat", "#fbbf24");
-    auto p2 = makeGlassPill("IONIZATION", "🫧 On", "#38bdf8");
-    auto p3 = makeGlassPill("PUMP STATUS", "OFF", "#ef4444");
+    auto p1 = makeGlassPill(QStringLiteral("CHẾ ĐỘ BƠM"), QStringLiteral("🤖 Tự động"), QStringLiteral("#38bdf8"));
+    auto p2 = makeGlassPill(QStringLiteral("NGƯỠNG BƠM"), QStringLiteral("10 - 35 cm"), QStringLiteral("#fbbf24"));
+    auto p3 = makeGlassPill(QStringLiteral("TRẠNG THÁI"), QStringLiteral("BƠM: ON"), QStringLiteral("#10b981"));
 
-    m_heroAcOpValue = p1.second;
-    m_heroIonValue = p2.second;
+    m_heroAutoModeValue = p1.second;
+    m_heroThresholdValue = p2.second;
     m_heroFanValue = p3.second;
 
     pillRow->addWidget(p1.first);
@@ -521,29 +541,31 @@ void DashboardPage::setupDashboardLayout()
 
     // Status Row with Device Name, Online Badge, Status Badge, Auto Config, Add and Unbind Button
     auto *statusRow = new QHBoxLayout;
-    statusRow->setSpacing(4);
+    statusRow->setSpacing(5);
     m_pumpDeviceNameLbl = new QLabel(QStringLiteral("son-190782"));
     m_pumpDeviceNameLbl->setStyleSheet("color: #38bdf8; font-size: 11px; font-weight: 800;");
 
-    m_pumpOnlineBadge = new QLabel(QStringLiteral("🟢 ONLINE"));
+    m_pumpOnlineBadge = new QLabel(QStringLiteral("● Online"));
     m_pumpOnlineBadge->setStyleSheet("color: #10b981; font-size: 9px; font-weight: 900; background: rgba(16, 185, 129, 0.15); border-radius: 4px; padding: 2px 6px;");
 
-    m_pumpStatusBadge = new QLabel(QStringLiteral("ĐANG TẮT [OFF]"));
+    m_pumpStatusBadge = new QLabel(QStringLiteral("BƠM: OFF"));
     m_pumpStatusBadge->setStyleSheet("color: #ef4444; font-size: 9px; font-weight: 900; background: rgba(239, 68, 68, 0.15); border-radius: 4px; padding: 2px 6px;");
 
     auto *autoConfigBtn = new QPushButton(QStringLiteral("⚙ Ngưỡng"));
     autoConfigBtn->setCursor(Qt::PointingHandCursor);
-    autoConfigBtn->setStyleSheet("background: #1e3a8a; color: #38bdf8; border: 1px solid #2563eb; border-radius: 4px; font-size: 9px; font-weight: 800; padding: 2px 6px;");
+    autoConfigBtn->setStyleSheet("QPushButton { background: #1e3a8a; color: #38bdf8; border: 1px solid #2563eb; border-radius: 4px; font-size: 9px; font-weight: 800; padding: 2px 6px; } QPushButton:hover { background: #2563eb; color: #ffffff; }");
     connect(autoConfigBtn, &QPushButton::clicked, this, &DashboardPage::openPumpAutoConfig);
 
-    auto *addDevBtn = new QPushButton(QStringLiteral("+ Thêm"));
+    auto *addDevBtn = new QPushButton(QStringLiteral("+"));
+    addDevBtn->setToolTip(tr("Thêm / Đổi thiết bị"));
     addDevBtn->setCursor(Qt::PointingHandCursor);
-    addDevBtn->setStyleSheet("background: #065f46; color: #6ee7b7; border: 1px solid #059669; border-radius: 4px; font-size: 9px; font-weight: 800; padding: 2px 6px;");
+    addDevBtn->setStyleSheet("QPushButton { background: #065f46; color: #6ee7b7; border: 1px solid #059669; border-radius: 4px; font-size: 10px; font-weight: 900; padding: 2px 6px; } QPushButton:hover { background: #059669; color: #ffffff; }");
     connect(addDevBtn, &QPushButton::clicked, this, &DashboardPage::addDeviceRequested);
 
-    auto *unbindBtn = new QPushButton(QStringLiteral("✕ Gỡ"));
+    auto *unbindBtn = new QPushButton(QStringLiteral("✕"));
+    unbindBtn->setToolTip(tr("Gỡ thiết bị"));
     unbindBtn->setCursor(Qt::PointingHandCursor);
-    unbindBtn->setStyleSheet("background: #7f1d1d; color: #fca5a5; border: 1px solid #991b1b; border-radius: 4px; font-size: 9px; font-weight: 800; padding: 2px 6px;");
+    unbindBtn->setStyleSheet("QPushButton { background: #7f1d1d; color: #fca5a5; border: 1px solid #991b1b; border-radius: 4px; font-size: 10px; font-weight: 900; padding: 2px 6px; } QPushButton:hover { background: #991b1b; color: #ffffff; }");
     connect(unbindBtn, &QPushButton::clicked, this, [this] {
         if (!m_deviceId.isEmpty()) {
             emit releaseDeviceRequested(m_deviceId);
@@ -629,7 +651,7 @@ void DashboardPage::setupDashboardLayout()
     // Initial state: page 0 (No Device) if no device claimed yet
     m_pumpCardStack->setCurrentIndex(0);
 
-    topRow->addWidget(m_pumpCardStack, 9);
+    topRow->addWidget(m_pumpCardStack, 10);
     mainLayout->addLayout(topRow, 5);
 
     // ==========================================
@@ -651,7 +673,7 @@ void DashboardPage::setupDashboardLayout()
     auto *distChartView = buildChartView({m_distanceSeries}, &m_distanceAxisX, &m_distanceAxisY, 0.0, 50.0, QStringLiteral("cm"));
     distChartLayout->addWidget(distChartView, 1);
 
-    auto *distDetailBtn = new QPushButton(QStringLiteral("⚙ Chi tiết & Chỉnh Ngưỡng (Bảng / Đồ thị)"));
+    auto *distDetailBtn = new QPushButton(QStringLiteral("📊 Chi tiết và Lịch sử đo (Bảng / Đồ thị)"));
     distDetailBtn->setStyleSheet(detailBtnStyle);
     distDetailBtn->setCursor(Qt::PointingHandCursor);
     connect(distDetailBtn, &QPushButton::clicked, this, [this] {
@@ -669,7 +691,7 @@ void DashboardPage::setupDashboardLayout()
     auto *flowChartView = buildChartView({m_flowSeries}, &m_flowAxisX, &m_flowAxisY, 0.0, 10.0, QStringLiteral("L/min"));
     flowChartLayout->addWidget(flowChartView, 1);
 
-    auto *flowDetailBtn = new QPushButton(QStringLiteral("⚙ Chi tiết & Chỉnh Ngưỡng (Bảng / Đồ thị)"));
+    auto *flowDetailBtn = new QPushButton(QStringLiteral("📊 Chi tiết và Lịch sử đo (Bảng / Đồ thị)"));
     flowDetailBtn->setStyleSheet(detailBtnStyle);
     flowDetailBtn->setCursor(Qt::PointingHandCursor);
     connect(flowDetailBtn, &QPushButton::clicked, this, [this] {
@@ -683,29 +705,52 @@ void DashboardPage::setupDashboardLayout()
 
 void DashboardPage::updateDisplays()
 {
-    if (m_heroTempValue)
-        m_heroTempValue->setText(QStringLiteral("%1 °C").arg(m_currentTemp, 0, 'f', 1));
-    if (m_heroHumidityValue)
-        m_heroHumidityValue->setText(QStringLiteral("%1 %").arg(m_currentHumidity, 0, 'f', 1));
-    if (m_heroPressureValue)
-        m_heroPressureValue->setText(QStringLiteral("%1 mbar").arg(m_currentPressure, 0, 'f', 0));
+    if (m_waterTankWidget) {
+        m_waterTankWidget->setDistance(m_currentDistance, m_distanceStopCm, m_distanceStartCm + 15.0);
+    }
+    if (m_heroDistanceValue)
+        m_heroDistanceValue->setText(QStringLiteral("%1 cm").arg(m_currentDistance, 0, 'f', 1));
+    if (m_heroWaterDepthValue && m_waterTankWidget) {
+        const double pct = m_waterTankWidget->waterPercent();
+        const double estimatedDepth = qMax(0.0, (m_distanceStartCm + 15.0) - m_currentDistance);
+        m_heroWaterDepthValue->setText(QStringLiteral("%1 cm (%2%)")
+            .arg(QString::number(estimatedDepth, 'f', 1))
+            .arg(QString::number(pct, 'f', 0)));
+    }
+    if (m_heroTankStatusBadge && m_waterTankWidget) {
+        m_heroTankStatusBadge->setText(m_waterTankWidget->statusText());
+        const QColor col = m_waterTankWidget->statusColor();
+        m_heroTankStatusBadge->setStyleSheet(QStringLiteral(
+            "background-color: rgba(%1, %2, %3, 0.2); "
+            "color: %4; font-size: 8px; font-weight: 900; "
+            "border: 1px solid rgba(%1, %2, %3, 0.5); border-radius: 7px; padding: 1px 5px;")
+            .arg(col.red()).arg(col.green()).arg(col.blue()).arg(col.name()));
+    }
+    if (m_heroFlowValue)
+        m_heroFlowValue->setText(QStringLiteral("%1 L/min").arg(m_currentFlow, 0, 'f', 2));
+    if (m_heroTotalValue)
+        m_heroTotalValue->setText(QStringLiteral("%1 L").arg(m_totalLiters, 0, 'f', 1));
 
+    if (m_heroAutoModeValue)
+        m_heroAutoModeValue->setText(m_autoPumpMode ? QStringLiteral("🤖 Tự động") : QStringLiteral("🖐 Thủ công"));
+    if (m_heroThresholdValue)
+        m_heroThresholdValue->setText(QStringLiteral("%1 - %2 cm").arg(m_distanceStopCm, 0, 'f', 0).arg(m_distanceStartCm, 0, 'f', 0));
     if (m_heroFanValue)
         m_heroFanValue->setText(m_pumpOn ? QStringLiteral("BƠM: ON") : QStringLiteral("BƠM: OFF"));
 
     // Update Pump Control Card
     if (m_pumpOnlineBadge) {
-        m_pumpOnlineBadge->setText(m_isOnline ? QStringLiteral("🟢 ONLINE") : QStringLiteral("🔴 OFFLINE"));
+        m_pumpOnlineBadge->setText(m_isOnline ? QStringLiteral("● Online") : QStringLiteral("○ Offline"));
         m_pumpOnlineBadge->setStyleSheet(m_isOnline
             ? "color: #10b981; font-size: 9px; font-weight: 900; background: rgba(16, 185, 129, 0.15); border-radius: 4px; padding: 2px 6px;"
             : "color: #ef4444; font-size: 9px; font-weight: 900; background: rgba(239, 68, 68, 0.15); border-radius: 4px; padding: 2px 6px;");
     }
 
     if (m_pumpStatusBadge) {
-        m_pumpStatusBadge->setText(m_pumpOn ? QStringLiteral("ĐANG BẬT [ON]") : QStringLiteral("ĐANG TẮT [OFF]"));
+        m_pumpStatusBadge->setText(m_pumpOn ? QStringLiteral("BƠM: ON") : QStringLiteral("BƠM: OFF"));
         m_pumpStatusBadge->setStyleSheet(m_pumpOn
-            ? "color: #10b981; font-size: 11px; font-weight: 900; background: rgba(16, 185, 129, 0.15); border-radius: 6px; padding: 2px 6px;"
-            : "color: #ef4444; font-size: 11px; font-weight: 900; background: rgba(239, 68, 68, 0.15); border-radius: 6px; padding: 2px 6px;");
+            ? "color: #10b981; font-size: 9px; font-weight: 900; background: rgba(16, 185, 129, 0.15); border-radius: 4px; padding: 2px 6px;"
+            : "color: #ef4444; font-size: 9px; font-weight: 900; background: rgba(239, 68, 68, 0.15); border-radius: 4px; padding: 2px 6px;");
     }
 
     if (m_autoToggleButton) {

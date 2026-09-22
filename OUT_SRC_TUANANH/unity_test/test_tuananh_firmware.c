@@ -130,10 +130,39 @@ void test_tuananh_mqtt_telemetry_keys(void) {
     TEST_ASSERT_TRUE(motion_val);
 }
 
+void test_tuananh_auto_lighting_logic(void) {
+    float lux_max = 500.0f;
+    bool relay = false;
+
+    #define EVAL_AUTO_RELAY(motion, lux, cur_relay) \
+        (((motion) && ((lux) < lux_max)) ? true : (!((motion)) || ((lux) >= lux_max)) ? false : (cur_relay))
+
+    // 1. Person enters (motion = true, lux = 15.0) -> Relay turns ON
+    relay = EVAL_AUTO_RELAY(true, 15.0f, relay);
+    TEST_ASSERT_TRUE(relay);
+
+    // 2. Person in room with lamp on (motion = true, lux = 150.0) -> Relay stays ON
+    relay = EVAL_AUTO_RELAY(true, 150.0f, relay);
+    TEST_ASSERT_TRUE(relay);
+
+    // 3. Person LEAVES room (motion = false, lux = 12.5) -> Relay MUST TURN OFF!
+    relay = EVAL_AUTO_RELAY(false, 12.5f, relay);
+    TEST_ASSERT_FALSE(relay);
+
+    // 4. Person re-enters (motion = true, lux = 12.5) -> Relay turns ON again
+    relay = EVAL_AUTO_RELAY(true, 12.5f, relay);
+    TEST_ASSERT_TRUE(relay);
+
+    // 5. Strong daylight (motion = true, lux = 650.0 >= lux_max) -> Relay turns OFF
+    relay = EVAL_AUTO_RELAY(true, 650.0f, relay);
+    TEST_ASSERT_FALSE(relay);
+}
+
 int main(void) {
     UNITY_BEGIN();
     RUN_TEST(test_tuananh_bh1750_lux_ranges);
     RUN_TEST(test_tuananh_pir_debounce_filter);
     RUN_TEST(test_tuananh_mqtt_telemetry_keys);
+    RUN_TEST(test_tuananh_auto_lighting_logic);
     return UNITY_END();
 }

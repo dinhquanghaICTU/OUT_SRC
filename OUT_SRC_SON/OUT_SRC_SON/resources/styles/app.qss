@@ -242,10 +242,10 @@ QPushButton#settingsButton {
     border: none;
     border-radius: 6px;
     color: #94a3b8;
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 800;
-    min-height: 30px;
-    padding: 0 12px;
+    min-height: 28px;
+    padding: 0 8px;
     text-align: center;
 }
 
@@ -275,10 +275,10 @@ QPushButton#logoutButton {
     color: #f87171;
     border: 1px solid rgba(239, 68, 68, 0.35);
     border-radius: 6px;
-    font-size: 11px;
+    font-size: 10px;
     font-weight: 800;
-    min-height: 28px;
-    padding: 0 10px;
+    min-height: 26px;
+    padding: 0 8px;
 }
 
 QPushButton#logoutButton:hover {
@@ -1534,6 +1534,7 @@ QLabel#historyFilterLabel {
 
 QComboBox#historyDeviceCombo,
 QComboBox#historyPeriodCombo,
+QComboBox#historyDateCombo,
 QDateEdit#historyDateEdit {
     background-color: #ffffff;
     border: 1px solid #d3dfda;
@@ -1545,32 +1546,36 @@ QDateEdit#historyDateEdit {
     padding: 0 8px;
 }
 
-QDateEdit#historyDateEdit {
-    min-width: 110px;
+QDateEdit#historyDateEdit,
+QComboBox#historyDateCombo {
+    min-width: 120px;
 }
 
 QComboBox#historyPeriodCombo {
-    min-width: 80px;
+    min-width: 75px;
 }
 
 QComboBox#historyDeviceCombo {
-    min-width: 160px;
+    min-width: 150px;
 }
 
 QComboBox#historyDeviceCombo:hover,
 QComboBox#historyPeriodCombo:hover,
+QComboBox#historyDateCombo:hover,
 QDateEdit#historyDateEdit:hover {
     border-color: #9bcfb5;
 }
 
 QComboBox#historyDeviceCombo:focus,
 QComboBox#historyPeriodCombo:focus,
+QComboBox#historyDateCombo:focus,
 QDateEdit#historyDateEdit:focus {
     border-color: #15945a;
 }
 
 QComboBox#historyDeviceCombo::drop-down,
 QComboBox#historyPeriodCombo::drop-down,
+QComboBox#historyDateCombo::drop-down,
 QDateEdit#historyDateEdit::drop-down {
     border: none;
     width: 20px;

@@ -52,16 +52,16 @@
       </property>
       <layout class="QHBoxLayout" name="sideBarLayout">
        <property name="spacing">
-        <number>8</number>
+        <number>4</number>
        </property>
        <property name="leftMargin">
-        <number>12</number>
+        <number>8</number>
        </property>
        <property name="topMargin">
         <number>4</number>
        </property>
        <property name="rightMargin">
-        <number>12</number>
+        <number>8</number>
        </property>
        <property name="bottomMargin">
         <number>4</number>
@@ -70,14 +70,14 @@
         <widget class="QLabel" name="sideLogo">
          <property name="minimumSize">
           <size>
-           <width>30</width>
-           <height>30</height>
+           <width>28</width>
+           <height>28</height>
           </size>
          </property>
          <property name="maximumSize">
           <size>
-           <width>30</width>
-           <height>30</height>
+           <width>28</width>
+           <height>28</height>
           </size>
          </property>
          <property name="pixmap">
@@ -91,10 +91,10 @@
        <item>
         <widget class="QLabel" name="appTitleLabel">
          <property name="text">
-          <string>SON IOT CENTER</string>
+          <string>SON IOT</string>
          </property>
          <property name="styleSheet">
-          <string notr="true">color: #38bdf8; font-size: 13px; font-weight: 900; letter-spacing: 0.5px; margin-right: 8px;</string>
+          <string notr="true">color: #38bdf8; font-size: 12px; font-weight: 900; letter-spacing: 0.5px; margin-right: 4px;</string>
          </property>
         </widget>
        </item>
@@ -110,6 +110,38 @@
           <bool>true</bool>
          </property>
          <property name="checked">
+          <bool>true</bool>
+         </property>
+         <property name="autoExclusive">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="devicesButton">
+         <property name="toolTip">
+          <string>Quản lý thiết bị</string>
+         </property>
+         <property name="text">
+          <string>◆ Thiết bị</string>
+         </property>
+         <property name="checkable">
+          <bool>true</bool>
+         </property>
+         <property name="autoExclusive">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="historyButton">
+         <property name="toolTip">
+          <string>Lịch sử dữ liệu</string>
+         </property>
+         <property name="text">
+          <string>▤ Lịch sử</string>
+         </property>
+         <property name="checkable">
           <bool>true</bool>
          </property>
          <property name="autoExclusive">
@@ -140,7 +172,7 @@
          </property>
          <property name="sizeHint" stdset="0">
           <size>
-           <width>40</width>
+           <width>10</width>
            <height>20</height>
           </size>
          </property>

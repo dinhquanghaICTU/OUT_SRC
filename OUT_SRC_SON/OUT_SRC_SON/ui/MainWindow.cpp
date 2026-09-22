@@ -225,8 +225,27 @@ MainWindow::MainWindow(QWidget *parent)
                 m_apiClient->requestMyDevice();
             });
 
+    connect(m_apiClient, &ApiClient::devicesReceived,
+            m_historyPage, &HistoryPage::setDevices);
+    connect(m_historyPage, &HistoryPage::historyRequested,
+            m_apiClient, &ApiClient::requestDeviceHistory);
+    connect(m_apiClient, &ApiClient::deviceHistoryReceived,
+            m_historyPage, &HistoryPage::setHistory);
+
     connect(ui->dashboardButton, &QPushButton::clicked, this,
             [this] { ui->pages->setCurrentWidget(m_dashboardPage); });
+    connect(ui->devicesButton, &QPushButton::clicked, this,
+            [this] {
+                ui->pages->setCurrentWidget(m_deviceManagementPage);
+                m_deviceManagementPage->startRealtime();
+                m_apiClient->requestAvailableDevices();
+                m_apiClient->requestMyDevice();
+            });
+    connect(ui->historyButton, &QPushButton::clicked, this,
+            [this] {
+                ui->pages->setCurrentWidget(m_historyPage);
+                m_apiClient->requestMyDevice();
+            });
     connect(ui->usersButton, &QPushButton::clicked, this,
             [this] {
                 ui->pages->setCurrentWidget(m_userManagementPage);
@@ -249,6 +268,29 @@ MainWindow::MainWindow(QWidget *parent)
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+void MainWindow::triggerLogin(const QString &username, const QString &password, int targetPageIndex)
+{
+    connect(m_authService, &AuthService::authenticated, this, [this, targetPageIndex]() {
+        if (targetPageIndex == 3) {
+            ui->pages->setCurrentWidget(m_historyPage);
+            ui->historyButton->setChecked(true);
+            m_apiClient->requestMyDevice();
+        } else if (targetPageIndex == 2) {
+            ui->pages->setCurrentWidget(m_deviceManagementPage);
+            ui->devicesButton->setChecked(true);
+            m_deviceManagementPage->startRealtime();
+        } else if (targetPageIndex == 4) {
+            ui->pages->setCurrentWidget(m_userManagementPage);
+            ui->usersButton->setChecked(true);
+            m_apiClient->requestUsers();
+        } else {
+            ui->pages->setCurrentWidget(m_dashboardPage);
+            ui->dashboardButton->setChecked(true);
+        }
+    });
+    m_authService->login(username, password);
 }
 
 void MainWindow::openSelectDeviceDialog()

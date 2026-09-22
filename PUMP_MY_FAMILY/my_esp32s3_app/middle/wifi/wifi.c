@@ -44,9 +44,13 @@ static void wifi_event_handler(void *arg, esp_event_base_t event_base,
       }
 
       if (s_sta_config.max_retry <= 0 || s_retry_num < s_sta_config.max_retry) {
-        s_retry_num++;
+        if (s_retry_num < 1000000) {
+          s_retry_num++;
+        } else {
+          s_retry_num = 1;
+        }
         wifi_set_state(WIFI_STATE_RECONNECTING);
-        ESP_LOGW(TAG, "Mất kết nối. Đang thử kết nối lại (lần %d)...",
+        ESP_LOGW(TAG, "Mất kết nối Wi-Fi. Đang thử kết nối lại (lần %d)...",
                  s_retry_num);
         if (s_sta_config.retry_delay_ms > 0) {
           vTaskDelay(pdMS_TO_TICKS(s_sta_config.retry_delay_ms));

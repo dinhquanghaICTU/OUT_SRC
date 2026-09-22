@@ -14,6 +14,7 @@ class QPushButton;
 class QLineSeries;
 class QValueAxis;
 class QStackedWidget;
+class WaterTankWidget;
 
 class DashboardPage : public QWidget
 {
@@ -67,12 +68,15 @@ private:
     double m_totalLiters = 0.0;
     bool m_pumpOn = false;
 
-    // Live UI Widgets
-    QLabel *m_heroTempValue = nullptr;
-    QLabel *m_heroHumidityValue = nullptr;
-    QLabel *m_heroPressureValue = nullptr;
-    QLabel *m_heroAcOpValue = nullptr;
-    QLabel *m_heroIonValue = nullptr;
+    // Live UI Widgets (Water Level, Flow & Pump System)
+    WaterTankWidget *m_waterTankWidget = nullptr;
+    QLabel *m_heroDistanceValue = nullptr;
+    QLabel *m_heroWaterDepthValue = nullptr;
+    QLabel *m_heroTankStatusBadge = nullptr;
+    QLabel *m_heroFlowValue = nullptr;
+    QLabel *m_heroTotalValue = nullptr;
+    QLabel *m_heroAutoModeValue = nullptr;
+    QLabel *m_heroThresholdValue = nullptr;
     QLabel *m_heroFanValue = nullptr;
 
     // Pump Control UI Widgets (Stack: 0 = Add Device +, 1 = Active Pump Control)

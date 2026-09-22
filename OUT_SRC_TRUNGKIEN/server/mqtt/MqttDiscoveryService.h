@@ -39,4 +39,5 @@ private:
     bool m_stopping = false;
     QHash<QString, qint64> m_lastPresenceWriteMs;
     QHash<QString, qint64> m_lastTelemetryLogMs;
+    qint64 m_lastRealMqttPacketMs = 0;
 };
