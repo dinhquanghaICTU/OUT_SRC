@@ -5,8 +5,8 @@
 
 #define BUZZER_PIN 25
 
-// Còi cảnh báo GPIO 25 (Active HIGH: 1 = KÊU, 0 = TẮT theo đúng chuẩn phần cứng)
-#define BUZZER_ACTIVE_LOW 0
+// Module còi cảnh báo GPIO 25 kích mức LOW (0 = KÊU, 1 = TẮT)
+#define BUZZER_ACTIVE_LOW 1
 
 #define BUZZER_ON_LEVEL  (BUZZER_ACTIVE_LOW ? 0 : 1)
 #define BUZZER_OFF_LEVEL (BUZZER_ACTIVE_LOW ? 1 : 0)
