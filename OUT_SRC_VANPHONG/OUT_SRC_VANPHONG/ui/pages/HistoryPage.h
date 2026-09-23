@@ -1,10 +1,15 @@
 #pragma once
 
+#include <QWidget>
 #include <QJsonArray>
 #include <QJsonObject>
-#include <QWidget>
+#include <QDate>
 
 namespace Ui { class HistoryPage; }
+class QChart;
+class QChartView;
+class QLineSeries;
+class QBarSeries;
 
 class HistoryPage : public QWidget
 {
@@ -20,10 +25,24 @@ public:
 signals:
     void historyRequested(const QString &deviceId, const QString &period, const QString &date);
 
-private:
+private slots:
     void requestCurrentHistory();
+    void rebuildDateOptions();
+    void updateChart();
+
+private:
+    void setupChart();
+    static QString metricTitle(const QString &key);
 
     Ui::HistoryPage *ui;
     QJsonArray m_devices;
     QString m_selectedDeviceId;
+    QDate m_selectedDate;
+
+    QChart *m_chart = nullptr;
+    QChartView *m_chartView = nullptr;
+    QString m_selectedMetricKey = QStringLiteral("soil_moisture");
+
+    QJsonArray m_cachedRows;
+    QJsonObject m_cachedHistory;
 };

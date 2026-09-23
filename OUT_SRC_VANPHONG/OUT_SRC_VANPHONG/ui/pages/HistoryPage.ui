@@ -7,52 +7,104 @@
     <x>0</x>
     <y>0</y>
     <width>800</width>
-    <height>480</height>
+    <height>520</height>
    </rect>
   </property>
   <layout class="QVBoxLayout" name="mainLayout">
    <property name="spacing">
-    <number>8</number>
+    <number>6</number>
    </property>
    <property name="leftMargin">
-    <number>12</number>
+    <number>10</number>
    </property>
    <property name="topMargin">
-    <number>8</number>
+    <number>6</number>
    </property>
    <property name="rightMargin">
-    <number>12</number>
+    <number>10</number>
    </property>
    <property name="bottomMargin">
-    <number>8</number>
+    <number>6</number>
    </property>
 
-   <!-- TOP FILTER BAR -->
+   <!-- TOP NAV & TABS ROW -->
    <item>
-    <layout class="QHBoxLayout" name="filterRow">
+    <layout class="QHBoxLayout" name="navBarLayout">
      <property name="spacing">
       <number>8</number>
      </property>
 
      <item>
-      <widget class="QLabel" name="pageTitle">
+      <widget class="QPushButton" name="chartTabButton">
+       <property name="minimumSize">
+        <size>
+         <width>85</width>
+         <height>30</height>
+        </size>
+       </property>
+       <property name="cursor">
+        <cursorShape>PointingHandCursor</cursorShape>
+       </property>
        <property name="text">
-        <string>LỊCH SỬ TƯỚI CÂY &amp; ĐỘ ẨM ĐẤT</string>
+        <string>📊 Biểu đồ</string>
+       </property>
+       <property name="checkable">
+        <bool>true</bool>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
        </property>
        <property name="styleSheet">
-        <string notr="true">color: #065f46; font-size: 13px; font-weight: 800;</string>
+        <string notr="true">QPushButton { background: #ffffff; border: 1px solid #cbd5e1; border-radius: 6px; color: #475569; font-weight: 700; font-size: 11px; padding: 4px 10px; } QPushButton:checked { background: #10b981; color: white; border-color: #059669; } QPushButton:hover:!checked { background: #f1f5f9; }</string>
        </property>
       </widget>
      </item>
 
      <item>
-      <spacer name="fSpacer">
+      <widget class="QPushButton" name="tableTabButton">
+       <property name="minimumSize">
+        <size>
+         <width>105</width>
+         <height>30</height>
+        </size>
+       </property>
+       <property name="cursor">
+        <cursorShape>PointingHandCursor</cursorShape>
+       </property>
+       <property name="text">
+        <string>📋 Bảng dữ liệu</string>
+       </property>
+       <property name="checkable">
+        <bool>true</bool>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">QPushButton { background: #ffffff; border: 1px solid #cbd5e1; border-radius: 6px; color: #475569; font-weight: 700; font-size: 11px; padding: 4px 10px; } QPushButton:checked { background: #10b981; color: white; border-color: #059669; } QPushButton:hover:!checked { background: #f1f5f9; }</string>
+       </property>
+      </widget>
+     </item>
+
+     <item>
+      <widget class="QComboBox" name="deviceCombo">
+       <property name="minimumSize">
+        <size>
+         <width>180</width>
+         <height>30</height>
+        </size>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">QComboBox { background-color: #ffffff; border: 1px solid #cbd5e1; border-radius: 6px; color: #0f172a; padding: 4px 10px; font-size: 11px; font-weight: 600; }</string>
+       </property>
+      </widget>
+     </item>
+
+     <item>
+      <spacer name="navSpacer">
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
        </property>
        <property name="sizeHint" stdset="0">
         <size>
-         <width>40</width>
+         <width>20</width>
          <height>20</height>
         </size>
        </property>
@@ -60,53 +112,74 @@
      </item>
 
      <item>
-      <widget class="QComboBox" name="deviceCombo">
-       <property name="minimumSize">
-        <size>
-         <width>160</width>
-         <height>30</height>
-        </size>
+      <widget class="QLabel" name="recordCountLabel">
+       <property name="text">
+        <string>0 bản ghi</string>
        </property>
        <property name="styleSheet">
-        <string notr="true">QComboBox { background-color: #ffffff; border: 1px solid #cbd5e1; border-radius: 6px; color: #0f172a; padding: 4px 10px; font-size: 11px; }</string>
+        <string notr="true">background: #ecfdf5; color: #065f46; border: 1px solid #a7f3d0; border-radius: 6px; padding: 4px 8px; font-size: 11px; font-weight: 700;</string>
        </property>
       </widget>
      </item>
+
+    </layout>
+   </item>
+
+   <!-- FILTER BAR (PERIOD / DATE / METRIC / SEARCH) -->
+   <item>
+    <layout class="QHBoxLayout" name="filterLayout">
+     <property name="spacing">
+      <number>8</number>
+     </property>
 
      <item>
       <widget class="QComboBox" name="periodCombo">
        <property name="minimumSize">
         <size>
-         <width>110</width>
+         <width>80</width>
          <height>30</height>
         </size>
        </property>
        <property name="styleSheet">
-        <string notr="true">QComboBox { background-color: #ffffff; border: 1px solid #cbd5e1; border-radius: 6px; color: #0f172a; padding: 4px 10px; font-size: 11px; }</string>
+        <string notr="true">QComboBox { background-color: #ffffff; border: 1px solid #cbd5e1; border-radius: 6px; color: #0f172a; padding: 4px 10px; font-size: 11px; font-weight: 600; }</string>
        </property>
        <item>
         <property name="text">
-         <string>Hôm nay</string>
+         <string>Ngày</string>
         </property>
        </item>
        <item>
         <property name="text">
-         <string>7 ngày qua</string>
+         <string>Tháng</string>
         </property>
        </item>
        <item>
         <property name="text">
-         <string>30 ngày qua</string>
+         <string>Năm</string>
         </property>
        </item>
       </widget>
      </item>
 
      <item>
-      <widget class="QPushButton" name="btnRefreshHistory">
+      <widget class="QComboBox" name="dateCombo">
        <property name="minimumSize">
         <size>
-         <width>0</width>
+         <width>150</width>
+         <height>30</height>
+        </size>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">QComboBox { background-color: #ffffff; border: 1px solid #cbd5e1; border-radius: 6px; color: #0f172a; padding: 4px 10px; font-size: 11px; font-weight: 600; }</string>
+       </property>
+      </widget>
+     </item>
+
+     <item>
+      <widget class="QPushButton" name="searchButton">
+       <property name="minimumSize">
+        <size>
+         <width>70</width>
          <height>30</height>
         </size>
        </property>
@@ -122,157 +195,258 @@
       </widget>
      </item>
 
-    </layout>
-   </item>
-
-   <!-- SUMMARY STATS ROW -->
-   <item>
-    <layout class="QHBoxLayout" name="statsRow">
-     <property name="spacing">
-      <number>8</number>
-     </property>
-
      <item>
-      <widget class="QFrame" name="statCard1">
-       <property name="styleSheet">
-        <string notr="true">QFrame#statCard1 { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 6px; }</string>
+      <widget class="QComboBox" name="metricCombo">
+       <property name="minimumSize">
+        <size>
+         <width>140</width>
+         <height>30</height>
+        </size>
        </property>
-       <layout class="QVBoxLayout" name="sc1">
-        <property name="margin">
-         <number>4</number>
-        </property>
-        <item>
-         <widget class="QLabel" name="st1">
-          <property name="text">
-           <string>LƯỢT TƯỚI HÔM NAY</string>
-          </property>
-          <property name="styleSheet">
-           <string notr="true">color: #64748b; font-size: 9px; font-weight: 700;</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLabel" name="valWaterCount">
-          <property name="text">
-           <string>4 lần</string>
-          </property>
-          <property name="styleSheet">
-           <string notr="true">color: #059669; font-size: 14px; font-weight: 900;</string>
-          </property>
-         </widget>
-        </item>
-       </layout>
+       <property name="styleSheet">
+        <string notr="true">QComboBox { background-color: #ffffff; border: 1px solid #cbd5e1; border-radius: 6px; color: #065f46; padding: 4px 10px; font-size: 11px; font-weight: 700; }</string>
+       </property>
       </widget>
      </item>
 
      <item>
-      <widget class="QFrame" name="statCard2">
-       <property name="styleSheet">
-        <string notr="true">QFrame#statCard2 { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 6px; }</string>
+      <spacer name="filterSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
        </property>
-       <layout class="QVBoxLayout" name="sc2">
-        <property name="margin">
-         <number>4</number>
-        </property>
-        <item>
-         <widget class="QLabel" name="st2">
-          <property name="text">
-           <string>LƯỢNG NƯỚC TIÊU THỤ</string>
-          </property>
-          <property name="styleSheet">
-           <string notr="true">color: #64748b; font-size: 9px; font-weight: 700;</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLabel" name="valWaterVolume">
-          <property name="text">
-           <string>14.5 Lít</string>
-          </property>
-          <property name="styleSheet">
-           <string notr="true">color: #0284c7; font-size: 14px; font-weight: 900;</string>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </widget>
-     </item>
-
-     <item>
-      <widget class="QFrame" name="statCard3">
-       <property name="styleSheet">
-        <string notr="true">QFrame#statCard3 { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 6px; }</string>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>20</width>
+         <height>20</height>
+        </size>
        </property>
-       <layout class="QVBoxLayout" name="sc3">
-        <property name="margin">
-         <number>4</number>
-        </property>
-        <item>
-         <widget class="QLabel" name="st3">
-          <property name="text">
-           <string>ĐỘ ẨM ĐẤT TRUNG BÌNH</string>
-          </property>
-          <property name="styleSheet">
-           <string notr="true">color: #64748b; font-size: 9px; font-weight: 700;</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLabel" name="valAvgSoil">
-          <property name="text">
-           <string>58.4 %</string>
-          </property>
-          <property name="styleSheet">
-           <string notr="true">color: #047857; font-size: 14px; font-weight: 900;</string>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </widget>
-     </item>
-
-     <item>
-      <widget class="QFrame" name="statCard4">
-       <property name="styleSheet">
-        <string notr="true">QFrame#statCard4 { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 6px; }</string>
-       </property>
-       <layout class="QVBoxLayout" name="sc4">
-        <property name="margin">
-         <number>4</number>
-        </property>
-        <item>
-         <widget class="QLabel" name="st4">
-          <property name="text">
-           <string>NHIỆT ĐỘ KHÍ CAO NHẤT</string>
-          </property>
-          <property name="styleSheet">
-           <string notr="true">color: #64748b; font-size: 9px; font-weight: 700;</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLabel" name="valMaxTemp">
-          <property name="text">
-           <string>31.2 °C</string>
-          </property>
-          <property name="styleSheet">
-           <string notr="true">color: #d97706; font-size: 14px; font-weight: 900;</string>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </widget>
+      </spacer>
      </item>
 
     </layout>
    </item>
 
-   <!-- HISTORY TABLE -->
+   <!-- STACKED CONTENT: CHART PAGE OR TABLE PAGE -->
    <item>
-    <widget class="QTableWidget" name="historyTable">
-     <property name="styleSheet">
-      <string notr="true">QTableWidget { background-color: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; color: #0f172a; gridline-color: #f1f5f9; } QHeaderView::section { background-color: #f8fafc; color: #065f46; font-weight: 700; padding: 6px; border: none; }</string>
-     </property>
+    <widget class="QStackedWidget" name="viewStack">
+     <!-- PAGE 0: CHART PAGE -->
+     <widget class="QWidget" name="chartPage">
+      <layout class="QVBoxLayout" name="chartPageLayout">
+       <property name="spacing">
+        <number>6</number>
+       </property>
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
+
+       <!-- SUMMARY STATS ROW -->
+       <item>
+        <layout class="QHBoxLayout" name="statsRow">
+         <property name="spacing">
+          <number>8</number>
+         </property>
+
+         <item>
+          <widget class="QFrame" name="statCard1">
+           <property name="styleSheet">
+            <string notr="true">QFrame#statCard1 { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 4px; }</string>
+           </property>
+           <layout class="QVBoxLayout" name="sc1">
+            <property name="margin">
+             <number>4</number>
+            </property>
+            <item>
+             <widget class="QLabel" name="st1">
+              <property name="text">
+               <string>LƯỢT TƯỚI HÔM NAY</string>
+              </property>
+              <property name="styleSheet">
+               <string notr="true">color: #64748b; font-size: 9px; font-weight: 700;</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="valWaterCount">
+              <property name="text">
+               <string>4 lần</string>
+              </property>
+              <property name="styleSheet">
+               <string notr="true">color: #059669; font-size: 13px; font-weight: 900;</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </item>
+
+         <item>
+          <widget class="QFrame" name="statCard2">
+           <property name="styleSheet">
+            <string notr="true">QFrame#statCard2 { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 4px; }</string>
+           </property>
+           <layout class="QVBoxLayout" name="sc2">
+            <property name="margin">
+             <number>4</number>
+            </property>
+            <item>
+             <widget class="QLabel" name="st2">
+              <property name="text">
+               <string>LƯỢNG NƯỚC TIÊU THỤ</string>
+              </property>
+              <property name="styleSheet">
+               <string notr="true">color: #64748b; font-size: 9px; font-weight: 700;</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="valWaterVolume">
+              <property name="text">
+               <string>14.5 Lít</string>
+              </property>
+              <property name="styleSheet">
+               <string notr="true">color: #0284c7; font-size: 13px; font-weight: 900;</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </item>
+
+         <item>
+          <widget class="QFrame" name="statCard3">
+           <property name="styleSheet">
+            <string notr="true">QFrame#statCard3 { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 4px; }</string>
+           </property>
+           <layout class="QVBoxLayout" name="sc3">
+            <property name="margin">
+             <number>4</number>
+            </property>
+            <item>
+             <widget class="QLabel" name="st3">
+              <property name="text">
+               <string>ĐỘ ẨM ĐẤT TRUNG BÌNH</string>
+              </property>
+              <property name="styleSheet">
+               <string notr="true">color: #64748b; font-size: 9px; font-weight: 700;</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="valAvgSoil">
+              <property name="text">
+               <string>58.4 %</string>
+              </property>
+              <property name="styleSheet">
+               <string notr="true">color: #047857; font-size: 13px; font-weight: 900;</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </item>
+
+         <item>
+          <widget class="QFrame" name="statCard4">
+           <property name="styleSheet">
+            <string notr="true">QFrame#statCard4 { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 4px; }</string>
+           </property>
+           <layout class="QVBoxLayout" name="sc4">
+            <property name="margin">
+             <number>4</number>
+            </property>
+            <item>
+             <widget class="QLabel" name="st4">
+              <property name="text">
+               <string>NHIỆT ĐỘ KHÍ CAO NHẤT</string>
+              </property>
+              <property name="styleSheet">
+               <string notr="true">color: #64748b; font-size: 9px; font-weight: 700;</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="valMaxTemp">
+              <property name="text">
+               <string>31.2 °C</string>
+              </property>
+              <property name="styleSheet">
+               <string notr="true">color: #d97706; font-size: 13px; font-weight: 900;</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </item>
+
+        </layout>
+       </item>
+
+       <!-- CHART CONTAINER -->
+       <item>
+        <widget class="QFrame" name="chartContainer">
+         <property name="styleSheet">
+          <string notr="true">QFrame#chartContainer { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; }</string>
+         </property>
+         <layout class="QVBoxLayout" name="chartContainerLayout">
+          <property name="leftMargin">
+           <number>8</number>
+          </property>
+          <property name="topMargin">
+           <number>6</number>
+          </property>
+          <property name="rightMargin">
+           <number>8</number>
+          </property>
+          <property name="bottomMargin">
+           <number>6</number>
+          </property>
+         </layout>
+        </widget>
+       </item>
+
+      </layout>
+     </widget>
+
+     <!-- PAGE 1: TABLE PAGE -->
+     <widget class="QWidget" name="tablePage">
+      <layout class="QVBoxLayout" name="tablePageLayout">
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
+       <item>
+        <widget class="QTableWidget" name="historyTable">
+         <property name="styleSheet">
+          <string notr="true">QTableWidget { background-color: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; color: #0f172a; gridline-color: #f1f5f9; } QHeaderView::section { background-color: #f8fafc; color: #065f46; font-weight: 700; padding: 6px; border: none; }</string>
+         </property>
+         <property name="editTriggers">
+          <set>QAbstractItemView::NoEditTriggers</set>
+         </property>
+         <property name="selectionBehavior">
+          <enum>QAbstractItemView::SelectRows</enum>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+
     </widget>
    </item>
 
