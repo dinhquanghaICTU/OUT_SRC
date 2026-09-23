@@ -5,7 +5,7 @@
 namespace AppConfig {
 
 inline constexpr bool DemoMode = false;
-inline constexpr int RefreshIntervalMs = 800;
+inline constexpr int RefreshIntervalMs = 5000;
 
 inline const QString DefaultApiHost = QStringLiteral("127.0.0.1");
 inline constexpr quint16 DefaultApiPort = 8080;

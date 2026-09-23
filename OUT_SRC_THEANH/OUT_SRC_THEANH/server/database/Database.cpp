@@ -331,7 +331,7 @@ bool Database::seedDefaults(QString *error)
         QSqlQuery seedCfg(m_db);
         seedCfg.exec(QStringLiteral(
             "INSERT OR IGNORE INTO per_device_config(device_id,config_json,updated_at) "
-            "VALUES('Theanh-190782','{\"sampling_interval_ms\":2000,\"thresholds\":{\"current_a\":{\"max\":15.0},\"power_w\":{\"max\":3000.0},\"voltage_v\":{\"max\":245.0,\"min\":10.0}}}','"
+            "VALUES('Theanh-190782','{\"sampling_interval_ms\":4000,\"thresholds\":{\"current_a\":{\"max\":15.0},\"power_w\":{\"max\":3000.0},\"voltage_v\":{\"max\":245.0,\"min\":10.0}}}','"
         ) + now + QStringLiteral("')"));
     }
 

@@ -296,8 +296,12 @@ void MqttDiscoveryService::processPublish(quint8 flags, const QByteArray &body)
             metrics.value(QStringLiteral("relay")).toBool(false));
         const double tankLevel = metrics.value(QStringLiteral("water_tank_level")).toDouble(85.0);
 
-        m_database->insertReading(soilMoisture, tempC, humPct, pumpActive, tankLevel,
-                                  QDateTime::currentDateTime().toString(Qt::ISODateWithMs), nullptr);
+        const qint64 nowMs = QDateTime::currentMSecsSinceEpoch();
+        if (nowMs - m_lastReadingInsertMs.value(deviceId, 0) >= 4000) {
+            m_database->insertReading(soilMoisture, tempC, humPct, pumpActive, tankLevel,
+                                      QDateTime::currentDateTime().toString(Qt::ISODateWithMs), nullptr);
+            m_lastReadingInsertMs.insert(deviceId, nowMs);
+        }
 
         // Auto Irrigation Check based on Config:
         const QJsonObject devCfg = m_database->configForDevice(deviceId);
@@ -306,7 +310,6 @@ void MqttDiscoveryService::processPublish(quint8 flags, const QByteArray &body)
         const double maxSoil = devCfg.value(QStringLiteral("max_soil_moisture")).toDouble(75.0);
 
         if (autoWatering && soilMoisture >= 0.0 && soilMoisture <= 100.0) {
-            const qint64 nowMs = QDateTime::currentMSecsSinceEpoch();
             if (nowMs - m_lastRelayCommandMs.value(deviceId, 0) >= 5000) {
                 if (soilMoisture <= minSoil && !pumpActive) {
                     const QString cmdId = QUuid::createUuid().toString(QUuid::WithoutBraces);
@@ -330,8 +333,7 @@ void MqttDiscoveryService::processPublish(quint8 flags, const QByteArray &body)
             }
         }
 
-        const qint64 nowMs = QDateTime::currentMSecsSinceEpoch();
-        if (nowMs - m_lastTelemetryLogMs.value(deviceId, 0) >= 1000) {
+        if (nowMs - m_lastTelemetryLogMs.value(deviceId, 0) >= 4000) {
             QString logError;
             if (!m_database->recordTelemetry(
                     deviceId, metrics,
@@ -344,7 +346,7 @@ void MqttDiscoveryService::processPublish(quint8 flags, const QByteArray &body)
 
     const qint64 presenceNow = QDateTime::currentMSecsSinceEpoch();
     if (channel == QStringLiteral("telemetry")
-        && presenceNow - m_lastPresenceWriteMs.value(deviceId, 0) < 500)
+        && presenceNow - m_lastPresenceWriteMs.value(deviceId, 0) < 2000)
         return;
 
     QString error;

@@ -217,7 +217,7 @@ DeviceManagementPage::DeviceManagementPage(QWidget *parent)
 
     m_viewStack->addWidget(page1);
 
-    m_refreshTimer->setInterval(3000);
+    m_refreshTimer->setInterval(5000);
     connect(m_refreshTimer, &QTimer::timeout, this, &DeviceManagementPage::refreshRequested);
 }
 

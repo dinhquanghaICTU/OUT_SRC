@@ -52,4 +52,5 @@ private:
     QHash<QString, qint64> m_lastTelemetryLogMs;
     QHash<QString, qint64> m_lastPresenceWriteMs;
     QHash<QString, qint64> m_lastRelayCommandMs;
+    QHash<QString, qint64> m_lastReadingInsertMs;
 };
