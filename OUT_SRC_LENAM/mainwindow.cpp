@@ -2008,16 +2008,16 @@ void MainWindow::buildUsers()
     top->addSpacing(15);
 
     // Subtab buttons
-    m_tabUsersBtn = button("👥 Tài khoản", "hudNav");
+    m_tabUsersBtn = button("Tài khoản", "hudNav");
     m_tabUsersBtn->setCheckable(true);
     m_tabUsersBtn->setChecked(true);
     m_tabUsersBtn->setFixedHeight(30);
 
-    m_tabLoginBtn = button("🔑 Lịch sử đăng nhập", "hudNav");
+    m_tabLoginBtn = button("Lịch sử đăng nhập", "hudNav");
     m_tabLoginBtn->setCheckable(true);
     m_tabLoginBtn->setFixedHeight(30);
 
-    m_tabAuditBtn = button("⚡ Lịch sử điều khiển", "hudNav");
+    m_tabAuditBtn = button("Lịch sử điều khiển", "hudNav");
     m_tabAuditBtn->setCheckable(true);
     m_tabAuditBtn->setFixedHeight(30);
 
@@ -2026,11 +2026,11 @@ void MainWindow::buildUsers()
     top->addWidget(m_tabAuditBtn);
     top->addStretch();
 
-    m_addUserBtn = button("+ Tạo tài khoản mới", "cyanBtn");
+    m_addUserBtn = button("+ Tạo tài khoản", "cyanBtn");
     m_addUserBtn->setFixedHeight(30);
     top->addWidget(m_addUserBtn);
 
-    auto *refreshBtn = button("🔄 Làm mới", "hudNav");
+    auto *refreshBtn = button("Làm mới", "hudNav");
     refreshBtn->setFixedHeight(30);
     top->addWidget(refreshBtn);
 

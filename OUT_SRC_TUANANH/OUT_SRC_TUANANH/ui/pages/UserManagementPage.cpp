@@ -56,8 +56,8 @@ void UserManagementPage::setUsers(const QJsonArray &users)
     }
 
     if (m_filterAllBtn) m_filterAllBtn->setText(QStringLiteral("Tất Cả (%1)").arg(total));
-    if (m_filterAdminBtn) m_filterAdminBtn->setText(QStringLiteral("👑 Admin (%1)").arg(admins));
-    if (m_filterUserBtn) m_filterUserBtn->setText(QStringLiteral("👤 Người Dùng (%1)").arg(regularUsers));
+    if (m_filterAdminBtn) m_filterAdminBtn->setText(QStringLiteral("Admin (%1)").arg(admins));
+    if (m_filterUserBtn) m_filterUserBtn->setText(QStringLiteral("Người Dùng (%1)").arg(regularUsers));
 
     renderUserGrid();
 }
@@ -131,14 +131,15 @@ void UserManagementPage::setupCustomUI()
     // TOP NAVIGATION & SUBTABS BAR
     // ==========================================
     auto *topBar = new QHBoxLayout;
-    topBar->setSpacing(6);
+    topBar->setSpacing(8);
+    topBar->setContentsMargins(0, 0, 0, 6);
 
     auto *backBtn = new QPushButton(tr("← Giám sát"), this);
     backBtn->setObjectName(QStringLiteral("usersBackButton"));
     backBtn->setCursor(Qt::PointingHandCursor);
     backBtn->setToolTip(tr("Quay lại màn hình giám sát SCADA"));
     backBtn->setStyleSheet(
-        "QPushButton { background: #1c1642; color: #94a3b8; border: 1px solid #2e2468; border-radius: 5px; font-size: 10px; font-weight: 700; padding: 4px 10px; } "
+        "QPushButton { background: #1c1642; color: #94a3b8; border: 1px solid #2e2468; border-radius: 6px; font-size: 11px; font-weight: 700; padding: 5px 10px; } "
         "QPushButton:hover { background: #261e5a; color: #ffffff; }"
     );
     connect(backBtn, &QPushButton::clicked, this, &UserManagementPage::backToDashboardRequested);
@@ -156,7 +157,7 @@ void UserManagementPage::setupCustomUI()
             "  border-radius: 6px; "
             "  font-size: 11px; "
             "  font-weight: 700; "
-            "  padding: 5px 12px; "
+            "  padding: 5px 14px; "
             "} "
             "QPushButton:hover { background: #221a54; color: #ffffff; border-color: #3b82f6; } "
             "QPushButton:checked { background: #2563eb; color: #ffffff; border-color: #60a5fa; font-weight: 800; }"
@@ -164,9 +165,9 @@ void UserManagementPage::setupCustomUI()
         return btn;
     };
 
-    m_tabUsersBtn = makeNavBtn(QStringLiteral("👥 Quản lý tài khoản"));
-    m_tabLoginBtn = makeNavBtn(QStringLiteral("🔑 Lịch sử đăng nhập"));
-    m_tabAuditBtn = makeNavBtn(QStringLiteral("⚡ Lịch sử điều khiển & thao tác"));
+    m_tabUsersBtn = makeNavBtn(QStringLiteral("Tài khoản"));
+    m_tabLoginBtn = makeNavBtn(QStringLiteral("Lịch sử đăng nhập"));
+    m_tabAuditBtn = makeNavBtn(QStringLiteral("Lịch sử điều khiển"));
 
     topBar->addWidget(m_tabUsersBtn);
     topBar->addWidget(m_tabLoginBtn);
@@ -174,17 +175,17 @@ void UserManagementPage::setupCustomUI()
     topBar->addStretch();
 
     // + Add User Button
-    m_addUserBtn = new QPushButton(QStringLiteral("＋ TẠO TÀI KHOẢN"));
+    m_addUserBtn = new QPushButton(QStringLiteral("+ Tạo tài khoản"));
     m_addUserBtn->setCursor(Qt::PointingHandCursor);
     m_addUserBtn->setStyleSheet(
         "QPushButton { "
         "  background: #10b981; "
         "  color: #ffffff; "
         "  border: none; "
-        "  border-radius: 5px; "
-        "  font-size: 10px; "
+        "  border-radius: 6px; "
+        "  font-size: 11px; "
         "  font-weight: 800; "
-        "  padding: 5px 12px; "
+        "  padding: 5px 14px; "
         "} "
         "QPushButton:hover { background: #059669; } "
         "QPushButton:pressed { background: #047857; }"
@@ -193,17 +194,17 @@ void UserManagementPage::setupCustomUI()
     topBar->addWidget(m_addUserBtn);
 
     // Refresh Button
-    m_refreshBtn = new QPushButton(QStringLiteral("🔄 Làm mới"));
+    m_refreshBtn = new QPushButton(QStringLiteral("Làm mới"));
     m_refreshBtn->setCursor(Qt::PointingHandCursor);
     m_refreshBtn->setStyleSheet(
         "QPushButton { "
         "  background: #1e1b4b; "
         "  color: #38bdf8; "
         "  border: 1px solid #312e81; "
-        "  border-radius: 5px; "
-        "  font-size: 10px; "
+        "  border-radius: 6px; "
+        "  font-size: 11px; "
         "  font-weight: 800; "
-        "  padding: 5px 10px; "
+        "  padding: 5px 12px; "
         "} "
         "QPushButton:hover { background: #2e287a; color: #ffffff; }"
     );
@@ -257,8 +258,8 @@ void UserManagementPage::setupCustomUI()
     };
 
     m_filterAllBtn = makeFilterBtn(QStringLiteral("Tất Cả (0)"), QStringLiteral("all"));
-    m_filterAdminBtn = makeFilterBtn(QStringLiteral("👑 Admin (0)"), QStringLiteral("admin"));
-    m_filterUserBtn = makeFilterBtn(QStringLiteral("👤 Người Dùng (0)"), QStringLiteral("user"));
+    m_filterAdminBtn = makeFilterBtn(QStringLiteral("Admin (0)"), QStringLiteral("admin"));
+    m_filterUserBtn = makeFilterBtn(QStringLiteral("Người Dùng (0)"), QStringLiteral("user"));
     m_filterAllBtn->setChecked(true);
 
     filterBar->addWidget(m_filterAllBtn);
@@ -488,19 +489,20 @@ void UserManagementPage::renderUserGrid()
         );
 
         auto *cLayout = new QVBoxLayout(card);
-        cLayout->setContentsMargins(10, 8, 10, 8);
-        cLayout->setSpacing(5);
+        cLayout->setContentsMargins(12, 10, 12, 10);
+        cLayout->setSpacing(8);
 
         // --- ROW 1: Header (Avatar + Role Pill + Status Badge) ---
         auto *headerRow = new QHBoxLayout;
-        headerRow->setSpacing(6);
+        headerRow->setSpacing(8);
 
-        auto *avatarLbl = new QLabel(isAdmin ? QStringLiteral("👑") : QStringLiteral("👤"));
-        avatarLbl->setFixedSize(24, 24);
+        const QString initial = username.isEmpty() ? QStringLiteral("U") : username.left(1).toUpper();
+        auto *avatarLbl = new QLabel(initial);
+        avatarLbl->setFixedSize(28, 28);
         avatarLbl->setAlignment(Qt::AlignCenter);
         avatarLbl->setStyleSheet(QStringLiteral(
-            "background: %1; border-radius: 12px; font-size: 13px; border: 1px solid %2;")
-            .arg(isAdmin ? QStringLiteral("rgba(251, 191, 36, 0.2)") : QStringLiteral("rgba(56, 189, 248, 0.2)"))
+            "QLabel { background: %1; color: %2; border-radius: 14px; font-size: 12px; font-weight: 900; border: 1px solid %2; }")
+            .arg(isAdmin ? QStringLiteral("rgba(251, 191, 36, 0.25)") : QStringLiteral("rgba(56, 189, 248, 0.25)"))
             .arg(isAdmin ? QStringLiteral("#fbbf24") : QStringLiteral("#38bdf8"))
         );
         headerRow->addWidget(avatarLbl);
@@ -511,7 +513,7 @@ void UserManagementPage::renderUserGrid()
 
         auto *roleBadge = new QLabel(isAdmin ? QStringLiteral("ADMIN") : QStringLiteral("USER"));
         roleBadge->setStyleSheet(QStringLiteral(
-            "background-color: %1; color: %2; font-size: 9px; font-weight: 800; border-radius: 4px; padding: 2px 6px;")
+            "background-color: %1; color: %2; font-size: 9px; font-weight: 800; border-radius: 4px; padding: 2px 8px;")
             .arg(isAdmin ? QStringLiteral("#451a03") : QStringLiteral("#082f49"))
             .arg(isAdmin ? QStringLiteral("#fbbf24") : QStringLiteral("#38bdf8"))
         );
@@ -532,8 +534,8 @@ void UserManagementPage::renderUserGrid()
         auto *devBox = new QFrame;
         devBox->setStyleSheet("background-color: rgba(15, 12, 36, 0.6); border-radius: 4px; padding: 3px;");
         auto *devBoxLay = new QVBoxLayout(devBox);
-        devBoxLay->setContentsMargins(6, 4, 6, 4);
-        devBoxLay->setSpacing(3);
+        devBoxLay->setContentsMargins(8, 6, 8, 6);
+        devBoxLay->setSpacing(4);
 
         auto *devTitle = new QLabel(QStringLiteral("Thiết bị giám sát phụ trách (%1):").arg(devices.size()));
         devTitle->setStyleSheet("color: #94a3b8; font-size: 9px; font-weight: 700; background: transparent;");
@@ -547,14 +549,14 @@ void UserManagementPage::renderUserGrid()
             for (const auto &devId : devices) {
                 auto *dRow = new QHBoxLayout;
                 dRow->setContentsMargins(0, 0, 0, 0);
-                auto *dLbl = new QLabel(QStringLiteral("⚡ %1").arg(devId));
-                dLbl->setStyleSheet("color: #38bdf8; font-size: 9px; font-weight: 600; background: transparent;");
+                auto *dLbl = new QLabel(QStringLiteral("• %1").arg(devId));
+                dLbl->setStyleSheet("color: #38bdf8; font-size: 10px; font-weight: 600; background: transparent;");
                 dRow->addWidget(dLbl);
                 dRow->addStretch();
 
-                auto *unBtn = new QPushButton(QStringLiteral("✕ Gỡ"));
+                auto *unBtn = new QPushButton(QStringLiteral("Gỡ"));
                 unBtn->setCursor(Qt::PointingHandCursor);
-                unBtn->setStyleSheet("QPushButton { background: #3b1424; color: #f87171; border: 1px solid #7f1d1d; border-radius: 3px; font-size: 8px; font-weight: 700; padding: 1px 4px; } QPushButton:hover { background: #dc2626; color: #fff; }");
+                unBtn->setStyleSheet("QPushButton { background: #3b1424; color: #f87171; border: 1px solid #7f1d1d; border-radius: 4px; font-size: 9px; font-weight: 700; padding: 2px 8px; } QPushButton:hover { background: #dc2626; color: #fff; }");
                 connect(unBtn, &QPushButton::clicked, this, [this, username, devId] {
                     emit releaseUserDeviceRequested(username, devId);
                 });
@@ -567,9 +569,9 @@ void UserManagementPage::renderUserGrid()
         // --- ROW 3: Card Actions (Edit & Delete) ---
         auto *actRow = new QHBoxLayout;
         actRow->setContentsMargins(0, 0, 0, 0);
-        actRow->setSpacing(6);
+        actRow->setSpacing(8);
 
-        auto *editBtn = new QPushButton(QStringLiteral("✏ Sửa"));
+        auto *editBtn = new QPushButton(QStringLiteral("Sửa"));
         editBtn->setCursor(Qt::PointingHandCursor);
         editBtn->setStyleSheet(
             "QPushButton { "
@@ -577,9 +579,9 @@ void UserManagementPage::renderUserGrid()
             "  color: #ffffff; "
             "  border: none; "
             "  border-radius: 4px; "
-            "  font-size: 9px; "
-            "  font-weight: 800; "
-            "  padding: 3px 10px; "
+            "  font-size: 10px; "
+            "  font-weight: 700; "
+            "  padding: 4px 12px; "
             "} "
             "QPushButton:hover { background: #1d4ed8; }"
         );
@@ -587,7 +589,7 @@ void UserManagementPage::renderUserGrid()
         actRow->addWidget(editBtn);
 
         if (username != QStringLiteral("admin")) {
-            auto *delBtn = new QPushButton(QStringLiteral("🗑 Xóa"));
+            auto *delBtn = new QPushButton(QStringLiteral("Xóa"));
             delBtn->setCursor(Qt::PointingHandCursor);
             delBtn->setStyleSheet(
                 "QPushButton { "
@@ -595,9 +597,9 @@ void UserManagementPage::renderUserGrid()
                 "  color: #fecaca; "
                 "  border: 1px solid #991b1b; "
                 "  border-radius: 4px; "
-                "  font-size: 9px; "
-                "  font-weight: 800; "
-                "  padding: 3px 10px; "
+                "  font-size: 10px; "
+                "  font-weight: 700; "
+                "  padding: 4px 12px; "
                 "} "
                 "QPushButton:hover { background: #dc2626; color: #ffffff; }"
             );
@@ -814,24 +816,24 @@ void UserManagementPage::openEditDialog(const QJsonObject &user)
 
     QDialog dlg(this);
     dlg.setWindowTitle(isEdit ? QStringLiteral("Cập Nhật Tài Khoản") : QStringLiteral("Tạo Tài Khoản Mới"));
-    dlg.setFixedSize(360, 220);
+    dlg.setFixedSize(400, 250);
     dlg.setStyleSheet(
         "QDialog { background-color: #0d0a26; color: #ecf2ff; font-family: sans-serif; } "
         "QLabel { color: #cbd5e1; font-weight: 700; font-size: 11px; } "
-        "QLineEdit, QComboBox { background-color: #171338; color: #ffffff; border: 1px solid #2b235c; border-radius: 5px; padding: 4px 6px; font-size: 11px; font-weight: 600; } "
+        "QLineEdit, QComboBox { background-color: #171338; color: #ffffff; border: 1px solid #2b235c; border-radius: 5px; padding: 5px 8px; font-size: 11px; font-weight: 600; } "
         "QLineEdit:focus, QComboBox:focus { border: 1px solid #38bdf8; background-color: #1f1a4a; }"
     );
 
     auto *mainLayout = new QVBoxLayout(&dlg);
-    mainLayout->setContentsMargins(14, 12, 14, 12);
-    mainLayout->setSpacing(8);
+    mainLayout->setContentsMargins(16, 14, 16, 14);
+    mainLayout->setSpacing(10);
 
-    auto *titleLbl = new QLabel(isEdit ? QStringLiteral("✏ Chỉnh Sửa: %1").arg(oldUser) : QStringLiteral("＋ Tạo Tài Khoản Mới"));
-    titleLbl->setStyleSheet("color: #38bdf8; font-size: 12px; font-weight: 800;");
+    auto *titleLbl = new QLabel(isEdit ? QStringLiteral("Chỉnh Sửa: %1").arg(oldUser) : QStringLiteral("Tạo Tài Khoản Mới"));
+    titleLbl->setStyleSheet("color: #38bdf8; font-size: 13px; font-weight: 800;");
     mainLayout->addWidget(titleLbl);
 
     auto *form = new QFormLayout;
-    form->setSpacing(6);
+    form->setSpacing(8);
 
     auto *uInput = new QLineEdit(&dlg);
     uInput->setText(oldUser);
@@ -855,7 +857,7 @@ void UserManagementPage::openEditDialog(const QJsonObject &user)
 
     auto *enCheck = new QCheckBox(QStringLiteral("Kích hoạt hoạt động tài khoản"), &dlg);
     enCheck->setChecked(user.value(QStringLiteral("enabled")).toBool(true));
-    enCheck->setStyleSheet("color: #cbd5e1; font-size: 10px; font-weight: 700;");
+    enCheck->setStyleSheet("color: #cbd5e1; font-size: 11px; font-weight: 700;");
     form->addRow(QString(), enCheck);
 
     mainLayout->addLayout(form);
@@ -866,12 +868,12 @@ void UserManagementPage::openEditDialog(const QJsonObject &user)
     btnRow->addStretch();
 
     auto *cancelBtn = new QPushButton(QStringLiteral("Hủy"), &dlg);
-    cancelBtn->setStyleSheet("QPushButton { background: #334155; color: #ffffff; border: none; border-radius: 4px; font-size: 10px; font-weight: 800; padding: 5px 12px; }");
+    cancelBtn->setStyleSheet("QPushButton { background: #334155; color: #ffffff; border: none; border-radius: 4px; font-size: 11px; font-weight: 800; padding: 6px 14px; }");
     connect(cancelBtn, &QPushButton::clicked, &dlg, &QDialog::reject);
     btnRow->addWidget(cancelBtn);
 
-    auto *saveBtn = new QPushButton(isEdit ? QStringLiteral("💾 Lưu") : QStringLiteral("＋ Tạo Mới"), &dlg);
-    saveBtn->setStyleSheet("QPushButton { background: #10b981; color: #ffffff; border: none; border-radius: 4px; font-size: 10px; font-weight: 800; padding: 5px 14px; } QPushButton:hover { background: #059669; }");
+    auto *saveBtn = new QPushButton(isEdit ? QStringLiteral("Lưu") : QStringLiteral("Tạo Mới"), &dlg);
+    saveBtn->setStyleSheet("QPushButton { background: #10b981; color: #ffffff; border: none; border-radius: 4px; font-size: 11px; font-weight: 800; padding: 6px 16px; } QPushButton:hover { background: #059669; }");
     connect(saveBtn, &QPushButton::clicked, &dlg, [&] {
         const QString u = uInput->text().trimmed();
         const QString p = pInput->text();
