@@ -4,6 +4,7 @@
 #include <QJsonArray>
 #include <QJsonObject>
 #include <QDate>
+#include <QSet>
 
 namespace Ui { class HistoryPage; }
 class QChart;
@@ -45,4 +46,8 @@ private:
 
     QJsonArray m_cachedRows;
     QJsonObject m_cachedHistory;
+
+    // Danh sách các ngày/tháng/năm thực sự có dữ liệu (từ server)
+    // Format: "yyyy-MM-dd" cho day, "yyyy-MM" cho month, "yyyy" cho year
+    QSet<QString> m_availableDates;
 };
