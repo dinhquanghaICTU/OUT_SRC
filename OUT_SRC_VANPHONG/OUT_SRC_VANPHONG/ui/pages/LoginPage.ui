@@ -64,7 +64,7 @@
         </size>
        </property>
        <property name="styleSheet">
-        <string notr="true">QFrame#bioDomeCard { background: qradialgradient(cx:0.5, cy:0.2, radius:0.8, fx:0.5, fy:0.2, stop:0 #103322, stop:0.5 #091e14, stop:1 #05130b); border: 2px solid #10b981; border-radius: 24px; }</string>
+        <string notr="true">QFrame#bioDomeCard { background-color: #ffffff; border: 1.5px solid #10b981; border-radius: 24px; }</string>
        </property>
        <layout class="QVBoxLayout" name="domeVLayout">
         <property name="leftMargin">
@@ -90,7 +90,7 @@
            <string>🌿</string>
           </property>
           <property name="styleSheet">
-           <string notr="true">font-size: 32px; background: rgba(16, 185, 129, 0.15); border: 1.5px solid #10b981; border-radius: 28px; padding: 6px 14px;</string>
+           <string notr="true">font-size: 32px; background: #ecfdf5; border: 1.5px solid #10b981; border-radius: 28px; padding: 6px 14px;</string>
           </property>
          </widget>
         </item>
@@ -101,7 +101,7 @@
            <string>VAN PHONG AGRI-POD</string>
           </property>
           <property name="styleSheet">
-           <string notr="true">color: #34d399; font-size: 16px; font-weight: 900; letter-spacing: 1.5px;</string>
+           <string notr="true">color: #065f46; font-size: 16px; font-weight: 900; letter-spacing: 1.5px;</string>
           </property>
          </widget>
         </item>
@@ -112,7 +112,7 @@
            <string>Hệ Thống Tưới Nước Thông Minh &amp; Cảm Biến Vi Khí Hậu DHT11</string>
           </property>
           <property name="styleSheet">
-           <string notr="true">color: #a7f3d0; font-size: 10px; font-weight: 500;</string>
+           <string notr="true">color: #64748b; font-size: 10px; font-weight: 500;</string>
           </property>
          </widget>
         </item>
@@ -126,10 +126,10 @@
           <item>
            <widget class="QLabel" name="pPill1">
             <property name="text">
-             <string>🌾 Độ ẩm đất: 55%</string>
+             <string>Độ ẩm đất: 55%</string>
             </property>
             <property name="styleSheet">
-             <string notr="true">background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid #059669; border-radius: 12px; font-size: 10px; font-weight: 700; padding: 4px 10px;</string>
+             <string notr="true">background: #ecfdf5; color: #047857; border: 1px solid #a7f3d0; border-radius: 12px; font-size: 10px; font-weight: 700; padding: 4px 10px;</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignCenter</set>
@@ -139,10 +139,10 @@
           <item>
            <widget class="QLabel" name="pPill2">
             <property name="text">
-             <string>🌡️ DHT11: 27.5°C</string>
+             <string>DHT11: 27.5°C</string>
             </property>
             <property name="styleSheet">
-             <string notr="true">background: rgba(245, 158, 11, 0.15); color: #f59e0b; border: 1px solid #d97706; border-radius: 12px; font-size: 10px; font-weight: 700; padding: 4px 10px;</string>
+             <string notr="true">background: #fffbeb; color: #b45309; border: 1px solid #fde68a; border-radius: 12px; font-size: 10px; font-weight: 700; padding: 4px 10px;</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignCenter</set>
@@ -152,10 +152,10 @@
           <item>
            <widget class="QLabel" name="pPill3">
             <property name="text">
-             <string>💦 Bơm: Sẵn sàng</string>
+             <string>Bơm: Sẵn sàng</string>
             </property>
             <property name="styleSheet">
-             <string notr="true">background: rgba(56, 189, 248, 0.15); color: #38bdf8; border: 1px solid #0284c7; border-radius: 12px; font-size: 10px; font-weight: 700; padding: 4px 10px;</string>
+             <string notr="true">background: #f0f9ff; color: #0284c7; border: 1px solid #bae6fd; border-radius: 12px; font-size: 10px; font-weight: 700; padding: 4px 10px;</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignCenter</set>
@@ -178,7 +178,7 @@
            <string>Tên tài khoản (admin / admin1 / operator)</string>
           </property>
           <property name="styleSheet">
-           <string notr="true">QLineEdit { background-color: #041209; border: 1.5px solid #1b4332; border-radius: 19px; color: #ffffff; font-size: 12px; padding: 4px 16px; } QLineEdit:focus { border: 1.5px solid #10b981; background-color: #082012; }</string>
+           <string notr="true">QLineEdit { background-color: #f8fafc; border: 1.5px solid #cbd5e1; border-radius: 19px; color: #0f172a; font-size: 12px; padding: 4px 16px; } QLineEdit:focus { border: 1.5px solid #10b981; background-color: #ffffff; }</string>
           </property>
           <property name="clearButtonEnabled">
            <bool>true</bool>
@@ -207,7 +207,7 @@
              <enum>QLineEdit::Password</enum>
             </property>
             <property name="styleSheet">
-             <string notr="true">QLineEdit { background-color: #041209; border: 1.5px solid #1b4332; border-radius: 19px; color: #ffffff; font-size: 12px; padding: 4px 16px; } QLineEdit:focus { border: 1.5px solid #10b981; background-color: #082012; }</string>
+             <string notr="true">QLineEdit { background-color: #f8fafc; border: 1.5px solid #cbd5e1; border-radius: 19px; color: #0f172a; font-size: 12px; padding: 4px 16px; } QLineEdit:focus { border: 1.5px solid #10b981; background-color: #ffffff; }</string>
             </property>
            </widget>
           </item>
@@ -229,7 +229,7 @@
              <bool>true</bool>
             </property>
             <property name="styleSheet">
-             <string notr="true">QPushButton { background-color: #041209; border: 1.5px solid #1b4332; border-radius: 19px; color: #94a3b8; font-size: 13px; } QPushButton:hover { background-color: #1b4332; }</string>
+             <string notr="true">QPushButton { background-color: #f8fafc; border: 1.5px solid #cbd5e1; border-radius: 19px; color: #64748b; font-size: 13px; } QPushButton:hover { background-color: #e2e8f0; }</string>
             </property>
            </widget>
           </item>
@@ -248,10 +248,10 @@
              <cursorShape>PointingHandCursor</cursorShape>
             </property>
             <property name="text">
-             <string>👑 Quản Trị (Admin)</string>
+             <string>Quản Trị (Admin)</string>
             </property>
             <property name="styleSheet">
-             <string notr="true">QPushButton { background: #0c281a; border: 1px solid #10b981; border-radius: 12px; color: #34d399; font-size: 10px; font-weight: 700; padding: 5px 10px; } QPushButton:hover { background: #10b981; color: white; }</string>
+             <string notr="true">QPushButton { background: #ecfdf5; border: 1px solid #10b981; border-radius: 12px; color: #065f46; font-size: 10px; font-weight: 700; padding: 5px 10px; } QPushButton:hover { background: #10b981; color: white; }</string>
             </property>
            </widget>
           </item>
@@ -261,10 +261,10 @@
              <cursorShape>PointingHandCursor</cursorShape>
             </property>
             <property name="text">
-             <string>👨‍🌾 Vận Hành (Operator)</string>
+             <string>Vận Hành (Operator)</string>
             </property>
             <property name="styleSheet">
-             <string notr="true">QPushButton { background: #0c281a; border: 1px solid #059669; border-radius: 12px; color: #a7f3d0; font-size: 10px; font-weight: 600; padding: 5px 10px; } QPushButton:hover { background: #059669; color: white; }</string>
+             <string notr="true">QPushButton { background: #f0fdf4; border: 1px solid #86efac; border-radius: 12px; color: #15803d; font-size: 10px; font-weight: 600; padding: 5px 10px; QPushButton:hover { background: #059669; color: white; }</string>
             </property>
            </widget>
           </item>
@@ -277,7 +277,7 @@
              <string>Ghi nhớ</string>
             </property>
             <property name="styleSheet">
-             <string notr="true">QCheckBox { color: #a7f3d0; font-size: 10px; }</string>
+             <string notr="true">QCheckBox { color: #475569; font-size: 10px; }</string>
             </property>
            </widget>
           </item>
@@ -297,13 +297,13 @@
            <cursorShape>PointingHandCursor</cursorShape>
           </property>
           <property name="text">
-           <string>🌱 KÍCH HOẠT HỆ THỐNG TƯỚI VƯỜN</string>
+           <string>ĐĂNG NHẬP HỆ THỐNG TƯỚI</string>
           </property>
           <property name="default">
            <bool>true</bool>
           </property>
           <property name="styleSheet">
-           <string notr="true">QPushButton#loginButton { background: qlineargradient(x1:0, y1:0, x2:1, y2:0, stop:0 #10b981, stop:0.5 #059669, stop:1 #047857); color: #ffffff; border: none; border-radius: 22px; font-size: 13px; font-weight: 900; letter-spacing: 1px; } QPushButton#loginButton:hover { background: #10b981; } QPushButton#loginButton:pressed { background: #065f46; }</string>
+           <string notr="true">QPushButton#loginButton { background: qlineargradient(x1:0, y1:0, x2:1, y2:0, stop:0 #10b981, stop:0.5 #059669, stop:1 #047857); color: #ffffff; border: none; border-radius: 22px; font-size: 13px; font-weight: 900; letter-spacing: 1px; } QPushButton#loginButton:hover { background: #059669; } QPushButton#loginButton:pressed { background: #047857; }</string>
           </property>
          </widget>
         </item>

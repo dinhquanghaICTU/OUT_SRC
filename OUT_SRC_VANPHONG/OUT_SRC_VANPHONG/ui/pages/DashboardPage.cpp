@@ -33,7 +33,7 @@ DashboardPage::DashboardPage(QWidget *parent)
     });
 
     connect(ui->btnAutoModeCapsule, &QPushButton::toggled, this, [this](bool checked) {
-        ui->btnAutoModeCapsule->setText(checked ? tr("⚡ TỰ ĐỘNG THEO ĐỘ ẨM: BẬT") : tr("🖐 CHẾ ĐỘ THỦ CÔNG"));
+        ui->btnAutoModeCapsule->setText(checked ? tr("TỰ ĐỘNG THEO ĐỘ ẨM: BẬT") : tr("CHẾ ĐỘ THỦ CÔNG"));
         emit autoModeChanged(checked);
     });
 
@@ -70,15 +70,15 @@ void DashboardPage::setupCharts()
     auto *axisX = new QValueAxis(m_chart);
     axisX->setRange(0, 30);
     axisX->setLabelFormat(QStringLiteral("%d"));
-    axisX->setGridLineColor(QColor(QStringLiteral("#1b4332")));
-    axisX->setLabelsColor(QColor(QStringLiteral("#6ee7b7")));
+    axisX->setGridLineColor(QColor(QStringLiteral("#e2e8f0")));
+    axisX->setLabelsColor(QColor(QStringLiteral("#64748b")));
 
     auto *axisY = new QValueAxis(m_chart);
     axisY->setRange(0, 105);
     axisY->setTickCount(4);
     axisY->setLabelFormat(QStringLiteral("%d%%"));
-    axisY->setGridLineColor(QColor(QStringLiteral("#1b4332")));
-    axisY->setLabelsColor(QColor(QStringLiteral("#6ee7b7")));
+    axisY->setGridLineColor(QColor(QStringLiteral("#e2e8f0")));
+    axisY->setLabelsColor(QColor(QStringLiteral("#64748b")));
 
     m_chart->addAxis(axisX, Qt::AlignBottom);
     m_chart->addAxis(axisY, Qt::AlignLeft);
@@ -108,31 +108,31 @@ void DashboardPage::updateReading(const SensorReading &reading)
 
     // Update Master Pump Button state
     ui->btnTogglePumpMaster->setChecked(reading.pumpActive);
-    ui->btnTogglePumpMaster->setText(reading.pumpActive ? tr("🛑 TẮT BƠM TƯỚI") : tr("💦 BẬT BƠM TƯỚI"));
+    ui->btnTogglePumpMaster->setText(reading.pumpActive ? tr("TẮT BƠM TƯỚI") : tr("BẬT BƠM TƯỚI"));
 
     // Metric 1: Soil Moisture
     ui->soilMoistureValueLabel->setText(QStringLiteral("%1%").arg(QString::number(reading.soilMoisturePct, 'f', 1)));
     if (reading.soilMoisturePct < 40.0) {
-        ui->soilMoistureSubLabel->setText(tr("🍂 ĐẤT KHÔ HẠN"));
-        ui->soilMoistureSubLabel->setStyleSheet(QStringLiteral("color: #f59e0b; font-size: 9px; font-weight: 700;"));
+        ui->soilMoistureSubLabel->setText(tr("ĐẤT KHÔ HẠN"));
+        ui->soilMoistureSubLabel->setStyleSheet(QStringLiteral("color: #d97706; font-size: 9px; font-weight: 700;"));
     } else if (reading.soilMoisturePct > 80.0) {
-        ui->soilMoistureSubLabel->setText(tr("🌊 ĐẤT QUÁ ẨM"));
-        ui->soilMoistureSubLabel->setStyleSheet(QStringLiteral("color: #06b6d4; font-size: 9px; font-weight: 700;"));
+        ui->soilMoistureSubLabel->setText(tr("ĐẤT QUÁ ẨM"));
+        ui->soilMoistureSubLabel->setStyleSheet(QStringLiteral("color: #0284c7; font-size: 9px; font-weight: 700;"));
     } else {
-        ui->soilMoistureSubLabel->setText(tr("🌱 ĐỘ ẨM LÝ TƯỞNG"));
-        ui->soilMoistureSubLabel->setStyleSheet(QStringLiteral("color: #34d399; font-size: 9px; font-weight: 700;"));
+        ui->soilMoistureSubLabel->setText(tr("ĐỘ ẨM LÝ TƯỞNG"));
+        ui->soilMoistureSubLabel->setStyleSheet(QStringLiteral("color: #059669; font-size: 9px; font-weight: 700;"));
     }
 
     // Metric 2: DHT11 Temp
     ui->tempValueLabel->setText(QStringLiteral("%1 °C").arg(QString::number(reading.temperatureC, 'f', 1)));
-    ui->tempSubLabel->setText(reading.temperatureC > 35.0 ? tr("⚠️ NÓNG BỨC") : tr("Mát mẻ"));
+    ui->tempSubLabel->setText(reading.temperatureC > 35.0 ? tr("NÓNG BỨC") : tr("Mát mẻ"));
 
     // Metric 3: DHT11 Hum
     ui->humValueLabel->setText(QStringLiteral("%1 %RH").arg(QString::number(reading.humidityPct, 'f', 1)));
     ui->humSubLabel->setText(tr("Tán lá: %1").arg(reading.humidityPct > 70.0 ? tr("Cao") : tr("Tốt")));
 
     // Tank & Pump
-    ui->tankLevelLabel->setText(QStringLiteral("🚰 Bồn nước: %1%").arg(QString::number(reading.waterTankLevelPct, 'f', 0)));
+    ui->tankLevelLabel->setText(QStringLiteral("Bồn nước: %1%").arg(QString::number(reading.waterTankLevelPct, 'f', 0)));
     ui->tankSubLabel->setText(tr("Đã tưới: %1 lần (%2 L)")
         .arg(reading.totalWateringCountToday)
         .arg(QString::number(reading.totalWaterUsedLiters, 'f', 1)));

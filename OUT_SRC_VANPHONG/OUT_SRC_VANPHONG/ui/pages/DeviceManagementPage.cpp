@@ -89,8 +89,8 @@ DeviceManagementPage::DeviceManagementPage(QWidget *parent)
     leftLayout->setContentsMargins(0, 0, 0, 0);
     leftLayout->setSpacing(12);
 
-    auto *ownedTitle = new QLabel(tr("🌿 Bộ Điều Khiển Tưới Đã Gán"), leftContainer);
-    ownedTitle->setStyleSheet(QStringLiteral("color: #34d399; font-size: 12px; font-weight: 800;"));
+    auto *ownedTitle = new QLabel(tr("Bộ Điều Khiển Tưới Đã Gán"), leftContainer);
+    ownedTitle->setStyleSheet(QStringLiteral("color: #065f46; font-size: 12px; font-weight: 800;"));
     leftLayout->addWidget(ownedTitle);
 
     m_ownedGrid = new QGridLayout;
@@ -98,11 +98,11 @@ DeviceManagementPage::DeviceManagementPage(QWidget *parent)
     leftLayout->addLayout(m_ownedGrid);
 
     m_ownedEmpty = new QLabel(tr("Chưa có thiết bị nào được gán."), leftContainer);
-    m_ownedEmpty->setStyleSheet(QStringLiteral("color: #6ee7b7; font-style: italic; font-size: 11px;"));
+    m_ownedEmpty->setStyleSheet(QStringLiteral("color: #64748b; font-style: italic; font-size: 11px;"));
     leftLayout->addWidget(m_ownedEmpty);
 
-    auto *availTitle = new QLabel(tr("📡 Thiết Bị Mới Phát Hiện"), leftContainer);
-    availTitle->setStyleSheet(QStringLiteral("color: #38bdf8; font-size: 12px; font-weight: 800;"));
+    auto *availTitle = new QLabel(tr("Thiết Bị Mới Phát Hiện"), leftContainer);
+    availTitle->setStyleSheet(QStringLiteral("color: #0284c7; font-size: 12px; font-weight: 800;"));
     leftLayout->addWidget(availTitle);
 
     m_availableGrid = new QGridLayout;
@@ -110,7 +110,7 @@ DeviceManagementPage::DeviceManagementPage(QWidget *parent)
     leftLayout->addLayout(m_availableGrid);
 
     m_availableEmpty = new QLabel(tr("Không có thiết bị trực tuyến chưa gán."), leftContainer);
-    m_availableEmpty->setStyleSheet(QStringLiteral("color: #6ee7b7; font-style: italic; font-size: 11px;"));
+    m_availableEmpty->setStyleSheet(QStringLiteral("color: #64748b; font-style: italic; font-size: 11px;"));
     leftLayout->addWidget(m_availableEmpty);
 
     leftLayout->addStretch();
@@ -122,18 +122,18 @@ DeviceManagementPage::DeviceManagementPage(QWidget *parent)
     m_drawer->setMinimumWidth(280);
     m_drawer->setMaximumWidth(320);
     m_drawer->setStyleSheet(QStringLiteral(
-        "QFrame { background-color: #0c2317; border: 1.5px solid #1b4332; border-radius: 12px; }"));
+        "QFrame { background-color: #ffffff; border: 1.5px solid #e2e8f0; border-radius: 12px; }"));
 
     auto *drawerLayout = new QVBoxLayout(m_drawer);
     drawerLayout->setContentsMargins(14, 14, 14, 14);
     drawerLayout->setSpacing(10);
 
-    m_drawerTitle = new QLabel(tr("⚙️ CÀI ĐẶT NGƯỠNG TƯỚI TỰ ĐỘNG"), m_drawer);
-    m_drawerTitle->setStyleSheet(QStringLiteral("color: #34d399; font-size: 12px; font-weight: 800;"));
+    m_drawerTitle = new QLabel(tr("CÀI ĐẶT NGƯỠNG TƯỚI TỰ ĐỘNG"), m_drawer);
+    m_drawerTitle->setStyleSheet(QStringLiteral("color: #065f46; font-size: 12px; font-weight: 800;"));
     drawerLayout->addWidget(m_drawerTitle);
 
     m_drawerId = new QLabel(tr("Chọn thiết bị để chỉnh sửa ngưỡng"), m_drawer);
-    m_drawerId->setStyleSheet(QStringLiteral("color: #a7f3d0; font-size: 11px;"));
+    m_drawerId->setStyleSheet(QStringLiteral("color: #64748b; font-size: 11px;"));
     drawerLayout->addWidget(m_drawerId);
 
     auto *formLayout = new QFormLayout;
@@ -143,26 +143,26 @@ DeviceManagementPage::DeviceManagementPage(QWidget *parent)
     m_inputMinSoil->setRange(10.0, 90.0);
     m_inputMinSoil->setValue(40.0);
     m_inputMinSoil->setSuffix(tr(" %"));
-    m_inputMinSoil->setStyleSheet(QStringLiteral("background-color: #07170e; color: white; padding: 4px; border-radius: 4px;"));
+    m_inputMinSoil->setStyleSheet(QStringLiteral("background-color: #ffffff; color: #0f172a; border: 1px solid #cbd5e1; padding: 4px; border-radius: 4px;"));
     formLayout->addRow(new QLabel(tr("Bật bơm khi đất dưới:"), m_drawer), m_inputMinSoil);
 
     m_inputMaxSoil = new QDoubleSpinBox(m_drawer);
     m_inputMaxSoil->setRange(20.0, 100.0);
     m_inputMaxSoil->setValue(75.0);
     m_inputMaxSoil->setSuffix(tr(" %"));
-    m_inputMaxSoil->setStyleSheet(QStringLiteral("background-color: #07170e; color: white; padding: 4px; border-radius: 4px;"));
+    m_inputMaxSoil->setStyleSheet(QStringLiteral("background-color: #ffffff; color: #0f172a; border: 1px solid #cbd5e1; padding: 4px; border-radius: 4px;"));
     formLayout->addRow(new QLabel(tr("Ngắt bơm khi đất đạt:"), m_drawer), m_inputMaxSoil);
 
     m_inputMaxRuntime = new QSpinBox(m_drawer);
     m_inputMaxRuntime->setRange(1, 30);
     m_inputMaxRuntime->setValue(5);
     m_inputMaxRuntime->setSuffix(tr(" phút"));
-    m_inputMaxRuntime->setStyleSheet(QStringLiteral("background-color: #07170e; color: white; padding: 4px; border-radius: 4px;"));
+    m_inputMaxRuntime->setStyleSheet(QStringLiteral("background-color: #ffffff; color: #0f172a; border: 1px solid #cbd5e1; padding: 4px; border-radius: 4px;"));
     formLayout->addRow(new QLabel(tr("Tưới tối đa mỗi lần:"), m_drawer), m_inputMaxRuntime);
 
     m_chkAutoWatering = new QCheckBox(tr("Kích hoạt chế độ tưới tự động"), m_drawer);
     m_chkAutoWatering->setChecked(true);
-    m_chkAutoWatering->setStyleSheet(QStringLiteral("color: #e2e8f0; font-size: 11px;"));
+    m_chkAutoWatering->setStyleSheet(QStringLiteral("color: #0f172a; font-size: 11px;"));
     formLayout->addRow(QString(), m_chkAutoWatering);
 
     drawerLayout->addLayout(formLayout);
@@ -318,8 +318,8 @@ QWidget *DeviceManagementPage::createOwnedCard(const QJsonObject &device)
     auto *card = new QFrame;
     card->setObjectName(QStringLiteral("ownedCard"));
     card->setStyleSheet(QStringLiteral(
-        "QFrame#ownedCard { background-color: #0c2317; border: 1.5px solid #1b4332; border-radius: 10px; padding: 10px; } "
-        "QFrame#ownedCard:hover { border-color: #34d399; }"));
+        "QFrame#ownedCard { background-color: #ffffff; border: 1.5px solid #e2e8f0; border-radius: 10px; padding: 10px; } "
+        "QFrame#ownedCard:hover { border-color: #10b981; }"));
 
     auto *layout = new QVBoxLayout(card);
     layout->setSpacing(6);
@@ -329,50 +329,50 @@ QWidget *DeviceManagementPage::createOwnedCard(const QJsonObject &device)
     const bool online = device.value(QStringLiteral("online")).toBool(true);
 
     auto *headerRow = new QHBoxLayout;
-    auto *icon = new QLabel(QStringLiteral("🌿"), card);
+    auto *icon = new QLabel(QStringLiteral(""), card);
     icon->setStyleSheet(QStringLiteral("font-size: 18px;"));
     headerRow->addWidget(icon);
 
     auto *nameLabel = new QLabel(name, card);
-    nameLabel->setStyleSheet(QStringLiteral("color: #f1f5f9; font-size: 13px; font-weight: 700;"));
+    nameLabel->setStyleSheet(QStringLiteral("color: #0f172a; font-size: 13px; font-weight: 700;"));
     headerRow->addWidget(nameLabel);
 
     headerRow->addStretch();
 
-    auto *statusBadge = new QLabel(online ? tr("🟢 Trực tuyến") : tr("⚪ Ngoại tuyến"), card);
+    auto *statusBadge = new QLabel(online ? tr("Trực tuyến") : tr("Ngoại tuyến"), card);
     statusBadge->setStyleSheet(online
-        ? QStringLiteral("color: #34d399; font-size: 10px; font-weight: 700;")
-        : QStringLiteral("color: #6ee7b7; font-size: 10px; font-weight: 700;"));
+        ? QStringLiteral("color: #059669; font-size: 10px; font-weight: 700;")
+        : QStringLiteral("color: #64748b; font-size: 10px; font-weight: 700;"));
     headerRow->addWidget(statusBadge);
     layout->addLayout(headerRow);
 
     auto *idLabel = new QLabel(QStringLiteral("ID: %1").arg(id), card);
-    idLabel->setStyleSheet(QStringLiteral("color: #a7f3d0; font-size: 11px;"));
+    idLabel->setStyleSheet(QStringLiteral("color: #64748b; font-size: 11px;"));
     layout->addWidget(idLabel);
 
     auto *btnRow = new QHBoxLayout;
-    auto *btnConfig = new QPushButton(tr("⚙️ Cài đặt"), card);
+    auto *btnConfig = new QPushButton(tr("Cài đặt"), card);
     btnConfig->setStyleSheet(QStringLiteral("background: #0284c7; color: white; border: none; border-radius: 4px; padding: 4px 10px; font-weight: 600; font-size: 10px;"));
     connect(btnConfig, &QPushButton::clicked, this, [this, device] {
         openDeviceDrawer(device);
     });
     btnRow->addWidget(btnConfig);
 
-    auto *btnPump = new QPushButton(tr("💦 Bật tưới"), card);
+    auto *btnPump = new QPushButton(tr("Bật tưới"), card);
     btnPump->setStyleSheet(QStringLiteral("background: #059669; color: white; border: none; border-radius: 4px; padding: 4px 10px; font-weight: 600; font-size: 10px;"));
     connect(btnPump, &QPushButton::clicked, this, [this, id] {
         emit relayControlRequested(id, true);
     });
     btnRow->addWidget(btnPump);
 
-    auto *btnStop = new QPushButton(tr("🛑 Tắt"), card);
+    auto *btnStop = new QPushButton(tr("Tắt"), card);
     btnStop->setStyleSheet(QStringLiteral("background: #dc2626; color: white; border: none; border-radius: 4px; padding: 4px 10px; font-weight: 600; font-size: 10px;"));
     connect(btnStop, &QPushButton::clicked, this, [this, id] {
         emit relayControlRequested(id, false);
     });
     btnRow->addWidget(btnStop);
 
-    auto *btnRelease = new QPushButton(tr("🗑️ Gỡ"), card);
+    auto *btnRelease = new QPushButton(tr("Gỡ"), card);
     btnRelease->setStyleSheet(QStringLiteral("background: #991b1b; color: white; border: none; border-radius: 4px; padding: 4px 10px; font-weight: 600; font-size: 10px;"));
     connect(btnRelease, &QPushButton::clicked, this, [this, btnRelease, id] {
         btnRelease->setEnabled(false);
@@ -390,13 +390,13 @@ QWidget *DeviceManagementPage::createAvailableCard(const QJsonObject &device)
     auto *card = new QFrame;
     card->setObjectName(QStringLiteral("availCard"));
     card->setStyleSheet(QStringLiteral(
-        "QFrame#availCard { background-color: #0c2317; border: 1.5px dashed #1b4332; border-radius: 10px; padding: 10px; }"));
+        "QFrame#availCard { background-color: #ffffff; border: 1.5px dashed #cbd5e1; border-radius: 10px; padding: 10px; }"));
 
     auto *layout = new QHBoxLayout(card);
     const QString id = device.value(QStringLiteral("device_id")).toString();
 
-    auto *info = new QLabel(QStringLiteral("📡 %1 (Sẵn sàng)").arg(id), card);
-    info->setStyleSheet(QStringLiteral("color: #e2e8f0; font-size: 12px; font-weight: 600;"));
+    auto *info = new QLabel(QStringLiteral("%1 (Sẵn sàng)").arg(id), card);
+    info->setStyleSheet(QStringLiteral("color: #0f172a; font-size: 12px; font-weight: 600;"));
     layout->addWidget(info);
 
     layout->addStretch();

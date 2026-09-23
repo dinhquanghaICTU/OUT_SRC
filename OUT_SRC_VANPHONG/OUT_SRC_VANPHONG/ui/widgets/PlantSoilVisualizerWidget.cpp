@@ -74,7 +74,9 @@ void PlantSoilVisualizerWidget::paintEvent(QPaintEvent *event)
 
     // Dark bio pod background
     QRectF bgRect(0, 0, w, h);
-    p.fillRect(bgRect, QColor(QStringLiteral("#05130b")));
+    p.fillRect(bgRect, QColor(QStringLiteral("#f0fdf4")));
+    p.setPen(QPen(QColor(QStringLiteral("#d1fae5")), 1.0));
+    p.drawRoundedRect(bgRect.adjusted(1, 1, -1, -1), 8, 8);
 
     // Hydroponic/Soil Pot Curve at the bottom
     const double potTop = h - 85.0;
@@ -158,7 +160,7 @@ void PlantSoilVisualizerWidget::paintEvent(QPaintEvent *event)
     }
 
     // Status Footer inside canvas
-    p.setPen(QColor(QStringLiteral("#86efac")));
+    p.setPen(QColor(QStringLiteral("#047857")));
     QFont f = p.font();
     f.setPointSize(8);
     f.setBold(true);

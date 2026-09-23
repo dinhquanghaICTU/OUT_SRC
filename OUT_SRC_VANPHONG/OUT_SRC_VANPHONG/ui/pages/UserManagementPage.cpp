@@ -61,13 +61,13 @@ void UserManagementPage::setUsers(const QJsonArray &users)
         btnLayout->setContentsMargins(2, 2, 2, 2);
         btnLayout->setSpacing(4);
 
-        auto *editBtn = new QPushButton(tr("✏️ Sửa"), btnWidget);
+        auto *editBtn = new QPushButton(tr("Sửa"), btnWidget);
         editBtn->setStyleSheet(QStringLiteral("background: #0284c7; color: white; border: none; border-radius: 4px; padding: 2px 6px; font-size: 10px;"));
         connect(editBtn, &QPushButton::clicked, this, [this, i] { openEditUserDialog(i); });
         btnLayout->addWidget(editBtn);
 
         if (username != QStringLiteral("admin")) {
-            auto *delBtn = new QPushButton(tr("🗑️ Xóa"), btnWidget);
+            auto *delBtn = new QPushButton(tr("Xóa"), btnWidget);
             delBtn->setStyleSheet(QStringLiteral("background: #dc2626; color: white; border: none; border-radius: 4px; padding: 2px 6px; font-size: 10px;"));
             connect(delBtn, &QPushButton::clicked, this, [this, username] {
                 if (QMessageBox::question(this, tr("Xác nhận xóa"), tr("Xóa tài khoản %1?").arg(username)) == QMessageBox::Yes) {
@@ -85,23 +85,23 @@ void UserManagementPage::openAddUserDialog()
 {
     QDialog dlg(this);
     dlg.setWindowTitle(tr("Thêm tài khoản vườn"));
-    dlg.setStyleSheet(QStringLiteral("background-color: #0c2317; color: #f1f5f9;"));
+    dlg.setStyleSheet(QStringLiteral("background-color: #ffffff; color: #0f172a;"));
 
     auto *layout = new QVBoxLayout(&dlg);
     auto *form = new QFormLayout;
 
     auto *uEdit = new QLineEdit(&dlg);
-    uEdit->setStyleSheet(QStringLiteral("background-color: #07170e; color: white; border: 1px solid #1b4332; border-radius: 4px; padding: 4px;"));
+    uEdit->setStyleSheet(QStringLiteral("background-color: #ffffff; color: #0f172a; border: 1px solid #cbd5e1; border-radius: 4px; padding: 4px;"));
     form->addRow(tr("Tên đăng nhập:"), uEdit);
 
     auto *pEdit = new QLineEdit(&dlg);
     pEdit->setEchoMode(QLineEdit::Password);
-    pEdit->setStyleSheet(QStringLiteral("background-color: #07170e; color: white; border: 1px solid #1b4332; border-radius: 4px; padding: 4px;"));
+    pEdit->setStyleSheet(QStringLiteral("background-color: #ffffff; color: #0f172a; border: 1px solid #cbd5e1; border-radius: 4px; padding: 4px;"));
     form->addRow(tr("Mật khẩu:"), pEdit);
 
     auto *roleCombo = new QComboBox(&dlg);
     roleCombo->addItems({QStringLiteral("operator"), QStringLiteral("admin"), QStringLiteral("user")});
-    roleCombo->setStyleSheet(QStringLiteral("background-color: #07170e; color: white; border: 1px solid #1b4332; border-radius: 4px; padding: 4px;"));
+    roleCombo->setStyleSheet(QStringLiteral("background-color: #ffffff; color: #0f172a; border: 1px solid #cbd5e1; border-radius: 4px; padding: 4px;"));
     form->addRow(tr("Vai trò:"), roleCombo);
 
     layout->addLayout(form);
@@ -126,25 +126,25 @@ void UserManagementPage::openEditUserDialog(int row)
 
     QDialog dlg(this);
     dlg.setWindowTitle(tr("Chỉnh sửa tài khoản"));
-    dlg.setStyleSheet(QStringLiteral("background-color: #0c2317; color: #f1f5f9;"));
+    dlg.setStyleSheet(QStringLiteral("background-color: #ffffff; color: #0f172a;"));
 
     auto *layout = new QVBoxLayout(&dlg);
     auto *form = new QFormLayout;
 
     auto *uEdit = new QLineEdit(oldUser, &dlg);
-    uEdit->setStyleSheet(QStringLiteral("background-color: #07170e; color: white; border: 1px solid #1b4332; border-radius: 4px; padding: 4px;"));
+    uEdit->setStyleSheet(QStringLiteral("background-color: #ffffff; color: #0f172a; border: 1px solid #cbd5e1; border-radius: 4px; padding: 4px;"));
     form->addRow(tr("Tên đăng nhập:"), uEdit);
 
     auto *pEdit = new QLineEdit(&dlg);
     pEdit->setEchoMode(QLineEdit::Password);
     pEdit->setPlaceholderText(tr("Để trống nếu không đổi"));
-    pEdit->setStyleSheet(QStringLiteral("background-color: #07170e; color: white; border: 1px solid #1b4332; border-radius: 4px; padding: 4px;"));
+    pEdit->setStyleSheet(QStringLiteral("background-color: #ffffff; color: #0f172a; border: 1px solid #cbd5e1; border-radius: 4px; padding: 4px;"));
     form->addRow(tr("Mật khẩu mới:"), pEdit);
 
     auto *roleCombo = new QComboBox(&dlg);
     roleCombo->addItems({QStringLiteral("operator"), QStringLiteral("admin"), QStringLiteral("user")});
     roleCombo->setCurrentText(u.value(QStringLiteral("role")).toString());
-    roleCombo->setStyleSheet(QStringLiteral("background-color: #07170e; color: white; border: 1px solid #1b4332; border-radius: 4px; padding: 4px;"));
+    roleCombo->setStyleSheet(QStringLiteral("background-color: #ffffff; color: #0f172a; border: 1px solid #cbd5e1; border-radius: 4px; padding: 4px;"));
     form->addRow(tr("Vai trò:"), roleCombo);
 
     layout->addLayout(form);

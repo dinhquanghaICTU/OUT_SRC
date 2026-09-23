@@ -47,7 +47,7 @@
        </size>
       </property>
       <property name="styleSheet">
-       <string notr="true">QFrame#topIslandHeader { background: #071910; border-bottom: 1.5px solid #10b981; }</string>
+       <string notr="true">QFrame#topIslandHeader { background: #ffffff; border-bottom: 1.5px solid #10b981; }</string>
       </property>
       <layout class="QHBoxLayout" name="headerHLayout">
        <property name="leftMargin">
@@ -73,7 +73,7 @@
           <string>AGRI-POD</string>
          </property>
          <property name="styleSheet">
-          <string notr="true">color: #34d399; font-size: 12px; font-weight: 900; letter-spacing: 0.5px; padding-left: 2px;</string>
+          <string notr="true">color: #059669; font-size: 13px; font-weight: 900; letter-spacing: 0.5px; padding-left: 2px;</string>
          </property>
         </widget>
        </item>
@@ -82,7 +82,7 @@
        <item>
         <widget class="QFrame" name="segmentedNavCapsule">
          <property name="styleSheet">
-          <string notr="true">QFrame#segmentedNavCapsule { background-color: #041009; border: 1px solid #1b4332; border-radius: 14px; }</string>
+          <string notr="true">QFrame#segmentedNavCapsule { background-color: #f1f5f9; border: 1px solid #cbd5e1; border-radius: 14px; }</string>
          </property>
          <layout class="QHBoxLayout" name="navSegLayout">
           <property name="leftMargin">
@@ -119,7 +119,7 @@
              <bool>true</bool>
             </property>
             <property name="styleSheet">
-             <string notr="true">QPushButton { background: transparent; color: #a7f3d0; border: none; border-radius: 12px; font-size: 10px; font-weight: 700; padding: 4px 8px; } QPushButton:hover { background: #0c281a; color: white; } QPushButton:checked { background: #10b981; color: white; }</string>
+             <string notr="true">QPushButton { background: transparent; color: #475569; border: none; border-radius: 12px; font-size: 10px; font-weight: 700; padding: 4px 8px; } QPushButton:hover { background: #e2e8f0; color: #0f172a; } QPushButton:checked { background: #10b981; color: white; font-weight: 800; }</string>
             </property>
            </widget>
           </item>
@@ -139,7 +139,7 @@
              <bool>true</bool>
             </property>
             <property name="styleSheet">
-             <string notr="true">QPushButton { background: transparent; color: #a7f3d0; border: none; border-radius: 12px; font-size: 10px; font-weight: 700; padding: 4px 8px; } QPushButton:hover { background: #0c281a; color: white; } QPushButton:checked { background: #10b981; color: white; }</string>
+             <string notr="true">QPushButton { background: transparent; color: #475569; border: none; border-radius: 12px; font-size: 10px; font-weight: 700; padding: 4px 8px; } QPushButton:hover { background: #e2e8f0; color: #0f172a; } QPushButton:checked { background: #10b981; color: white; font-weight: 800; }</string>
             </property>
            </widget>
           </item>
@@ -159,7 +159,7 @@
              <bool>true</bool>
             </property>
             <property name="styleSheet">
-             <string notr="true">QPushButton { background: transparent; color: #a7f3d0; border: none; border-radius: 12px; font-size: 10px; font-weight: 700; padding: 4px 8px; } QPushButton:hover { background: #0c281a; color: white; } QPushButton:checked { background: #10b981; color: white; }</string>
+             <string notr="true">QPushButton { background: transparent; color: #475569; border: none; border-radius: 12px; font-size: 10px; font-weight: 700; padding: 4px 8px; } QPushButton:hover { background: #e2e8f0; color: #0f172a; } QPushButton:checked { background: #10b981; color: white; font-weight: 800; }</string>
             </property>
            </widget>
           </item>
@@ -179,7 +179,7 @@
              <bool>true</bool>
             </property>
             <property name="styleSheet">
-             <string notr="true">QPushButton { background: transparent; color: #a7f3d0; border: none; border-radius: 12px; font-size: 10px; font-weight: 700; padding: 4px 8px; } QPushButton:hover { background: #0c281a; color: white; } QPushButton:checked { background: #10b981; color: white; }</string>
+             <string notr="true">QPushButton { background: transparent; color: #475569; border: none; border-radius: 12px; font-size: 10px; font-weight: 700; padding: 4px 8px; } QPushButton:hover { background: #e2e8f0; color: #0f172a; } QPushButton:checked { background: #10b981; color: white; font-weight: 800; }</string>
             </property>
            </widget>
           </item>
@@ -199,7 +199,7 @@
              <bool>true</bool>
             </property>
             <property name="styleSheet">
-             <string notr="true">QPushButton { background: transparent; color: #a7f3d0; border: none; border-radius: 12px; font-size: 10px; font-weight: 700; padding: 4px 8px; } QPushButton:hover { background: #0c281a; color: white; } QPushButton:checked { background: #10b981; color: white; }</string>
+             <string notr="true">QPushButton { background: transparent; color: #475569; border: none; border-radius: 12px; font-size: 10px; font-weight: 700; padding: 4px 8px; } QPushButton:hover { background: #e2e8f0; color: #0f172a; } QPushButton:checked { background: #10b981; color: white; font-weight: 800; }</string>
             </property>
            </widget>
           </item>
@@ -229,7 +229,7 @@
           <string>--:--:--</string>
          </property>
          <property name="styleSheet">
-          <string notr="true">color: #6ee7b7; font-size: 10px; font-weight: 700;</string>
+          <string notr="true">color: #0f172a; font-size: 10px; font-weight: 700;</string>
          </property>
         </widget>
        </item>
@@ -240,7 +240,7 @@
           <string>Admin</string>
          </property>
          <property name="styleSheet">
-          <string notr="true">color: #f59e0b; background: rgba(245, 158, 11, 0.15); border: 1px solid #d97706; border-radius: 8px; font-size: 9px; font-weight: 800; padding: 2px 6px;</string>
+          <string notr="true">color: #d97706; background: #fef3c7; border: 1px solid #fcd34d; border-radius: 8px; font-size: 9px; font-weight: 800; padding: 2px 6px;</string>
          </property>
         </widget>
        </item>
@@ -254,7 +254,7 @@
           <string>Thoát</string>
          </property>
          <property name="styleSheet">
-          <string notr="true">QPushButton { background-color: #37151e; color: #f87171; border: 1px solid #7f1d1d; border-radius: 8px; font-size: 9px; font-weight: 800; padding: 3px 8px; } QPushButton:hover { background-color: #dc2626; color: #ffffff; }</string>
+          <string notr="true">QPushButton { background-color: #fee2e2; color: #dc2626; border: 1px solid #fca5a5; border-radius: 8px; font-size: 9px; font-weight: 800; padding: 3px 8px; } QPushButton:hover { background-color: #dc2626; color: #ffffff; }</string>
          </property>
         </widget>
        </item>
