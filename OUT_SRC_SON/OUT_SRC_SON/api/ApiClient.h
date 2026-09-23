@@ -35,6 +35,8 @@ public:
     void updatePerDeviceConfig(const QString &deviceId, const QJsonObject &config);
     void requestDeviceHistory(const QString &deviceId, const QString &period,
                               const QString &date);
+    void requestLoginHistory(int limit = 100);
+    void requestAuditLogs(int limit = 100, const QString &usernameFilter = QString());
 
 signals:
     void loginSucceeded(const QString &role);
@@ -45,6 +47,8 @@ signals:
     void deviceReleased(const QString &deviceId);
     void availableDevicesReceived(const QJsonArray &devices);
     void usersReceived(const QJsonArray &users);
+    void loginHistoryReceived(const QJsonArray &history);
+    void auditLogsReceived(const QJsonArray &logs);
     void userCreated();
     void userUpdated();
     void userDeleted();

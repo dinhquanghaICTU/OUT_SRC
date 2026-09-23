@@ -60,7 +60,15 @@ MainWindow::MainWindow(QWidget *parent)
         m_dashboardPage->setUsername(m_authService->currentUsername());
         m_deviceManagementPage->setCurrentUser(m_authService->currentUsername(), m_authService->isAdmin());
         ui->devicesButton->setVisible(true);
-        ui->usersButton->setVisible(m_authService->isAdmin());
+        ui->usersButton->setVisible(true);
+        if (m_authService->isAdmin()) {
+            ui->usersButton->setText(tr("👤 Quản trị & Nhật ký"));
+            ui->usersButton->setToolTip(tr("Quản lý tài khoản, lịch sử đăng nhập & điều khiển hệ thống"));
+        } else {
+            ui->usersButton->setText(tr("📋 Nhật ký thao tác"));
+            ui->usersButton->setToolTip(tr("Xem lịch sử các thao tác của bạn trong hệ thống"));
+        }
+        m_userManagementPage->setCurrentUsername(m_authService->currentUsername());
         m_userManagementPage->setAdminEnabled(m_authService->isAdmin());
         ui->pages->setCurrentWidget(m_dashboardPage);
         ui->dashboardButton->setChecked(true);
@@ -156,10 +164,26 @@ MainWindow::MainWindow(QWidget *parent)
             m_apiClient, &ApiClient::deleteUser);
     connect(m_userManagementPage, &UserManagementPage::releaseUserDeviceRequested,
             m_apiClient, &ApiClient::releaseUserDevice);
+    connect(m_userManagementPage, &UserManagementPage::backToDashboardRequested, this, [this] {
+        ui->pages->setCurrentWidget(m_dashboardPage);
+        ui->dashboardButton->setChecked(true);
+    });
     connect(m_userManagementPage, &UserManagementPage::refreshRequested,
             m_apiClient, &ApiClient::requestUsers);
+    connect(m_userManagementPage, &UserManagementPage::requestLoginHistoryRequested,
+            m_apiClient, [this] {
+        m_apiClient->requestLoginHistory();
+    });
+    connect(m_userManagementPage, &UserManagementPage::requestAuditLogsRequested,
+            m_apiClient, [this] {
+        m_apiClient->requestAuditLogs();
+    });
     connect(m_apiClient, &ApiClient::usersReceived,
             m_userManagementPage, &UserManagementPage::setUsers);
+    connect(m_apiClient, &ApiClient::loginHistoryReceived,
+            m_userManagementPage, &UserManagementPage::setLoginHistory);
+    connect(m_apiClient, &ApiClient::auditLogsReceived,
+            m_userManagementPage, &UserManagementPage::setAuditLogs);
     connect(m_apiClient, &ApiClient::userCreated, this, [this] {
         if (m_authService->isOfflineMode())
             return;
@@ -220,7 +244,11 @@ MainWindow::MainWindow(QWidget *parent)
                 ui->pages->setCurrentWidget(m_userManagementPage);
                 if (m_authService->isOfflineMode())
                     return;
-                m_apiClient->requestUsers();
+                if (m_authService->isAdmin()) {
+                    m_apiClient->requestUsers();
+                    m_apiClient->requestLoginHistory();
+                }
+                m_apiClient->requestAuditLogs();
             });
     connect(ui->logoutButton, &QPushButton::clicked, this, [this] {
         m_sensorService->stop();

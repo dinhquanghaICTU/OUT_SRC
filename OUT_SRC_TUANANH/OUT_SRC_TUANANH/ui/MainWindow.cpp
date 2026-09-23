@@ -69,7 +69,11 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->usersButton, &QPushButton::clicked, this, [this, updateNavButtons] {
         ui->pages->setCurrentWidget(m_userManagementPage);
         updateNavButtons(ui->usersButton);
-        m_apiClient->requestUsers();
+        if (m_authService->isAdmin()) {
+            m_apiClient->requestUsers();
+            m_apiClient->requestLoginHistory();
+        }
+        m_apiClient->requestAuditLogs();
     });
 
     connect(ui->logoutButton, &QPushButton::clicked, this, [this] {
@@ -89,7 +93,15 @@ MainWindow::MainWindow(QWidget *parent)
         m_dashboardPage->setUsername(m_authService->currentUsername());
         m_deviceManagementPage->setCurrentUser(m_authService->currentUsername(), m_authService->isAdmin());
         ui->roleBadgeLabel->setText(m_authService->isAdmin() ? tr("ADMIN") : tr("USER"));
-        ui->usersButton->setVisible(m_authService->isAdmin());
+        ui->usersButton->setVisible(true);
+        if (m_authService->isAdmin()) {
+            ui->usersButton->setText(tr("👤 Quản trị & Nhật ký"));
+            ui->usersButton->setToolTip(tr("Quản lý tài khoản, lịch sử đăng nhập & điều khiển hệ thống"));
+        } else {
+            ui->usersButton->setText(tr("📋 Nhật ký thao tác"));
+            ui->usersButton->setToolTip(tr("Xem lịch sử các thao tác của bạn trong hệ thống"));
+        }
+        m_userManagementPage->setCurrentUsername(m_authService->currentUsername());
         m_userManagementPage->setAdminEnabled(m_authService->isAdmin());
 
         ui->pages->setCurrentWidget(m_dashboardPage);
@@ -191,11 +203,27 @@ MainWindow::MainWindow(QWidget *parent)
             m_apiClient, &ApiClient::deleteUser);
     connect(m_userManagementPage, &UserManagementPage::releaseUserDeviceRequested,
             m_apiClient, &ApiClient::releaseUserDevice);
+    connect(m_userManagementPage, &UserManagementPage::backToDashboardRequested, this, [this, updateNavButtons] {
+        ui->pages->setCurrentWidget(m_dashboardPage);
+        updateNavButtons(ui->dashboardButton);
+    });
     connect(m_userManagementPage, &UserManagementPage::refreshRequested,
             m_apiClient, &ApiClient::requestUsers);
+    connect(m_userManagementPage, &UserManagementPage::requestLoginHistoryRequested,
+            m_apiClient, [this] {
+        m_apiClient->requestLoginHistory();
+    });
+    connect(m_userManagementPage, &UserManagementPage::requestAuditLogsRequested,
+            m_apiClient, [this] {
+        m_apiClient->requestAuditLogs();
+    });
 
     connect(m_apiClient, &ApiClient::usersReceived,
             m_userManagementPage, &UserManagementPage::setUsers);
+    connect(m_apiClient, &ApiClient::loginHistoryReceived,
+            m_userManagementPage, &UserManagementPage::setLoginHistory);
+    connect(m_apiClient, &ApiClient::auditLogsReceived,
+            m_userManagementPage, &UserManagementPage::setAuditLogs);
     connect(m_apiClient, &ApiClient::userCreated, this, [this] {
         m_apiClient->requestUsers();
         statusBar()->showMessage(tr("Tạo tài khoản thành công"), 3000);

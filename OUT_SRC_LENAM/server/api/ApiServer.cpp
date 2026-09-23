@@ -30,6 +30,20 @@ QJsonObject parseObject(const QHttpServerRequest &request, bool *ok)
     return *ok ? document.object() : QJsonObject{};
 }
 
+QString clientIp(const QHttpServerRequest &request)
+{
+    const auto xff = request.value(QByteArrayLiteral("X-Forwarded-For"));
+    if (!xff.isEmpty())
+        return QString::fromUtf8(xff).split(',').first().trimmed();
+    const auto addr = request.remoteAddress();
+    QString ip = addr.toString();
+    if (ip.startsWith(QStringLiteral("::ffff:")))
+        ip = ip.mid(7);
+    if (ip.isEmpty())
+        ip = QStringLiteral("127.0.0.1");
+    return ip;
+}
+
 }
 
 ApiServer::ApiServer(Database *database, MqttDiscoveryService *mqtt, QObject *parent)
@@ -70,9 +84,16 @@ void ApiServer::registerRoutes()
             return jsonError(Status::BadRequest, QStringLiteral("validation_error"),
                              tr("Thiếu tài khoản hoặc mật khẩu"));
         QString role;
-        if (!m_database->verifyUser(username, password, &role))
+        if (!m_database->verifyUser(username, password, &role)) {
+            m_database->recordLoginHistory(username, QStringLiteral("unknown"),
+                                           QStringLiteral("failed"), clientIp(request));
             return jsonError(Status::Unauthorized, QStringLiteral("invalid_credentials"),
                              tr("Tài khoản hoặc mật khẩu không đúng"));
+        }
+        m_database->recordLoginHistory(username, role, QStringLiteral("success"), clientIp(request));
+        m_database->recordAuditLog(username, role, QStringLiteral("ĐĂNG NHẬP"),
+                                   QStringLiteral("Hệ thống"),
+                                   QStringLiteral("Đăng nhập thành công từ IP %1").arg(clientIp(request)));
         const QString token = createToken(username, role);
         return QHttpServerResponse(QJsonObject{{"token", token},
                                                {"token_type", "Bearer"},
@@ -170,6 +191,12 @@ void ApiServer::registerRoutes()
                 return jsonError(Status::Conflict, errorCode, error);
             return jsonError(Status::InternalServerError, errorCode, error);
         }
+        m_database->recordAuditLog(
+            session.value(QStringLiteral("username")).toString(),
+            session.value(QStringLiteral("role")).toString(),
+            QStringLiteral("GHÉP NỐI THIẾT BỊ"),
+            deviceId,
+            QStringLiteral("Ghép nối thiết bị '%1'").arg(name));
         return QHttpServerResponse(
             QJsonObject{{"status", "claimed"}, {"device_id", deviceId}, {"name", name}},
             Status::Created);
@@ -196,12 +223,18 @@ void ApiServer::registerRoutes()
             return jsonError(Status::Forbidden, QStringLiteral("device_not_owned"),
                              tr("Bạn không sở hữu thiết bị này"));
         }
+        const bool relayState = body.value(QStringLiteral("state")).toBool();
         const QString commandId = QStringLiteral("cmd-")
             + QUuid::createUuid().toString(QUuid::Id128);
-        if (!m_mqtt->publishRelayCommand(
-                deviceId, commandId, body.value(QStringLiteral("state")).toBool()))
+        if (!m_mqtt->publishRelayCommand(deviceId, commandId, relayState))
             return jsonError(Status::ServiceUnavailable, QStringLiteral("mqtt_unavailable"),
                              tr("Server chưa kết nối MQTT broker"));
+        m_database->recordAuditLog(
+            session.value(QStringLiteral("username")).toString(),
+            session.value(QStringLiteral("role")).toString(),
+            QStringLiteral("ĐIỀU KHIỂN RƠ-LE"),
+            deviceId,
+            relayState ? QStringLiteral("Bật thiết bị khí quyển") : QStringLiteral("Tắt thiết bị khí quyển"));
         return QHttpServerResponse(QJsonObject{{"status", "accepted"},
                                                {"command_id", commandId},
                                                {"device_id", deviceId}},
@@ -229,6 +262,12 @@ void ApiServer::registerRoutes()
                                       ? Status::Forbidden : Status::InternalServerError;
             return jsonError(status, errorCode, error);
         }
+        m_database->recordAuditLog(
+            session.value(QStringLiteral("username")).toString(),
+            session.value(QStringLiteral("role")).toString(),
+            QStringLiteral("HỦY GÁN THIẾT BỊ"),
+            deviceId,
+            QStringLiteral("Gỡ thiết bị khỏi tài khoản"));
         return QHttpServerResponse(QJsonObject{{"status", "released"},
                                                {"device_id", deviceId}});
     });
@@ -290,6 +329,12 @@ void ApiServer::registerRoutes()
             return jsonError(status, errorCode, error);
         }
         m_mqtt->publishDeviceConfig(deviceId, config);
+        m_database->recordAuditLog(
+            session.value(QStringLiteral("username")).toString(),
+            session.value(QStringLiteral("role")).toString(),
+            QStringLiteral("CÀI ĐẶT CẤU HÌNH"),
+            deviceId,
+            QStringLiteral("Cập nhật thông số ngưỡng & chu kỳ lấy mẫu"));
         return QHttpServerResponse(QJsonObject{{"status", "applied"},
                                                {"device_id", deviceId},
                                                {"config", config}});
@@ -345,6 +390,12 @@ void ApiServer::registerRoutes()
                 return jsonError(Status::Conflict, errorCode, error);
             return jsonError(Status::InternalServerError, errorCode, error);
         }
+        m_database->recordAuditLog(
+            session.value(QStringLiteral("username")).toString(),
+            session.value(QStringLiteral("role")).toString(),
+            QStringLiteral("TẠO TÀI KHOẢN"),
+            username,
+            QStringLiteral("Tạo mới tài khoản với quyền %1").arg(role));
         return QHttpServerResponse(
             QJsonObject{{"status", "created"}, {"username", username}, {"role", role}},
             Status::Created);
@@ -386,6 +437,13 @@ void ApiServer::registerRoutes()
                 return jsonError(Status::Conflict, errorCode, error);
             return jsonError(Status::InternalServerError, errorCode, error);
         }
+        m_database->recordAuditLog(
+            session.value(QStringLiteral("username")).toString(),
+            session.value(QStringLiteral("role")).toString(),
+            QStringLiteral("CẬP NHẬT TÀI KHOẢN"),
+            username,
+            QStringLiteral("Cập nhật tài khoản (quyền: %1, trạng thái: %2)")
+                .arg(role, enabled ? QStringLiteral("bật") : QStringLiteral("tắt")));
         return QHttpServerResponse(QJsonObject{{"status", "updated"},
                                                {"username", username},
                                                {"role", role},
@@ -413,6 +471,12 @@ void ApiServer::registerRoutes()
                 return jsonError(Status::NotFound, errorCode, error);
             return jsonError(Status::InternalServerError, errorCode, error);
         }
+        m_database->recordAuditLog(
+            session.value(QStringLiteral("username")).toString(),
+            session.value(QStringLiteral("role")).toString(),
+            QStringLiteral("XÓA TÀI KHOẢN"),
+            username,
+            QStringLiteral("Xóa tài khoản khỏi hệ thống"));
         return QHttpServerResponse(QJsonObject{{"status", "deleted"},
                                                {"username", username}});
     });
@@ -436,9 +500,51 @@ void ApiServer::registerRoutes()
                 return jsonError(Status::NotFound, errorCode, error);
             return jsonError(Status::InternalServerError, errorCode, error);
         }
+        m_database->recordAuditLog(
+            session.value(QStringLiteral("username")).toString(),
+            session.value(QStringLiteral("role")).toString(),
+            QStringLiteral("GỠ THIẾT BỊ (ADMIN)"),
+            deviceId,
+            QStringLiteral("Gỡ thiết bị khỏi tài khoản %1").arg(username));
         return QHttpServerResponse(QJsonObject{{"status", "released"},
                                                {"username", username},
                                                {"device_id", deviceId}});
+    });
+
+    m_server.route(QStringLiteral("/api/admin/login-history"), QHttpServerRequest::Method::Get,
+                   [this](const QHttpServerRequest &request) {
+        const QJsonObject session = sessionForRequest(request);
+        if (session.isEmpty())
+            return jsonError(Status::Unauthorized, QStringLiteral("unauthorized"),
+                             tr("Thiếu hoặc sai access token"));
+        if (session.value(QStringLiteral("role")).toString() != QStringLiteral("admin"))
+            return jsonError(Status::Forbidden, QStringLiteral("forbidden"),
+                             tr("Chỉ admin được xem lịch sử đăng nhập hệ thống"));
+        const int limit = requestedLimit(request);
+        const QJsonArray data = m_database->loginHistory(limit);
+        return QHttpServerResponse(QJsonObject{{"data", data}, {"count", data.size()}});
+    });
+
+    m_server.route(QStringLiteral("/api/audit/logs"), QHttpServerRequest::Method::Get,
+                   [this](const QHttpServerRequest &request) {
+        const QJsonObject session = sessionForRequest(request);
+        if (session.isEmpty())
+            return jsonError(Status::Unauthorized, QStringLiteral("unauthorized"),
+                             tr("Thiếu hoặc sai access token"));
+        const QString role = session.value(QStringLiteral("role")).toString();
+        const QString currentUsername = session.value(QStringLiteral("username")).toString();
+        const int limit = requestedLimit(request);
+
+        QString userFilter;
+        if (role == QStringLiteral("admin")) {
+            userFilter = request.query().queryItemValue(QStringLiteral("username")).trimmed();
+        } else {
+            // Normal user can ONLY see actions performed by their own account
+            userFilter = currentUsername;
+        }
+
+        const QJsonArray data = m_database->auditLogs(userFilter, limit);
+        return QHttpServerResponse(QJsonObject{{"data", data}, {"count", data.size()}});
     });
 
     m_server.route(QStringLiteral("/api/readings/latest"), QHttpServerRequest::Method::Get,

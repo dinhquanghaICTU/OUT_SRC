@@ -939,9 +939,16 @@ void MainWindow::triggerLogin(const QString &username, const QString &password, 
         const auto navButtons = m_shellPage->findChildren<QPushButton*>("hudNav");
         for (int i = 0; i < navButtons.size(); ++i) {
             auto *nav = navButtons[i];
-            if (nav->text().contains(QStringLiteral("QUẢN TRỊ")) || nav->text().contains(QStringLiteral("TÀI KHOẢN"))) {
-                nav->setVisible(isAdmin);
-                nav->setEnabled(isAdmin);
+            if (nav->text().contains(QStringLiteral("QUẢN TRỊ")) || nav->text().contains(QStringLiteral("TÀI KHOẢN")) || nav->text().contains(QStringLiteral("NHẬT KÝ"))) {
+                nav->setVisible(true);
+                nav->setEnabled(true);
+                if (isAdmin) {
+                    nav->setText(QStringLiteral("■ QUẢN TRỊ & NHẬT KÝ"));
+                    nav->setToolTip(QStringLiteral("Quản lý tài khoản, lịch sử đăng nhập & điều khiển"));
+                } else {
+                    nav->setText(QStringLiteral("■ NHẬT KÝ THAO TÁC"));
+                    nav->setToolTip(QStringLiteral("Xem lịch sử các thao tác của bạn trong hệ thống"));
+                }
             }
             nav->setChecked(i == targetPage);
         }
@@ -1062,6 +1069,16 @@ void MainWindow::buildShell()
 void MainWindow::setPage(int index)
 {
     m_pages->setCurrentIndex(index);
+    if (index == 3) {
+        const bool isAdmin = (m_role == "admin");
+        if (m_tabUsersBtn) m_tabUsersBtn->setVisible(isAdmin);
+        if (m_tabLoginBtn) m_tabLoginBtn->setVisible(isAdmin);
+        if (m_addUserBtn) m_addUserBtn->setVisible(isAdmin);
+        if (!isAdmin && m_usersStack) {
+            m_usersStack->setCurrentIndex(2);
+            if (m_tabAuditBtn) m_tabAuditBtn->setChecked(true);
+        }
+    }
     refreshAll();
 }
 
@@ -1982,25 +1999,136 @@ void MainWindow::buildUsers()
     auto *page = new QWidget;
     page->setStyleSheet("background-color: #060b17;");
     auto *root = new QVBoxLayout(page);
-    root->setContentsMargins(0, 0, 0, 0);
-    root->setSpacing(6);
+    root->setContentsMargins(10, 10, 10, 10);
+    root->setSpacing(8);
 
+    // Top control bar
     auto *top = new QHBoxLayout;
-    top->addWidget(label("QUẢN TRỊ NGƯỜI DÙNG & PHÂN QUYỀN", "pageTitle"));
+    top->addWidget(label("QUẢN TRỊ HỆ THỐNG & NHẬT KÝ", "pageTitle"));
+    top->addSpacing(15);
+
+    // Subtab buttons
+    m_tabUsersBtn = button("👥 Tài khoản", "hudNav");
+    m_tabUsersBtn->setCheckable(true);
+    m_tabUsersBtn->setChecked(true);
+    m_tabUsersBtn->setFixedHeight(30);
+
+    m_tabLoginBtn = button("🔑 Lịch sử đăng nhập", "hudNav");
+    m_tabLoginBtn->setCheckable(true);
+    m_tabLoginBtn->setFixedHeight(30);
+
+    m_tabAuditBtn = button("⚡ Lịch sử điều khiển", "hudNav");
+    m_tabAuditBtn->setCheckable(true);
+    m_tabAuditBtn->setFixedHeight(30);
+
+    top->addWidget(m_tabUsersBtn);
+    top->addWidget(m_tabLoginBtn);
+    top->addWidget(m_tabAuditBtn);
     top->addStretch();
-    auto *add = button("+ Tạo tài khoản mới", "cyanBtn");
-    top->addWidget(add);
+
+    m_addUserBtn = button("+ Tạo tài khoản mới", "cyanBtn");
+    m_addUserBtn->setFixedHeight(30);
+    top->addWidget(m_addUserBtn);
+
+    auto *refreshBtn = button("🔄 Làm mới", "hudNav");
+    refreshBtn->setFixedHeight(30);
+    top->addWidget(refreshBtn);
+
     root->addLayout(top);
 
+    // Multi-page subtab stack
+    m_usersStack = new QStackedWidget;
+
+    // --- Subtab 0: Users Table ---
+    auto *usersWidget = new QWidget;
+    auto *usersLayout = new QVBoxLayout(usersWidget);
+    usersLayout->setContentsMargins(0, 0, 0, 0);
     m_usersTable = new QTableWidget(0, 4);
     m_usersTable->setHorizontalHeaderLabels({"Tài khoản", "Quyền hạn", "Trạm phụ trách", "Trạng thái"});
     m_usersTable->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
     m_usersTable->verticalHeader()->hide();
-    root->addWidget(m_usersTable);
+    usersLayout->addWidget(m_usersTable);
+    m_usersStack->addWidget(usersWidget);
 
-    connect(add, &QPushButton::clicked, this, &MainWindow::createUserDialog);
+    // --- Subtab 1: Login History Table ---
+    auto *loginWidget = new QWidget;
+    auto *loginLayout = new QVBoxLayout(loginWidget);
+    loginLayout->setContentsMargins(0, 0, 0, 0);
+    loginLayout->setSpacing(6);
+    m_loginSummaryLabel = label("Danh sách phiên đăng nhập của tất cả các tài khoản vào hệ thống", "metricValSub");
+    loginLayout->addWidget(m_loginSummaryLabel);
+    m_loginTable = new QTableWidget(0, 5);
+    m_loginTable->setHorizontalHeaderLabels({"Thời gian", "Tài khoản", "Quyền", "Địa chỉ IP", "Trạng thái"});
+    m_loginTable->horizontalHeader()->setSectionResizeMode(0, QHeaderView::ResizeToContents);
+    m_loginTable->horizontalHeader()->setSectionResizeMode(1, QHeaderView::ResizeToContents);
+    m_loginTable->horizontalHeader()->setSectionResizeMode(2, QHeaderView::ResizeToContents);
+    m_loginTable->horizontalHeader()->setSectionResizeMode(3, QHeaderView::ResizeToContents);
+    m_loginTable->horizontalHeader()->setSectionResizeMode(4, QHeaderView::Stretch);
+    m_loginTable->verticalHeader()->hide();
+    loginLayout->addWidget(m_loginTable);
+    m_usersStack->addWidget(loginWidget);
+
+    // --- Subtab 2: Audit Logs Table ---
+    auto *auditWidget = new QWidget;
+    auto *auditLayout = new QVBoxLayout(auditWidget);
+    auditLayout->setContentsMargins(0, 0, 0, 0);
+    auditLayout->setSpacing(6);
+
+    auto *auditBar = new QHBoxLayout;
+    m_auditSummaryLabel = label("Nhật ký điều khiển thiết bị & thao tác cấu hình", "metricValSub");
+    auditBar->addWidget(m_auditSummaryLabel);
+    auditBar->addStretch();
+    auditBar->addWidget(label("Tìm kiếm:", "metricValSub"));
+    m_auditSearchEdit = new QLineEdit;
+    m_auditSearchEdit->setPlaceholderText("Lọc theo tài khoản, hành động...");
+    m_auditSearchEdit->setFixedWidth(220);
+    m_auditSearchEdit->setStyleSheet("background-color: #0c1729; color: #e2e8f0; border: 1px solid #1e293b; border-radius: 4px; padding: 4px;");
+    VirtualKeyboardDialog::attachToLineEdit(m_auditSearchEdit, "Tìm kiếm nhật ký");
+    auditBar->addWidget(m_auditSearchEdit);
+    auditLayout->addLayout(auditBar);
+
+    m_auditTable = new QTableWidget(0, 5);
+    m_auditTable->setHorizontalHeaderLabels({"Thời gian", "Tài khoản", "Hành động", "Thiết bị / Đối tượng", "Chi tiết thao tác"});
+    m_auditTable->horizontalHeader()->setSectionResizeMode(0, QHeaderView::ResizeToContents);
+    m_auditTable->horizontalHeader()->setSectionResizeMode(1, QHeaderView::ResizeToContents);
+    m_auditTable->horizontalHeader()->setSectionResizeMode(2, QHeaderView::ResizeToContents);
+    m_auditTable->horizontalHeader()->setSectionResizeMode(3, QHeaderView::ResizeToContents);
+    m_auditTable->horizontalHeader()->setSectionResizeMode(4, QHeaderView::Stretch);
+    m_auditTable->verticalHeader()->hide();
+    auditLayout->addWidget(m_auditTable);
+    m_usersStack->addWidget(auditWidget);
+
+    root->addWidget(m_usersStack, 1);
+
+    // Wire subtab switching
+    auto updateSubtabs = [this](int idx) {
+        m_usersStack->setCurrentIndex(idx);
+        m_tabUsersBtn->setChecked(idx == 0);
+        m_tabLoginBtn->setChecked(idx == 1);
+        m_tabAuditBtn->setChecked(idx == 2);
+        if (m_addUserBtn) m_addUserBtn->setVisible(idx == 0 && m_role == "admin");
+        if (idx == 0 && m_role == "admin") refreshUsers();
+        else if (idx == 1 && m_role == "admin") refreshLoginHistory();
+        else if (idx == 2) refreshAuditLogs();
+    };
+
+    connect(m_tabUsersBtn, &QPushButton::clicked, this, [updateSubtabs] { updateSubtabs(0); });
+    connect(m_tabLoginBtn, &QPushButton::clicked, this, [updateSubtabs] { updateSubtabs(1); });
+    connect(m_tabAuditBtn, &QPushButton::clicked, this, [updateSubtabs] { updateSubtabs(2); });
+
+    connect(m_addUserBtn, &QPushButton::clicked, this, &MainWindow::createUserDialog);
+    connect(refreshBtn, &QPushButton::clicked, this, [this] {
+        if (m_usersStack->currentIndex() == 0 && m_role == "admin") refreshUsers();
+        else if (m_usersStack->currentIndex() == 1 && m_role == "admin") refreshLoginHistory();
+        else if (m_usersStack->currentIndex() == 2) refreshAuditLogs();
+    });
+
     connect(m_usersTable, &QTableWidget::cellClicked, this, [this](int row, int) {
         if (row >= 0 && row < m_users.size()) editUserDialog(m_users.at(row).toObject());
+    });
+
+    connect(m_auditSearchEdit, &QLineEdit::textChanged, this, [this] {
+        renderAuditLogs();
     });
 
     m_pages->addWidget(page);
@@ -2086,7 +2214,13 @@ QString MainWindow::metricText(const QJsonObject &d)
 void MainWindow::refreshAll()
 {
     refreshDevices();
-    if (m_role == "admin" && m_pages && m_pages->currentIndex() == 3) refreshUsers();
+    if (m_pages && m_pages->currentIndex() == 3) {
+        if (m_role == "admin") {
+            refreshUsers();
+            refreshLoginHistory();
+        }
+        refreshAuditLogs();
+    }
     if (m_pages && m_pages->currentIndex() == 2) refreshHistory();
 }
 
@@ -2113,6 +2247,24 @@ void MainWindow::refreshUsers()
     get("/api/admin/users", [this](QJsonObject o) {
         m_users = o.value("data").toArray();
         renderUsers();
+    });
+}
+
+void MainWindow::refreshLoginHistory()
+{
+    if (m_role != "admin") return;
+    get("/api/admin/login-history?limit=200", [this](QJsonObject o) {
+        m_loginHistory = o.value("data").toArray();
+        renderLoginHistory();
+    });
+}
+
+void MainWindow::refreshAuditLogs()
+{
+    QString path = "/api/audit/logs?limit=200";
+    get(path, [this](QJsonObject o) {
+        m_auditLogs = o.value("data").toArray();
+        renderAuditLogs();
     });
 }
 
@@ -3095,6 +3247,115 @@ void MainWindow::renderUsers()
         for (auto id : ids) s << id.toString();
         m_usersTable->setItem(i, 2, new QTableWidgetItem(s.join(", ")));
         m_usersTable->setItem(i, 3, new QTableWidgetItem(u.value("enabled").toBool() ? "Đang hoạt động" : "Bị khóa"));
+    }
+}
+
+void MainWindow::renderLoginHistory()
+{
+    if (!m_loginTable) return;
+    m_loginTable->setRowCount(0);
+    m_loginTable->setRowCount(m_loginHistory.size());
+
+    for (int r = 0; r < m_loginHistory.size(); ++r) {
+        const QJsonObject item = m_loginHistory.at(r).toObject();
+        auto *timeItem = new QTableWidgetItem(item.value("created_at").toString());
+        timeItem->setTextAlignment(Qt::AlignCenter);
+
+        auto *userItem = new QTableWidgetItem(item.value("username").toString());
+        userItem->setTextAlignment(Qt::AlignCenter);
+        userItem->setForeground(QColor("#38bdf8"));
+
+        const QString role = item.value("role").toString();
+        auto *roleItem = new QTableWidgetItem(role == "admin" ? "Quản trị viên" : "Người dùng");
+        roleItem->setTextAlignment(Qt::AlignCenter);
+
+        auto *ipItem = new QTableWidgetItem(item.value("ip_address").toString());
+        ipItem->setTextAlignment(Qt::AlignCenter);
+
+        const QString status = item.value("status").toString();
+        auto *statusItem = new QTableWidgetItem(status == "success" ? "Thành công" : "Thất bại");
+        statusItem->setTextAlignment(Qt::AlignCenter);
+        if (status == "success") {
+            statusItem->setForeground(QColor("#22c55e"));
+        } else {
+            statusItem->setForeground(QColor("#ef4444"));
+        }
+
+        m_loginTable->setItem(r, 0, timeItem);
+        m_loginTable->setItem(r, 1, userItem);
+        m_loginTable->setItem(r, 2, roleItem);
+        m_loginTable->setItem(r, 3, ipItem);
+        m_loginTable->setItem(r, 4, statusItem);
+    }
+    if (m_loginSummaryLabel) {
+        m_loginSummaryLabel->setText(QString("Tổng cộng %1 lượt đăng nhập được ghi nhận").arg(m_loginHistory.size()));
+    }
+}
+
+void MainWindow::renderAuditLogs()
+{
+    if (!m_auditTable) return;
+    const QString filter = m_auditSearchEdit ? m_auditSearchEdit->text().trimmed().toLower() : QString();
+
+    QJsonArray filtered;
+    for (const auto &val : m_auditLogs) {
+        const QJsonObject item = val.toObject();
+        if (filter.isEmpty()) {
+            filtered.append(item);
+        } else {
+            const QString u = item.value("username").toString().toLower();
+            const QString a = item.value("action").toString().toLower();
+            const QString t = item.value("target").toString().toLower();
+            const QString d = item.value("details").toString().toLower();
+            if (u.contains(filter) || a.contains(filter) || t.contains(filter) || d.contains(filter)) {
+                filtered.append(item);
+            }
+        }
+    }
+
+    m_auditTable->setRowCount(0);
+    m_auditTable->setRowCount(filtered.size());
+
+    for (int r = 0; r < filtered.size(); ++r) {
+        const QJsonObject item = filtered.at(r).toObject();
+        auto *timeItem = new QTableWidgetItem(item.value("created_at").toString());
+        timeItem->setTextAlignment(Qt::AlignCenter);
+
+        auto *userItem = new QTableWidgetItem(item.value("username").toString());
+        userItem->setTextAlignment(Qt::AlignCenter);
+        userItem->setForeground(QColor("#38bdf8"));
+
+        const QString action = item.value("action").toString();
+        auto *actionItem = new QTableWidgetItem(action);
+        actionItem->setTextAlignment(Qt::AlignCenter);
+        if (action.contains("RƠ-LE") || action.contains("BẬT") || action.contains("TẮT")) {
+            actionItem->setForeground(QColor("#f59e0b"));
+        } else if (action.contains("CẤU HÌNH")) {
+            actionItem->setForeground(QColor("#a855f7"));
+        } else if (action.contains("TÀI KHOẢN")) {
+            actionItem->setForeground(QColor("#3b82f6"));
+        } else {
+            actionItem->setForeground(QColor("#06b6d4"));
+        }
+
+        auto *targetItem = new QTableWidgetItem(item.value("target").toString());
+        targetItem->setTextAlignment(Qt::AlignCenter);
+
+        auto *detailsItem = new QTableWidgetItem(item.value("details").toString());
+        detailsItem->setForeground(QColor("#e2e8f0"));
+
+        m_auditTable->setItem(r, 0, timeItem);
+        m_auditTable->setItem(r, 1, userItem);
+        m_auditTable->setItem(r, 2, actionItem);
+        m_auditTable->setItem(r, 3, targetItem);
+        m_auditTable->setItem(r, 4, detailsItem);
+    }
+    if (m_auditSummaryLabel) {
+        if (m_role == "admin") {
+            m_auditSummaryLabel->setText(QString("Nhật ký thao tác hệ thống: hiển thị %1 / %2 bản ghi").arg(filtered.size()).arg(m_auditLogs.size()));
+        } else {
+            m_auditSummaryLabel->setText(QString("Nhật ký thao tác của bạn (%1): hiển thị %2 bản ghi").arg(m_username).arg(filtered.size()));
+        }
     }
 }
 

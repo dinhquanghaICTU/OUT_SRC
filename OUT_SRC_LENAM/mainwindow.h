@@ -117,10 +117,14 @@ private:
     void refreshDevices();
     void refreshAvailable();
     void refreshUsers();
+    void refreshLoginHistory();
+    void refreshAuditLogs();
     void refreshHistory();
     void renderDevices();
     void renderAvailable();
     void renderUsers();
+    void renderLoginHistory();
+    void renderAuditLogs();
     void renderHistory(const QJsonObject &history);
     void updateHistoryDateDisplay();
     void claimDevice(const QString &deviceId, const QString &name);
@@ -229,6 +233,18 @@ private:
     QChartView *m_histMultiMotionView = nullptr;
     QChartView *m_histMultiTempView = nullptr;
     QTableWidget *m_usersTable = nullptr;
+    QStackedWidget *m_usersStack = nullptr;
+    QPushButton *m_tabUsersBtn = nullptr;
+    QPushButton *m_tabLoginBtn = nullptr;
+    QPushButton *m_tabAuditBtn = nullptr;
+    QPushButton *m_addUserBtn = nullptr;
+    QTableWidget *m_loginTable = nullptr;
+    QTableWidget *m_auditTable = nullptr;
+    QLabel *m_loginSummaryLabel = nullptr;
+    QLabel *m_auditSummaryLabel = nullptr;
+    QLineEdit *m_auditSearchEdit = nullptr;
+    QJsonArray m_loginHistory;
+    QJsonArray m_auditLogs;
     QButtonGroup *m_navGroup = nullptr;
 
     QNetworkAccessManager m_net;

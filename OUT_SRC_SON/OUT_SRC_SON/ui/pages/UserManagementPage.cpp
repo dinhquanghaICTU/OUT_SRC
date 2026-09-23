@@ -2,63 +2,36 @@
 #include "VirtualKeyboard.h"
 #include "ui_UserManagementPage.h"
 
-#include <QApplication>
 #include <QCheckBox>
 #include <QComboBox>
 #include <QDialog>
 #include <QFormLayout>
 #include <QFrame>
+#include <QGridLayout>
 #include <QHBoxLayout>
 #include <QHeaderView>
-#include <QJsonObject>
 #include <QLabel>
 #include <QLineEdit>
 #include <QMessageBox>
 #include <QPushButton>
 #include <QScrollArea>
+#include <QStackedWidget>
+#include <QTableWidget>
 #include <QVBoxLayout>
-
-namespace {
-
-QString roleLabel(const QString &role)
-{
-    return role == QStringLiteral("admin") ? QObject::tr("Quản trị viên")
-                                           : QObject::tr("Người dùng");
-}
-
-QStringList deviceIdsForUser(const QJsonObject &user)
-{
-    QStringList deviceIds;
-    for (const QJsonValue &deviceId : user.value(QStringLiteral("device_ids")).toArray())
-        deviceIds.append(deviceId.toString());
-    return deviceIds;
-}
-
-QFrame *createGlassCard()
-{
-    auto *card = new QFrame;
-    card->setStyleSheet(
-        "QFrame { "
-        "  background-color: #0d1733; "
-        "  border: 1px solid #1c2b54; "
-        "  border-radius: 10px; "
-        "} "
-        "QFrame:hover { "
-        "  border-color: #2b3d75; "
-        "}"
-    );
-    return card;
-}
-
-} // namespace
 
 UserManagementPage::UserManagementPage(QWidget *parent)
     : QWidget(parent), ui(new Ui::UserManagementPage)
 {
     ui->setupUi(this);
-    setStyleSheet("background-color: #070d1e; color: #ecf2ff; font-family: sans-serif;");
+    setStyleSheet(
+        "QWidget#UserManagementPage { "
+        "  background: qlineargradient(x1:0, y1:0, x2:1, y2:1, stop:0 #130f30, stop:1 #09071c); "
+        "  color: #ecf2ff; "
+        "  font-family: sans-serif; "
+        "}"
+    );
 
-    setupCustomLayout();
+    setupCustomUI();
 }
 
 UserManagementPage::~UserManagementPage()
@@ -66,507 +39,877 @@ UserManagementPage::~UserManagementPage()
     delete ui;
 }
 
-void UserManagementPage::setupCustomLayout()
-{
-    // Clear legacy layout widgets
-    while (QLayoutItem *item = ui->verticalLayout->takeAt(0)) {
-        if (item->widget()) delete item->widget();
-        delete item;
-    }
-
-    auto *mainLayout = ui->verticalLayout;
-    mainLayout->setContentsMargins(12, 8, 12, 8);
-    mainLayout->setSpacing(8);
-
-    // ==========================================
-    // ROW 1: HEADER & STATS BAR
-    // ==========================================
-    auto *topHeaderCard = createGlassCard();
-    auto *topLayout = new QHBoxLayout(topHeaderCard);
-    topLayout->setContentsMargins(12, 6, 12, 6);
-    topLayout->setSpacing(10);
-
-    // Title & Icon
-    auto *titleCol = new QVBoxLayout;
-    titleCol->setSpacing(1);
-    auto *titleRow = new QHBoxLayout;
-    auto *icon = new QLabel(QStringLiteral("🛡️"));
-    icon->setStyleSheet("font-size: 14px;");
-    auto *titleText = new QLabel(QStringLiteral("TRUNG TÂM PHÂN QUYỀN & BẢO MẬT"));
-    titleText->setStyleSheet("color: #38bdf8; font-size: 12px; font-weight: 900; letter-spacing: 0.5px;");
-    titleRow->addWidget(icon);
-    titleRow->addWidget(titleText);
-    titleRow->addStretch();
-    titleCol->addLayout(titleRow);
-
-    auto *subText = new QLabel(QStringLiteral("Quản lý người dùng, tài khoản và cấp quyền điều khiển thiết bị"));
-    subText->setStyleSheet("color: #94a3b8; font-size: 9px;");
-    titleCol->addWidget(subText);
-    topLayout->addLayout(titleCol, 3);
-
-    // Mini Stats Pills
-    auto makeStatPill = [](const QString &lbl, const QString &val, const QString &col) {
-        auto *p = new QFrame;
-        p->setStyleSheet("background-color: rgba(15, 23, 42, 0.7); border: 1px solid #1e293b; border-radius: 6px; padding: 2px 6px;");
-        auto *l = new QVBoxLayout(p);
-        l->setContentsMargins(4, 2, 4, 2);
-        l->setSpacing(0);
-        auto *t = new QLabel(lbl);
-        t->setStyleSheet("color: #64748b; font-size: 8px; font-weight: 700;");
-        auto *v = new QLabel(val);
-        v->setStyleSheet(QStringLiteral("color: %1; font-size: 12px; font-weight: 900; font-family: monospace;").arg(col));
-        l->addWidget(t);
-        l->addWidget(v);
-        return qMakePair(p, v);
-    };
-
-    auto s1 = makeStatPill("TỔNG USER", "0", "#38bdf8");
-    auto s2 = makeStatPill("ADMIN", "0", "#fbbf24");
-    auto s3 = makeStatPill("HOẠT ĐỘNG", "0", "#10b981");
-    m_statTotalUsers = s1.second;
-    m_statAdminUsers = s2.second;
-    m_statActiveUsers = s3.second;
-
-    topLayout->addWidget(s1.first);
-    topLayout->addWidget(s2.first);
-    topLayout->addWidget(s3.first);
-
-    // Add User Button
-    m_addUserBtn = new QPushButton(QStringLiteral("+ Thêm Tài Khoản"));
-    m_addUserBtn->setCursor(Qt::PointingHandCursor);
-    m_addUserBtn->setMinimumHeight(32);
-    m_addUserBtn->setStyleSheet(
-        "QPushButton { "
-        "  background: #10b981; "
-        "  color: #ffffff; "
-        "  border: none; "
-        "  border-radius: 6px; "
-        "  font-size: 11px; "
-        "  font-weight: 900; "
-        "  padding: 0 12px; "
-        "} "
-        "QPushButton:hover { "
-        "  background: #059669; "
-        "} "
-        "QPushButton:pressed { "
-        "  background: #047857; "
-        "}"
-    );
-    connect(m_addUserBtn, &QPushButton::clicked, this, [this] {
-        QJsonObject empty;
-        openEditDialog(empty);
-    });
-    topLayout->addWidget(m_addUserBtn);
-
-    mainLayout->addWidget(topHeaderCard);
-
-    // ==========================================
-    // ROW 2: 2-COLUMN SPLIT (User Cards List + Inspector Panel)
-    // ==========================================
-    auto *bodyLayout = new QHBoxLayout;
-    bodyLayout->setSpacing(8);
-
-    // --- LEFT: User Cards Scroll View ---
-    auto *scrollArea = new QScrollArea;
-    scrollArea->setWidgetResizable(true);
-    scrollArea->setStyleSheet("background: transparent; border: none;");
-
-    auto *cardsContainer = new QWidget;
-    cardsContainer->setStyleSheet("background: transparent;");
-    m_cardsLayout = new QVBoxLayout(cardsContainer);
-    m_cardsLayout->setContentsMargins(0, 0, 4, 0);
-    m_cardsLayout->setSpacing(6);
-
-    scrollArea->setWidget(cardsContainer);
-    bodyLayout->addWidget(scrollArea, 6);
-
-    // --- RIGHT: Inspector Profile Panel ---
-    m_inspectorPanel = createGlassCard();
-    m_inspectorPanel->setStyleSheet(
-        "QFrame { "
-        "  background-color: #0c1633; "
-        "  border: 1.5px solid #1c2b54; "
-        "  border-radius: 10px; "
-        "}"
-    );
-    m_inspectorLayout = new QVBoxLayout(m_inspectorPanel);
-    m_inspectorLayout->setContentsMargins(12, 10, 12, 10);
-    m_inspectorLayout->setSpacing(8);
-
-    clearUserDetails();
-    bodyLayout->addWidget(m_inspectorPanel, 4);
-
-    mainLayout->addLayout(bodyLayout, 1);
-}
-
-void UserManagementPage::renderUserCards()
-{
-    // Clear cards layout
-    QLayoutItem *child;
-    while ((child = m_cardsLayout->takeAt(0)) != nullptr) {
-        if (child->widget()) delete child->widget();
-        delete child;
-    }
-
-    const QString selectedUser = m_selectedUser.value(QStringLiteral("username")).toString();
-
-    for (int i = 0; i < m_users.size(); ++i) {
-        const QJsonObject u = m_users[i].toObject();
-        const QString uname = u.value(QStringLiteral("username")).toString();
-        const QString role = u.value(QStringLiteral("role")).toString();
-        const bool enabled = u.value(QStringLiteral("enabled")).toBool(true);
-        const QStringList devices = deviceIdsForUser(u);
-        const bool isAdmin = (role == QStringLiteral("admin"));
-        const bool isSelected = (uname.compare(selectedUser, Qt::CaseInsensitive) == 0);
-
-        auto *card = new QFrame;
-        const QString cardStyle = isSelected
-            ? "QFrame { background-color: #11234c; border: 2px solid #38bdf8; border-radius: 8px; } QFrame:hover { background-color: #132754; }"
-            : "QFrame { background-color: #0d1733; border: 1px solid #1c2b54; border-radius: 8px; } QFrame:hover { border-color: #38bdf8; background-color: #0f1c3f; }";
-        card->setStyleSheet(cardStyle);
-        card->setCursor(Qt::PointingHandCursor);
-
-        auto *cardLayout = new QHBoxLayout(card);
-        cardLayout->setContentsMargins(10, 8, 10, 8);
-        cardLayout->setSpacing(10);
-
-        // Avatar Icon
-        auto *avatarLbl = new QLabel(isAdmin ? QStringLiteral("👑") : QStringLiteral("👤"));
-        avatarLbl->setStyleSheet(isAdmin
-            ? "background: rgba(251, 191, 36, 0.15); border: 1.5px solid #fbbf24; border-radius: 18px; font-size: 16px; padding: 4px;"
-            : "background: rgba(56, 189, 248, 0.15); border: 1.5px solid #38bdf8; border-radius: 18px; font-size: 16px; padding: 4px;");
-        avatarLbl->setFixedSize(36, 36);
-        avatarLbl->setAlignment(Qt::AlignCenter);
-        cardLayout->addWidget(avatarLbl);
-
-        // Info details
-        auto *infoCol = new QVBoxLayout;
-        infoCol->setSpacing(2);
-
-        auto *topRow = new QHBoxLayout;
-        auto *nameLbl = new QLabel(uname);
-        nameLbl->setStyleSheet("color: #ffffff; font-size: 12px; font-weight: 900; background: transparent; border: none;");
-        topRow->addWidget(nameLbl);
-
-        auto *roleBadge = new QLabel(roleLabel(role));
-        roleBadge->setStyleSheet(isAdmin
-            ? "background: #f59e0b; color: #ffffff; font-size: 8px; font-weight: 900; border-radius: 4px; padding: 1px 5px;"
-            : "background: #334155; color: #94a3b8; font-size: 8px; font-weight: 800; border-radius: 4px; padding: 1px 5px;");
-        topRow->addWidget(roleBadge);
-
-        auto *statusBadge = new QLabel(enabled ? QStringLiteral("🟢 Hoạt động") : QStringLiteral("🔴 Khóa"));
-        statusBadge->setStyleSheet(enabled
-            ? "color: #10b981; font-size: 8px; font-weight: 800; background: rgba(16, 185, 129, 0.12); border-radius: 4px; padding: 1px 5px;"
-            : "color: #ef4444; font-size: 8px; font-weight: 800; background: rgba(239, 68, 68, 0.12); border-radius: 4px; padding: 1px 5px;");
-        topRow->addWidget(statusBadge);
-        topRow->addStretch();
-        infoCol->addLayout(topRow);
-
-        // Device tags
-        auto *deviceRow = new QHBoxLayout;
-        auto *devIcon = new QLabel(QStringLiteral("🖲"));
-        devIcon->setStyleSheet("font-size: 9px;");
-        auto *devText = new QLabel(devices.isEmpty() ? QStringLiteral("Chưa liên kết thiết bị") : devices.join(QStringLiteral(", ")));
-        devText->setStyleSheet("color: #94a3b8; font-size: 9px; font-style: italic;");
-        deviceRow->addWidget(devIcon);
-        deviceRow->addWidget(devText);
-        deviceRow->addStretch();
-        infoCol->addLayout(deviceRow);
-
-        cardLayout->addLayout(infoCol, 1);
-
-        // Quick edit click
-        auto *selectBtn = new QPushButton(QStringLiteral("Chi tiết ➔"));
-        selectBtn->setStyleSheet("background: #131f3f; color: #38bdf8; border: 1px solid #233565; border-radius: 4px; font-size: 9px; font-weight: 800; padding: 4px 8px;");
-        connect(selectBtn, &QPushButton::clicked, this, [this, u] {
-            showUserDetails(u);
-            renderUserCards();
-        });
-        cardLayout->addWidget(selectBtn);
-
-        m_cardsLayout->addWidget(card);
-    }
-    m_cardsLayout->addStretch();
-}
-
-void UserManagementPage::showUserDetails(const QJsonObject &user)
-{
-    m_selectedUser = user;
-    clearUserDetails();
-
-    const QString username = user.value(QStringLiteral("username")).toString();
-    const QString role = user.value(QStringLiteral("role")).toString();
-    const bool enabled = user.value(QStringLiteral("enabled")).toBool(true);
-    const QStringList deviceIds = deviceIdsForUser(user);
-    const bool isAdmin = (role == QStringLiteral("admin"));
-
-    // Header Profile
-    auto *headRow = new QHBoxLayout;
-    auto *avatar = new QLabel(isAdmin ? QStringLiteral("👑") : QStringLiteral("👤"));
-    avatar->setStyleSheet(isAdmin
-        ? "background: rgba(251, 191, 36, 0.2); border: 2px solid #fbbf24; border-radius: 20px; font-size: 18px;"
-        : "background: rgba(56, 189, 248, 0.2); border: 2px solid #38bdf8; border-radius: 20px; font-size: 18px;");
-    avatar->setFixedSize(40, 40);
-    avatar->setAlignment(Qt::AlignCenter);
-    headRow->addWidget(avatar);
-
-    auto *uCol = new QVBoxLayout;
-    uCol->setSpacing(1);
-    auto *uNameLbl = new QLabel(username);
-    uNameLbl->setStyleSheet("color: #ffffff; font-size: 14px; font-weight: 900;");
-    auto *rLbl = new QLabel(roleLabel(role));
-    rLbl->setStyleSheet(isAdmin ? "color: #fbbf24; font-size: 10px; font-weight: 800;" : "color: #38bdf8; font-size: 10px; font-weight: 800;");
-    uCol->addWidget(uNameLbl);
-    uCol->addWidget(rLbl);
-    headRow->addLayout(uCol, 1);
-    m_inspectorLayout->addLayout(headRow);
-
-    // Divider
-    auto *div = new QFrame;
-    div->setFrameShape(QFrame::HLine);
-    div->setStyleSheet("color: #1e293b;");
-    m_inspectorLayout->addWidget(div);
-
-    // Properties Box
-    auto *propBox = new QFrame;
-    propBox->setStyleSheet("background: rgba(15, 23, 42, 0.6); border: 1px solid #1e293b; border-radius: 6px; padding: 4px;");
-    auto *propLayout = new QVBoxLayout(propBox);
-    propLayout->setContentsMargins(6, 4, 6, 4);
-    propLayout->setSpacing(3);
-
-    auto *stRow = new QHBoxLayout;
-    auto *stHead = new QLabel(QStringLiteral("Trạng thái hoạt động:"));
-    stHead->setStyleSheet("color: #64748b; font-size: 10px;");
-    auto *stVal = new QLabel(enabled ? QStringLiteral("🟢 Hoạt động") : QStringLiteral("🔴 Đã khóa"));
-    stVal->setStyleSheet(enabled ? "color: #10b981; font-weight: 900; font-size: 10px;" : "color: #ef4444; font-weight: 900; font-size: 10px;");
-    stRow->addWidget(stHead);
-    stRow->addWidget(stVal);
-    stRow->addStretch();
-    propLayout->addLayout(stRow);
-
-    auto *permRow = new QHBoxLayout;
-    auto *permHead = new QLabel(QStringLiteral("Cấp quyền:"));
-    permHead->setStyleSheet("color: #64748b; font-size: 10px;");
-    auto *permVal = new QLabel(isAdmin ? QStringLiteral("Full Admin (Bơm + Ngưỡng + User)") : QStringLiteral("Viewer (Xem & Bật Bơm)"));
-    permVal->setStyleSheet("color: #94a3b8; font-size: 9px; font-weight: 700;");
-    permRow->addWidget(permHead);
-    permRow->addWidget(permVal);
-    permRow->addStretch();
-    propLayout->addLayout(permRow);
-
-    m_inspectorLayout->addWidget(propBox);
-
-    // Devices Section
-    auto *devHead = new QLabel(QStringLiteral("Thiết bị được phân quyền:"));
-    devHead->setStyleSheet("color: #38bdf8; font-size: 11px; font-weight: 800; margin-top: 4px;");
-    m_inspectorLayout->addWidget(devHead);
-
-    if (deviceIds.isEmpty()) {
-        auto *noDev = new QLabel(QStringLiteral("Chưa có thiết bị nào gán cho tài khoản này"));
-        noDev->setStyleSheet("color: #64748b; font-size: 10px; font-style: italic;");
-        m_inspectorLayout->addWidget(noDev);
-    } else {
-        for (const QString &devId : deviceIds) {
-            auto *dRow = new QHBoxLayout;
-            auto *dTag = new QLabel(QStringLiteral("🖲 %1").arg(devId));
-            dTag->setStyleSheet("background: #111e42; color: #ffffff; border: 1px solid #1c2b54; border-radius: 4px; padding: 2px 6px; font-size: 10px; font-weight: 800;");
-            dRow->addWidget(dTag);
-            dRow->addStretch();
-
-            auto *unbindBtn = new QPushButton(QStringLiteral("Gỡ"));
-            unbindBtn->setCursor(Qt::PointingHandCursor);
-            unbindBtn->setStyleSheet("background: #7f1d1d; color: #fecaca; border: none; border-radius: 3px; font-size: 9px; font-weight: 800; padding: 1px 6px;");
-            connect(unbindBtn, &QPushButton::clicked, this, [this, username, devId] {
-                emit releaseUserDeviceRequested(username, devId);
-            });
-            dRow->addWidget(unbindBtn);
-            m_inspectorLayout->addLayout(dRow);
-        }
-    }
-
-    m_inspectorLayout->addStretch();
-
-    // Action Buttons
-    auto *btnCol = new QVBoxLayout;
-    btnCol->setSpacing(6);
-
-    auto *editBtn = new QPushButton(QStringLiteral("✏️ Chỉnh Sửa và Đổi Mật Khẩu"));
-    editBtn->setCursor(Qt::PointingHandCursor);
-    editBtn->setMinimumHeight(30);
-    editBtn->setStyleSheet("QPushButton { background: #1e3a8a; color: #ffffff; border: 1px solid #38bdf8; border-radius: 6px; font-size: 11px; font-weight: 800; } QPushButton:hover { background: #2563eb; }");
-    connect(editBtn, &QPushButton::clicked, this, [this, user] {
-        openEditDialog(user);
-    });
-    btnCol->addWidget(editBtn);
-
-    if (username.compare(QStringLiteral("admin"), Qt::CaseInsensitive) != 0) {
-        auto *delBtn = new QPushButton(QStringLiteral("🗑️ Xóa Tài Khoản Này"));
-        delBtn->setCursor(Qt::PointingHandCursor);
-        delBtn->setMinimumHeight(28);
-        delBtn->setStyleSheet("QPushButton { background: rgba(239, 68, 68, 0.2); color: #ef4444; border: 1px solid #ef4444; border-radius: 6px; font-size: 10px; font-weight: 800; } QPushButton:hover { background: #ef4444; color: #ffffff; }");
-        connect(delBtn, &QPushButton::clicked, this, [this, user] {
-            confirmDeleteUser(user);
-        });
-        btnCol->addWidget(delBtn);
-    }
-
-    m_inspectorLayout->addLayout(btnCol);
-}
-
-void UserManagementPage::clearUserDetails()
-{
-    while (QLayoutItem *item = m_inspectorLayout->takeAt(0)) {
-        if (item->widget()) delete item->widget();
-        delete item;
-    }
-
-    auto *emptyLbl = new QLabel(QStringLiteral("👈 Chọn một tài khoản ở danh sách bên trái để xem hồ sơ và phân quyền thiết bị."));
-    emptyLbl->setStyleSheet("color: #64748b; font-size: 11px; font-style: italic; padding: 20px;");
-    emptyLbl->setWordWrap(true);
-    emptyLbl->setAlignment(Qt::AlignCenter);
-    m_inspectorLayout->addWidget(emptyLbl);
-}
-
-void UserManagementPage::openEditDialog(const QJsonObject &user)
-{
-    const bool editing = !user.isEmpty();
-    const QString oldUsername = user.value(QStringLiteral("username")).toString();
-
-    QDialog dialog(this);
-    dialog.setWindowTitle(editing ? tr("Chỉnh sửa tài khoản") : tr("Tạo tài khoản mới"));
-    dialog.resize(380, 280);
-    dialog.setStyleSheet(
-        "QDialog { background-color: #070d1e; color: #ecf2ff; font-family: sans-serif; } "
-        "QLabel { color: #f1f5f9; font-size: 11px; font-weight: 700; } "
-        "QLineEdit, QComboBox { background-color: #0f1c3f; color: #ffffff; border: 1.5px solid #233870; border-radius: 6px; font-size: 12px; padding: 4px 8px; min-height: 28px; } "
-        "QLineEdit:focus, QComboBox:focus { border: 2px solid #38bdf8; background-color: #162447; } "
-        "QCheckBox { color: #cbd5e1; font-size: 11px; font-weight: 700; }"
-    );
-
-    auto *root = new QVBoxLayout(&dialog);
-    root->setContentsMargins(16, 14, 16, 14);
-    root->setSpacing(10);
-
-    auto *title = new QLabel(editing ? tr("CẬP NHẬT TÀI KHOẢN: %1").arg(oldUsername) : tr("TẠO TÀI KHOẢN MỚI"), &dialog);
-    title->setStyleSheet("color: #38bdf8; font-size: 13px; font-weight: 900;");
-    root->addWidget(title);
-
-    auto *form = new QFormLayout;
-    form->setHorizontalSpacing(10);
-    form->setVerticalSpacing(8);
-
-    auto *username = new QLineEdit(oldUsername, &dialog);
-    auto *password = new QLineEdit(&dialog);
-    auto *role = new QComboBox(&dialog);
-    password->setEchoMode(QLineEdit::Password);
-    username->setPlaceholderText(tr("VD: user_son"));
-    password->setPlaceholderText(editing ? tr("Để trống nếu không đổi") : tr("Tối thiểu 8 ký tự"));
-    role->addItem(tr("Người dùng (Viewer)"), QStringLiteral("viewer"));
-    role->addItem(tr("Quản trị viên (Admin)"), QStringLiteral("admin"));
-    role->setCurrentIndex(user.value(QStringLiteral("role")).toString() == QStringLiteral("admin") ? 1 : 0);
-
-    form->addRow(tr("Tên đăng nhập:"), username);
-    form->addRow(editing ? tr("Mật khẩu mới:") : tr("Mật khẩu:"), password);
-    form->addRow(tr("Phân quyền:"), role);
-
-    QCheckBox *enabled = nullptr;
-    if (editing) {
-        enabled = new QCheckBox(tr("Kích hoạt tài khoản"), &dialog);
-        enabled->setChecked(user.value(QStringLiteral("enabled")).toBool(true));
-        form->addRow(tr("Trạng thái:"), enabled);
-    }
-    root->addLayout(form);
-
-    VirtualKeyboardDialog::attachToLineEdit(username, tr("Nhập tên tài khoản"));
-    VirtualKeyboardDialog::attachToLineEdit(password, tr("Nhập mật khẩu"));
-
-    auto *actions = new QHBoxLayout;
-    actions->setSpacing(8);
-    auto *cancel = new QPushButton(tr("Hủy"), &dialog);
-    auto *save = new QPushButton(editing ? tr("Lưu Thay Đổi") : tr("Tạo Tài Khoản"), &dialog);
-    cancel->setStyleSheet("background: #1e293b; color: #94a3b8; border: 1px solid #334155; border-radius: 6px; padding: 6px 14px; font-weight: 800; font-size: 11px;");
-    save->setStyleSheet("background: #10b981; color: #ffffff; border: none; border-radius: 6px; padding: 6px 16px; font-weight: 900; font-size: 11px;");
-    actions->addWidget(cancel);
-    actions->addWidget(save);
-    root->addLayout(actions);
-
-    connect(cancel, &QPushButton::clicked, &dialog, &QDialog::reject);
-    connect(save, &QPushButton::clicked, &dialog, &QDialog::accept);
-
-    username->setFocus();
-    if (dialog.exec() != QDialog::Accepted)
-        return;
-
-    if (username->text().trimmed().size() < 3
-        || (!editing && password->text().size() < 8)
-        || (editing && !password->text().isEmpty() && password->text().size() < 8)) {
-        QMessageBox::warning(this, tr("Dữ liệu không hợp lệ"),
-                             tr("Tài khoản tối thiểu 3 ký tự. Mật khẩu tối thiểu 8 ký tự nếu có nhập."));
-        return;
-    }
-
-    if (editing) {
-        emit updateUserRequested(oldUsername, username->text(), password->text(),
-                                 role->currentData().toString(), enabled ? enabled->isChecked() : true);
-    } else {
-        emit createUserRequested(username->text(), password->text(), role->currentData().toString());
-    }
-}
-
-void UserManagementPage::confirmDeleteUser(const QJsonObject &user)
-{
-    const QString username = user.value(QStringLiteral("username")).toString();
-    if (QMessageBox::question(this, tr("Xóa tài khoản"),
-            tr("Bạn có chắc chắn muốn xóa tài khoản %1?\nThiết bị của tài khoản này sẽ được giải phóng để gắn lại.")
-                .arg(username)) != QMessageBox::Yes)
-        return;
-    emit deleteUserRequested(username);
-}
-
 void UserManagementPage::setUsers(const QJsonArray &users)
 {
     m_users = users;
 
-    int totalCount = users.size();
-    int adminCount = 0;
-    int activeCount = 0;
+    int total = users.size();
+    int admins = 0;
+    int regularUsers = 0;
 
-    for (const QJsonValue &v : users) {
-        const QJsonObject u = v.toObject();
+    for (const auto &val : users) {
+        const auto u = val.toObject();
         if (u.value(QStringLiteral("role")).toString() == QStringLiteral("admin"))
-            adminCount++;
-        if (u.value(QStringLiteral("enabled")).toBool(true))
-            activeCount++;
+            admins++;
+        else
+            regularUsers++;
     }
 
-    if (m_statTotalUsers) m_statTotalUsers->setText(QString::number(totalCount));
-    if (m_statAdminUsers) m_statAdminUsers->setText(QString::number(adminCount));
-    if (m_statActiveUsers) m_statActiveUsers->setText(QString::number(activeCount));
+    if (m_filterAllBtn) m_filterAllBtn->setText(QStringLiteral("Tất Cả (%1)").arg(total));
+    if (m_filterAdminBtn) m_filterAdminBtn->setText(QStringLiteral("👑 Admin (%1)").arg(admins));
+    if (m_filterUserBtn) m_filterUserBtn->setText(QStringLiteral("👤 Người Dùng (%1)").arg(regularUsers));
 
-    renderUserCards();
+    renderUserGrid();
+}
 
-    // Select first user if none selected
-    if (!users.isEmpty()) {
-        const QString selName = m_selectedUser.value(QStringLiteral("username")).toString();
-        bool found = false;
-        for (const QJsonValue &v : users) {
-            if (v.toObject().value(QStringLiteral("username")).toString().compare(selName, Qt::CaseInsensitive) == 0) {
-                showUserDetails(v.toObject());
-                found = true;
-                break;
-            }
+void UserManagementPage::setLoginHistory(const QJsonArray &history)
+{
+    m_loginHistory = history;
+    renderLoginHistory();
+}
+
+void UserManagementPage::setAuditLogs(const QJsonArray &logs)
+{
+    m_auditLogs = logs;
+    renderAuditLogs();
+}
+
+void UserManagementPage::setCurrentUsername(const QString &username)
+{
+    m_currentUsername = username;
+    if (m_auditSummaryLabel) {
+        if (!m_adminEnabled) {
+            m_auditSummaryLabel->setText(
+                QStringLiteral("🔒 <b>Chế độ người dùng:</b> Chỉ hiển thị các thao tác do tài khoản <b>%1</b> thực hiện")
+                    .arg(m_currentUsername.isEmpty() ? QStringLiteral("bạn") : m_currentUsername));
         }
-        if (!found) {
-            showUserDetails(users.first().toObject());
-        }
-    } else {
-        clearUserDetails();
     }
 }
 
 void UserManagementPage::setAdminEnabled(bool enabled)
 {
     m_adminEnabled = enabled;
-    if (m_addUserBtn)
-        m_addUserBtn->setVisible(enabled);
+
+    m_tabUsersBtn->setVisible(enabled);
+    m_tabLoginBtn->setVisible(enabled);
+    m_tabAuditBtn->setVisible(true);
+
+    if (!enabled) {
+        // Normal user only sees Audit Logs of their own actions
+        m_stack->setCurrentIndex(2);
+        m_tabAuditBtn->setChecked(true);
+        m_addUserBtn->setVisible(false);
+        if (m_auditSummaryLabel) {
+            m_auditSummaryLabel->setText(
+                QStringLiteral("🔒 <b>Chế độ người dùng:</b> Chỉ hiển thị các thao tác do tài khoản <b>%1</b> thực hiện")
+                    .arg(m_currentUsername.isEmpty() ? QStringLiteral("bạn") : m_currentUsername));
+        }
+    } else {
+        m_tabUsersBtn->setChecked(m_stack->currentIndex() == 0);
+        m_tabLoginBtn->setChecked(m_stack->currentIndex() == 1);
+        m_tabAuditBtn->setChecked(m_stack->currentIndex() == 2);
+        m_addUserBtn->setVisible(m_stack->currentIndex() == 0);
+        if (m_auditSummaryLabel) {
+            m_auditSummaryLabel->setText(
+                QStringLiteral("👑 <b>Quyền Quản trị viên:</b> Hiển thị lịch sử điều khiển thiết bị & thao tác toàn hệ thống"));
+        }
+    }
+}
+
+void UserManagementPage::setupCustomUI()
+{
+    while (QLayoutItem *item = ui->verticalLayout->takeAt(0)) {
+        if (item->widget()) delete item->widget();
+        delete item;
+    }
+
+    auto *mainLayout = ui->verticalLayout;
+    mainLayout->setContentsMargins(10, 8, 10, 8);
+    mainLayout->setSpacing(6);
+
+    // ==========================================
+    // TOP NAVIGATION & SUBTABS BAR
+    // ==========================================
+    auto *topBar = new QHBoxLayout;
+    topBar->setSpacing(6);
+
+    auto *backBtn = new QPushButton(tr("← Giám sát"), this);
+    backBtn->setObjectName(QStringLiteral("usersBackButton"));
+    backBtn->setCursor(Qt::PointingHandCursor);
+    backBtn->setToolTip(tr("Quay lại màn hình giám sát SCADA"));
+    backBtn->setStyleSheet(
+        "QPushButton { background: #1c1642; color: #94a3b8; border: 1px solid #2e2468; border-radius: 5px; font-size: 10px; font-weight: 700; padding: 4px 10px; } "
+        "QPushButton:hover { background: #261e5a; color: #ffffff; }"
+    );
+    connect(backBtn, &QPushButton::clicked, this, &UserManagementPage::backToDashboardRequested);
+    topBar->addWidget(backBtn);
+
+    auto makeNavBtn = [](const QString &text) {
+        auto *btn = new QPushButton(text);
+        btn->setCursor(Qt::PointingHandCursor);
+        btn->setCheckable(true);
+        btn->setStyleSheet(
+            "QPushButton { "
+            "  background: #17123a; "
+            "  color: #94a3b8; "
+            "  border: 1px solid #2b2260; "
+            "  border-radius: 6px; "
+            "  font-size: 11px; "
+            "  font-weight: 700; "
+            "  padding: 5px 12px; "
+            "} "
+            "QPushButton:hover { background: #221a54; color: #ffffff; border-color: #3b82f6; } "
+            "QPushButton:checked { background: #2563eb; color: #ffffff; border-color: #60a5fa; font-weight: 800; }"
+        );
+        return btn;
+    };
+
+    m_tabUsersBtn = makeNavBtn(QStringLiteral("👥 Quản lý tài khoản"));
+    m_tabLoginBtn = makeNavBtn(QStringLiteral("🔑 Lịch sử đăng nhập"));
+    m_tabAuditBtn = makeNavBtn(QStringLiteral("⚡ Lịch sử điều khiển & thao tác"));
+
+    topBar->addWidget(m_tabUsersBtn);
+    topBar->addWidget(m_tabLoginBtn);
+    topBar->addWidget(m_tabAuditBtn);
+    topBar->addStretch();
+
+    // + Add User Button
+    m_addUserBtn = new QPushButton(QStringLiteral("＋ TẠO TÀI KHOẢN"));
+    m_addUserBtn->setCursor(Qt::PointingHandCursor);
+    m_addUserBtn->setStyleSheet(
+        "QPushButton { "
+        "  background: #10b981; "
+        "  color: #ffffff; "
+        "  border: none; "
+        "  border-radius: 5px; "
+        "  font-size: 10px; "
+        "  font-weight: 800; "
+        "  padding: 5px 12px; "
+        "} "
+        "QPushButton:hover { background: #059669; } "
+        "QPushButton:pressed { background: #047857; }"
+    );
+    connect(m_addUserBtn, &QPushButton::clicked, this, [this] { openEditDialog(); });
+    topBar->addWidget(m_addUserBtn);
+
+    // Refresh Button
+    m_refreshBtn = new QPushButton(QStringLiteral("🔄 Làm mới"));
+    m_refreshBtn->setCursor(Qt::PointingHandCursor);
+    m_refreshBtn->setStyleSheet(
+        "QPushButton { "
+        "  background: #1e1b4b; "
+        "  color: #38bdf8; "
+        "  border: 1px solid #312e81; "
+        "  border-radius: 5px; "
+        "  font-size: 10px; "
+        "  font-weight: 800; "
+        "  padding: 5px 10px; "
+        "} "
+        "QPushButton:hover { background: #2e287a; color: #ffffff; }"
+    );
+    connect(m_refreshBtn, &QPushButton::clicked, this, [this] {
+        if (m_stack->currentIndex() == 0) {
+            emit refreshRequested();
+        } else if (m_stack->currentIndex() == 1) {
+            emit requestLoginHistoryRequested();
+        } else if (m_stack->currentIndex() == 2) {
+            emit requestAuditLogsRequested();
+        }
+    });
+    topBar->addWidget(m_refreshBtn);
+
+    mainLayout->addLayout(topBar);
+
+    // ==========================================
+    // STACKED WIDGET (3 PAGES)
+    // ==========================================
+    m_stack = new QStackedWidget(this);
+    m_stack->setStyleSheet("background: transparent;");
+
+    // ------------------------------------------
+    // PAGE 0: USER MANAGEMENT
+    // ------------------------------------------
+    auto *usersPage = new QWidget;
+    auto *uLayout = new QVBoxLayout(usersPage);
+    uLayout->setContentsMargins(0, 4, 0, 0);
+    uLayout->setSpacing(6);
+
+    auto *filterBar = new QHBoxLayout;
+    filterBar->setSpacing(6);
+
+    auto makeFilterBtn = [&](const QString &label, const QString &mode) {
+        auto *btn = new QPushButton(label);
+        btn->setCursor(Qt::PointingHandCursor);
+        btn->setCheckable(true);
+        btn->setStyleSheet(
+            "QPushButton { background: #1c1642; color: #94a3b8; border: 1px solid #2e2468; border-radius: 5px; font-size: 10px; font-weight: 700; padding: 3px 8px; } "
+            "QPushButton:hover { background: #261e5a; color: #ffffff; } "
+            "QPushButton:checked { background: #3b82f6; color: #ffffff; border-color: #60a5fa; font-weight: 800; }"
+        );
+        connect(btn, &QPushButton::clicked, this, [this, mode] {
+            m_currentFilter = mode;
+            m_filterAllBtn->setChecked(mode == QStringLiteral("all"));
+            m_filterAdminBtn->setChecked(mode == QStringLiteral("admin"));
+            m_filterUserBtn->setChecked(mode == QStringLiteral("user"));
+            renderUserGrid();
+        });
+        return btn;
+    };
+
+    m_filterAllBtn = makeFilterBtn(QStringLiteral("Tất Cả (0)"), QStringLiteral("all"));
+    m_filterAdminBtn = makeFilterBtn(QStringLiteral("👑 Admin (0)"), QStringLiteral("admin"));
+    m_filterUserBtn = makeFilterBtn(QStringLiteral("👤 Người Dùng (0)"), QStringLiteral("user"));
+    m_filterAllBtn->setChecked(true);
+
+    filterBar->addWidget(m_filterAllBtn);
+    filterBar->addWidget(m_filterAdminBtn);
+    filterBar->addWidget(m_filterUserBtn);
+    filterBar->addStretch();
+    uLayout->addLayout(filterBar);
+
+    auto *scroll = new QScrollArea;
+    scroll->setWidgetResizable(true);
+    scroll->setStyleSheet("background: transparent; border: none;");
+
+    auto *container = new QWidget;
+    container->setStyleSheet("background: transparent;");
+    m_gridLayout = new QGridLayout(container);
+    m_gridLayout->setContentsMargins(0, 0, 0, 0);
+    m_gridLayout->setHorizontalSpacing(8);
+    m_gridLayout->setVerticalSpacing(8);
+
+    m_emptyLabel = new QLabel(QStringLiteral("Đang tải danh sách tài khoản..."));
+    m_emptyLabel->setStyleSheet("color: #64748b; font-style: italic; font-size: 11px; padding: 30px;");
+    m_emptyLabel->setAlignment(Qt::AlignCenter);
+    m_gridLayout->addWidget(m_emptyLabel, 0, 0, 1, 2);
+
+    scroll->setWidget(container);
+    uLayout->addWidget(scroll, 1);
+    m_stack->addWidget(usersPage);
+
+    // ------------------------------------------
+    // PAGE 1: LOGIN HISTORY (Admin Only)
+    // ------------------------------------------
+    auto *loginPage = new QWidget;
+    auto *lLayout = new QVBoxLayout(loginPage);
+    lLayout->setContentsMargins(0, 4, 0, 0);
+    lLayout->setSpacing(6);
+
+    auto *loginTopRow = new QHBoxLayout;
+    m_loginSummaryLabel = new QLabel(QStringLiteral("Đang tải nhật ký đăng nhập..."));
+    m_loginSummaryLabel->setStyleSheet("color: #94a3b8; font-size: 11px;");
+    loginTopRow->addWidget(m_loginSummaryLabel);
+    loginTopRow->addStretch();
+    lLayout->addLayout(loginTopRow);
+
+    m_loginTable = new QTableWidget(0, 6, loginPage);
+    m_loginTable->setHorizontalHeaderLabels({
+        QStringLiteral("#"),
+        QStringLiteral("Thời Gian"),
+        QStringLiteral("Tài Khoản"),
+        QStringLiteral("Vai Trò"),
+        QStringLiteral("Địa Chỉ IP"),
+        QStringLiteral("Trạng Thái Đăng Nhập")
+    });
+    m_loginTable->horizontalHeader()->setSectionResizeMode(0, QHeaderView::ResizeToContents);
+    m_loginTable->horizontalHeader()->setSectionResizeMode(1, QHeaderView::ResizeToContents);
+    m_loginTable->horizontalHeader()->setSectionResizeMode(2, QHeaderView::ResizeToContents);
+    m_loginTable->horizontalHeader()->setSectionResizeMode(3, QHeaderView::ResizeToContents);
+    m_loginTable->horizontalHeader()->setSectionResizeMode(4, QHeaderView::ResizeToContents);
+    m_loginTable->horizontalHeader()->setSectionResizeMode(5, QHeaderView::Stretch);
+    m_loginTable->verticalHeader()->hide();
+    m_loginTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    m_loginTable->setSelectionBehavior(QAbstractItemView::SelectRows);
+    m_loginTable->setAlternatingRowColors(true);
+    m_loginTable->setStyleSheet(
+        "QTableWidget { background-color: rgba(18, 14, 46, 0.9); border: 1px solid #2b2260; border-radius: 8px; gridline-color: #241c52; color: #ecf2ff; font-size: 11px; alternate-background-color: rgba(26, 20, 64, 0.6); } "
+        "QHeaderView::section { background-color: #17113b; color: #94a3b8; font-weight: 800; font-size: 10px; padding: 6px; border: none; border-bottom: 2px solid #3b82f6; } "
+        "QTableWidget::item { padding: 4px 8px; border-bottom: 1px solid rgba(43, 34, 96, 0.4); } "
+        "QTableWidget::item:selected { background-color: #2563eb; color: #ffffff; }"
+    );
+    lLayout->addWidget(m_loginTable, 1);
+    m_stack->addWidget(loginPage);
+
+    // ------------------------------------------
+    // PAGE 2: AUDIT LOGS & DEVICE CONTROLS
+    // ------------------------------------------
+    auto *auditPage = new QWidget;
+    auto *aLayout = new QVBoxLayout(auditPage);
+    aLayout->setContentsMargins(0, 4, 0, 0);
+    aLayout->setSpacing(6);
+
+    auto *auditTopRow = new QHBoxLayout;
+    m_auditSummaryLabel = new QLabel(QStringLiteral("Đang tải lịch sử điều khiển & thao tác..."));
+    m_auditSummaryLabel->setStyleSheet("color: #94a3b8; font-size: 11px;");
+    auditTopRow->addWidget(m_auditSummaryLabel);
+    auditTopRow->addStretch();
+
+    auto *searchIcon = new QLabel(QStringLiteral("🔍"));
+    searchIcon->setStyleSheet("background: transparent; font-size: 11px;");
+    auditTopRow->addWidget(searchIcon);
+
+    m_auditSearchEdit = new QLineEdit;
+    m_auditSearchEdit->setPlaceholderText(QStringLiteral("Tìm kiếm thao tác, thiết bị..."));
+    m_auditSearchEdit->setStyleSheet(
+        "QLineEdit { background-color: #171338; color: #ffffff; border: 1px solid #2b235c; border-radius: 5px; padding: 3px 8px; font-size: 10px; width: 180px; } "
+        "QLineEdit:focus { border: 1px solid #38bdf8; background-color: #1f1a4a; }"
+    );
+    VirtualKeyboardDialog::attachToLineEdit(m_auditSearchEdit, tr("Tìm kiếm thao tác"));
+    connect(m_auditSearchEdit, &QLineEdit::textChanged, this, [this](const QString &text) {
+        m_auditFilterText = text.trimmed();
+        renderAuditLogs();
+    });
+    auditTopRow->addWidget(m_auditSearchEdit);
+    aLayout->addLayout(auditTopRow);
+
+    m_auditTable = new QTableWidget(0, 6, auditPage);
+    m_auditTable->setHorizontalHeaderLabels({
+        QStringLiteral("#"),
+        QStringLiteral("Thời Gian"),
+        QStringLiteral("Tài Khoản"),
+        QStringLiteral("Hành Động"),
+        QStringLiteral("Thiết Bị / Mục Tiêu"),
+        QStringLiteral("Chi Tiết Thao Tác")
+    });
+    m_auditTable->horizontalHeader()->setSectionResizeMode(0, QHeaderView::ResizeToContents);
+    m_auditTable->horizontalHeader()->setSectionResizeMode(1, QHeaderView::ResizeToContents);
+    m_auditTable->horizontalHeader()->setSectionResizeMode(2, QHeaderView::ResizeToContents);
+    m_auditTable->horizontalHeader()->setSectionResizeMode(3, QHeaderView::ResizeToContents);
+    m_auditTable->horizontalHeader()->setSectionResizeMode(4, QHeaderView::ResizeToContents);
+    m_auditTable->horizontalHeader()->setSectionResizeMode(5, QHeaderView::Stretch);
+    m_auditTable->verticalHeader()->hide();
+    m_auditTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    m_auditTable->setSelectionBehavior(QAbstractItemView::SelectRows);
+    m_auditTable->setAlternatingRowColors(true);
+    m_auditTable->setStyleSheet(
+        "QTableWidget { background-color: rgba(18, 14, 46, 0.9); border: 1px solid #2b2260; border-radius: 8px; gridline-color: #241c52; color: #ecf2ff; font-size: 11px; alternate-background-color: rgba(26, 20, 64, 0.6); } "
+        "QHeaderView::section { background-color: #17113b; color: #94a3b8; font-weight: 800; font-size: 10px; padding: 6px; border: none; border-bottom: 2px solid #10b981; } "
+        "QTableWidget::item { padding: 4px 8px; border-bottom: 1px solid rgba(43, 34, 96, 0.4); } "
+        "QTableWidget::item:selected { background-color: #2563eb; color: #ffffff; }"
+    );
+    aLayout->addWidget(m_auditTable, 1);
+    m_stack->addWidget(auditPage);
+
+    mainLayout->addWidget(m_stack, 1);
+
+    // ==========================================
+    // TAB SWITCHING CONNECTIONS
+    // ==========================================
+    connect(m_tabUsersBtn, &QPushButton::clicked, this, [this] {
+        m_stack->setCurrentIndex(0);
+        m_tabUsersBtn->setChecked(true);
+        m_tabLoginBtn->setChecked(false);
+        m_tabAuditBtn->setChecked(false);
+        m_addUserBtn->setVisible(m_adminEnabled);
+        emit refreshRequested();
+    });
+
+    connect(m_tabLoginBtn, &QPushButton::clicked, this, [this] {
+        m_stack->setCurrentIndex(1);
+        m_tabUsersBtn->setChecked(false);
+        m_tabLoginBtn->setChecked(true);
+        m_tabAuditBtn->setChecked(false);
+        m_addUserBtn->setVisible(false);
+        emit requestLoginHistoryRequested();
+    });
+
+    connect(m_tabAuditBtn, &QPushButton::clicked, this, [this] {
+        m_stack->setCurrentIndex(2);
+        m_tabUsersBtn->setChecked(false);
+        m_tabLoginBtn->setChecked(false);
+        m_tabAuditBtn->setChecked(true);
+        m_addUserBtn->setVisible(false);
+        emit requestAuditLogsRequested();
+    });
+
+    m_tabUsersBtn->setChecked(true);
+}
+
+void UserManagementPage::renderUserGrid()
+{
+    // Clear old grid items
+    QLayoutItem *item;
+    while ((item = m_gridLayout->takeAt(0)) != nullptr) {
+        if (item->widget()) {
+            if (item->widget() != m_emptyLabel)
+                delete item->widget();
+        }
+        delete item;
+    }
+
+    QVector<QJsonObject> filteredUsers;
+    for (const auto &val : m_users) {
+        const auto u = val.toObject();
+        const QString role = u.value(QStringLiteral("role")).toString(QStringLiteral("user"));
+
+        if (m_currentFilter == QStringLiteral("admin") && role != QStringLiteral("admin"))
+            continue;
+        if (m_currentFilter == QStringLiteral("user") && role == QStringLiteral("admin"))
+            continue;
+
+        filteredUsers.append(u);
+    }
+
+    if (filteredUsers.isEmpty()) {
+        m_emptyLabel->setText(QStringLiteral("Không tìm thấy tài khoản nào trong bộ lọc này."));
+        m_emptyLabel->show();
+        m_gridLayout->addWidget(m_emptyLabel, 0, 0, 1, 2);
+        return;
+    }
+
+    m_emptyLabel->hide();
+
+    // 2-Column compact grid for 7-inch displays
+    int row = 0;
+    int col = 0;
+
+    for (const auto &u : filteredUsers) {
+        const QString username = u.value(QStringLiteral("username")).toString();
+        const QString role = u.value(QStringLiteral("role")).toString(QStringLiteral("user"));
+        const bool isAdmin = (role == QStringLiteral("admin"));
+        const bool isEnabled = u.value(QStringLiteral("enabled")).toBool(true);
+
+        QStringList devices;
+        for (const auto &d : u.value(QStringLiteral("device_ids")).toArray()) {
+            devices.append(d.toString());
+        }
+
+        auto *card = new QFrame;
+        card->setStyleSheet(
+            "QFrame { "
+            "  background-color: rgba(26, 21, 58, 0.9); "
+            "  border: 1px solid #332a68; "
+            "  border-radius: 8px; "
+            "} "
+            "QFrame:hover { "
+            "  border-color: #38bdf8; "
+            "  background-color: rgba(33, 27, 74, 0.95); "
+            "}"
+        );
+
+        auto *cLayout = new QVBoxLayout(card);
+        cLayout->setContentsMargins(10, 8, 10, 8);
+        cLayout->setSpacing(5);
+
+        // --- ROW 1: Header (Avatar + Role Pill + Status Badge) ---
+        auto *headerRow = new QHBoxLayout;
+        headerRow->setSpacing(6);
+
+        auto *avatarLbl = new QLabel(isAdmin ? QStringLiteral("👑") : QStringLiteral("👤"));
+        avatarLbl->setFixedSize(24, 24);
+        avatarLbl->setAlignment(Qt::AlignCenter);
+        avatarLbl->setStyleSheet(QStringLiteral(
+            "background: %1; border-radius: 12px; font-size: 13px; border: 1px solid %2;")
+            .arg(isAdmin ? QStringLiteral("rgba(251, 191, 36, 0.2)") : QStringLiteral("rgba(56, 189, 248, 0.2)"))
+            .arg(isAdmin ? QStringLiteral("#fbbf24") : QStringLiteral("#38bdf8"))
+        );
+        headerRow->addWidget(avatarLbl);
+
+        auto *nameLbl = new QLabel(username);
+        nameLbl->setStyleSheet("color: #ffffff; font-size: 13px; font-weight: 800; background: transparent;");
+        headerRow->addWidget(nameLbl);
+
+        auto *roleBadge = new QLabel(isAdmin ? QStringLiteral("ADMIN") : QStringLiteral("USER"));
+        roleBadge->setStyleSheet(QStringLiteral(
+            "background-color: %1; color: %2; font-size: 9px; font-weight: 800; border-radius: 4px; padding: 2px 6px;")
+            .arg(isAdmin ? QStringLiteral("#451a03") : QStringLiteral("#082f49"))
+            .arg(isAdmin ? QStringLiteral("#fbbf24") : QStringLiteral("#38bdf8"))
+        );
+        headerRow->addWidget(roleBadge);
+
+        headerRow->addStretch();
+
+        auto *statusBadge = new QLabel(isEnabled ? QStringLiteral("● Hoạt động") : QStringLiteral("● Đã khóa"));
+        statusBadge->setStyleSheet(QStringLiteral(
+            "color: %1; font-size: 10px; font-weight: 700; background: transparent;")
+            .arg(isEnabled ? QStringLiteral("#10b981") : QStringLiteral("#ef4444"))
+        );
+        headerRow->addWidget(statusBadge);
+
+        cLayout->addLayout(headerRow);
+
+        // --- ROW 2: Devices section ---
+        auto *devBox = new QFrame;
+        devBox->setStyleSheet("background-color: rgba(15, 12, 36, 0.6); border-radius: 4px; padding: 3px;");
+        auto *devBoxLay = new QVBoxLayout(devBox);
+        devBoxLay->setContentsMargins(6, 4, 6, 4);
+        devBoxLay->setSpacing(3);
+
+        auto *devTitle = new QLabel(QStringLiteral("Thiết bị giám sát phụ trách (%1):").arg(devices.size()));
+        devTitle->setStyleSheet("color: #94a3b8; font-size: 9px; font-weight: 700; background: transparent;");
+        devBoxLay->addWidget(devTitle);
+
+        if (devices.isEmpty()) {
+            auto *noDev = new QLabel(QStringLiteral("Chưa ghép nối thiết bị nào"));
+            noDev->setStyleSheet("color: #64748b; font-size: 9px; font-style: italic; background: transparent;");
+            devBoxLay->addWidget(noDev);
+        } else {
+            for (const auto &devId : devices) {
+                auto *dRow = new QHBoxLayout;
+                dRow->setContentsMargins(0, 0, 0, 0);
+                auto *dLbl = new QLabel(QStringLiteral("⚡ %1").arg(devId));
+                dLbl->setStyleSheet("color: #38bdf8; font-size: 9px; font-weight: 600; background: transparent;");
+                dRow->addWidget(dLbl);
+                dRow->addStretch();
+
+                auto *unBtn = new QPushButton(QStringLiteral("✕ Gỡ"));
+                unBtn->setCursor(Qt::PointingHandCursor);
+                unBtn->setStyleSheet("QPushButton { background: #3b1424; color: #f87171; border: 1px solid #7f1d1d; border-radius: 3px; font-size: 8px; font-weight: 700; padding: 1px 4px; } QPushButton:hover { background: #dc2626; color: #fff; }");
+                connect(unBtn, &QPushButton::clicked, this, [this, username, devId] {
+                    emit releaseUserDeviceRequested(username, devId);
+                });
+                dRow->addWidget(unBtn);
+                devBoxLay->addLayout(dRow);
+            }
+        }
+        cLayout->addWidget(devBox);
+
+        // --- ROW 3: Card Actions (Edit & Delete) ---
+        auto *actRow = new QHBoxLayout;
+        actRow->setContentsMargins(0, 0, 0, 0);
+        actRow->setSpacing(6);
+
+        auto *editBtn = new QPushButton(QStringLiteral("✏ Sửa"));
+        editBtn->setCursor(Qt::PointingHandCursor);
+        editBtn->setStyleSheet(
+            "QPushButton { "
+            "  background: #2563eb; "
+            "  color: #ffffff; "
+            "  border: none; "
+            "  border-radius: 4px; "
+            "  font-size: 9px; "
+            "  font-weight: 800; "
+            "  padding: 3px 10px; "
+            "} "
+            "QPushButton:hover { background: #1d4ed8; }"
+        );
+        connect(editBtn, &QPushButton::clicked, this, [this, u] { openEditDialog(u); });
+        actRow->addWidget(editBtn);
+
+        if (username != QStringLiteral("admin")) {
+            auto *delBtn = new QPushButton(QStringLiteral("🗑 Xóa"));
+            delBtn->setCursor(Qt::PointingHandCursor);
+            delBtn->setStyleSheet(
+                "QPushButton { "
+                "  background: #7f1d1d; "
+                "  color: #fecaca; "
+                "  border: 1px solid #991b1b; "
+                "  border-radius: 4px; "
+                "  font-size: 9px; "
+                "  font-weight: 800; "
+                "  padding: 3px 10px; "
+                "} "
+                "QPushButton:hover { background: #dc2626; color: #ffffff; }"
+            );
+            connect(delBtn, &QPushButton::clicked, this, [this, u] { confirmDeleteUser(u); });
+            actRow->addWidget(delBtn);
+        }
+
+        actRow->addStretch();
+        cLayout->addLayout(actRow);
+
+        m_gridLayout->addWidget(card, row, col);
+        col++;
+        if (col >= 2) {
+            col = 0;
+            row++;
+        }
+    }
+}
+
+void UserManagementPage::renderLoginHistory()
+{
+    if (!m_loginTable) return;
+
+    int total = m_loginHistory.size();
+    int successCount = 0;
+    int failCount = 0;
+
+    for (const auto &val : m_loginHistory) {
+        const auto item = val.toObject();
+        if (item.value(QStringLiteral("status")).toString().toLower() == QStringLiteral("success"))
+            successCount++;
+        else
+            failCount++;
+    }
+
+    if (m_loginSummaryLabel) {
+        m_loginSummaryLabel->setText(
+            QStringLiteral("📊 <b>Tổng số:</b> %1 lượt | <span style='color:#10b981; font-weight:700;'>✓ Thành công: %2</span> | <span style='color:#ef4444; font-weight:700;'>✕ Thất bại: %3</span>")
+                .arg(total).arg(successCount).arg(failCount));
+    }
+
+    m_loginTable->setRowCount(total);
+
+    for (int i = 0; i < total; ++i) {
+        const auto item = m_loginHistory.at(i).toObject();
+        const QString timeStr = item.value(QStringLiteral("created_at")).toString();
+        const QString user = item.value(QStringLiteral("username")).toString();
+        const QString role = item.value(QStringLiteral("role")).toString();
+        const QString ip = item.value(QStringLiteral("ip_address")).toString();
+        const QString status = item.value(QStringLiteral("status")).toString();
+        const bool isSuccess = (status.toLower() == QStringLiteral("success"));
+
+        // Column 0: Index
+        auto *itIdx = new QTableWidgetItem(QString::number(i + 1));
+        itIdx->setTextAlignment(Qt::AlignCenter);
+
+        // Column 1: Time
+        auto *itTime = new QTableWidgetItem(timeStr);
+        itTime->setTextAlignment(Qt::AlignCenter);
+
+        // Column 2: Username
+        auto *itUser = new QTableWidgetItem(user);
+        itUser->setTextAlignment(Qt::AlignCenter);
+        itUser->setForeground(QBrush(QColor(QStringLiteral("#38bdf8"))));
+        QFont fontUser = itUser->font();
+        fontUser.setBold(true);
+        itUser->setFont(fontUser);
+
+        // Column 3: Role
+        auto *itRole = new QTableWidgetItem(role.toUpper());
+        itRole->setTextAlignment(Qt::AlignCenter);
+        if (role == QStringLiteral("admin")) {
+            itRole->setForeground(QBrush(QColor(QStringLiteral("#fbbf24"))));
+        } else {
+            itRole->setForeground(QBrush(QColor(QStringLiteral("#94a3b8"))));
+        }
+
+        // Column 4: IP Address
+        auto *itIp = new QTableWidgetItem(ip);
+        itIp->setTextAlignment(Qt::AlignCenter);
+
+        // Column 5: Status Badge
+        auto *itStatus = new QTableWidgetItem(isSuccess ? QStringLiteral("✓ THÀNH CÔNG") : QStringLiteral("✕ THẤT BẠI"));
+        itStatus->setTextAlignment(Qt::AlignCenter);
+        QFont f = itStatus->font();
+        f.setBold(true);
+        itStatus->setFont(f);
+        if (isSuccess) {
+            itStatus->setForeground(QBrush(QColor(QStringLiteral("#10b981"))));
+        } else {
+            itStatus->setForeground(QBrush(QColor(QStringLiteral("#ef4444"))));
+        }
+
+        m_loginTable->setItem(i, 0, itIdx);
+        m_loginTable->setItem(i, 1, itTime);
+        m_loginTable->setItem(i, 2, itUser);
+        m_loginTable->setItem(i, 3, itRole);
+        m_loginTable->setItem(i, 4, itIp);
+        m_loginTable->setItem(i, 5, itStatus);
+        m_loginTable->setRowHeight(i, 32);
+    }
+}
+
+void UserManagementPage::renderAuditLogs()
+{
+    if (!m_auditTable) return;
+
+    QVector<QJsonObject> filtered;
+    for (const auto &val : m_auditLogs) {
+        const auto obj = val.toObject();
+        if (m_auditFilterText.isEmpty()) {
+            filtered.append(obj);
+        } else {
+            const QString act = obj.value(QStringLiteral("action")).toString();
+            const QString target = obj.value(QStringLiteral("target")).toString();
+            const QString det = obj.value(QStringLiteral("details")).toString();
+            const QString usr = obj.value(QStringLiteral("username")).toString();
+            if (act.contains(m_auditFilterText, Qt::CaseInsensitive)
+                || target.contains(m_auditFilterText, Qt::CaseInsensitive)
+                || det.contains(m_auditFilterText, Qt::CaseInsensitive)
+                || usr.contains(m_auditFilterText, Qt::CaseInsensitive)) {
+                filtered.append(obj);
+            }
+        }
+    }
+
+    if (m_auditSummaryLabel) {
+        if (m_adminEnabled) {
+            m_auditSummaryLabel->setText(
+                QStringLiteral("👑 <b>Nhật ký thao tác hệ thống:</b> %1 sự kiện (Toàn bộ tài khoản)")
+                    .arg(filtered.size()));
+        } else {
+            m_auditSummaryLabel->setText(
+                QStringLiteral("🔒 <b>Nhật ký cá nhân:</b> %1 sự kiện của tài khoản <b>%2</b>")
+                    .arg(filtered.size())
+                    .arg(m_currentUsername.isEmpty() ? QStringLiteral("bạn") : m_currentUsername));
+        }
+    }
+
+    m_auditTable->setRowCount(filtered.size());
+
+    for (int i = 0; i < filtered.size(); ++i) {
+        const auto item = filtered.at(i);
+        const QString timeStr = item.value(QStringLiteral("created_at")).toString();
+        const QString user = item.value(QStringLiteral("username")).toString();
+        const QString act = item.value(QStringLiteral("action")).toString();
+        const QString target = item.value(QStringLiteral("target")).toString();
+        const QString details = item.value(QStringLiteral("details")).toString();
+
+        // Column 0: Index
+        auto *itIdx = new QTableWidgetItem(QString::number(i + 1));
+        itIdx->setTextAlignment(Qt::AlignCenter);
+
+        // Column 1: Time
+        auto *itTime = new QTableWidgetItem(timeStr);
+        itTime->setTextAlignment(Qt::AlignCenter);
+
+        // Column 2: Username
+        auto *itUser = new QTableWidgetItem(user);
+        itUser->setTextAlignment(Qt::AlignCenter);
+        itUser->setForeground(QBrush(QColor(QStringLiteral("#38bdf8"))));
+        QFont fu = itUser->font();
+        fu.setBold(true);
+        itUser->setFont(fu);
+
+        // Column 3: Action
+        auto *itAct = new QTableWidgetItem(act);
+        itAct->setTextAlignment(Qt::AlignCenter);
+        QFont fa = itAct->font();
+        fa.setBold(true);
+        itAct->setFont(fa);
+
+        if (act.contains(QStringLiteral("RƠ-LE"), Qt::CaseInsensitive)) {
+            itAct->setForeground(QBrush(QColor(QStringLiteral("#fb923c")))); // Orange
+        } else if (act.contains(QStringLiteral("CẤU HÌNH"), Qt::CaseInsensitive)
+                   || act.contains(QStringLiteral("NGƯỠNG"), Qt::CaseInsensitive)) {
+            itAct->setForeground(QBrush(QColor(QStringLiteral("#38bdf8")))); // Cyan
+        } else if (act.contains(QStringLiteral("GHÉP"), Qt::CaseInsensitive)) {
+            itAct->setForeground(QBrush(QColor(QStringLiteral("#34d399")))); // Emerald
+        } else if (act.contains(QStringLiteral("GỠ"), Qt::CaseInsensitive)
+                   || act.contains(QStringLiteral("HỦY"), Qt::CaseInsensitive)
+                   || act.contains(QStringLiteral("XÓA"), Qt::CaseInsensitive)) {
+            itAct->setForeground(QBrush(QColor(QStringLiteral("#f87171")))); // Red
+        } else if (act.contains(QStringLiteral("ĐĂNG NHẬP"), Qt::CaseInsensitive)) {
+            itAct->setForeground(QBrush(QColor(QStringLiteral("#a78bfa")))); // Purple
+        } else {
+            itAct->setForeground(QBrush(QColor(QStringLiteral("#facc15")))); // Yellow
+        }
+
+        // Column 4: Target
+        auto *itTarget = new QTableWidgetItem(target.isEmpty() ? QStringLiteral("—") : target);
+        itTarget->setTextAlignment(Qt::AlignCenter);
+        itTarget->setForeground(QBrush(QColor(QStringLiteral("#cbd5e1"))));
+
+        // Column 5: Details
+        auto *itDetails = new QTableWidgetItem(details);
+        itDetails->setTextAlignment(Qt::AlignLeft | Qt::AlignVCenter);
+        itDetails->setForeground(QBrush(QColor(QStringLiteral("#e2e8f0"))));
+
+        m_auditTable->setItem(i, 0, itIdx);
+        m_auditTable->setItem(i, 1, itTime);
+        m_auditTable->setItem(i, 2, itUser);
+        m_auditTable->setItem(i, 3, itAct);
+        m_auditTable->setItem(i, 4, itTarget);
+        m_auditTable->setItem(i, 5, itDetails);
+        m_auditTable->setRowHeight(i, 32);
+    }
+}
+
+void UserManagementPage::openEditDialog(const QJsonObject &user)
+{
+    const bool isEdit = !user.isEmpty();
+    const QString oldUser = user.value(QStringLiteral("username")).toString();
+
+    QDialog dlg(this);
+    dlg.setWindowTitle(isEdit ? QStringLiteral("Cập Nhật Tài Khoản") : QStringLiteral("Tạo Tài Khoản Mới"));
+    dlg.setFixedSize(360, 220);
+    dlg.setStyleSheet(
+        "QDialog { background-color: #0d0a26; color: #ecf2ff; font-family: sans-serif; } "
+        "QLabel { color: #cbd5e1; font-weight: 700; font-size: 11px; } "
+        "QLineEdit, QComboBox { background-color: #171338; color: #ffffff; border: 1px solid #2b235c; border-radius: 5px; padding: 4px 6px; font-size: 11px; font-weight: 600; } "
+        "QLineEdit:focus, QComboBox:focus { border: 1px solid #38bdf8; background-color: #1f1a4a; }"
+    );
+
+    auto *mainLayout = new QVBoxLayout(&dlg);
+    mainLayout->setContentsMargins(14, 12, 14, 12);
+    mainLayout->setSpacing(8);
+
+    auto *titleLbl = new QLabel(isEdit ? QStringLiteral("✏ Chỉnh Sửa: %1").arg(oldUser) : QStringLiteral("＋ Tạo Tài Khoản Mới"));
+    titleLbl->setStyleSheet("color: #38bdf8; font-size: 12px; font-weight: 800;");
+    mainLayout->addWidget(titleLbl);
+
+    auto *form = new QFormLayout;
+    form->setSpacing(6);
+
+    auto *uInput = new QLineEdit(&dlg);
+    uInput->setText(oldUser);
+    uInput->setPlaceholderText(QStringLiteral("Nhập tên đăng nhập..."));
+    VirtualKeyboardDialog::attachToLineEdit(uInput, tr("Tên đăng nhập"));
+    form->addRow(QStringLiteral("Tài khoản:"), uInput);
+
+    auto *pInput = new QLineEdit(&dlg);
+    pInput->setEchoMode(QLineEdit::Password);
+    pInput->setPlaceholderText(isEdit ? QStringLiteral("Để trống nếu giữ nguyên") : QStringLiteral("Nhập mật khẩu..."));
+    VirtualKeyboardDialog::attachToLineEdit(pInput, tr("Mật khẩu"));
+    form->addRow(QStringLiteral("Mật khẩu:"), pInput);
+
+    auto *rCombo = new QComboBox(&dlg);
+    rCombo->addItem(QStringLiteral("Người dùng (User)"), QStringLiteral("user"));
+    rCombo->addItem(QStringLiteral("Quản trị viên (Admin)"), QStringLiteral("admin"));
+    if (user.value(QStringLiteral("role")).toString() == QStringLiteral("admin")) {
+        rCombo->setCurrentIndex(1);
+    }
+    form->addRow(QStringLiteral("Quyền hạn:"), rCombo);
+
+    auto *enCheck = new QCheckBox(QStringLiteral("Kích hoạt hoạt động tài khoản"), &dlg);
+    enCheck->setChecked(user.value(QStringLiteral("enabled")).toBool(true));
+    enCheck->setStyleSheet("color: #cbd5e1; font-size: 10px; font-weight: 700;");
+    form->addRow(QString(), enCheck);
+
+    mainLayout->addLayout(form);
+    mainLayout->addStretch();
+
+    // Action Buttons
+    auto *btnRow = new QHBoxLayout;
+    btnRow->addStretch();
+
+    auto *cancelBtn = new QPushButton(QStringLiteral("Hủy"), &dlg);
+    cancelBtn->setStyleSheet("QPushButton { background: #334155; color: #ffffff; border: none; border-radius: 4px; font-size: 10px; font-weight: 800; padding: 5px 12px; }");
+    connect(cancelBtn, &QPushButton::clicked, &dlg, &QDialog::reject);
+    btnRow->addWidget(cancelBtn);
+
+    auto *saveBtn = new QPushButton(isEdit ? QStringLiteral("💾 Lưu") : QStringLiteral("＋ Tạo Mới"), &dlg);
+    saveBtn->setStyleSheet("QPushButton { background: #10b981; color: #ffffff; border: none; border-radius: 4px; font-size: 10px; font-weight: 800; padding: 5px 14px; } QPushButton:hover { background: #059669; }");
+    connect(saveBtn, &QPushButton::clicked, &dlg, [&] {
+        const QString u = uInput->text().trimmed();
+        const QString p = pInput->text();
+        const QString r = rCombo->currentData().toString();
+        const bool en = enCheck->isChecked();
+
+        if (u.isEmpty()) {
+            QMessageBox::warning(&dlg, QStringLiteral("Lỗi"), QStringLiteral("Vui lòng nhập tên tài khoản."));
+            return;
+        }
+
+        if (isEdit) {
+            emit updateUserRequested(oldUser, u, p, r, en);
+        } else {
+            if (p.isEmpty()) {
+                QMessageBox::warning(&dlg, QStringLiteral("Lỗi"), QStringLiteral("Vui lòng nhập mật khẩu cho tài khoản mới."));
+                return;
+            }
+            emit createUserRequested(u, p, r);
+        }
+        dlg.accept();
+    });
+    btnRow->addWidget(saveBtn);
+    mainLayout->addLayout(btnRow);
+
+    dlg.exec();
+}
+
+void UserManagementPage::confirmDeleteUser(const QJsonObject &user)
+{
+    const QString username = user.value(QStringLiteral("username")).toString();
+    auto res = QMessageBox::question(
+        this,
+        QStringLiteral("Xác Nhận Xóa"),
+        QStringLiteral("Bạn có chắc chắn muốn xóa tài khoản <b>%1</b> không?").arg(username),
+        QMessageBox::Yes | QMessageBox::No
+    );
+    if (res == QMessageBox::Yes) {
+        emit deleteUserRequested(username);
+    }
 }

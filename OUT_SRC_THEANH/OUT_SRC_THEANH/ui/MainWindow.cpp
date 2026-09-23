@@ -70,7 +70,11 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->topNavUsers, &QPushButton::clicked, this, [this] {
         ui->pages->setCurrentWidget(m_userManagementPage);
         if (!m_authService->isOfflineMode()) {
-            m_apiClient->requestUsers();
+            if (m_authService->isAdmin()) {
+                m_apiClient->requestUsers();
+                m_apiClient->requestLoginHistory();
+            }
+            m_apiClient->requestAuditLogs();
         }
     });
 
@@ -98,9 +102,17 @@ MainWindow::MainWindow(QWidget *parent)
     connect(m_authService, &AuthService::authenticated, this, [this] {
         ui->topConsoleBar->show();
         ui->topNavDashboard->setChecked(true);
-        ui->topNavUsers->setVisible(m_authService->isAdmin());
+        ui->topNavUsers->setVisible(true);
+        if (m_authService->isAdmin()) {
+            ui->topNavUsers->setText(tr("👤 Quản trị & Nhật ký"));
+            ui->topNavUsers->setToolTip(tr("Quản lý tài khoản, lịch sử đăng nhập & điều khiển hệ thống"));
+        } else {
+            ui->topNavUsers->setText(tr("📋 Nhật ký thao tác"));
+            ui->topNavUsers->setToolTip(tr("Xem lịch sử các thao tác của bạn trong hệ thống"));
+        }
         m_dashboardPage->setUsername(m_authService->currentUsername());
         m_deviceManagementPage->setCurrentUser(m_authService->currentUsername(), m_authService->isAdmin());
+        m_userManagementPage->setCurrentUsername(m_authService->currentUsername());
         m_userManagementPage->setAdminEnabled(m_authService->isAdmin());
         ui->pages->setCurrentWidget(m_dashboardPage);
 
@@ -227,8 +239,20 @@ MainWindow::MainWindow(QWidget *parent)
             m_apiClient, &ApiClient::releaseUserDevice);
     connect(m_userManagementPage, &UserManagementPage::refreshRequested,
             m_apiClient, &ApiClient::requestUsers);
+    connect(m_userManagementPage, &UserManagementPage::requestLoginHistoryRequested,
+            m_apiClient, [this] {
+        m_apiClient->requestLoginHistory();
+    });
+    connect(m_userManagementPage, &UserManagementPage::requestAuditLogsRequested,
+            m_apiClient, [this] {
+        m_apiClient->requestAuditLogs();
+    });
     connect(m_apiClient, &ApiClient::usersReceived,
             m_userManagementPage, &UserManagementPage::setUsers);
+    connect(m_apiClient, &ApiClient::loginHistoryReceived,
+            m_userManagementPage, &UserManagementPage::setLoginHistory);
+    connect(m_apiClient, &ApiClient::auditLogsReceived,
+            m_userManagementPage, &UserManagementPage::setAuditLogs);
     connect(m_apiClient, &ApiClient::userCreated, this,
             [this] {
                 if (m_authService->isOfflineMode())

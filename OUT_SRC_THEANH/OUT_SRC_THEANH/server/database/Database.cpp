@@ -125,7 +125,23 @@ bool Database::migrate(QString *error)
         QStringLiteral("CREATE INDEX IF NOT EXISTS idx_distance_time "
                        "ON distance_log(measured_at DESC)"),
         QStringLiteral("CREATE INDEX IF NOT EXISTS idx_alert_time "
-                       "ON alert_log(created_at DESC)")
+                       "ON alert_log(created_at DESC)"),
+        QStringLiteral("CREATE TABLE IF NOT EXISTS login_history ("
+                       "id INTEGER PRIMARY KEY AUTOINCREMENT,"
+                       "username TEXT NOT NULL COLLATE NOCASE,"
+                       "role TEXT NOT NULL, ip_address TEXT,"
+                       "status TEXT NOT NULL, created_at TEXT NOT NULL)"),
+        QStringLiteral("CREATE INDEX IF NOT EXISTS idx_login_history_time "
+                       "ON login_history(created_at DESC)"),
+        QStringLiteral("CREATE TABLE IF NOT EXISTS audit_log ("
+                       "id INTEGER PRIMARY KEY AUTOINCREMENT,"
+                       "username TEXT NOT NULL COLLATE NOCASE,"
+                       "role TEXT NOT NULL, action TEXT NOT NULL,"
+                       "target TEXT, details TEXT, created_at TEXT NOT NULL)"),
+        QStringLiteral("CREATE INDEX IF NOT EXISTS idx_audit_log_time "
+                       "ON audit_log(created_at DESC)"),
+        QStringLiteral("CREATE INDEX IF NOT EXISTS idx_audit_log_user "
+                       "ON audit_log(username, created_at DESC)")
     };
     if (!m_db.transaction()) {
         if (error)
@@ -333,6 +349,34 @@ bool Database::seedDefaults(QString *error)
             insAlert.exec(QStringLiteral("INSERT INTO alert_log(created_at,type,message,value) VALUES('%1','info','Khởi động hệ thống giám sát tải THEANH',221.8)").arg(alertTime3));
             insAlert.exec(QStringLiteral("INSERT INTO alert_log(created_at,type,message,value) VALUES('%1','info','Đóng Rơ-le tải chính thành công (Đang cấp nguồn)',521.2)").arg(alertTime2));
             insAlert.exec(QStringLiteral("INSERT INTO alert_log(created_at,type,message,value) VALUES('%1','warning','Điện áp lưới ổn định ở mức 221.8V (50.02Hz)',221.8)").arg(alertTime1));
+        }
+    }
+
+    // 5. Seed Login History
+    QSqlQuery checkLoginHist(m_db);
+    if (checkLoginHist.exec(QStringLiteral("SELECT COUNT(*) FROM login_history")) && checkLoginHist.next()) {
+        if (checkLoginHist.value(0).toInt() == 0) {
+            const QString t1 = QDateTime::currentDateTime().addSecs(-7200).toString(QStringLiteral("yyyy-MM-dd HH:mm:ss"));
+            const QString t2 = QDateTime::currentDateTime().addSecs(-3600).toString(QStringLiteral("yyyy-MM-dd HH:mm:ss"));
+            const QString t3 = QDateTime::currentDateTime().addSecs(-600).toString(QStringLiteral("yyyy-MM-dd HH:mm:ss"));
+            QSqlQuery q(m_db);
+            q.exec(QStringLiteral("INSERT INTO login_history(username,role,ip_address,status,created_at) VALUES('admin','admin','127.0.0.1','success','%1')").arg(t1));
+            q.exec(QStringLiteral("INSERT INTO login_history(username,role,ip_address,status,created_at) VALUES('theanh','user','192.168.1.105','success','%1')").arg(t2));
+            q.exec(QStringLiteral("INSERT INTO login_history(username,role,ip_address,status,created_at) VALUES('guest','user','192.168.1.112','failed','%1')").arg(t3));
+        }
+    }
+
+    // 6. Seed Audit Logs
+    QSqlQuery checkAudit(m_db);
+    if (checkAudit.exec(QStringLiteral("SELECT COUNT(*) FROM audit_log")) && checkAudit.next()) {
+        if (checkAudit.value(0).toInt() == 0) {
+            const QString t1 = QDateTime::currentDateTime().addSecs(-7100).toString(QStringLiteral("yyyy-MM-dd HH:mm:ss"));
+            const QString t2 = QDateTime::currentDateTime().addSecs(-3500).toString(QStringLiteral("yyyy-MM-dd HH:mm:ss"));
+            const QString t3 = QDateTime::currentDateTime().addSecs(-1200).toString(QStringLiteral("yyyy-MM-dd HH:mm:ss"));
+            QSqlQuery q(m_db);
+            q.exec(QStringLiteral("INSERT INTO audit_log(username,role,action,target,details,created_at) VALUES('admin','admin','ĐIỀU KHIỂN RƠ-LE','Theanh-190782','Đóng rơ-le (Bật tải chính)','%1')").arg(t1));
+            q.exec(QStringLiteral("INSERT INTO audit_log(username,role,action,target,details,created_at) VALUES('theanh','user','CÀI ĐẶT NGƯỠNG','Theanh-190782','Cấu hình dải điện áp [10.0 - 245.0]V','%1')").arg(t2));
+            q.exec(QStringLiteral("INSERT INTO audit_log(username,role,action,target,details,created_at) VALUES('admin','admin','GHÉP NỐI THIẾT BỊ','Theanh-190782','Gán trạm đo AC RMS & Công suất','%1')").arg(t3));
         }
     }
 
@@ -1467,4 +1511,91 @@ QJsonObject Database::configForDevice(const QString &deviceId) const
             return obj;
     }
     return config(nullptr);
+}
+
+bool Database::recordLoginHistory(const QString &username, const QString &role, const QString &status,
+                                  const QString &ip)
+{
+    QSqlQuery query(m_db);
+    query.prepare(QStringLiteral(
+        "INSERT INTO login_history(username,role,ip_address,status,created_at) "
+        "VALUES(?,?,?,?,?)"));
+    query.addBindValue(username.trimmed());
+    query.addBindValue(role);
+    query.addBindValue(ip.isEmpty() ? QStringLiteral("127.0.0.1") : ip);
+    query.addBindValue(status);
+    query.addBindValue(QDateTime::currentDateTime().toString(QStringLiteral("yyyy-MM-dd HH:mm:ss")));
+    return query.exec();
+}
+
+QJsonArray Database::loginHistory(int limit) const
+{
+    QJsonArray result;
+    QSqlQuery query(m_db);
+    query.prepare(QStringLiteral(
+        "SELECT id, username, role, ip_address, status, created_at "
+        "FROM login_history ORDER BY id DESC LIMIT ?"));
+    query.addBindValue(qBound(1, limit, 500));
+    if (query.exec()) {
+        while (query.next()) {
+            result.append(QJsonObject{
+                {QStringLiteral("id"), query.value(0).toInt()},
+                {QStringLiteral("username"), query.value(1).toString()},
+                {QStringLiteral("role"), query.value(2).toString()},
+                {QStringLiteral("ip_address"), query.value(3).toString()},
+                {QStringLiteral("status"), query.value(4).toString()},
+                {QStringLiteral("created_at"), query.value(5).toString()}
+            });
+        }
+    }
+    return result;
+}
+
+bool Database::recordAuditLog(const QString &username, const QString &role, const QString &action,
+                              const QString &target, const QString &details)
+{
+    QSqlQuery query(m_db);
+    query.prepare(QStringLiteral(
+        "INSERT INTO audit_log(username,role,action,target,details,created_at) "
+        "VALUES(?,?,?,?,?,?)"));
+    query.addBindValue(username.trimmed());
+    query.addBindValue(role);
+    query.addBindValue(action);
+    query.addBindValue(target);
+    query.addBindValue(details);
+    query.addBindValue(QDateTime::currentDateTime().toString(QStringLiteral("yyyy-MM-dd HH:mm:ss")));
+    return query.exec();
+}
+
+QJsonArray Database::auditLogs(const QString &usernameFilter, int limit) const
+{
+    QJsonArray result;
+    QSqlQuery query(m_db);
+    if (!usernameFilter.trimmed().isEmpty()) {
+        query.prepare(QStringLiteral(
+            "SELECT id, username, role, action, target, details, created_at "
+            "FROM audit_log WHERE username = ? COLLATE NOCASE "
+            "ORDER BY id DESC LIMIT ?"));
+        query.addBindValue(usernameFilter.trimmed());
+        query.addBindValue(qBound(1, limit, 500));
+    } else {
+        query.prepare(QStringLiteral(
+            "SELECT id, username, role, action, target, details, created_at "
+            "FROM audit_log ORDER BY id DESC LIMIT ?"));
+        query.addBindValue(qBound(1, limit, 500));
+    }
+    if (query.exec()) {
+        while (query.next()) {
+            result.append(QJsonObject{
+                {QStringLiteral("id"), query.value(0).toInt()},
+                {QStringLiteral("username"), query.value(1).toString()},
+                {QStringLiteral("role"), query.value(2).toString()},
+                {QStringLiteral("action"), query.value(3).toString()},
+                {QStringLiteral("target"), query.value(4).toString()},
+                {QStringLiteral("details"), query.value(5).toString()},
+                {QStringLiteral("created_at"), query.value(6).toString()}
+            });
+        }
+    }
+    return result;
 }

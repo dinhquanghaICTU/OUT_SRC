@@ -54,6 +54,14 @@ public:
     bool updateConfig(const QJsonObject &config, QString *error);
     bool isOpen() const;
 
+    bool recordLoginHistory(const QString &username, const QString &role, const QString &status,
+                            const QString &ip = QString());
+    QJsonArray loginHistory(int limit = 100) const;
+
+    bool recordAuditLog(const QString &username, const QString &role, const QString &action,
+                        const QString &target = QString(), const QString &details = QString());
+    QJsonArray auditLogs(const QString &usernameFilter = QString(), int limit = 100) const;
+
 private:
     bool migrate(QString *error);
     bool seedDefaults(QString *error);

@@ -301,6 +301,39 @@ void ApiClient::requestDeviceHistory(const QString &deviceId, const QString &per
     });
 }
 
+void ApiClient::requestLoginHistory(int limit)
+{
+    QNetworkReply *reply = m_networkManager.get(
+        makeRequest(QStringLiteral("/api/admin/login-history?limit=%1").arg(limit)));
+    connect(reply, &QNetworkReply::finished, this, [this, reply] {
+        const QByteArray body = reply->readAll();
+        if (reply->error() != QNetworkReply::NoError)
+            emit operationFailed(responseError(body, reply->errorString()));
+        else
+            emit loginHistoryReceived(QJsonDocument::fromJson(body).object()
+                                          .value(QStringLiteral("data")).toArray());
+        reply->deleteLater();
+    });
+}
+
+void ApiClient::requestAuditLogs(int limit, const QString &usernameFilter)
+{
+    QString path = QStringLiteral("/api/audit/logs?limit=%1").arg(limit);
+    if (!usernameFilter.trimmed().isEmpty()) {
+        path += QStringLiteral("&username=") + QString::fromUtf8(QUrl::toPercentEncoding(usernameFilter.trimmed()));
+    }
+    QNetworkReply *reply = m_networkManager.get(makeRequest(path));
+    connect(reply, &QNetworkReply::finished, this, [this, reply] {
+        const QByteArray body = reply->readAll();
+        if (reply->error() != QNetworkReply::NoError)
+            emit operationFailed(responseError(body, reply->errorString()));
+        else
+            emit auditLogsReceived(QJsonDocument::fromJson(body).object()
+                                       .value(QStringLiteral("data")).toArray());
+        reply->deleteLater();
+    });
+}
+
 void ApiClient::handleNetworkError(const QString &operation, QNetworkReply *reply)
 {
     emit networkError(operation + QStringLiteral(": ") + reply->errorString());
