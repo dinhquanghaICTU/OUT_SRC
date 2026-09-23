@@ -1,12 +1,14 @@
 #include "HistoryPage.h"
 #include "ui_HistoryPage.h"
 
+#include <QBarCategoryAxis>
+#include <QBarSeries>
+#include <QBarSet>
 #include <QButtonGroup>
 #include <QChart>
 #include <QChartView>
 #include <QDateTime>
 #include <QHeaderView>
-#include <QLineSeries>
 #include <QTableWidgetItem>
 #include <QValueAxis>
 
@@ -225,6 +227,19 @@ void HistoryPage::setHistory(const QJsonObject &history)
     ui->valAvgSoil->setText(tr("%1 %").arg(QString::number(avgSoil, 'f', 1)));
     ui->valMaxTemp->setText(tr("%1 °C").arg(QString::number(maxTemp, 'f', 1)));
 
+    // Dynamic header based on period (Khoảng giờ cho Ngày, Ngày cho Tháng, Tháng cho Năm)
+    const QString currentPeriod = history.value(QStringLiteral("period")).toString(ui->periodCombo->currentData().toString());
+    QString timeColHeader = tr("Khoảng giờ");
+    if (currentPeriod == QStringLiteral("year")) {
+        timeColHeader = tr("Tháng");
+    } else if (currentPeriod == QStringLiteral("month")) {
+        timeColHeader = tr("Ngày");
+    }
+
+    ui->historyTable->setHorizontalHeaderLabels({
+        timeColHeader, tr("Lượt tưới"), tr("Độ ẩm đất (TB %)"), tr("Nhiệt độ (TB °C)"), tr("Độ ẩm khí (TB %RH)"), tr("Mức bồn nước (TB)")
+    });
+
     // Populate Table
     ui->historyTable->setRowCount(0);
     for (const auto &val : rows) {
@@ -232,28 +247,15 @@ void HistoryPage::setHistory(const QJsonObject &history)
         const int r = ui->historyTable->rowCount();
         ui->historyTable->insertRow(r);
 
-        const QString dt = row.value(QStringLiteral("recorded_at")).toString();
+        const QString label = row.value(QStringLiteral("label")).toString();
+        const int pumpCount = row.value(QStringLiteral("pump_count")).toInt(0);
         const double sm = row.value(QStringLiteral("soil_moisture")).toDouble(55.0);
-        const double t = row.value(QStringLiteral("temperature_c")).toDouble(
-            row.value(QStringLiteral("temperature")).toDouble(27.5));
-        const double h = row.value(QStringLiteral("humidity")).toDouble(
-            row.value(QStringLiteral("humidity_pct")).toDouble(65.0));
-        const bool pump = row.value(QStringLiteral("pump_active")).toBool();
+        const double t = row.value(QStringLiteral("temperature_c")).toDouble(27.5);
+        const double h = row.value(QStringLiteral("humidity")).toDouble(65.0);
         const double tank = row.value(QStringLiteral("water_tank_level")).toDouble(85.0);
 
-        QString timeDisplay;
-        if (!dt.isEmpty()) {
-            if (dt.length() >= 19) {
-                timeDisplay = dt.mid(11, 8);
-            } else {
-                timeDisplay = dt;
-            }
-        } else {
-            timeDisplay = QDateTime::currentDateTime().toString(QStringLiteral("HH:mm:ss"));
-        }
-
-        ui->historyTable->setItem(r, 0, new QTableWidgetItem(timeDisplay));
-        ui->historyTable->setItem(r, 1, new QTableWidgetItem(pump ? tr("💦 Bật bơm tưới") : tr("Giám sát định kỳ")));
+        ui->historyTable->setItem(r, 0, new QTableWidgetItem(label));
+        ui->historyTable->setItem(r, 1, new QTableWidgetItem(pumpCount > 0 ? tr("💦 %1 lần tưới").arg(pumpCount) : tr("🌱 Giám sát ổn định")));
         ui->historyTable->setItem(r, 2, new QTableWidgetItem(QStringLiteral("%1%").arg(QString::number(sm, 'f', 1))));
         ui->historyTable->setItem(r, 3, new QTableWidgetItem(QStringLiteral("%1 °C").arg(QString::number(t, 'f', 1))));
         ui->historyTable->setItem(r, 4, new QTableWidgetItem(QStringLiteral("%1 %RH").arg(QString::number(h, 'f', 1))));
@@ -276,61 +278,45 @@ void HistoryPage::updateChart()
 
     const QJsonArray dataArray = m_cachedHistory.value(QStringLiteral("data")).toArray();
     const QJsonArray chartPoints = dataArray.isEmpty() ? m_cachedRows : dataArray;
+    if (chartPoints.isEmpty()) return;
 
-    auto *series = new QLineSeries;
-    series->setName(metricTitle(m_selectedMetricKey));
-    series->setPen(QPen(colorForMetric(m_selectedMetricKey), 2.5));
+    auto *barSet = new QBarSet(metricTitle(m_selectedMetricKey));
+    const QColor col = colorForMetric(m_selectedMetricKey);
+    barSet->setColor(col);
+    barSet->setBorderColor(col.lighter(115));
 
+    QStringList categories;
     double minY = 999999.0;
     double maxY = -999999.0;
 
-    int idx = 0;
     for (const auto &item : chartPoints) {
         const QJsonObject obj = item.toObject();
-        double val = 0.0;
-        if (m_selectedMetricKey == QStringLiteral("soil_moisture")) {
-            val = obj.value(QStringLiteral("soil_moisture")).toDouble(55.0);
-        } else if (m_selectedMetricKey == QStringLiteral("temperature_c")) {
-            val = obj.value(QStringLiteral("temperature_c")).toDouble(
-                obj.value(QStringLiteral("temperature")).toDouble(27.5));
-        } else if (m_selectedMetricKey == QStringLiteral("humidity")) {
-            val = obj.value(QStringLiteral("humidity")).toDouble(
-                obj.value(QStringLiteral("humidity_pct")).toDouble(65.0));
-        } else if (m_selectedMetricKey == QStringLiteral("water_tank_level")) {
-            val = obj.value(QStringLiteral("water_tank_level")).toDouble(85.0);
-        } else {
-            val = obj.value(m_selectedMetricKey).toDouble(0.0);
+        QString cat = obj.value(QStringLiteral("chart_label")).toString();
+        if (cat.isEmpty()) {
+            cat = obj.value(QStringLiteral("label")).toString();
         }
+        categories << cat;
 
-        series->append(idx, val);
+        const double val = obj.value(m_selectedMetricKey).toDouble(0.0);
+        *barSet << val;
         if (val < minY) minY = val;
         if (val > maxY) maxY = val;
-        idx++;
     }
 
-    if (idx == 0) {
-        // Fallback placeholder data if empty
-        for (int i = 0; i < 15; ++i) {
-            double v = 50.0 + (i % 5) * 3.0;
-            series->append(i, v);
-            if (v < minY) minY = v;
-            if (v > maxY) maxY = v;
-        }
-        idx = 15;
-    }
-
+    auto *series = new QBarSeries(m_chart);
+    series->append(barSet);
+    series->setBarWidth(0.60);
     m_chart->addSeries(series);
 
-    auto *axisX = new QValueAxis(m_chart);
-    axisX->setRange(0, idx > 1 ? idx - 1 : 10);
-    axisX->setLabelFormat(QStringLiteral("%d"));
+    auto *axisX = new QBarCategoryAxis(m_chart);
+    axisX->append(categories);
     axisX->setGridLineColor(QColor(QStringLiteral("#f1f5f9")));
     axisX->setLabelsColor(QColor(QStringLiteral("#64748b")));
     m_chart->addAxis(axisX, Qt::AlignBottom);
     series->attachAxis(axisX);
 
     auto *axisY = new QValueAxis(m_chart);
-    double pad = (maxY - minY) * 0.15;
+    double pad = (maxY - minY) * 0.20;
     if (pad < 2.0) pad = 5.0;
     axisY->setRange(qMax(0.0, minY - pad), maxY + pad);
     axisY->setTickCount(5);
