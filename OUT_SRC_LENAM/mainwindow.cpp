@@ -943,10 +943,10 @@ void MainWindow::triggerLogin(const QString &username, const QString &password, 
                 nav->setVisible(true);
                 nav->setEnabled(true);
                 if (isAdmin) {
-                    nav->setText(QStringLiteral("■ QUẢN TRỊ & NHẬT KÝ"));
+                    nav->setText(QStringLiteral("QUẢN TRỊ & NHẬT KÝ"));
                     nav->setToolTip(QStringLiteral("Quản lý tài khoản, lịch sử đăng nhập & điều khiển"));
                 } else {
-                    nav->setText(QStringLiteral("■ NHẬT KÝ THAO TÁC"));
+                    nav->setText(QStringLiteral("NHẬT KÝ THAO TÁC"));
                     nav->setToolTip(QStringLiteral("Xem lịch sử các thao tác của bạn trong hệ thống"));
                 }
             }
@@ -1007,10 +1007,10 @@ void MainWindow::buildShell()
 
     // Center Nav Capsule Buttons (Compact for 7 inch screen)
     const QStringList navNames{
-        QStringLiteral("● QUAN TRẮC"),
-        QStringLiteral("◆ TRẠM ĐO"),
-        QStringLiteral("▲ ĐỒ THỊ"),
-        QStringLiteral("■ QUẢN TRỊ")
+        QStringLiteral("QUAN TRẮC"),
+        QStringLiteral("TRẠM ĐO"),
+        QStringLiteral("ĐỒ THỊ"),
+        QStringLiteral("QUẢN TRỊ")
     };
     for (int i = 0; i < navNames.size(); ++i) {
         auto *b = button(navNames[i], "hudNav");
@@ -1264,14 +1264,14 @@ void MainWindow::buildDevices()
     tbl->setContentsMargins(10, 2, 8, 2);
     tbl->setSpacing(8);
 
-    auto *bTitle = new QLabel("🛰 MẠNG LƯỚI TRẠM ĐO ÁP SUẤT & CHUYỂN ĐỘNG");
+    auto *bTitle = new QLabel("MẠNG LƯỚI TRẠM ĐO ÁP SUẤT & CHUYỂN ĐỘNG");
     bTitle->setWordWrap(false);
     bTitle->setStyleSheet("color: #00f2fe; font-size: 11px; font-weight: 900; letter-spacing: 0.5px;");
     tbl->addWidget(bTitle);
 
     tbl->addStretch();
 
-    auto *scanBtn = new QPushButton("⟳ Quét Mạng");
+    auto *scanBtn = new QPushButton("Quét Mạng");
     scanBtn->setFixedHeight(24);
     scanBtn->setCursor(Qt::PointingHandCursor);
     scanBtn->setStyleSheet("QPushButton { background: #132752; color: #38bdf8; border: 1px solid #234584; border-radius: 4px; padding: 2px 10px; font-size: 9.5px; font-weight: bold; } QPushButton:hover { background: #1a3875; color: #ffffff; }");
@@ -1436,12 +1436,12 @@ void MainWindow::buildDevices()
     auto *actRow = new QHBoxLayout;
     actRow->setSpacing(6);
 
-    m_devConfigBtn = button("⚙ CÀI ĐẶT NGƯỠNG BÁO ĐỘNG", "cyanBtn");
+    m_devConfigBtn = button("CÀI ĐẶT NGƯỠNG BÁO ĐỘNG", "cyanBtn");
     m_devConfigBtn->setFixedHeight(32);
     m_devConfigBtn->setCursor(Qt::PointingHandCursor);
     m_devConfigBtn->setStyleSheet("QPushButton { background: qlineargradient(x1:0, y1:0, x2:1, y2:0, stop:0 #00f2fe, stop:1 #2563eb); color: #03081a; font-weight: 900; font-size: 10px; border: none; border-radius: 6px; } QPushButton:hover { background: #38bdf8; }");
 
-    m_devReleaseBtn = button("✕ GỠ BỎ", "danger");
+    m_devReleaseBtn = button("GỠ BỎ", "danger");
     m_devReleaseBtn->setFixedHeight(32);
     m_devReleaseBtn->setCursor(Qt::PointingHandCursor);
     m_devReleaseBtn->setStyleSheet("QPushButton { background: rgba(225, 29, 72, 0.15); border: 1.5px solid #e11d48; color: #fb7185; font-weight: 900; font-size: 10px; border-radius: 6px; padding: 2px 12px; } QPushButton:hover { background: #e11d48; color: #ffffff; }");
@@ -1492,7 +1492,7 @@ void MainWindow::buildDevices()
     rpLay->setSpacing(6);
 
     auto *rpHead = new QHBoxLayout;
-    auto *rpTitle = label("📡 RADAR PHÁT HIỆN TRẠM");
+    auto *rpTitle = label("RADAR PHÁT HIỆN TRẠM");
     rpTitle->setWordWrap(false);
     rpTitle->setStyleSheet("color: #00f2fe; font-size: 10px; font-weight: 900;");
     auto *rpPort = label("● BROKER: 1883", "onlineBadge");
@@ -1558,11 +1558,11 @@ void MainWindow::buildDevices()
     sigBox->setStyleSheet("QFrame { background: #081636; border-radius: 4px; padding: 2px; }");
     auto *sbl = new QHBoxLayout(sigBox);
     sbl->setContentsMargins(6, 3, 6, 3);
-    auto *sigLbl = new QLabel("📶 TÍN HIỆU SÓNG:");
+    auto *sigLbl = new QLabel("TÍN HIỆU SÓNG:");
     sigLbl->setStyleSheet("color: #00f2fe; font-size: 8px; font-weight: 900;");
     sbl->addWidget(sigLbl);
     sbl->addStretch();
-    auto *bars = new QLabel("■■■■ CỰC MẠNH (-52dBm)");
+    auto *bars = new QLabel("CỰC MẠNH (-52dBm)");
     bars->setStyleSheet("color: #10b981; font-size: 8px; font-weight: 900;");
     sbl->addWidget(bars);
     acl->addWidget(sigBox);
@@ -1585,7 +1585,7 @@ void MainWindow::buildDevices()
     scl->setSpacing(6);
     scl->setAlignment(Qt::AlignCenter);
 
-    auto *scanPulseLbl = label("[⟳ SÓNG RADAR ĐANG QUÉT MẠNG]");
+    auto *scanPulseLbl = label("[SÓNG RADAR ĐANG QUÉT MẠNG]");
     scanPulseLbl->setAlignment(Qt::AlignCenter);
     scanPulseLbl->setStyleSheet("color: #00f2fe; font-size: 10px; font-weight: 900;");
 
@@ -1596,7 +1596,7 @@ void MainWindow::buildDevices()
     auto *scanTipBox = new QFrame;
     scanTipBox->setStyleSheet("background: #081533; border: 1px solid #162c5a; border-radius: 6px; padding: 4px;");
     auto *stl = new QVBoxLayout(scanTipBox);
-    auto *tipText = new QLabel("💡 Mẹo: Bật nguồn board ESP32-S3 và kết nối cùng Wi-Fi để trạm tự động xuất hiện trên Radar.");
+    auto *tipText = new QLabel("Mẹo: Bật nguồn board ESP32-S3 và kết nối cùng Wi-Fi để trạm tự động xuất hiện trên Radar.");
     tipText->setWordWrap(true);
     tipText->setStyleSheet("color: #94a3b8; font-size: 7.5px;");
     stl->addWidget(tipText);
@@ -3077,7 +3077,7 @@ void MainWindow::showChartZoomDialog(const QString &key)
     title->setStyleSheet(QStringLiteral("color: #00f2fe; font-size: 15px; font-weight: 900;"));
     head->addWidget(title);
     head->addStretch();
-    auto *closeBtn = new QPushButton(QStringLiteral("✕ Đóng"), &dialog);
+    auto *closeBtn = new QPushButton(QStringLiteral("Đóng"), &dialog);
     closeBtn->setFixedSize(70, 30);
     closeBtn->setCursor(Qt::PointingHandCursor);
     closeBtn->setStyleSheet(QStringLiteral("QPushButton { background: #16244e; border: 1px solid #304482; border-radius: 8px; color: #ffffff; font-weight: bold; } QPushButton:hover { background: #ff1744; }"));

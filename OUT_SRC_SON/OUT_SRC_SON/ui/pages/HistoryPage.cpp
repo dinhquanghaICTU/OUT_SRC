@@ -174,7 +174,7 @@ HistoryPage::HistoryPage(QWidget *parent)
     m_metricCombo->hide();
     m_chartHeaderLayout->addWidget(m_metricCombo, 0, Qt::AlignVCenter | Qt::AlignRight);
 
-    m_zoomBtn = new QPushButton(tr("⛶ Phóng to"), m_chartCard);
+    m_zoomBtn = new QPushButton(tr("Phóng to"), m_chartCard);
     m_zoomBtn->setObjectName(QStringLiteral("historyZoomButton"));
     m_zoomBtn->setCursor(Qt::PointingHandCursor);
     m_zoomBtn->setToolTip(tr("Phóng to biểu đồ"));
@@ -197,8 +197,8 @@ HistoryPage::HistoryPage(QWidget *parent)
     m_analyticsGrid->setHorizontalSpacing(6);
     m_analyticsGrid->setVerticalSpacing(0);
     m_primaryStatCard = makeStatCard(m_primaryStatTitle, tr("Chỉ số chính"), m_primaryStat, QStringLiteral("↯"));
-    m_secondaryStatCard = makeStatCard(m_secondaryStatTitle, tr("Chỉ số phụ"), m_secondaryStat, QStringLiteral("◍"));
-    m_summaryStatCard = makeStatCard(m_summaryStatTitle, tr("Tóm tắt"), m_thirdStat, QStringLiteral("▥"));
+    m_secondaryStatCard = makeStatCard(m_secondaryStatTitle, tr("Chỉ số phụ"), m_secondaryStat, QStringLiteral(""));
+    m_summaryStatCard = makeStatCard(m_summaryStatTitle, tr("Tóm tắt"), m_thirdStat, QStringLiteral(""));
     m_analyticsGrid->addWidget(m_primaryStatCard, 0, 0);
     m_analyticsGrid->addWidget(m_secondaryStatCard, 0, 1);
     m_analyticsGrid->addWidget(m_summaryStatCard, 0, 2);
@@ -534,7 +534,7 @@ void HistoryPage::updateMetricSelector()
     if (!plotableKeys.isEmpty()) {
         for (const QString &key : plotableKeys) {
             QString cleanName = metricTitle(key);
-            m_metricCombo->addItem(tr("📊 %1").arg(cleanName), key);
+            m_metricCombo->addItem(tr("%1").arg(cleanName), key);
         }
         int idx = m_metricCombo->findData(m_selectedMetricKey);
         if (idx >= 0 && m_selectedMetricKey != QStringLiteral("all")) {
@@ -579,7 +579,7 @@ void HistoryPage::setHistory(const QJsonObject &history)
         const QString addTimeStr = addTime.isValid() ? addTime.toLocalTime().toString(QStringLiteral("dd/MM/yyyy HH:mm")) : addedAt;
         const QString statusHint = isOnline
             ? tr("● Trực tuyến (Đang cập nhật thời gian thực)")
-            : tr("○ Ngoại tuyến (Đã ngắt kết nối · Dừng cập nhật)");
+            : tr("Ngoại tuyến (Đã ngắt kết nối · Dừng cập nhật)");
         m_headerSubtitle->setText(
             tr("Thiết bị: %1 · %2 · Người thêm: %3 (%4) · Bấm vào biểu đồ để phóng to.")
                 .arg(ui->deviceCombo->currentText(), statusHint, addedBy, addTimeStr));
@@ -1002,7 +1002,7 @@ void HistoryPage::openChartZoomDialog(const QString &initialMetricKey)
     }
 
     for (const QString &key : plotableKeys) {
-        metricCombo->addItem(tr("📈 %1").arg(metricTitle(key)), key);
+        metricCombo->addItem(tr("%1").arg(metricTitle(key)), key);
     }
 
     QString selectedKey = initialMetricKey.isEmpty() ? m_selectedMetricKey : initialMetricKey;
@@ -1015,7 +1015,7 @@ void HistoryPage::openChartZoomDialog(const QString &initialMetricKey)
 
     headerLayout->addWidget(metricCombo, 0, Qt::AlignVCenter);
 
-    auto *closeBtn = new QPushButton(QStringLiteral("✕"), &dialog);
+    auto *closeBtn = new QPushButton(QStringLiteral("Đóng"), &dialog);
     closeBtn->setObjectName(QStringLiteral("chartZoomCloseBtn"));
     closeBtn->setFixedSize(36, 36);
     closeBtn->setCursor(Qt::PointingHandCursor);

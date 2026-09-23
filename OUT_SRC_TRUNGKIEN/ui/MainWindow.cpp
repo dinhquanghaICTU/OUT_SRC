@@ -62,10 +62,10 @@ MainWindow::MainWindow(QWidget *parent)
         ui->devicesButton->setVisible(true);
         ui->usersButton->setVisible(true);
         if (m_authService->isAdmin()) {
-            ui->usersButton->setText(tr("👤 Quản trị & Nhật ký"));
+            ui->usersButton->setText(tr("Quản trị & Nhật ký"));
             ui->usersButton->setToolTip(tr("Quản lý tài khoản, lịch sử đăng nhập & điều khiển hệ thống"));
         } else {
-            ui->usersButton->setText(tr("📋 Nhật ký thao tác"));
+            ui->usersButton->setText(tr("Nhật ký thao tác"));
             ui->usersButton->setToolTip(tr("Xem lịch sử các thao tác của bạn trong hệ thống"));
         }
         m_userManagementPage->setCurrentUsername(m_authService->currentUsername());
@@ -355,9 +355,9 @@ void MainWindow::refreshSidebarButtonText()
     setNavText(m_sidebarToggleButton, m_sidebarExpanded ? QStringLiteral("‹")
                                                         : QStringLiteral("›"),
                m_sidebarExpanded ? tr("Thu gọn") : tr("Mở rộng"));
-    setNavText(ui->dashboardButton, QStringLiteral("⌂"), tr("Trang chủ"));
-    setNavText(ui->devicesButton, QStringLiteral("◆"), tr("Thiết bị"));
-    setNavText(ui->historyButton, QStringLiteral("▤"), tr("Lịch sử"));
-    setNavText(ui->usersButton, QStringLiteral("♟"), tr("Tài khoản"));
-    setNavText(ui->logoutButton, QStringLiteral("↪"), tr("Đăng xuất"));
+    setNavText(ui->dashboardButton, QStringLiteral(""), tr("Trang chủ"));
+    setNavText(ui->devicesButton, QStringLiteral(""), tr("Thiết bị"));
+    setNavText(ui->historyButton, QStringLiteral(""), tr("Lịch sử"));
+    setNavText(ui->usersButton, QStringLiteral(""), tr("Tài khoản"));
+    setNavText(ui->logoutButton, QStringLiteral(""), tr("Đăng xuất"));
 }

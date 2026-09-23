@@ -139,7 +139,7 @@ void DashboardPage::setupUiCustom()
     leftLayout->setSpacing(6);
 
     auto *leftHeadRow = new QHBoxLayout;
-    leftHeadRow->addWidget(makeLabel(tr("⚡ SƠ ĐỒ MẠCH NGUYÊN LÝ & CẢM BIẾN"), "panelHeader", true));
+    leftHeadRow->addWidget(makeLabel(tr("SƠ ĐỒ MẠCH NGUYÊN LÝ & CẢM BIẾN"), "panelHeader", true));
     leftHeadRow->addStretch();
     leftLayout->addLayout(leftHeadRow);
 
@@ -161,7 +161,7 @@ void DashboardPage::setupUiCustom()
     zmptLayout->setSpacing(3);
 
     auto *zTop = new QHBoxLayout;
-    zTop->addWidget(makeLabel(tr("⚡ ĐIỆN ÁP (ZMPT101B)"), "blockHeader", true));
+    zTop->addWidget(makeLabel(tr("ĐIỆN ÁP (ZMPT101B)"), "blockHeader", true));
     zTop->addStretch();
     m_voltageStatusBadge = makeLabel(tr("220V Ổn định"), "badgeNormal", true);
     zTop->addWidget(m_voltageStatusBadge);
@@ -211,7 +211,7 @@ void DashboardPage::setupUiCustom()
     acsLayout->setSpacing(3);
 
     auto *aTop = new QHBoxLayout;
-    aTop->addWidget(makeLabel(tr("🔌 DÒNG TẢI (ACS712)"), "blockHeader", true));
+    aTop->addWidget(makeLabel(tr("DÒNG TẢI (ACS712)"), "blockHeader", true));
     aTop->addStretch();
     m_currentStatusBadge = makeLabel(tr("An toàn (<16A)"), "badgeNormal", true);
     aTop->addWidget(m_currentStatusBadge);
@@ -259,7 +259,7 @@ void DashboardPage::setupUiCustom()
     loadLayout->setSpacing(3);
 
     auto *lTop = new QHBoxLayout;
-    lTop->addWidget(makeLabel(tr("💡 PHỤ TẢI & CÔNG SUẤT"), "blockHeader", true));
+    lTop->addWidget(makeLabel(tr("PHỤ TẢI & CÔNG SUẤT"), "blockHeader", true));
     lTop->addStretch();
     m_powerValLabel = makeLabel(QStringLiteral("518"), "bigValPower", true);
     lTop->addWidget(m_powerValLabel);
@@ -280,26 +280,26 @@ void DashboardPage::setupUiCustom()
     auto *btnRow = new QHBoxLayout;
     btnRow->setSpacing(4);
 
-    m_relayButton = new QPushButton(tr("⚡ RƠ LE: ĐÓNG TẢI"), m_blockLoadRelay);
+    m_relayButton = new QPushButton(tr("RƠ LE: ĐÓNG TẢI"), m_blockLoadRelay);
     m_relayButton->setObjectName(QStringLiteral("relayOnBtn"));
     m_relayButton->setCursor(Qt::PointingHandCursor);
     connect(m_relayButton, &QPushButton::clicked, this, [this] {
         m_relayActive = !m_relayActive;
         m_relayButton->setObjectName(m_relayActive ? QStringLiteral("relayOnBtn") : QStringLiteral("relayOffBtn"));
-        m_relayButton->setText(m_relayActive ? tr("⚡ RƠ LE: ĐÓNG TẢI") : tr("🚨 RƠ LE: NGẮT TẢI"));
+        m_relayButton->setText(m_relayActive ? tr("RƠ LE: ĐÓNG TẢI") : tr("RƠ LE: NGẮT TẢI"));
         m_relayButton->style()->unpolish(m_relayButton);
         m_relayButton->style()->polish(m_relayButton);
         emit relayControlRequested(m_deviceId, m_relayActive);
     });
     btnRow->addWidget(m_relayButton, 1);
 
-    m_viewHistoryButton = new QPushButton(tr("📊 LỊCH SỬ"), m_blockLoadRelay);
+    m_viewHistoryButton = new QPushButton(tr("LỊCH SỬ"), m_blockLoadRelay);
     m_viewHistoryButton->setObjectName(QStringLiteral("actionButton"));
     m_viewHistoryButton->setCursor(Qt::PointingHandCursor);
     connect(m_viewHistoryButton, &QPushButton::clicked, this, &DashboardPage::historyPageRequested);
     btnRow->addWidget(m_viewHistoryButton, 1);
 
-    m_devicesButton = new QPushButton(tr("⚙️ THIẾT BỊ"), m_blockLoadRelay);
+    m_devicesButton = new QPushButton(tr("THIẾT BỊ"), m_blockLoadRelay);
     m_devicesButton->setObjectName(QStringLiteral("chartTab"));
     m_devicesButton->setCursor(Qt::PointingHandCursor);
     connect(m_devicesButton, &QPushButton::clicked, this, [this] {
@@ -324,7 +324,7 @@ void DashboardPage::setupUiCustom()
     // Chart Header row with filter tabs
     auto *chartHeader = new QHBoxLayout;
     chartHeader->setSpacing(3);
-    chartHeader->addWidget(makeLabel(tr("📈 BIỂU ĐỒ DIỄN BIẾN"), "panelHeader", true));
+    chartHeader->addWidget(makeLabel(tr("BIỂU ĐỒ DIỄN BIẾN"), "panelHeader", true));
     chartHeader->addStretch();
 
     m_chartFilterAll = new QPushButton(tr("Tất cả"), m_rightPanel);
@@ -437,7 +437,7 @@ void DashboardPage::setupUiCustom()
     meterGrid->setHorizontalSpacing(8);
     meterGrid->setVerticalSpacing(3);
 
-    meterGrid->addWidget(makeLabel(tr("⚡ Điện áp AC (0 - 300V):"), "metaKey"), 0, 0);
+    meterGrid->addWidget(makeLabel(tr("Điện áp AC (0 - 300V):"), "metaKey"), 0, 0);
     m_voltageBar = new QProgressBar(m_rightPanel);
     m_voltageBar->setObjectName(QStringLiteral("voltageBar"));
     m_voltageBar->setRange(0, 300);
@@ -445,7 +445,7 @@ void DashboardPage::setupUiCustom()
     m_voltageBar->setTextVisible(false);
     meterGrid->addWidget(m_voltageBar, 0, 1);
 
-    meterGrid->addWidget(makeLabel(tr("🔌 Dòng tải AC (0 - 30A):"), "metaKey"), 1, 0);
+    meterGrid->addWidget(makeLabel(tr("Dòng tải AC (0 - 30A):"), "metaKey"), 1, 0);
     m_currentBar = new QProgressBar(m_rightPanel);
     m_currentBar->setObjectName(QStringLiteral("currentBar"));
     m_currentBar->setRange(0, 300);
@@ -458,11 +458,11 @@ void DashboardPage::setupUiCustom()
     // Diagnostics & Advice banner
     auto *botRow = new QHBoxLayout;
     botRow->setSpacing(6);
-    m_statusAdviceLabel = makeLabel(tr("💡 Lưới điện 220V và phụ tải ổn định trong tiêu chuẩn an toàn TCVN."), "adviceBanner");
+    m_statusAdviceLabel = makeLabel(tr("Lưới điện 220V và phụ tải ổn định trong tiêu chuẩn an toàn TCVN."), "adviceBanner");
     m_statusAdviceLabel->setWordWrap(true);
     botRow->addWidget(m_statusAdviceLabel, 1);
 
-    m_lastUpdatedLabel = makeLabel(tr("🕒 --:--:--"), "metaKey");
+    m_lastUpdatedLabel = makeLabel(tr("--:--:--"), "metaKey");
     m_lastUpdatedLabel->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
     botRow->addWidget(m_lastUpdatedLabel, 0, Qt::AlignVCenter);
 
@@ -503,10 +503,10 @@ void DashboardPage::updateVoltageDisplay(double voltageV)
     m_voltagePeakLabel->setText(QStringLiteral("%1 V").arg(QString::number(voltageV * 1.4142, 'f', 1)));
 
     if (voltageV < 10.0) {
-        m_voltageStatusBadge->setText(tr("⚠️ Sụt áp lưới!"));
+        m_voltageStatusBadge->setText(tr("Sụt áp lưới!"));
         m_voltageStatusBadge->setObjectName(QStringLiteral("badgeWarning"));
     } else if (voltageV > 245.0) {
-        m_voltageStatusBadge->setText(tr("🚨 Quá áp lưới!"));
+        m_voltageStatusBadge->setText(tr("Quá áp lưới!"));
         m_voltageStatusBadge->setObjectName(QStringLiteral("badgeDanger"));
     } else {
         m_voltageStatusBadge->setText(tr("Điện áp ổn định"));
@@ -523,10 +523,10 @@ void DashboardPage::updateCurrentDisplay(double currentA)
     m_currentBar->setValue(qBound(0, static_cast<int>(currentA * 10.0), 300));
 
     if (currentA > 20.0) {
-        m_currentStatusBadge->setText(tr("🚨 Quá dòng (>20A)!"));
+        m_currentStatusBadge->setText(tr("Quá dòng (>20A)!"));
         m_currentStatusBadge->setObjectName(QStringLiteral("badgeDanger"));
     } else if (currentA > 15.0) {
-        m_currentStatusBadge->setText(tr("⚠️ Tải cao (>15A)"));
+        m_currentStatusBadge->setText(tr("Tải cao (>15A)"));
         m_currentStatusBadge->setObjectName(QStringLiteral("badgeWarning"));
     } else {
         m_currentStatusBadge->setText(tr("Tải an toàn (<16A)"));
@@ -647,7 +647,7 @@ void DashboardPage::updateDeviceMetrics(const QJsonObject &metrics)
     if (metrics.contains(QStringLiteral("relay_on"))) {
         m_relayActive = metrics.value(QStringLiteral("relay_on")).toBool();
         m_relayButton->setObjectName(m_relayActive ? QStringLiteral("relayOnBtn") : QStringLiteral("relayOffBtn"));
-        m_relayButton->setText(m_relayActive ? tr("⚡ RƠ LE: ĐÓNG TẢI") : tr("🚨 RƠ LE: NGẮT TẢI"));
+        m_relayButton->setText(m_relayActive ? tr("RƠ LE: ĐÓNG TẢI") : tr("RƠ LE: NGẮT TẢI"));
         m_relayButton->style()->unpolish(m_relayButton);
         m_relayButton->style()->polish(m_relayButton);
     }
@@ -698,7 +698,7 @@ void DashboardPage::setOwnedDevices(const QJsonArray &devices)
             if (dev.contains(QStringLiteral("relay_on"))) {
                 m_relayActive = dev.value(QStringLiteral("relay_on")).toBool();
                 m_relayButton->setObjectName(m_relayActive ? QStringLiteral("relayOnBtn") : QStringLiteral("relayOffBtn"));
-                m_relayButton->setText(m_relayActive ? tr("⚡ RƠ LE: ĐÓNG TẢI") : tr("🚨 RƠ LE: NGẮT TẢI"));
+                m_relayButton->setText(m_relayActive ? tr("RƠ LE: ĐÓNG TẢI") : tr("RƠ LE: NGẮT TẢI"));
                 m_relayButton->style()->unpolish(m_relayButton);
                 m_relayButton->style()->polish(m_relayButton);
             }

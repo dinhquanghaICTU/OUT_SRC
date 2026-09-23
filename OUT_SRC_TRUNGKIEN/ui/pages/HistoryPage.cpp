@@ -122,7 +122,7 @@ HistoryPage::HistoryPage(QWidget *parent)
   m_metricCombo->setMinimumWidth(125);
   m_metricCombo->hide();
 
-  m_zoomBtn = new QPushButton(tr("⛶ Phóng to"), this);
+  m_zoomBtn = new QPushButton(tr("Phóng to"), this);
   m_zoomBtn->setObjectName(QStringLiteral("historyZoomButton"));
   m_zoomBtn->setCursor(Qt::PointingHandCursor);
   m_zoomBtn->setToolTip(tr("Phóng to biểu đồ"));
@@ -575,7 +575,7 @@ void HistoryPage::updateMetricSelector() {
         cleanName = tr("Áp suất (hPa)");
       else if (key == QStringLiteral("uv_voltage"))
         cleanName = tr("Điện áp (V)");
-      m_metricCombo->addItem(tr("📊 %1").arg(cleanName), key);
+      m_metricCombo->addItem(tr("%1").arg(cleanName), key);
     }
     int idx = m_metricCombo->findData(m_selectedMetricKey);
     if (idx >= 0 && m_selectedMetricKey != QStringLiteral("all")) {
@@ -626,7 +626,7 @@ void HistoryPage::setHistory(const QJsonObject &history) {
             : addedAt;
     const QString statusHint =
         isOnline ? tr("● Trực tuyến (Đang cập nhật thời gian thực)")
-                 : tr("○ Ngoại tuyến (Đã ngắt kết nối · Dừng cập nhật)");
+                 : tr("Ngoại tuyến (Đã ngắt kết nối · Dừng cập nhật)");
     m_headerSubtitle->setText(tr("Thiết bị: %1 · %2 · Người thêm: %3 (%4) · "
                                  "Bấm vào biểu đồ để phóng to.")
                                   .arg(ui->deviceCombo->currentText(),
@@ -718,7 +718,7 @@ void HistoryPage::setHistory(const QJsonObject &history) {
       ui->recordCountLabel->setObjectName(
           QStringLiteral("historyRecordBadgeOnline"));
     } else {
-      ui->recordCountLabel->setText(tr("○ Ngoại tuyến · %1 mẫu").arg(total));
+      ui->recordCountLabel->setText(tr("Ngoại tuyến · %1 mẫu").arg(total));
       ui->recordCountLabel->setObjectName(
           QStringLiteral("historyRecordBadgeOffline"));
     }
@@ -1102,7 +1102,7 @@ void HistoryPage::openChartZoomDialog(const QString &initialMetricKey) {
   }
 
   for (const QString &key : plotableKeys) {
-    metricCombo->addItem(tr("📈 %1").arg(metricTitle(key)), key);
+    metricCombo->addItem(tr("%1").arg(metricTitle(key)), key);
   }
 
   QString selectedKey =
@@ -1117,7 +1117,7 @@ void HistoryPage::openChartZoomDialog(const QString &initialMetricKey) {
 
   headerLayout->addWidget(metricCombo, 0, Qt::AlignVCenter);
 
-  auto *closeBtn = new QPushButton(QStringLiteral("✕"), &dialog);
+  auto *closeBtn = new QPushButton(QStringLiteral("Đóng"), &dialog);
   closeBtn->setObjectName(QStringLiteral("chartZoomCloseBtn"));
   closeBtn->setFixedSize(36, 36);
   closeBtn->setCursor(Qt::PointingHandCursor);

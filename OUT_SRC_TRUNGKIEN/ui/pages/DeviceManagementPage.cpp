@@ -107,8 +107,8 @@ static bool confirmDeleteDevice(QWidget *parent, const QString &title, const QSt
     msgBox.setWindowTitle(title);
     msgBox.setText(text);
     msgBox.setIcon(QMessageBox::Warning);
-    auto *yesBtn = msgBox.addButton(QObject::tr("🗑 Xác nhận gỡ/xóa"), QMessageBox::YesRole);
-    auto *noBtn = msgBox.addButton(QObject::tr("✖ Hủy bỏ"), QMessageBox::NoRole);
+    auto *yesBtn = msgBox.addButton(QObject::tr("Xác nhận gỡ/xóa"), QMessageBox::YesRole);
+    auto *noBtn = msgBox.addButton(QObject::tr("Hủy bỏ"), QMessageBox::NoRole);
     msgBox.setDefaultButton(noBtn);
     msgBox.setStyleSheet(QStringLiteral(
         "QMessageBox { background-color: #0b152d; border: 1.5px solid #1c2b54; border-radius: 8px; } "
@@ -213,8 +213,8 @@ DeviceManagementPage::DeviceManagementPage(QWidget *parent)
     auto *toolbar = new QHBoxLayout;
     toolbar->setSpacing(8);
 
-    m_logTabBtn = new QPushButton(tr("📋 Danh sách thiết bị"), this);
-    m_cardsTabBtn = new QPushButton(tr("⚙ Thẻ điều khiển"), this);
+    m_logTabBtn = new QPushButton(tr("Danh sách thiết bị"), this);
+    m_cardsTabBtn = new QPushButton(tr("Thẻ điều khiển"), this);
     m_logTabBtn->setObjectName(QStringLiteral("deviceViewTabButton"));
     m_cardsTabBtn->setObjectName(QStringLiteral("deviceViewTabButton"));
     m_logTabBtn->setCheckable(true);
@@ -245,7 +245,7 @@ DeviceManagementPage::DeviceManagementPage(QWidget *parent)
     topBar->setSpacing(6);
     m_logSearchEdit = new QLineEdit(logPage);
     m_logSearchEdit->setObjectName(QStringLiteral("logSearchInput"));
-    m_logSearchEdit->setPlaceholderText(tr("🔍 Tìm kiếm theo tên / ID / User..."));
+    m_logSearchEdit->setPlaceholderText(tr("Tìm kiếm theo tên / ID / User..."));
     m_logSearchEdit->setClearButtonEnabled(true);
     VirtualKeyboardDialog::attachToLineEdit(m_logSearchEdit, tr("Tìm kiếm thiết bị / log"));
 
@@ -486,7 +486,7 @@ void DeviceManagementPage::rebuildLogTable()
         userItem->setTextAlignment(Qt::AlignCenter);
         userItem->setForeground(QColor("#38bdf8"));
 
-        auto *statusItem = new QTableWidgetItem(isOnline ? tr("🟢 Online") : tr("⚪ Offline"));
+        auto *statusItem = new QTableWidgetItem(isOnline ? tr("Online") : tr("Offline"));
         statusItem->setTextAlignment(Qt::AlignCenter);
         statusItem->setForeground(isOnline ? QColor("#10b981") : QColor("#ef4444"));
 
@@ -503,7 +503,7 @@ void DeviceManagementPage::rebuildLogTable()
         actionLayout->setContentsMargins(2, 2, 2, 2);
         actionLayout->setSpacing(4);
 
-        auto *cfgBtn = new QPushButton(tr("⚙ Cấu hình"), actionWidget);
+        auto *cfgBtn = new QPushButton(tr("Cấu hình"), actionWidget);
         cfgBtn->setObjectName(QStringLiteral("tableActionConfigBtn"));
         cfgBtn->setCursor(Qt::PointingHandCursor);
         connect(cfgBtn, &QPushButton::clicked, this, [this, devId] {
@@ -516,7 +516,7 @@ void DeviceManagementPage::rebuildLogTable()
             }
         });
 
-        auto *delBtn = new QPushButton(tr("🗑 Gỡ"), actionWidget);
+        auto *delBtn = new QPushButton(tr("Gỡ"), actionWidget);
         delBtn->setObjectName(QStringLiteral("tableActionDeleteBtn"));
         delBtn->setCursor(Qt::PointingHandCursor);
         connect(delBtn, &QPushButton::clicked, this, [this, devId, name] {
@@ -815,7 +815,7 @@ QWidget *DeviceManagementPage::createAvailableCard(const QJsonObject &device)
         auto *actions = new QHBoxLayout;
         actions->setSpacing(10);
         auto *cancel = new QPushButton(tr("Hủy"), &dialog);
-        auto *save = new QPushButton(tr("✔ Thêm trạm đo"), &dialog);
+        auto *save = new QPushButton(tr("Thêm trạm đo"), &dialog);
         cancel->setObjectName(QStringLiteral("claimDeviceCancelButton"));
         save->setObjectName(QStringLiteral("claimDeviceSaveButton"));
         actions->addWidget(cancel);
@@ -1032,7 +1032,7 @@ void DeviceManagementPage::openDeviceDrawer(const QJsonObject &device)
     auto *btnRow = new QHBoxLayout;
     btnRow->setSpacing(8);
 
-    auto *deleteBtn = new QPushButton(tr("🗑 Xóa thiết bị"), &dlg);
+    auto *deleteBtn = new QPushButton(tr("Xóa thiết bị"), &dlg);
     deleteBtn->setObjectName("deleteBtn");
     deleteBtn->setVisible(isOwner || m_isAdmin);
     connect(deleteBtn, &QPushButton::clicked, &dlg, [this, deviceId, name, &dlg] {
@@ -1047,7 +1047,7 @@ void DeviceManagementPage::openDeviceDrawer(const QJsonObject &device)
     closeBtn->setObjectName("closeBtn");
     connect(closeBtn, &QPushButton::clicked, &dlg, &QDialog::reject);
 
-    auto *saveBtn = new QPushButton(tr("✔ Lưu cấu hình"), &dlg);
+    auto *saveBtn = new QPushButton(tr("Lưu cấu hình"), &dlg);
     saveBtn->setObjectName("saveBtn");
     saveBtn->setVisible(isOwner);
     connect(saveBtn, &QPushButton::clicked, &dlg, [this, deviceId, samplingInput, inputs, &dlg] {
@@ -1139,13 +1139,13 @@ void DeviceManagementPage::clearGrid(QGridLayout *layout)
 
 QString DeviceManagementPage::deviceIcon(const QString &type)
 {
-    if (type == QStringLiteral("uv_pressure")) return QStringLiteral("☀");
-    if (type == QStringLiteral("temperature_sound")) return QStringLiteral("♫");
-    if (type == QStringLiteral("weather_pressure")) return QStringLiteral("☁");
-    if (type == QStringLiteral("electric_power")) return QStringLiteral("⚡");
-    if (type == QStringLiteral("pump_distance")) return QStringLiteral("💧");
-    if (type == QStringLiteral("water_flow_pump")) return QStringLiteral("🚰");
-    return QStringLiteral("◆");
+    if (type == QStringLiteral("uv_pressure")) return QStringLiteral("UV");
+    if (type == QStringLiteral("temperature_sound")) return QStringLiteral("SND");
+    if (type == QStringLiteral("weather_pressure")) return QStringLiteral("ATM");
+    if (type == QStringLiteral("electric_power")) return QStringLiteral("PWR");
+    if (type == QStringLiteral("pump_distance")) return QStringLiteral("PUMP");
+    if (type == QStringLiteral("water_flow_pump")) return QStringLiteral("FLOW");
+    return QStringLiteral("");
 }
 
 QString DeviceManagementPage::deviceTypeName(const QString &type)

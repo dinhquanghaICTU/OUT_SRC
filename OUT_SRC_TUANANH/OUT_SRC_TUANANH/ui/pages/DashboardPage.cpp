@@ -751,7 +751,7 @@ void DashboardPage::setupUi()
         if (m_relayToggleBtn) m_relayToggleBtn->click();
     });
 
-    m_lampStateLabel = new QLabel(tr("○ ĐÈN CHIẾU SÁNG: ĐANG TẮT"), bulbBox);
+    m_lampStateLabel = new QLabel(tr("ĐÈN CHIẾU SÁNG: ĐANG TẮT"), bulbBox);
     m_lampStateLabel->setAlignment(Qt::AlignCenter);
     m_lampStateLabel->setStyleSheet(
         "background-color: rgba(51, 65, 85, 0.35); color: #94a3b8; border: 1px solid #475569; border-radius: 5px; padding: 3px 8px; font-size: 10px; font-weight: 800;");
@@ -878,7 +878,7 @@ void DashboardPage::setupUi()
     m_pirWidget = new PirMotionWidget(motionBox);
     motionBoxLayout->addWidget(m_pirWidget, 0, Qt::AlignCenter);
 
-    m_motionBadgeLabel = new QLabel(tr("○ PHÒNG TRỐNG (YÊN TĨNH)"), motionBox);
+    m_motionBadgeLabel = new QLabel(tr("PHÒNG TRỐNG (YÊN TĨNH)"), motionBox);
     m_motionBadgeLabel->setAlignment(Qt::AlignCenter);
     m_motionBadgeLabel->setStyleSheet(
         "background-color: rgba(51, 65, 85, 0.35); color: #94a3b8; border: 1px solid #475569; border-radius: 5px; padding: 3px 8px; font-size: 10px; font-weight: 800;");
@@ -945,7 +945,7 @@ void DashboardPage::updateUiState()
             m_lampStateLabel->setStyleSheet(
                 "background-color: rgba(245, 158, 11, 0.18); color: #fbbf24; border: 1.5px solid #f59e0b; border-radius: 5px; padding: 3px 8px; font-size: 10px; font-weight: 900;");
         } else {
-            m_lampStateLabel->setText(tr("○ ĐÈN CHIẾU SÁNG: ĐANG TẮT"));
+            m_lampStateLabel->setText(tr("ĐÈN CHIẾU SÁNG: ĐANG TẮT"));
             m_lampStateLabel->setStyleSheet(
                 "background-color: rgba(51, 65, 85, 0.35); color: #94a3b8; border: 1px solid #475569; border-radius: 5px; padding: 3px 8px; font-size: 10px; font-weight: 800;");
         }
@@ -999,7 +999,7 @@ void DashboardPage::updateUiState()
             m_motionDetailLabel->setText(tr("Phát hiện thân nhiệt hồng ngoại chuyển động"));
             m_motionDetailLabel->setStyleSheet("color: #34d399; font-size: 9px; font-weight: 700;");
         } else {
-            m_motionBadgeLabel->setText(tr("○ PHÒNG TRỐNG (YÊN TĨNH)"));
+            m_motionBadgeLabel->setText(tr("PHÒNG TRỐNG (YÊN TĨNH)"));
             m_motionBadgeLabel->setStyleSheet(
                 "background-color: rgba(51, 65, 85, 0.35); color: #94a3b8; border: 1px solid #475569; border-radius: 5px; padding: 3px 8px; font-size: 10px; font-weight: 800;");
             m_motionDetailLabel->setText(tr("Khu vực không có chuyển động"));

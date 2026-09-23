@@ -147,7 +147,7 @@ DeviceManagementPage::DeviceManagementPage(QWidget *parent)
     auto *toolbar = new QHBoxLayout;
     toolbar->setSpacing(8);
 
-    m_logTabBtn = new QPushButton(tr("📋  Danh sách thiết bị"), this);
+    m_logTabBtn = new QPushButton(tr(" Danh sách thiết bị"), this);
     m_cardsTabBtn = new QPushButton(tr("⊞  Thẻ điều khiển và Ngưỡng"), this);
     m_logTabBtn->setObjectName(QStringLiteral("deviceViewTabButton"));
     m_cardsTabBtn->setObjectName(QStringLiteral("deviceViewTabButton"));
@@ -179,7 +179,7 @@ DeviceManagementPage::DeviceManagementPage(QWidget *parent)
     topBar->setSpacing(8);
     m_logSearchEdit = new QLineEdit(logPage);
     m_logSearchEdit->setObjectName(QStringLiteral("logSearchInput"));
-    m_logSearchEdit->setPlaceholderText(tr("🔍 Tìm kiếm User thêm, Mã ID, Tên..."));
+    m_logSearchEdit->setPlaceholderText(tr("Tìm kiếm User thêm, Mã ID, Tên..."));
     m_logSearchEdit->setClearButtonEnabled(true);
     VirtualKeyboardDialog::attachToLineEdit(m_logSearchEdit, tr("Tìm kiếm thiết bị / log"));
 
@@ -502,7 +502,7 @@ void DeviceManagementPage::rebuildLogTable()
         auto *timeItem = new QTableWidgetItem(createdStr);
         timeItem->setTextAlignment(Qt::AlignCenter);
 
-        auto *statusItem = new QTableWidgetItem(isOnline ? tr("●  Online") : tr("○  Offline"));
+        auto *statusItem = new QTableWidgetItem(isOnline ? tr("●  Online") : tr(" Offline"));
         statusItem->setTextAlignment(Qt::AlignCenter);
         statusItem->setForeground(isOnline ? QColor("#15945a") : QColor("#8a9992"));
 
@@ -524,14 +524,14 @@ void DeviceManagementPage::rebuildLogTable()
         actionLayout->setContentsMargins(4, 2, 4, 2);
         actionLayout->setSpacing(6);
 
-        auto *cfgBtn = new QPushButton(tr("⚙ Cấu hình"), actionWidget);
+        auto *cfgBtn = new QPushButton(tr("Cấu hình"), actionWidget);
         cfgBtn->setObjectName(QStringLiteral("tableActionConfigBtn"));
         cfgBtn->setCursor(Qt::PointingHandCursor);
         connect(cfgBtn, &QPushButton::clicked, this, [this, dev] {
             openDeviceDrawer(dev);
         });
 
-        auto *delBtn = new QPushButton(tr("🗑 Gỡ"), actionWidget);
+        auto *delBtn = new QPushButton(tr("Gỡ"), actionWidget);
         delBtn->setObjectName(QStringLiteral("tableActionDeleteBtn"));
         delBtn->setCursor(Qt::PointingHandCursor);
         connect(delBtn, &QPushButton::clicked, this, [this, devId, name] {
@@ -1014,13 +1014,13 @@ void DeviceManagementPage::clearGrid(QGridLayout *layout)
 
 QString DeviceManagementPage::deviceIcon(const QString &type)
 {
-    if (type == QStringLiteral("uv_pressure")) return QStringLiteral("☀");
-    if (type == QStringLiteral("temperature_sound")) return QStringLiteral("♫");
-    if (type == QStringLiteral("weather_pressure")) return QStringLiteral("☁");
-    if (type == QStringLiteral("electric_power")) return QStringLiteral("⚡");
-    if (type == QStringLiteral("pump_distance")) return QStringLiteral("💧");
-    if (type == QStringLiteral("water_flow_pump")) return QStringLiteral("🚰");
-    return QStringLiteral("◆");
+    if (type == QStringLiteral("uv_pressure")) return QStringLiteral("UV");
+    if (type == QStringLiteral("temperature_sound")) return QStringLiteral("SND");
+    if (type == QStringLiteral("weather_pressure")) return QStringLiteral("ATM");
+    if (type == QStringLiteral("electric_power")) return QStringLiteral("PWR");
+    if (type == QStringLiteral("pump_distance")) return QStringLiteral("PUMP");
+    if (type == QStringLiteral("water_flow_pump")) return QStringLiteral("FLOW");
+    return QStringLiteral("");
 }
 
 QString DeviceManagementPage::deviceTypeName(const QString &type)

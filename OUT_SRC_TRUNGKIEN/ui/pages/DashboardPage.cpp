@@ -137,7 +137,7 @@ void DashboardPage::setupUiCustom()
     headerLayout->addLayout(titleCol);
     headerLayout->addStretch();
 
-    m_statusBadge = makeLabel(tr("○ Ngoại tuyến"), "badgeOffline", true);
+    m_statusBadge = makeLabel(tr("Ngoại tuyến"), "badgeOffline", true);
     m_statusBadge->setAlignment(Qt::AlignCenter);
     headerLayout->addWidget(m_statusBadge, 0, Qt::AlignVCenter);
 
@@ -162,7 +162,7 @@ void DashboardPage::setupUiCustom()
     uvLayout->setSpacing(6);
 
     auto *uvTopRow = new QHBoxLayout;
-    uvTopRow->addWidget(makeLabel(tr("☀️ CƯỜNG ĐỘ TIA UV (UV INDEX)"), "cardHeader", true));
+    uvTopRow->addWidget(makeLabel(tr("️ CƯỜNG ĐỘ TIA UV (UV INDEX)"), "cardHeader", true));
     uvTopRow->addStretch();
     m_uvRiskBadge = makeLabel(tr("Thấp (An toàn)"), "uvBadgeLow", true);
     uvTopRow->addWidget(m_uvRiskBadge);
@@ -197,7 +197,7 @@ void DashboardPage::setupUiCustom()
     m_uvRiskBar->setTextVisible(false);
     uvLayout->addWidget(m_uvRiskBar);
 
-    m_uvAdviceLabel = makeLabel(tr("💡 Mức độ bức xạ an toàn cho các hoạt động ngoài trời."), "adviceText");
+    m_uvAdviceLabel = makeLabel(tr("Mức độ bức xạ an toàn cho các hoạt động ngoài trời."), "adviceText");
     uvLayout->addWidget(m_uvAdviceLabel);
 
     m_mainGrid->addWidget(m_cardUv, 0, 0);
@@ -209,9 +209,9 @@ void DashboardPage::setupUiCustom()
     presLayout->setSpacing(6);
 
     auto *presTopRow = new QHBoxLayout;
-    presTopRow->addWidget(makeLabel(tr("🧭 ÁP SUẤT KHÍ QUYỂN (BMP180)"), "cardHeader", true));
+    presTopRow->addWidget(makeLabel(tr("ÁP SUẤT KHÍ QUYỂN (BMP180)"), "cardHeader", true));
     presTopRow->addStretch();
-    m_weatherForecastBadge = makeLabel(tr("☀️ Ổn định / Khô ráo"), "uvBadgeLow", true);
+    m_weatherForecastBadge = makeLabel(tr("️ Ổn định / Khô ráo"), "uvBadgeLow", true);
     presTopRow->addWidget(m_weatherForecastBadge);
     presLayout->addLayout(presTopRow);
 
@@ -249,7 +249,7 @@ void DashboardPage::setupUiCustom()
     chartCardLayout->setSpacing(4);
 
     auto *chartHeaderRow = new QHBoxLayout;
-    chartHeaderRow->addWidget(makeLabel(tr("📈 DIỄN BIẾN THỜI GIAN THỰC"), "cardHeader", true));
+    chartHeaderRow->addWidget(makeLabel(tr("DIỄN BIẾN THỜI GIAN THỰC"), "cardHeader", true));
     chartHeaderRow->addStretch();
 
     m_chartFilterAll = new QPushButton(tr("Tất cả"), m_cardChart);
@@ -345,7 +345,7 @@ void DashboardPage::setupUiCustom()
     stLayout->setSpacing(6);
 
     auto *stHeaderRow = new QHBoxLayout;
-    stHeaderRow->addWidget(makeLabel(tr("⚡ TRẠM THIẾT BỊ & ĐIỀU KHIỂN"), "cardHeader", true));
+    stHeaderRow->addWidget(makeLabel(tr("TRẠM THIẾT BỊ & ĐIỀU KHIỂN"), "cardHeader", true));
     stLayout->addLayout(stHeaderRow);
 
     auto *infoGrid = new QGridLayout;
@@ -370,20 +370,20 @@ void DashboardPage::setupUiCustom()
     auto *ctrlRow = new QHBoxLayout;
     ctrlRow->setSpacing(6);
 
-    m_relayButton = new QPushButton(tr("🔔 CÒI CẢNH BÁO: TẮT"), m_cardStation);
+    m_relayButton = new QPushButton(tr("CÒI CẢNH BÁO: TẮT"), m_cardStation);
     m_relayButton->setObjectName(QStringLiteral("relayButtonOff"));
     m_relayButton->setCursor(Qt::PointingHandCursor);
     connect(m_relayButton, &QPushButton::clicked, this, [this] {
         m_relayActive = !m_relayActive;
         m_relayButton->setObjectName(m_relayActive ? QStringLiteral("relayButtonOn") : QStringLiteral("relayButtonOff"));
-        m_relayButton->setText(m_relayActive ? tr("🔔 CÒI CẢNH BÁO: BẬT") : tr("🔔 CÒI CẢNH BÁO: TẮT"));
+        m_relayButton->setText(m_relayActive ? tr("CÒI CẢNH BÁO: BẬT") : tr("CÒI CẢNH BÁO: TẮT"));
         m_relayButton->style()->unpolish(m_relayButton);
         m_relayButton->style()->polish(m_relayButton);
         emit relayToggleRequested(m_activeDeviceId, m_relayActive);
     });
     ctrlRow->addWidget(m_relayButton, 1);
 
-    m_viewHistoryButton = new QPushButton(tr("📊 LỊCH SỬ ĐO"), m_cardStation);
+    m_viewHistoryButton = new QPushButton(tr("LỊCH SỬ ĐO"), m_cardStation);
     m_viewHistoryButton->setObjectName(QStringLiteral("actionButton"));
     m_viewHistoryButton->setCursor(Qt::PointingHandCursor);
     connect(m_viewHistoryButton, &QPushButton::clicked, this, &DashboardPage::historyPageRequested);
@@ -448,23 +448,23 @@ void DashboardPage::updateUvCard(double uvIndex, double uvVoltage)
     if (uvIndex < 3.0) {
         m_uvRiskBadge->setText(tr("Thấp (An toàn)"));
         m_uvRiskBadge->setObjectName(QStringLiteral("uvBadgeLow"));
-        m_uvAdviceLabel->setText(tr("💡 Mức độ bức xạ an toàn cho các hoạt động ngoài trời."));
+        m_uvAdviceLabel->setText(tr("Mức độ bức xạ an toàn cho các hoạt động ngoài trời."));
     } else if (uvIndex < 6.0) {
         m_uvRiskBadge->setText(tr("Trung bình"));
         m_uvRiskBadge->setObjectName(QStringLiteral("uvBadgeMod"));
-        m_uvAdviceLabel->setText(tr("⚠️ Nên đeo kính râm và che chắn khi ra ngoài nắng gắt."));
+        m_uvAdviceLabel->setText(tr("Nên đeo kính râm và che chắn khi ra ngoài nắng gắt."));
     } else if (uvIndex < 8.0) {
         m_uvRiskBadge->setText(tr("Cao (Nguy hại)"));
         m_uvRiskBadge->setObjectName(QStringLiteral("uvBadgeHigh"));
-        m_uvAdviceLabel->setText(tr("🚨 Cần bôi kem chống nắng, mặc áo dài tay và đeo kính bảo hộ."));
+        m_uvAdviceLabel->setText(tr("Cần bôi kem chống nắng, mặc áo dài tay và đeo kính bảo hộ."));
     } else if (uvIndex < 11.0) {
         m_uvRiskBadge->setText(tr("Rất cao (Nguy hiểm)"));
         m_uvRiskBadge->setObjectName(QStringLiteral("uvBadgeVeryHigh"));
-        m_uvAdviceLabel->setText(tr("⛔ Hạn chế ra ngoài từ 10h-16h. Da và mắt có nguy cơ tổn thương nhanh!"));
+        m_uvAdviceLabel->setText(tr("Hạn chế ra ngoài từ 10h-16h. Da và mắt có nguy cơ tổn thương nhanh!"));
     } else {
         m_uvRiskBadge->setText(tr("Cực độ (Báo động)"));
         m_uvRiskBadge->setObjectName(QStringLiteral("uvBadgeExtreme"));
-        m_uvAdviceLabel->setText(tr("☠️ Nguy cơ bỏng da trong vài phút! Khuyến cáo ở trong nhà."));
+        m_uvAdviceLabel->setText(tr("️ Nguy cơ bỏng da trong vài phút! Khuyến cáo ở trong nhà."));
     }
     m_uvRiskBadge->style()->unpolish(m_uvRiskBadge);
     m_uvRiskBadge->style()->polish(m_uvRiskBadge);
@@ -485,16 +485,16 @@ void DashboardPage::updatePressureCard(double pressureHpa, double tempC)
     m_altitudeLabel->setText(QStringLiteral("~%1 m").arg(qRound(alt)));
 
     if (pressureHpa >= 1016.0) {
-        m_weatherForecastBadge->setText(tr("☀️ Nắng ráo / Áp cao"));
+        m_weatherForecastBadge->setText(tr("️ Nắng ráo / Áp cao"));
         m_weatherAdviceLabel->setText(tr("Trời quang đãng, áp cao khô ráo, tầm nhìn tốt."));
     } else if (pressureHpa >= 1008.0) {
-        m_weatherForecastBadge->setText(tr("🌤️ Ổn định / Thuận lợi"));
+        m_weatherForecastBadge->setText(tr("Ổn định / Thuận lợi"));
         m_weatherAdviceLabel->setText(tr("Khí quyển duy trì ổn định, thời tiết bình thường."));
     } else if (pressureHpa >= 1000.0) {
-        m_weatherForecastBadge->setText(tr("⛅ Nhiều mây / Khả năng mưa"));
+        m_weatherForecastBadge->setText(tr("Nhiều mây / Khả năng mưa"));
         m_weatherAdviceLabel->setText(tr("Áp suất giảm nhẹ, độ ẩm tăng, có thể có mưa rào."));
     } else {
-        m_weatherForecastBadge->setText(tr("⛈️ Áp thấp / Nguy cơ bão"));
+        m_weatherForecastBadge->setText(tr("️ Áp thấp / Nguy cơ bão"));
         m_weatherAdviceLabel->setText(tr("Cảnh báo khí áp giảm mạnh! Nguy cơ dông lốc, mưa to bão lớn!"));
     }
     m_weatherForecastBadge->style()->unpolish(m_weatherForecastBadge);
@@ -570,7 +570,7 @@ void DashboardPage::setDevices(const QJsonArray &devices)
                 m_statusBadge->setText(tr("● Trực tuyến"));
                 m_statusBadge->setObjectName(QStringLiteral("badgeOnline"));
             } else {
-                m_statusBadge->setText(tr("○ Ngoại tuyến"));
+                m_statusBadge->setText(tr("Ngoại tuyến"));
                 m_statusBadge->setObjectName(QStringLiteral("badgeOffline"));
             }
             m_statusBadge->style()->unpolish(m_statusBadge);
@@ -602,7 +602,7 @@ void DashboardPage::setDevices(const QJsonArray &devices)
                 if (m_relayActive != relayState) {
                     m_relayActive = relayState;
                     m_relayButton->setObjectName(m_relayActive ? QStringLiteral("relayButtonOn") : QStringLiteral("relayButtonOff"));
-                    m_relayButton->setText(m_relayActive ? tr("🔔 CÒI CẢNH BÁO: BẬT") : tr("🔔 CÒI CẢNH BÁO: TẮT"));
+                    m_relayButton->setText(m_relayActive ? tr("CÒI CẢNH BÁO: BẬT") : tr("CÒI CẢNH BÁO: TẮT"));
                     m_relayButton->style()->unpolish(m_relayButton);
                     m_relayButton->style()->polish(m_relayButton);
                 }

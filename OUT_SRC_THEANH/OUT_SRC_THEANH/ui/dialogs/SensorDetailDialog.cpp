@@ -62,9 +62,9 @@ void SensorDetailDialog::setupUI(const QString &sensorName, const QString &unit,
     headerRow->addStretch();
 
     // Mode Toggle Buttons (Biểu đồ / Bảng / Chỉnh ngưỡng)
-    m_chartModeBtn = new QPushButton(QStringLiteral("📈 Biểu đồ"));
-    m_tableModeBtn = new QPushButton(QStringLiteral("📋 Dạng Bảng"));
-    m_thresholdModeBtn = new QPushButton(QStringLiteral("⚙ Chỉnh Ngưỡng"));
+    m_chartModeBtn = new QPushButton(QStringLiteral("Biểu đồ"));
+    m_tableModeBtn = new QPushButton(QStringLiteral("Dạng Bảng"));
+    m_thresholdModeBtn = new QPushButton(QStringLiteral("Chỉnh Ngưỡng"));
     m_chartModeBtn->setCheckable(true);
     m_tableModeBtn->setCheckable(true);
     m_thresholdModeBtn->setCheckable(true);
@@ -83,7 +83,7 @@ void SensorDetailDialog::setupUI(const QString &sensorName, const QString &unit,
     headerRow->addWidget(m_tableModeBtn);
     headerRow->addWidget(m_thresholdModeBtn);
 
-    auto *closeBtn = new QPushButton(QStringLiteral("✕ ĐÓNG"));
+    auto *closeBtn = new QPushButton(QStringLiteral("Đóng"));
     closeBtn->setCursor(Qt::PointingHandCursor);
     closeBtn->setStyleSheet("QPushButton { background: #dc2626; color: #ffffff; border: none; border-radius: 5px; font-weight: 900; font-size: 10px; padding: 5px 12px; } QPushButton:hover { background: #b91c1c; }");
     connect(closeBtn, &QPushButton::clicked, this, &QDialog::accept);
@@ -125,7 +125,7 @@ void SensorDetailDialog::setupUI(const QString &sensorName, const QString &unit,
     threshLayout->setContentsMargins(24, 18, 24, 18);
     threshLayout->setSpacing(14);
 
-    auto *threshHead = new QLabel(QStringLiteral("⚙ Cài đặt ngưỡng bảo vệ & Cảnh báo (%1)").arg(sensorName));
+    auto *threshHead = new QLabel(QStringLiteral("Cài đặt ngưỡng bảo vệ & Cảnh báo (%1)").arg(sensorName));
     threshHead->setStyleSheet("color: #38bdf8; font-size: 14px; font-weight: 900;");
     threshLayout->addWidget(threshHead);
 
@@ -167,7 +167,7 @@ void SensorDetailDialog::setupUI(const QString &sensorName, const QString &unit,
 
     // Action buttons
     auto *btnRow = new QHBoxLayout;
-    auto *saveBtn = new QPushButton(QStringLiteral("💾 Lưu Cấu Hình Ngưỡng"));
+    auto *saveBtn = new QPushButton(QStringLiteral("Lưu Cấu Hình Ngưỡng"));
     saveBtn->setCursor(Qt::PointingHandCursor);
     saveBtn->setStyleSheet("QPushButton { background: #10b981; color: #ffffff; border: none; border-radius: 6px; font-size: 12px; font-weight: 900; padding: 8px 18px; } QPushButton:hover { background: #059669; }");
 
@@ -176,7 +176,7 @@ void SensorDetailDialog::setupUI(const QString &sensorName, const QString &unit,
 
     connect(saveBtn, &QPushButton::clicked, this, [this] {
         emit thresholdChanged(m_minThresholdSpin->value(), m_maxThresholdSpin->value());
-        m_saveStatusLbl->setText(QStringLiteral("✓ Đã lưu cấu hình ngưỡng thành công!"));
+        m_saveStatusLbl->setText(QStringLiteral("Đã lưu cấu hình ngưỡng thành công!"));
         QTimer::singleShot(2000, this, [this] { m_saveStatusLbl->clear(); });
     });
 
@@ -226,7 +226,7 @@ void SensorDetailDialog::populateData(const QVector<SensorDataPoint> &history, c
         m_tableWidget->setItem(rowIdx, 1, new QTableWidgetItem(pt.timestamp.toString(QStringLiteral("HH:mm:ss dd/MM/yyyy"))));
         m_tableWidget->setItem(rowIdx, 2, new QTableWidgetItem(QStringLiteral("%1 %2").arg(QString::number(pt.value, 'f', 2), unit)));
 
-        auto *statusItem = new QTableWidgetItem(QStringLiteral("✓ Ổn định"));
+        auto *statusItem = new QTableWidgetItem(QStringLiteral("Ổn định"));
         statusItem->setForeground(QColor(QStringLiteral("#10b981")));
         m_tableWidget->setItem(rowIdx, 3, statusItem);
         rowIdx++;

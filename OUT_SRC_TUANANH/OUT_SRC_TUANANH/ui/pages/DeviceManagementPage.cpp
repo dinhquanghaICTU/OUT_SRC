@@ -139,7 +139,7 @@ DeviceManagementPage::DeviceManagementPage(QWidget *parent)
         "border: 1px solid #059669; border-radius: 10px; padding: 2px 8px;"));
     header->addWidget(m_liveLabel, 0, Qt::AlignVCenter);
 
-    auto *refreshButton = new QPushButton(tr("🔄 Làm mới"), this);
+    auto *refreshButton = new QPushButton(tr("Làm mới"), this);
     refreshButton->setCursor(Qt::PointingHandCursor);
     refreshButton->setStyleSheet(QStringLiteral(
         "QPushButton { background: #1e293b; color: #cbd5e1; border: 1px solid #334155; "
@@ -153,8 +153,8 @@ DeviceManagementPage::DeviceManagementPage(QWidget *parent)
     auto *toolbar = new QHBoxLayout;
     toolbar->setSpacing(8);
 
-    m_cardsTabBtn = new QPushButton(tr("💡 Thẻ thiết bị && Điều khiển"), this);
-    m_logTabBtn = new QPushButton(tr("📋 Danh sách chi tiết"), this);
+    m_cardsTabBtn = new QPushButton(tr("Thẻ thiết bị & Điều khiển"), this);
+    m_logTabBtn = new QPushButton(tr("Danh sách chi tiết"), this);
     for (auto *b : {m_cardsTabBtn, m_logTabBtn}) {
         b->setCursor(Qt::PointingHandCursor);
         b->setCheckable(true);
@@ -250,7 +250,7 @@ DeviceManagementPage::DeviceManagementPage(QWidget *parent)
     // Search bar
     auto *searchRow = new QHBoxLayout;
     m_logSearchEdit = new QLineEdit(this);
-    m_logSearchEdit->setPlaceholderText(tr("🔍 Tìm theo ID thiết bị, tên, người sở hữu..."));
+    m_logSearchEdit->setPlaceholderText(tr("Tìm theo ID thiết bị, tên, người sở hữu..."));
     m_logSearchEdit->setStyleSheet(QStringLiteral(
         "QLineEdit { background: #0f172a; color: #f8fafc; border: 1px solid #1e293b; "
         "border-radius: 6px; padding: 4px 10px; font-size: 10px; }"
@@ -333,7 +333,7 @@ void DeviceManagementPage::startRealtime()
 void DeviceManagementPage::stopRealtime()
 {
     m_refreshTimer->stop();
-    m_liveLabel->setText(tr("○ Tạm dừng"));
+    m_liveLabel->setText(tr("Tạm dừng"));
     m_liveLabel->setStyleSheet(QStringLiteral(
         "color: #94a3b8; font-size: 10px; font-weight: 700; background: #1e293b; "
         "border: 1px solid #334155; border-radius: 10px; padding: 2px 8px;"));
@@ -426,7 +426,7 @@ QWidget *DeviceManagementPage::createOwnedCard(const QJsonObject &device)
     ownerLabel->setStyleSheet(QStringLiteral("font-size: 9px; color: #94a3b8;"));
     col1->addWidget(ownerLabel);
 
-    auto *statusPill = new QLabel(online ? tr("● ONLINE") : tr("○ OFFLINE"), card);
+    auto *statusPill = new QLabel(online ? tr("● ONLINE") : tr("OFFLINE"), card);
     statusPill->setStyleSheet(online ? QStringLiteral("color: #10b981; font-size: 8px; font-weight: 800;")
                                      : QStringLiteral("color: #ef4444; font-size: 8px; font-weight: 800;"));
     col1->addWidget(statusPill);
@@ -448,7 +448,7 @@ QWidget *DeviceManagementPage::createOwnedCard(const QJsonObject &device)
 
     auto *luxLabel = new QLabel(tr("Độ sáng: %1 Lux").arg(luxVal, 0, 'f', 1), card);
     luxLabel->setStyleSheet(QStringLiteral("font-size: 11px; font-weight: 700; color: #fbbf24;"));
-    auto *motionLabel = new QLabel(motion ? tr("[!] Phát hiện chuyển động") : tr("[✓] Không có chuyển động"), card);
+    auto *motionLabel = new QLabel(motion ? tr("[!] Phát hiện chuyển động") : tr("[] Không có chuyển động"), card);
     motionLabel->setStyleSheet(motion ? QStringLiteral("font-size: 10px; font-weight: 700; color: #f43f5e;")
                                       : QStringLiteral("font-size: 10px; color: #94a3b8;"));
 
@@ -509,7 +509,7 @@ QWidget *DeviceManagementPage::createAvailableCard(const QJsonObject &device)
 
     const QString deviceId = device.value(QStringLiteral("device_id")).toString();
 
-    auto *iconBadge = new QLabel(QStringLiteral("📡"), card);
+    auto *iconBadge = new QLabel(QStringLiteral(""), card); iconBadge->hide();
     iconBadge->setStyleSheet(QStringLiteral(
         "font-size: 18px; background: #0369a1; border-radius: 6px; padding: 6px;"));
     iconBadge->setAlignment(Qt::AlignCenter);
@@ -655,7 +655,7 @@ void DeviceManagementPage::rebuildLogTable()
         auto *item1 = new QTableWidgetItem(name);
         m_deviceLogTable->setItem(rowIdx, 1, item1);
 
-        auto *item2 = new QTableWidgetItem(online ? tr("● Online") : tr("○ Offline"));
+        auto *item2 = new QTableWidgetItem(online ? tr("● Online") : tr("Offline"));
         item2->setForeground(online ? QColor("#10b981") : QColor("#ef4444"));
         item2->setTextAlignment(Qt::AlignCenter);
         m_deviceLogTable->setItem(rowIdx, 2, item2);
@@ -823,7 +823,7 @@ void DeviceManagementPage::openDeviceConfigDialog(const QJsonObject &device)
 QString DeviceManagementPage::deviceIcon(const QString &type)
 {
     Q_UNUSED(type);
-    return QStringLiteral("💡");
+    return QStringLiteral("LIGHT");
 }
 
 QString DeviceManagementPage::deviceTypeName(const QString &type)

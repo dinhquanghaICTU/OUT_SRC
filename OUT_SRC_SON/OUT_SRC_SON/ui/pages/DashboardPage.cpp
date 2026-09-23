@@ -365,7 +365,7 @@ void DashboardPage::setupDashboardLayout()
 
     // Hero Title
     auto *heroHead = new QHBoxLayout;
-    auto *dropIcon = new QLabel(QStringLiteral("💧"));
+    auto *dropIcon = new QLabel(QStringLiteral(""));
     dropIcon->setStyleSheet("font-size: 11px;");
     auto *heroTitle = new QLabel(QStringLiteral("Trạm Bơm Tự Động & Đo Mực Nước - Sơn"));
     heroTitle->setStyleSheet("color: #cbd5e1; font-size: 11px; font-weight: 700;");
@@ -411,7 +411,7 @@ void DashboardPage::setupDashboardLayout()
     onBadgeRow->addStretch();
     distDetailsLayout->addLayout(onBadgeRow);
 
-    auto *distTitle = new QLabel(QStringLiteral("📏 KHOẢNG CÁCH (HC-SR04)"), distBox);
+    auto *distTitle = new QLabel(QStringLiteral("KHOẢNG CÁCH (HC-SR04)"), distBox);
     distTitle->setStyleSheet("color: #94a3b8; font-size: 8px; font-weight: 800; border: none; background: transparent;");
     distDetailsLayout->addWidget(distTitle);
 
@@ -419,7 +419,7 @@ void DashboardPage::setupDashboardLayout()
     m_heroDistanceValue->setStyleSheet("color: #ffffff; font-size: 17px; font-weight: 900; font-family: monospace; border: none; background: transparent;");
     distDetailsLayout->addWidget(m_heroDistanceValue);
 
-    auto *waterDepthTitle = new QLabel(QStringLiteral("🌊 MỰC NƯỚC BỂ"), distBox);
+    auto *waterDepthTitle = new QLabel(QStringLiteral("MỰC NƯỚC BỂ"), distBox);
     waterDepthTitle->setStyleSheet("color: #38bdf8; font-size: 8px; font-weight: 800; border: none; background: transparent;");
     distDetailsLayout->addWidget(waterDepthTitle);
 
@@ -434,7 +434,7 @@ void DashboardPage::setupDashboardLayout()
     auto *heroRight = new QVBoxLayout;
     heroRight->setSpacing(2);
 
-    auto *flowHeader = new QLabel(QStringLiteral("💧 LƯU LƯỢNG NƯỚC"));
+    auto *flowHeader = new QLabel(QStringLiteral("LƯU LƯỢNG NƯỚC"));
     flowHeader->setStyleSheet("color: #34d399; font-size: 9px; font-weight: 800; background: transparent;");
     heroRight->addWidget(flowHeader);
 
@@ -442,7 +442,7 @@ void DashboardPage::setupDashboardLayout()
     m_heroFlowValue->setStyleSheet("color: #ffffff; font-size: 16px; font-weight: 900; font-family: monospace; background: transparent;");
     heroRight->addWidget(m_heroFlowValue);
 
-    auto *totalHeader = new QLabel(QStringLiteral("🚰 TỔNG NƯỚC ĐÃ BƠM"));
+    auto *totalHeader = new QLabel(QStringLiteral("TỔNG NƯỚC ĐÃ BƠM"));
     totalHeader->setStyleSheet("color: #38bdf8; font-size: 9px; font-weight: 800; background: transparent;");
     heroRight->addWidget(totalHeader);
 
@@ -472,7 +472,7 @@ void DashboardPage::setupDashboardLayout()
         return qMakePair(p, vLbl);
     };
 
-    auto p1 = makeGlassPill(QStringLiteral("CHẾ ĐỘ BƠM"), QStringLiteral("🤖 Tự động"), QStringLiteral("#38bdf8"));
+    auto p1 = makeGlassPill(QStringLiteral("CHẾ ĐỘ BƠM"), QStringLiteral("Tự động"), QStringLiteral("#38bdf8"));
     auto p2 = makeGlassPill(QStringLiteral("NGƯỠNG BƠM"), QStringLiteral("10 - 35 cm"), QStringLiteral("#fbbf24"));
     auto p3 = makeGlassPill(QStringLiteral("TRẠNG THÁI"), QStringLiteral("BƠM: ON"), QStringLiteral("#10b981"));
 
@@ -491,12 +491,12 @@ void DashboardPage::setupDashboardLayout()
     m_pumpCardStack = new QStackedWidget;
 
     // === PAGE 0: NO DEVICE (+ Big Add Button) ===
-    auto *noDeviceCard = createCard(QStringLiteral("Thêm Thiết Bị"), QStringLiteral("➕"));
+    auto *noDeviceCard = createCard(QStringLiteral("Thêm Thiết Bị"), QStringLiteral(""));
     auto *noDevLayout = static_cast<QVBoxLayout *>(noDeviceCard->layout());
     noDevLayout->setContentsMargins(12, 10, 12, 10);
     noDevLayout->setSpacing(6);
 
-    auto *bigPlusBtn = new QPushButton(QStringLiteral("➕"));
+    auto *bigPlusBtn = new QPushButton(QStringLiteral(""));
     bigPlusBtn->setCursor(Qt::PointingHandCursor);
     bigPlusBtn->setFixedSize(54, 54);
     bigPlusBtn->setStyleSheet(
@@ -534,7 +534,7 @@ void DashboardPage::setupDashboardLayout()
     m_pumpCardStack->addWidget(noDeviceCard);
 
     // === PAGE 1: ACTIVE PUMP CONTROL CARD ===
-    auto *pumpCard = createCard(QStringLiteral("Điều khiển Bơm (Relay)"), QStringLiteral("⚡"));
+    auto *pumpCard = createCard(QStringLiteral("Điều khiển Bơm (Relay)"), QStringLiteral(""));
     auto *pumpLayout = static_cast<QVBoxLayout *>(pumpCard->layout());
     pumpLayout->setContentsMargins(12, 8, 12, 8);
     pumpLayout->setSpacing(5);
@@ -551,7 +551,7 @@ void DashboardPage::setupDashboardLayout()
     m_pumpStatusBadge = new QLabel(QStringLiteral("BƠM: OFF"));
     m_pumpStatusBadge->setStyleSheet("color: #ef4444; font-size: 9px; font-weight: 900; background: rgba(239, 68, 68, 0.15); border-radius: 4px; padding: 2px 6px;");
 
-    auto *autoConfigBtn = new QPushButton(QStringLiteral("⚙ Ngưỡng"));
+    auto *autoConfigBtn = new QPushButton(QStringLiteral("Ngưỡng"));
     autoConfigBtn->setCursor(Qt::PointingHandCursor);
     autoConfigBtn->setStyleSheet("QPushButton { background: #1e3a8a; color: #38bdf8; border: 1px solid #2563eb; border-radius: 4px; font-size: 9px; font-weight: 800; padding: 2px 6px; } QPushButton:hover { background: #2563eb; color: #ffffff; }");
     connect(autoConfigBtn, &QPushButton::clicked, this, &DashboardPage::openPumpAutoConfig);
@@ -562,7 +562,7 @@ void DashboardPage::setupDashboardLayout()
     addDevBtn->setStyleSheet("QPushButton { background: #065f46; color: #6ee7b7; border: 1px solid #059669; border-radius: 4px; font-size: 10px; font-weight: 900; padding: 2px 6px; } QPushButton:hover { background: #059669; color: #ffffff; }");
     connect(addDevBtn, &QPushButton::clicked, this, &DashboardPage::addDeviceRequested);
 
-    auto *unbindBtn = new QPushButton(QStringLiteral("✕"));
+    auto *unbindBtn = new QPushButton(QStringLiteral("Đóng"));
     unbindBtn->setToolTip(tr("Gỡ thiết bị"));
     unbindBtn->setCursor(Qt::PointingHandCursor);
     unbindBtn->setStyleSheet("QPushButton { background: #7f1d1d; color: #fca5a5; border: 1px solid #991b1b; border-radius: 4px; font-size: 10px; font-weight: 900; padding: 2px 6px; } QPushButton:hover { background: #991b1b; color: #ffffff; }");
@@ -665,7 +665,7 @@ void DashboardPage::setupDashboardLayout()
         "QPushButton:hover { background: #1e3a8a; color: #ffffff; }";
 
     // --- 1. Distance Chart (HC-SR04) ---
-    auto *distChartCard = createCard(QStringLiteral("Biểu đồ Khoảng cách (HC-SR04)"), QStringLiteral("📏"));
+    auto *distChartCard = createCard(QStringLiteral("Biểu đồ Khoảng cách (HC-SR04)"), QStringLiteral(""));
     auto *distChartLayout = static_cast<QVBoxLayout *>(distChartCard->layout());
 
     m_distanceSeries = new QLineSeries;
@@ -673,7 +673,7 @@ void DashboardPage::setupDashboardLayout()
     auto *distChartView = buildChartView({m_distanceSeries}, &m_distanceAxisX, &m_distanceAxisY, 0.0, 50.0, QStringLiteral("cm"));
     distChartLayout->addWidget(distChartView, 1);
 
-    auto *distDetailBtn = new QPushButton(QStringLiteral("📊 Chi tiết và Lịch sử đo (Bảng / Đồ thị)"));
+    auto *distDetailBtn = new QPushButton(QStringLiteral("Chi tiết và Lịch sử đo (Bảng / Đồ thị)"));
     distDetailBtn->setStyleSheet(detailBtnStyle);
     distDetailBtn->setCursor(Qt::PointingHandCursor);
     connect(distDetailBtn, &QPushButton::clicked, this, [this] {
@@ -683,7 +683,7 @@ void DashboardPage::setupDashboardLayout()
     chartsRow->addWidget(distChartCard, 1);
 
     // --- 2. Water Flow Chart ---
-    auto *flowChartCard = createCard(QStringLiteral("Biểu đồ Lưu lượng nước"), QStringLiteral("💧"));
+    auto *flowChartCard = createCard(QStringLiteral("Biểu đồ Lưu lượng nước"), QStringLiteral(""));
     auto *flowChartLayout = static_cast<QVBoxLayout *>(flowChartCard->layout());
 
     m_flowSeries = new QLineSeries;
@@ -691,7 +691,7 @@ void DashboardPage::setupDashboardLayout()
     auto *flowChartView = buildChartView({m_flowSeries}, &m_flowAxisX, &m_flowAxisY, 0.0, 10.0, QStringLiteral("L/min"));
     flowChartLayout->addWidget(flowChartView, 1);
 
-    auto *flowDetailBtn = new QPushButton(QStringLiteral("📊 Chi tiết và Lịch sử đo (Bảng / Đồ thị)"));
+    auto *flowDetailBtn = new QPushButton(QStringLiteral("Chi tiết và Lịch sử đo (Bảng / Đồ thị)"));
     flowDetailBtn->setStyleSheet(detailBtnStyle);
     flowDetailBtn->setCursor(Qt::PointingHandCursor);
     connect(flowDetailBtn, &QPushButton::clicked, this, [this] {
@@ -732,7 +732,7 @@ void DashboardPage::updateDisplays()
         m_heroTotalValue->setText(QStringLiteral("%1 L").arg(m_totalLiters, 0, 'f', 1));
 
     if (m_heroAutoModeValue)
-        m_heroAutoModeValue->setText(m_autoPumpMode ? QStringLiteral("🤖 Tự động") : QStringLiteral("🖐 Thủ công"));
+        m_heroAutoModeValue->setText(m_autoPumpMode ? QStringLiteral("Tự động") : QStringLiteral("Thủ công"));
     if (m_heroThresholdValue)
         m_heroThresholdValue->setText(QStringLiteral("%1 - %2 cm").arg(m_distanceStopCm, 0, 'f', 0).arg(m_distanceStartCm, 0, 'f', 0));
     if (m_heroFanValue)
@@ -740,7 +740,7 @@ void DashboardPage::updateDisplays()
 
     // Update Pump Control Card
     if (m_pumpOnlineBadge) {
-        m_pumpOnlineBadge->setText(m_isOnline ? QStringLiteral("● Online") : QStringLiteral("○ Offline"));
+        m_pumpOnlineBadge->setText(m_isOnline ? QStringLiteral("● Online") : QStringLiteral("Offline"));
         m_pumpOnlineBadge->setStyleSheet(m_isOnline
             ? "color: #10b981; font-size: 9px; font-weight: 900; background: rgba(16, 185, 129, 0.15); border-radius: 4px; padding: 2px 6px;"
             : "color: #ef4444; font-size: 9px; font-weight: 900; background: rgba(239, 68, 68, 0.15); border-radius: 4px; padding: 2px 6px;");
@@ -754,7 +754,7 @@ void DashboardPage::updateDisplays()
     }
 
     if (m_autoToggleButton) {
-        m_autoToggleButton->setText(m_autoPumpMode ? QStringLiteral("🤖 AUTO: BẬT") : QStringLiteral("🤖 AUTO: TẮT"));
+        m_autoToggleButton->setText(m_autoPumpMode ? QStringLiteral("AUTO: BẬT") : QStringLiteral("AUTO: TẮT"));
         m_autoToggleButton->setStyleSheet(m_autoPumpMode
             ? "QPushButton { background-color: #0284c7; color: #ffffff; border: 1.5px solid #38bdf8; border-radius: 17px; font-size: 11px; font-weight: 900; } QPushButton:hover { background-color: #0369a1; }"
             : "QPushButton { background-color: #1e293b; color: #94a3b8; border: 1px solid #334155; border-radius: 17px; font-size: 11px; font-weight: 900; } QPushButton:hover { background-color: #334155; color: #ffffff; }");

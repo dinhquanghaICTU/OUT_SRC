@@ -40,7 +40,7 @@ SelectOnlineDeviceDialog::SelectOnlineDeviceDialog(const QJsonArray &availableDe
     headerTextLayout->addWidget(subtitleLbl);
     headerRow->addLayout(headerTextLayout, 1);
 
-    auto *refreshBtn = new QPushButton(tr("⟳ Làm mới"), this);
+    auto *refreshBtn = new QPushButton(tr("Làm mới"), this);
     refreshBtn->setCursor(Qt::PointingHandCursor);
     refreshBtn->setStyleSheet(
         "QPushButton { background: #132247; color: #38bdf8; border: 1px solid #234380; border-radius: 6px; padding: 5px 12px; font-size: 10px; font-weight: 800; } "
@@ -57,7 +57,7 @@ SelectOnlineDeviceDialog::SelectOnlineDeviceDialog(const QJsonArray &availableDe
     headerRow->addWidget(refreshBtn);
     headerRow->addSpacing(4);
 
-    auto *closeBtn = new QPushButton(QStringLiteral("✕"), this);
+    auto *closeBtn = new QPushButton(QStringLiteral("Đóng"), this);
     closeBtn->setFixedSize(26, 26);
     closeBtn->setCursor(Qt::PointingHandCursor);
     closeBtn->setStyleSheet(
@@ -175,7 +175,7 @@ void SelectOnlineDeviceDialog::populateDeviceList(const QJsonArray &devices)
         nameLbl->setStyleSheet("color: #ffffff; font-size: 12px; font-weight: 800; border: none; background: transparent;");
         titleRow->addWidget(nameLbl);
 
-        auto *onlineBadge = new QLabel(isOnline ? tr("● Trực tuyến") : tr("○ Ngoại tuyến"), card);
+        auto *onlineBadge = new QLabel(isOnline ? tr("● Trực tuyến") : tr("Ngoại tuyến"), card);
         onlineBadge->setFixedHeight(18);
         onlineBadge->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
         onlineBadge->setAlignment(Qt::AlignCenter);

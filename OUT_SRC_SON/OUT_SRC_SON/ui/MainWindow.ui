@@ -104,7 +104,7 @@
           <string>Trang chủ</string>
          </property>
          <property name="text">
-          <string>⌂ Trang chủ</string>
+          <string>Trang chủ</string>
          </property>
          <property name="checkable">
           <bool>true</bool>
@@ -123,7 +123,7 @@
           <string>Quản lý thiết bị</string>
          </property>
          <property name="text">
-          <string>◆ Thiết bị</string>
+          <string>Thiết bị</string>
          </property>
          <property name="checkable">
           <bool>true</bool>
@@ -139,7 +139,7 @@
           <string>Lịch sử dữ liệu</string>
          </property>
          <property name="text">
-          <string>▤ Lịch sử</string>
+          <string>Lịch sử</string>
          </property>
          <property name="checkable">
           <bool>true</bool>
@@ -155,7 +155,7 @@
           <string>Quản lý tài khoản</string>
          </property>
          <property name="text">
-          <string>♟ Tài khoản</string>
+          <string>Tài khoản</string>
          </property>
          <property name="checkable">
           <bool>true</bool>
@@ -184,7 +184,7 @@
           <string>Đăng xuất</string>
          </property>
          <property name="text">
-          <string>↪ Đăng xuất</string>
+          <string>Đăng xuất</string>
          </property>
         </widget>
        </item>

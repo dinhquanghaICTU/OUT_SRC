@@ -147,7 +147,7 @@ int main(int argc, char *argv[])
                     root->addWidget(scroll, 1);
 
                     auto *head = new QHBoxLayout;
-                    auto *dialogIcon = new QLabel(QStringLiteral("☀️"), body);
+                    auto *dialogIcon = new QLabel(QStringLiteral("️"), body);
                     dialogIcon->setObjectName(QStringLiteral("claimDeviceDialogIcon"));
                     dialogIcon->setAlignment(Qt::AlignCenter);
                     auto *titleBlock = new QVBoxLayout;
@@ -173,7 +173,7 @@ int main(int argc, char *argv[])
                     auto *actions = new QHBoxLayout;
                     actions->setSpacing(10);
                     auto *cancel = new QPushButton(QObject::tr("Hủy"), dlg);
-                    auto *save = new QPushButton(QObject::tr("✔ Thêm trạm đo"), dlg);
+                    auto *save = new QPushButton(QObject::tr("Thêm trạm đo"), dlg);
                     cancel->setObjectName(QStringLiteral("claimDeviceCancelButton"));
                     save->setObjectName(QStringLiteral("claimDeviceSaveButton"));
                     actions->addWidget(cancel);
@@ -196,8 +196,8 @@ int main(int argc, char *argv[])
                     msgBox->setWindowTitle(QObject::tr("Xác nhận gỡ/xóa trạm đo"));
                     msgBox->setText(QObject::tr("Bạn có chắc chắn muốn gỡ trạm đo 'Trạm Đo UV & Áp Suất (Trung Kiên)' (ID: Trungkien-150304) khỏi tài khoản?\nTrạm đo sẽ trở lại danh sách có thể thêm."));
                     msgBox->setIcon(QMessageBox::Warning);
-                    auto *yesBtn = msgBox->addButton(QObject::tr("🗑 Xác nhận gỡ/xóa"), QMessageBox::YesRole);
-                    auto *noBtn = msgBox->addButton(QObject::tr("✖ Hủy bỏ"), QMessageBox::NoRole);
+                    auto *yesBtn = msgBox->addButton(QObject::tr("Xác nhận gỡ/xóa"), QMessageBox::YesRole);
+                    auto *noBtn = msgBox->addButton(QObject::tr("Hủy bỏ"), QMessageBox::NoRole);
                     msgBox->setDefaultButton(noBtn);
                     msgBox->setStyleSheet(QStringLiteral(
                         "QMessageBox { background-color: #0b152d; border: 1.5px solid #1c2b54; border-radius: 8px; } "

@@ -221,7 +221,7 @@ HistoryPage::HistoryPage(QWidget *parent)
     m_metricCombo->hide();
     m_chartHeaderLayout->addWidget(m_metricCombo, 0, Qt::AlignVCenter | Qt::AlignRight);
 
-    auto *zoomBtn = new QPushButton(tr("⛶ Phóng to"), m_chartCard);
+    auto *zoomBtn = new QPushButton(tr("Phóng to"), m_chartCard);
     zoomBtn->setObjectName(QStringLiteral("historyZoomButton"));
     zoomBtn->setCursor(Qt::PointingHandCursor);
     zoomBtn->setToolTip(tr("Phóng to biểu đồ"));
@@ -244,8 +244,8 @@ HistoryPage::HistoryPage(QWidget *parent)
     m_analyticsGrid->setHorizontalSpacing(6);
     m_analyticsGrid->setVerticalSpacing(0);
     m_primaryStatCard = makeStatCard(tr("Chỉ số chính"), m_primaryStat, QStringLiteral("↯"));
-    m_secondaryStatCard = makeStatCard(tr("Chỉ số phụ"), m_secondaryStat, QStringLiteral("◍"));
-    m_summaryStatCard = makeStatCard(tr("Tóm tắt"), m_thirdStat, QStringLiteral("▥"));
+    m_secondaryStatCard = makeStatCard(tr("Chỉ số phụ"), m_secondaryStat, QStringLiteral(""));
+    m_summaryStatCard = makeStatCard(tr("Tóm tắt"), m_thirdStat, QStringLiteral(""));
     m_analyticsGrid->addWidget(m_primaryStatCard, 0, 0);
     m_analyticsGrid->addWidget(m_secondaryStatCard, 0, 1);
     m_analyticsGrid->addWidget(m_summaryStatCard, 0, 2);
@@ -425,7 +425,7 @@ void HistoryPage::updateMetricSelector()
 
     if (!plotableKeys.isEmpty()) {
         for (const QString &key : plotableKeys) {
-            m_metricCombo->addItem(tr("📊 %1").arg(metricTitle(key)), key);
+            m_metricCombo->addItem(tr("%1").arg(metricTitle(key)), key);
         }
         int idx = m_metricCombo->findData(m_selectedMetricKey);
         if (idx >= 0) {
@@ -848,7 +848,7 @@ void HistoryPage::openChartZoomDialog(const QString &initialMetricKey)
     }
 
     for (const QString &key : plotableKeys) {
-        metricCombo->addItem(tr("📊 %1").arg(metricTitle(key)), key);
+        metricCombo->addItem(tr("%1").arg(metricTitle(key)), key);
     }
 
     QString selectedKey = initialMetricKey.isEmpty() ? m_selectedMetricKey : initialMetricKey;
@@ -861,7 +861,7 @@ void HistoryPage::openChartZoomDialog(const QString &initialMetricKey)
 
     headerLayout->addWidget(metricCombo, 0, Qt::AlignVCenter);
 
-    auto *closeBtn = new QPushButton(QStringLiteral("✕"), &dialog);
+    auto *closeBtn = new QPushButton(QStringLiteral("Đóng"), &dialog);
     closeBtn->setObjectName(QStringLiteral("chartZoomCloseBtn"));
     closeBtn->setFixedSize(36, 36);
     closeBtn->setCursor(Qt::PointingHandCursor);

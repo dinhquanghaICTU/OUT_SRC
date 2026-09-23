@@ -95,10 +95,10 @@ MainWindow::MainWindow(QWidget *parent)
         ui->roleBadgeLabel->setText(m_authService->isAdmin() ? tr("ADMIN") : tr("USER"));
         ui->usersButton->setVisible(true);
         if (m_authService->isAdmin()) {
-            ui->usersButton->setText(tr("👤 Quản trị & Nhật ký"));
+            ui->usersButton->setText(tr("Quản trị & Nhật ký"));
             ui->usersButton->setToolTip(tr("Quản lý tài khoản, lịch sử đăng nhập & điều khiển hệ thống"));
         } else {
-            ui->usersButton->setText(tr("📋 Nhật ký thao tác"));
+            ui->usersButton->setText(tr("Nhật ký thao tác"));
             ui->usersButton->setToolTip(tr("Xem lịch sử các thao tác của bạn trong hệ thống"));
         }
         m_userManagementPage->setCurrentUsername(m_authService->currentUsername());

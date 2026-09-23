@@ -80,7 +80,7 @@ void UserManagementPage::setCurrentUsername(const QString &username)
     if (m_auditSummaryLabel) {
         if (!m_adminEnabled) {
             m_auditSummaryLabel->setText(
-                QStringLiteral("🔒 <b>Chế độ người dùng:</b> Chỉ hiển thị các thao tác do tài khoản <b>%1</b> thực hiện")
+                QStringLiteral("<b>Chế độ người dùng:</b> Chỉ hiển thị các thao tác do tài khoản <b>%1</b> thực hiện")
                     .arg(m_currentUsername.isEmpty() ? QStringLiteral("bạn") : m_currentUsername));
         }
     }
@@ -101,7 +101,7 @@ void UserManagementPage::setAdminEnabled(bool enabled)
         m_addUserBtn->setVisible(false);
         if (m_auditSummaryLabel) {
             m_auditSummaryLabel->setText(
-                QStringLiteral("🔒 <b>Chế độ người dùng:</b> Chỉ hiển thị các thao tác do tài khoản <b>%1</b> thực hiện")
+                QStringLiteral("<b>Chế độ người dùng:</b> Chỉ hiển thị các thao tác do tài khoản <b>%1</b> thực hiện")
                     .arg(m_currentUsername.isEmpty() ? QStringLiteral("bạn") : m_currentUsername));
         }
     } else {
@@ -111,7 +111,7 @@ void UserManagementPage::setAdminEnabled(bool enabled)
         m_addUserBtn->setVisible(m_stack->currentIndex() == 0);
         if (m_auditSummaryLabel) {
             m_auditSummaryLabel->setText(
-                QStringLiteral("👑 <b>Quyền Quản trị viên:</b> Hiển thị lịch sử điều khiển thiết bị & thao tác toàn hệ thống"));
+                QStringLiteral("<b>Quyền Quản trị viên:</b> Hiển thị lịch sử điều khiển thiết bị & thao tác toàn hệ thống"));
         }
     }
 }
@@ -345,7 +345,7 @@ void UserManagementPage::setupCustomUI()
     auditTopRow->addWidget(m_auditSummaryLabel);
     auditTopRow->addStretch();
 
-    auto *searchIcon = new QLabel(QStringLiteral("🔍"));
+    auto *searchIcon = new QLabel(QStringLiteral("Tìm:"));
     searchIcon->setStyleSheet("background: transparent; font-size: 11px;");
     auditTopRow->addWidget(searchIcon);
 
@@ -637,7 +637,7 @@ void UserManagementPage::renderLoginHistory()
 
     if (m_loginSummaryLabel) {
         m_loginSummaryLabel->setText(
-            QStringLiteral("📊 <b>Tổng số:</b> %1 lượt | <span style='color:#10b981; font-weight:700;'>✓ Thành công: %2</span> | <span style='color:#ef4444; font-weight:700;'>✕ Thất bại: %3</span>")
+            QStringLiteral("<b>Tổng số:</b> %1 lượt | <span style='color:#10b981; font-weight:700;'>Thành công: %2</span> | <span style='color:#ef4444; font-weight:700;'>Thất bại: %3</span>")
                 .arg(total).arg(successCount).arg(failCount));
     }
 
@@ -682,7 +682,7 @@ void UserManagementPage::renderLoginHistory()
         itIp->setTextAlignment(Qt::AlignCenter);
 
         // Column 5: Status Badge
-        auto *itStatus = new QTableWidgetItem(isSuccess ? QStringLiteral("✓ THÀNH CÔNG") : QStringLiteral("✕ THẤT BẠI"));
+        auto *itStatus = new QTableWidgetItem(isSuccess ? QStringLiteral("THÀNH CÔNG") : QStringLiteral("THẤT BẠI"));
         itStatus->setTextAlignment(Qt::AlignCenter);
         QFont f = itStatus->font();
         f.setBold(true);
@@ -729,11 +729,11 @@ void UserManagementPage::renderAuditLogs()
     if (m_auditSummaryLabel) {
         if (m_adminEnabled) {
             m_auditSummaryLabel->setText(
-                QStringLiteral("👑 <b>Nhật ký thao tác hệ thống:</b> %1 sự kiện (Toàn bộ tài khoản)")
+                QStringLiteral("<b>Nhật ký thao tác hệ thống:</b> %1 sự kiện (Toàn bộ tài khoản)")
                     .arg(filtered.size()));
         } else {
             m_auditSummaryLabel->setText(
-                QStringLiteral("🔒 <b>Nhật ký cá nhân:</b> %1 sự kiện của tài khoản <b>%2</b>")
+                QStringLiteral("<b>Nhật ký cá nhân:</b> %1 sự kiện của tài khoản <b>%2</b>")
                     .arg(filtered.size())
                     .arg(m_currentUsername.isEmpty() ? QStringLiteral("bạn") : m_currentUsername));
         }

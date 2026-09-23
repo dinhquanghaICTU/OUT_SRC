@@ -104,10 +104,10 @@ MainWindow::MainWindow(QWidget *parent)
         ui->topNavDashboard->setChecked(true);
         ui->topNavUsers->setVisible(true);
         if (m_authService->isAdmin()) {
-            ui->topNavUsers->setText(tr("👤 Quản trị & Nhật ký"));
+            ui->topNavUsers->setText(tr("Quản trị & Nhật ký"));
             ui->topNavUsers->setToolTip(tr("Quản lý tài khoản, lịch sử đăng nhập & điều khiển hệ thống"));
         } else {
-            ui->topNavUsers->setText(tr("📋 Nhật ký thao tác"));
+            ui->topNavUsers->setText(tr("Nhật ký thao tác"));
             ui->topNavUsers->setToolTip(tr("Xem lịch sử các thao tác của bạn trong hệ thống"));
         }
         m_dashboardPage->setUsername(m_authService->currentUsername());

@@ -49,10 +49,10 @@ MainWindow::MainWindow(QWidget *parent)
         m_deviceManagementPage->setCurrentUser(m_authService->currentUsername(), m_authService->isAdmin());
         ui->usersButton->setVisible(true);
         if (m_authService->isAdmin()) {
-            ui->usersButton->setText(tr("👤 Quản trị & Nhật ký"));
+            ui->usersButton->setText(tr("Quản trị & Nhật ký"));
             ui->usersButton->setToolTip(tr("Quản lý tài khoản, lịch sử đăng nhập & điều khiển hệ thống"));
         } else {
-            ui->usersButton->setText(tr("📋 Nhật ký thao tác"));
+            ui->usersButton->setText(tr("Nhật ký thao tác"));
             ui->usersButton->setToolTip(tr("Xem lịch sử các thao tác của bạn trong hệ thống"));
         }
         m_userManagementPage->setCurrentUsername(m_authService->currentUsername());
@@ -360,8 +360,8 @@ void MainWindow::setSidebarExpanded(bool expanded)
 
 void MainWindow::setCompactNavigation(bool compact)
 {
-    const QString textDashboard = compact ? tr("⌂") : tr("⌂ Trang chủ");
-    const QString textUsers = compact ? tr("♟") : tr("♟ Tài khoản");
+    const QString textDashboard = compact ? tr("Trang chủ") : tr("Trang chủ");
+    const QString textUsers = compact ? tr("Tài khoản") : tr("Tài khoản");
     ui->dashboardButton->setText(textDashboard);
     ui->usersButton->setText(textUsers);
 }

@@ -58,7 +58,7 @@ DeviceManagementPage::DeviceManagementPage(QWidget *parent)
       m_drawerName(new QLabel(this)),
       m_drawerId(new QLabel(this)),
       m_drawerMetrics(new QLabel(this)),
-      m_thresholdTitle(new QLabel(tr("⚙ Ngưỡng cảnh báo"), this)),
+      m_thresholdTitle(new QLabel(tr("Ngưỡng cảnh báo"), this)),
       m_thresholdGrid(new QGridLayout),
       m_samplingInterval(new QSpinBox(this)),
       m_saveThresholds(new QPushButton(tr("Lưu & gửi xuống thiết bị"), this)),
@@ -86,12 +86,12 @@ DeviceManagementPage::DeviceManagementPage(QWidget *parent)
     connect(backBtn, &QPushButton::clicked, this, &DeviceManagementPage::backToDashboardRequested);
     topBar->addWidget(backBtn);
 
-    auto *title = new QLabel(tr("🖲 THIẾT BỊ"), this);
+    auto *title = new QLabel(tr("THIẾT BỊ"), this);
     title->setObjectName(QStringLiteral("devicePageTitle"));
     topBar->addWidget(title);
 
     m_cardsTabBtn = new QPushButton(tr("⊞  Thẻ điều khiển"), this);
-    m_logTabBtn = new QPushButton(tr("📋  Nhật ký"), this);
+    m_logTabBtn = new QPushButton(tr(" Nhật ký"), this);
     m_cardsTabBtn->setObjectName(QStringLiteral("deviceViewTabButton"));
     m_logTabBtn->setObjectName(QStringLiteral("deviceViewTabButton"));
     m_cardsTabBtn->setCheckable(true);
@@ -124,7 +124,7 @@ DeviceManagementPage::DeviceManagementPage(QWidget *parent)
     logTopBar->setSpacing(8);
     m_logSearchEdit = new QLineEdit(logPage);
     m_logSearchEdit->setObjectName(QStringLiteral("logSearchInput"));
-    m_logSearchEdit->setPlaceholderText(tr("🔍 Tìm kiếm User thêm, Mã ID, Tên..."));
+    m_logSearchEdit->setPlaceholderText(tr("Tìm kiếm User thêm, Mã ID, Tên..."));
     m_logSearchEdit->setClearButtonEnabled(true);
     VirtualKeyboardDialog::attachToLineEdit(m_logSearchEdit, tr("Tìm kiếm thiết bị / log"));
 
@@ -349,7 +349,7 @@ DeviceManagementPage::DeviceManagementPage(QWidget *parent)
     auto *drawerTop = new QHBoxLayout;
     auto *drawerTitle = new QLabel(tr("Chi tiết & Cài đặt"), m_drawer);
     drawerTitle->setObjectName(QStringLiteral("drawerTitle"));
-    auto *closeDrawer = new QPushButton(QStringLiteral("✕"), m_drawer);
+    auto *closeDrawer = new QPushButton(QStringLiteral("Đóng"), m_drawer);
     closeDrawer->setObjectName(QStringLiteral("closeDrawerButton"));
     closeDrawer->setCursor(Qt::PointingHandCursor);
     drawerTop->addWidget(drawerTitle);
@@ -621,7 +621,7 @@ void DeviceManagementPage::rebuildLogTable()
         timeItem->setBackground(rowBg);
         timeItem->setForeground(textColor);
 
-        auto *statusItem = new QTableWidgetItem(isOnline ? tr("●  Online") : tr("○  Offline"));
+        auto *statusItem = new QTableWidgetItem(isOnline ? tr("●  Online") : tr(" Offline"));
         statusItem->setTextAlignment(Qt::AlignCenter);
         statusItem->setBackground(rowBg);
         statusItem->setForeground(isOnline ? QColor("#22c55e") : QColor("#94a3b8"));
@@ -646,14 +646,14 @@ void DeviceManagementPage::rebuildLogTable()
         actionLayout->setContentsMargins(4, 2, 4, 2);
         actionLayout->setSpacing(6);
 
-        auto *cfgBtn = new QPushButton(tr("⚙ Cấu hình"), actionWidget);
+        auto *cfgBtn = new QPushButton(tr("Cấu hình"), actionWidget);
         cfgBtn->setObjectName(QStringLiteral("tableActionConfigBtn"));
         cfgBtn->setCursor(Qt::PointingHandCursor);
         connect(cfgBtn, &QPushButton::clicked, this, [this, dev] {
             openDeviceDrawer(dev);
         });
 
-        auto *delBtn = new QPushButton(tr("🗑 Gỡ"), actionWidget);
+        auto *delBtn = new QPushButton(tr("Gỡ"), actionWidget);
         delBtn->setObjectName(QStringLiteral("tableActionDeleteBtn"));
         delBtn->setCursor(Qt::PointingHandCursor);
         connect(delBtn, &QPushButton::clicked, this, [this, devId, name] {
@@ -712,14 +712,14 @@ void DeviceManagementPage::configSaved(const QString &deviceId, bool mqttPublish
         ? tr("Đã lưu và gửi xuống thiết bị")
         : tr("Đã lưu · MQTT đang offline"));
     QTimer::singleShot(1800, this, [this] {
-        m_saveThresholds->setText(tr("💾 Lưu cấu hình xuống thiết bị"));
+        m_saveThresholds->setText(tr("Lưu cấu hình xuống thiết bị"));
     });
 }
 
 void DeviceManagementPage::configSaveFailed(const QString &error)
 {
     m_saveThresholds->setEnabled(true);
-    m_saveThresholds->setText(tr("💾 Lưu cấu hình xuống thiết bị"));
+    m_saveThresholds->setText(tr("Lưu cấu hình xuống thiết bị"));
     QMessageBox::warning(this, tr("Lỗi lưu cấu hình"),
                          error.isEmpty() ? tr("Không thể lưu cấu hình xuống thiết bị.") : error);
 }
@@ -785,30 +785,30 @@ QWidget *DeviceManagementPage::createOwnedCard(const QJsonObject &device)
     // Metrics / Telemetry Chip
     QString metricSummaryText;
     if (metricsObject.contains(QStringLiteral("voltage_v")) || metricsObject.contains(QStringLiteral("power_w"))) {
-        metricSummaryText = tr("⚡ %1 V · %2 A · %3 W")
+        metricSummaryText = tr("%1 V · %2 A · %3 W")
             .arg(metricsObject.value(QStringLiteral("voltage_v")).toDouble(), 0, 'f', 1)
             .arg(metricsObject.value(QStringLiteral("current_a")).toDouble(), 0, 'f', 2)
             .arg(metricsObject.value(QStringLiteral("power_w")).toDouble(), 0, 'f', 1);
     } else if (metricsObject.contains(QStringLiteral("flow_l_min"))) {
-        metricSummaryText = tr("💧 %1 L/min%2")
+        metricSummaryText = tr("%1 L/min%2")
             .arg(metricsObject.value(QStringLiteral("flow_l_min")).toDouble(), 0, 'f', 2)
             .arg(metricsObject.contains(QStringLiteral("total_liters"))
                 ? tr(" (Tổng %1 L)").arg(metricsObject.value(QStringLiteral("total_liters")).toDouble(), 0, 'f', 1)
                 : QString());
     } else if (metricsObject.contains(QStringLiteral("distance_cm"))) {
-        metricSummaryText = tr("📏 Khoảng cách: %1 cm").arg(metricsObject.value(QStringLiteral("distance_cm")).toDouble(), 0, 'f', 1);
+        metricSummaryText = tr("Khoảng cách: %1 cm").arg(metricsObject.value(QStringLiteral("distance_cm")).toDouble(), 0, 'f', 1);
     } else if (metricsObject.contains(QStringLiteral("temperature_c"))) {
-        metricSummaryText = tr("🌡️ Nhiệt độ: %1 °C").arg(metricsObject.value(QStringLiteral("temperature_c")).toDouble(), 0, 'f', 1);
+        metricSummaryText = tr("Nhiệt độ: %1 °C").arg(metricsObject.value(QStringLiteral("temperature_c")).toDouble(), 0, 'f', 1);
         if (metricsObject.contains(QStringLiteral("sound_vpp"))) {
-            metricSummaryText += tr(" · ♫ %1 Vpp").arg(metricsObject.value(QStringLiteral("sound_vpp")).toDouble(), 0, 'f', 2);
+            metricSummaryText += tr(" · %1 Vpp").arg(metricsObject.value(QStringLiteral("sound_vpp")).toDouble(), 0, 'f', 2);
         }
     } else if (metricsObject.contains(QStringLiteral("uv_index"))) {
-        metricSummaryText = tr("☀ UV: %1").arg(metricsObject.value(QStringLiteral("uv_index")).toDouble(), 0, 'f', 1);
+        metricSummaryText = tr("UV: %1").arg(metricsObject.value(QStringLiteral("uv_index")).toDouble(), 0, 'f', 1);
         if (metricsObject.contains(QStringLiteral("pressure_hpa"))) {
             metricSummaryText += tr(" · %1 hPa").arg(metricsObject.value(QStringLiteral("pressure_hpa")).toDouble(), 0, 'f', 0);
         }
     } else if (metricsObject.contains(QStringLiteral("pressure_hpa"))) {
-        metricSummaryText = tr("☁ Áp suất: %1 hPa").arg(metricsObject.value(QStringLiteral("pressure_hpa")).toDouble(), 0, 'f', 0);
+        metricSummaryText = tr("Áp suất: %1 hPa").arg(metricsObject.value(QStringLiteral("pressure_hpa")).toDouble(), 0, 'f', 0);
     }
 
     if (!metricSummaryText.isEmpty()) {
@@ -839,7 +839,7 @@ QWidget *DeviceManagementPage::createOwnedCard(const QJsonObject &device)
         irStatus->setAlignment(Qt::AlignCenter);
         actionLayout->addWidget(irStatus);
     } else {
-        auto *hint = new QLabel(tr("⚙ Cài đặt ngưỡng & xem chi tiết →"), card);
+        auto *hint = new QLabel(tr("Cài đặt ngưỡng & xem chi tiết →"), card);
         hint->setObjectName(QStringLiteral("deviceCardActionHint"));
         actionLayout->addWidget(hint);
     }
@@ -1107,28 +1107,28 @@ void DeviceManagementPage::rebuildThresholdForm(const QJsonObject &device)
     };
 
     if (type == QStringLiteral("power_monitor") || type == QStringLiteral("electric_power")) {
-        addThreshold(QStringLiteral("voltage_v.min"), tr("⚡ V thấp"), 10.0, 0, 300, tr(" V"), 1, 1.0);
-        addThreshold(QStringLiteral("voltage_v.max"), tr("⚡ V cao"), 245.0, 0, 300, tr(" V"), 1, 1.0);
-        addThreshold(QStringLiteral("current_a.max"), tr("🔌 Dòng tải max"), 15.0, 0, 100, tr(" A"), 2, 0.1);
-        addThreshold(QStringLiteral("power_w.max"), tr("💡 Công suất max"), 3000.0, 0, 25000, tr(" W"), 1, 50.0);
+        addThreshold(QStringLiteral("voltage_v.min"), tr("V thấp"), 10.0, 0, 300, tr(" V"), 1, 1.0);
+        addThreshold(QStringLiteral("voltage_v.max"), tr("V cao"), 245.0, 0, 300, tr(" V"), 1, 1.0);
+        addThreshold(QStringLiteral("current_a.max"), tr("Dòng tải max"), 15.0, 0, 100, tr(" A"), 2, 0.1);
+        addThreshold(QStringLiteral("power_w.max"), tr("Công suất max"), 3000.0, 0, 25000, tr(" W"), 1, 50.0);
     } else if (type == QStringLiteral("uv_pressure")) {
-        addThreshold(QStringLiteral("uv_index.warning_above"), tr("☀ UV cảnh báo"), 6, 0, 20, QString(), 1, 0.5);
-        addThreshold(QStringLiteral("uv_index.critical_above"), tr("☀ UV nguy hiểm"), 8, 0, 20, QString(), 1, 0.5);
-        addThreshold(QStringLiteral("pressure_hpa.min"), tr("☁ Áp suất thấp"), 990, 100, 1500, tr(" hPa"), 0, 1.0);
-        addThreshold(QStringLiteral("pressure_hpa.max"), tr("☁ Áp suất cao"), 1030, 100, 1500, tr(" hPa"), 0, 1.0);
+        addThreshold(QStringLiteral("uv_index.warning_above"), tr("UV cảnh báo"), 6, 0, 20, QString(), 1, 0.5);
+        addThreshold(QStringLiteral("uv_index.critical_above"), tr("UV nguy hiểm"), 8, 0, 20, QString(), 1, 0.5);
+        addThreshold(QStringLiteral("pressure_hpa.min"), tr("Áp suất thấp"), 990, 100, 1500, tr(" hPa"), 0, 1.0);
+        addThreshold(QStringLiteral("pressure_hpa.max"), tr("Áp suất cao"), 1030, 100, 1500, tr(" hPa"), 0, 1.0);
     } else if (type == QStringLiteral("temperature_sound")) {
-        addThreshold(QStringLiteral("temperature_c.warning_above"), tr("🌡️ Nhiệt độ báo"), 40, -40, 150, tr(" °C"), 1, 1.0);
-        addThreshold(QStringLiteral("temperature_c.critical_above"), tr("🌡️ Nhiệt độ nguy"), 50, -40, 150, tr(" °C"), 1, 1.0);
-        addThreshold(QStringLiteral("sound_vpp.warning_above"), tr("♫ Âm thanh báo"), 1.5, 0, 3.3, tr(" Vpp"), 2, 0.1);
+        addThreshold(QStringLiteral("temperature_c.warning_above"), tr("Nhiệt độ báo"), 40, -40, 150, tr(" °C"), 1, 1.0);
+        addThreshold(QStringLiteral("temperature_c.critical_above"), tr("Nhiệt độ nguy"), 50, -40, 150, tr(" °C"), 1, 1.0);
+        addThreshold(QStringLiteral("sound_vpp.warning_above"), tr("Âm thanh báo"), 1.5, 0, 3.3, tr(" Vpp"), 2, 0.1);
     } else if (type == QStringLiteral("weather_pressure")) {
-        addThreshold(QStringLiteral("temperature_c.min"), tr("🌡️ Nhiệt độ thấp"), 0, -40, 150, tr(" °C"), 1, 1.0);
-        addThreshold(QStringLiteral("temperature_c.max"), tr("🌡️ Nhiệt độ cao"), 50, -40, 150, tr(" °C"), 1, 1.0);
-        addThreshold(QStringLiteral("pressure_hpa.min"), tr("☁ Áp suất thấp"), 990, 100, 1500, tr(" hPa"), 0, 1.0);
-        addThreshold(QStringLiteral("pressure_hpa.max"), tr("☁ Áp suất cao"), 1030, 100, 1500, tr(" hPa"), 0, 1.0);
+        addThreshold(QStringLiteral("temperature_c.min"), tr("Nhiệt độ thấp"), 0, -40, 150, tr(" °C"), 1, 1.0);
+        addThreshold(QStringLiteral("temperature_c.max"), tr("Nhiệt độ cao"), 50, -40, 150, tr(" °C"), 1, 1.0);
+        addThreshold(QStringLiteral("pressure_hpa.min"), tr("Áp suất thấp"), 990, 100, 1500, tr(" hPa"), 0, 1.0);
+        addThreshold(QStringLiteral("pressure_hpa.max"), tr("Áp suất cao"), 1030, 100, 1500, tr(" hPa"), 0, 1.0);
     } else if (type == QStringLiteral("water_flow_pump") || type == QStringLiteral("pump_distance")) {
-        addThreshold(QStringLiteral("flow_l_min.min"), tr("💧 Lưu lượng min"), 0.20, 0, 60, tr(" L/m"), 2, 0.1);
-        addThreshold(QStringLiteral("flow_l_min.max"), tr("💧 Lưu lượng max"), 20.00, 0, 60, tr(" L/m"), 2, 0.5);
-        addThreshold(QStringLiteral("total_liters.max"), tr("💧 Tổng nước max"), 100.00, 0, 100000, tr(" L"), 1, 10.0);
+        addThreshold(QStringLiteral("flow_l_min.min"), tr("Lưu lượng min"), 0.20, 0, 60, tr(" L/m"), 2, 0.1);
+        addThreshold(QStringLiteral("flow_l_min.max"), tr("Lưu lượng max"), 20.00, 0, 60, tr(" L/m"), 2, 0.5);
+        addThreshold(QStringLiteral("total_liters.max"), tr("Tổng nước max"), 100.00, 0, 100000, tr(" L"), 1, 10.0);
     } else {
         addThreshold(QStringLiteral("value.min"), tr("Min"), 0.0, -100000, 100000, QString(), 2, 1.0);
         addThreshold(QStringLiteral("value.max"), tr("Max"), 100.0, -100000, 100000, QString(), 2, 1.0);
@@ -1139,7 +1139,7 @@ void DeviceManagementPage::rebuildThresholdForm(const QJsonObject &device)
     auto *sLayout = new QVBoxLayout(samplingCell);
     sLayout->setContentsMargins(0, 0, 0, 0);
     sLayout->setSpacing(2);
-    auto *sLbl = new QLabel(tr("⏱ Chu kỳ gửi"), samplingCell);
+    auto *sLbl = new QLabel(tr("Chu kỳ gửi"), samplingCell);
     sLbl->setObjectName(QStringLiteral("thresholdFieldLabel"));
     sLbl->setStyleSheet(QStringLiteral("color: #cbd5e1; font-weight: 700; font-size: 10px;"));
     m_samplingInterval = new QSpinBox(samplingCell);
@@ -1165,11 +1165,11 @@ void DeviceManagementPage::rebuildThresholdForm(const QJsonObject &device)
     m_thresholdTitle->setVisible(true);
 
     if (!isOwner) {
-        m_thresholdTitle->setText(tr("⚙ Ngưỡng cảnh báo (Chỉ xem)"));
+        m_thresholdTitle->setText(tr("Ngưỡng cảnh báo (Chỉ xem)"));
         m_saveThresholds->setText(tr("Chỉ '%1' mới được đổi").arg(addedBy));
     } else {
-        m_thresholdTitle->setText(tr("⚙ Ngưỡng cảnh báo"));
-        m_saveThresholds->setText(tr("💾 Lưu cấu hình xuống thiết bị"));
+        m_thresholdTitle->setText(tr("Ngưỡng cảnh báo"));
+        m_saveThresholds->setText(tr("Lưu cấu hình xuống thiết bị"));
     }
 }
 
@@ -1219,13 +1219,13 @@ void DeviceManagementPage::clearGrid(QGridLayout *layout)
 
 QString DeviceManagementPage::deviceIcon(const QString &type)
 {
-    if (type == QStringLiteral("power_monitor") || type == QStringLiteral("electric_power")) return QStringLiteral("⚡");
-    if (type == QStringLiteral("uv_pressure")) return QStringLiteral("☀");
-    if (type == QStringLiteral("temperature_sound")) return QStringLiteral("♫");
-    if (type == QStringLiteral("weather_pressure")) return QStringLiteral("☁");
-    if (type == QStringLiteral("pump_distance")) return QStringLiteral("💧");
-    if (type == QStringLiteral("water_flow_pump")) return QStringLiteral("🚰");
-    return QStringLiteral("⚡");
+    if (type == QStringLiteral("power_monitor") || type == QStringLiteral("electric_power")) return QStringLiteral("PWR");
+    if (type == QStringLiteral("uv_pressure")) return QStringLiteral("UV");
+    if (type == QStringLiteral("temperature_sound")) return QStringLiteral("SND");
+    if (type == QStringLiteral("weather_pressure")) return QStringLiteral("ATM");
+    if (type == QStringLiteral("pump_distance")) return QStringLiteral("PUMP");
+    if (type == QStringLiteral("water_flow_pump")) return QStringLiteral("FLOW");
+    return QStringLiteral("PWR");
 }
 
 QString DeviceManagementPage::deviceTypeName(const QString &type)

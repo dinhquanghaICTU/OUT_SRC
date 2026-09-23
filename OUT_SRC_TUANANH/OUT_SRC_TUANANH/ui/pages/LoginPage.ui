@@ -207,7 +207,7 @@ QLineEdit:focus {
          <cursorShape>PointingHandCursor</cursorShape>
         </property>
         <property name="text">
-         <string>AUTHENTICATE &amp; ENTER ➔</string>
+         <string>AUTHENTICATE &amp; ENTER</string>
         </property>
         <property name="styleSheet">
          <string notr="true">QPushButton {

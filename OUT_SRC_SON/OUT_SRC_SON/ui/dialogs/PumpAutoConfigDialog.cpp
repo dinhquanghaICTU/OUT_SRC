@@ -35,7 +35,7 @@ PumpAutoConfigDialog::PumpAutoConfigDialog(const QString &deviceId,
 
     // --- Header ---
     auto *headerRow = new QHBoxLayout;
-    auto *titleIcon = new QLabel(QStringLiteral("⚡"));
+    auto *titleIcon = new QLabel(QStringLiteral("")); titleIcon->hide();
     titleIcon->setStyleSheet("font-size: 18px;");
     auto *titleLbl = new QLabel(QStringLiteral("Tự Động Bật/Tắt Bơm Theo Khoảng Cách"));
     titleLbl->setStyleSheet("color: #38bdf8; font-size: 14px; font-weight: 900;");
@@ -43,7 +43,7 @@ PumpAutoConfigDialog::PumpAutoConfigDialog(const QString &deviceId,
     headerRow->addWidget(titleLbl);
     headerRow->addStretch();
 
-    auto *closeBtn = new QPushButton(QStringLiteral("✕"));
+    auto *closeBtn = new QPushButton(QStringLiteral("Đóng"));
     closeBtn->setFixedSize(26, 26);
     closeBtn->setStyleSheet("background: #1e293b; color: #ef4444; border: 1px solid #334155; border-radius: 13px; font-weight: 900; font-size: 11px;");
     connect(closeBtn, &QPushButton::clicked, this, &QDialog::reject);
@@ -96,7 +96,7 @@ PumpAutoConfigDialog::PumpAutoConfigDialog(const QString &deviceId,
 
     cardLayout->addLayout(formGrid);
 
-    auto *hintLbl = new QLabel(QStringLiteral("💡 Khi nước trong bể vơi đi (khoảng cách cảm biến siêu âm tăng lên), ESP32 sẽ tự kích hoạt Bơm. Khi nước dâng đầy (khoảng cách chạm ngưỡng ngắt), ESP32 sẽ tự ngắt Bơm."));
+    auto *hintLbl = new QLabel(QStringLiteral("Khi nước trong bể vơi đi (khoảng cách cảm biến siêu âm tăng lên), ESP32 sẽ tự kích hoạt Bơm. Khi nước dâng đầy (khoảng cách chạm ngưỡng ngắt), ESP32 sẽ tự ngắt Bơm."));
     hintLbl->setStyleSheet("color: #64748b; font-size: 10px; line-height: 14px; font-style: italic;");
     hintLbl->setWordWrap(true);
     cardLayout->addWidget(hintLbl);
@@ -107,7 +107,7 @@ PumpAutoConfigDialog::PumpAutoConfigDialog(const QString &deviceId,
     auto *btnRow = new QHBoxLayout;
     btnRow->setSpacing(10);
 
-    auto *saveBtn = new QPushButton(QStringLiteral("💾 Lưu Cấu Hình Xuống ESP32"));
+    auto *saveBtn = new QPushButton(QStringLiteral("Lưu Cấu Hình Xuống ESP32"));
     saveBtn->setCursor(Qt::PointingHandCursor);
     saveBtn->setMinimumHeight(36);
     saveBtn->setStyleSheet(
@@ -140,7 +140,7 @@ PumpAutoConfigDialog::PumpAutoConfigDialog(const QString &deviceId,
 
         emit configSaved(m_deviceId, config);
 
-        m_statusLabel->setText(QStringLiteral("✓ Đã gửi cấu hình xuống ESP32!"));
+        m_statusLabel->setText(QStringLiteral("Đã gửi cấu hình xuống ESP32!"));
         QTimer::singleShot(1500, this, &QDialog::accept);
     });
 

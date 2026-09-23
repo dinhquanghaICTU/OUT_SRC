@@ -205,7 +205,7 @@
           <string>Màn hình giám sát chính</string>
          </property>
          <property name="text">
-          <string>📊 Giám sát</string>
+          <string>Giám sát</string>
          </property>
          <property name="checkable">
           <bool>true</bool>
@@ -224,7 +224,7 @@
           <string>Xem dữ liệu lịch sử đo lường</string>
          </property>
          <property name="text">
-          <string>📈 Lịch sử</string>
+          <string>Lịch sử</string>
          </property>
          <property name="checkable">
           <bool>true</bool>
@@ -240,7 +240,7 @@
           <string>Quản lý thiết bị và cài đặt ngưỡng cảnh báo</string>
          </property>
          <property name="text">
-          <string>⚙ Thiết bị</string>
+          <string>Thiết bị</string>
          </property>
          <property name="checkable">
           <bool>true</bool>
@@ -256,7 +256,7 @@
           <string>Quản lý tài khoản người dùng</string>
          </property>
          <property name="text">
-          <string>👤 Quản trị</string>
+          <string>Quản trị</string>
          </property>
          <property name="checkable">
           <bool>true</bool>
@@ -282,14 +282,14 @@
         <item>
          <widget class="QLabel" name="headerBadgeGrid">
           <property name="text">
-           <string>🟢 220V</string>
+           <string>220V</string>
           </property>
          </widget>
         </item>
         <item>
          <widget class="QLabel" name="headerBadgeDevice">
           <property name="text">
-           <string>⚡ Theanh</string>
+           <string>Theanh</string>
           </property>
          </widget>
         </item>
@@ -299,7 +299,7 @@
            <string>Đăng xuất tài khoản</string>
           </property>
           <property name="text">
-           <string>↪ Thoát</string>
+           <string>Thoát</string>
           </property>
          </widget>
         </item>

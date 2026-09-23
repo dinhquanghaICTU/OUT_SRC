@@ -275,8 +275,8 @@ HistoryPage::HistoryPage(QWidget *parent)
     m_analyticsGrid->setHorizontalSpacing(6);
     m_analyticsGrid->setVerticalSpacing(0);
     m_primaryStatCard = makeStatCard(tr("Chỉ số chính"), m_primaryStat, QStringLiteral("↯"));
-    m_secondaryStatCard = makeStatCard(tr("Chỉ số phụ"), m_secondaryStat, QStringLiteral("◍"));
-    m_summaryStatCard = makeStatCard(tr("Tóm tắt"), m_thirdStat, QStringLiteral("▥"));
+    m_secondaryStatCard = makeStatCard(tr("Chỉ số phụ"), m_secondaryStat, QStringLiteral(""));
+    m_summaryStatCard = makeStatCard(tr("Tóm tắt"), m_thirdStat, QStringLiteral(""));
     m_analyticsGrid->addWidget(m_primaryStatCard, 0, 0);
     m_analyticsGrid->addWidget(m_secondaryStatCard, 0, 1);
     m_analyticsGrid->addWidget(m_summaryStatCard, 0, 2);
@@ -588,7 +588,7 @@ void HistoryPage::setHistory(const QJsonObject &history)
                         valItem->setForeground(QBrush(hasMotion ? QColor("#f59e0b") : QColor("#94a3b8")));
                     } else {
                         const bool detected = (val >= 0.5);
-                        valItem = new QTableWidgetItem(detected ? tr("● Có người") : tr("○ Bình thường"));
+                        valItem = new QTableWidgetItem(detected ? tr("● Có người") : tr("Bình thường"));
                         valItem->setForeground(QBrush(detected ? QColor("#f59e0b") : QColor("#94a3b8")));
                     }
                 } else if (key == QStringLiteral("relay")) {
@@ -598,7 +598,7 @@ void HistoryPage::setHistory(const QJsonObject &history)
                         valItem->setForeground(QBrush(hasRelay ? QColor("#10b981") : QColor("#94a3b8")));
                     } else {
                         const bool on = (val >= 0.5);
-                        valItem = new QTableWidgetItem(on ? tr("● Đang Bật") : tr("○ Đang Tắt"));
+                        valItem = new QTableWidgetItem(on ? tr("● Đang Bật") : tr("Đang Tắt"));
                         valItem->setForeground(QBrush(on ? QColor("#10b981") : QColor("#94a3b8")));
                     }
                 } else {
@@ -658,7 +658,7 @@ void HistoryPage::setHistory(const QJsonObject &history)
         }
 
         if (hasMotion) {
-            m_secondaryStat->setText(latestMotion >= 0.5 ? tr("● Có người") : tr("○ Bình thường"));
+            m_secondaryStat->setText(latestMotion >= 0.5 ? tr("● Có người") : tr("Bình thường"));
         } else if (hasLux && countLux > 0) {
             m_secondaryStat->setText(tr("Min: %1 · Max: %2 Lux").arg(QString::number(minLux, 'f', 1), QString::number(maxLux, 'f', 1)));
         } else {
@@ -666,7 +666,7 @@ void HistoryPage::setHistory(const QJsonObject &history)
         }
 
         if (hasRelay) {
-            m_thirdStat->setText(latestRelay >= 0.5 ? tr("● Đèn Bật (%1 bg)").arg(total) : tr("○ Đèn Tắt (%1 bg)").arg(total));
+            m_thirdStat->setText(latestRelay >= 0.5 ? tr("● Đèn Bật (%1 bg)").arg(total) : tr("Đèn Tắt (%1 bg)").arg(total));
         } else if (hasLux && countLux > 0) {
             m_thirdStat->setText(tr("TB: %1 Lux (%2 bg)").arg(QString::number(sumLux / countLux, 'f', 1), QString::number(total)));
         } else {
@@ -1045,7 +1045,7 @@ void HistoryPage::openChartZoomDialog(const QString &initialMetricKey)
 
     headerLayout->addWidget(metricCombo, 0, Qt::AlignVCenter);
 
-    auto *closeBtn = new QPushButton(QStringLiteral("✕"), &dialog);
+    auto *closeBtn = new QPushButton(QStringLiteral("Đóng"), &dialog);
     closeBtn->setObjectName(QStringLiteral("chartZoomCloseBtn"));
     closeBtn->setFixedSize(36, 36);
     closeBtn->setCursor(Qt::PointingHandCursor);

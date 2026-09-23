@@ -39,7 +39,7 @@ void VirtualKeyboard::createKey(int row, int col, int span, const QString &text,
     if (text == "⇧") {
         m_shiftBtn = btn;
         connect(btn, &QPushButton::clicked, this, &VirtualKeyboard::toggleShift);
-    } else if (text == "⌫") {
+    } else if (text == "Xóa") {
         connect(btn, &QPushButton::clicked, this, [this] {
             if (m_target) m_target->backspace();
         });
@@ -54,7 +54,7 @@ void VirtualKeyboard::createKey(int row, int col, int span, const QString &text,
         connect(btn, &QPushButton::clicked, this, [this] {
             if (m_target) m_target->clear();
         });
-    } else if (text == "▼") {
+    } else if (text == "Ẩn") {
         connect(btn, &QPushButton::clicked, this, [this] {
             emit hideRequested();
             this->hide();
@@ -92,7 +92,7 @@ void VirtualKeyboard::rebuildLayout()
             QString ch = m_shifted ? r1[i].toUpper() : r1[i];
             createKey(1, i * 2 + 1, 2, ch);
         }
-        createKey(1, 21, 3, "⌫", "kbKeyAction");
+        createKey(1, 21, 3, "Xóa", "kbKeyAction");
 
         // Row 2: A S D F G H J K L
         const QStringList r2 = {"a", "s", "d", "f", "g", "h", "j", "k", "l"};
@@ -118,7 +118,7 @@ void VirtualKeyboard::rebuildLayout()
         createKey(4, 0, 4, "123", "kbKeyMode");
         createKey(4, 4, 12, " ", "kbKeySpace");
         createKey(4, 16, 4, ".com", "kbKeyAction");
-        createKey(4, 20, 4, "▼", "kbKeyAction");
+        createKey(4, 20, 4, "Ẩn", "kbKeyAction");
     } else {
         // === SYMBOLS / SPECIAL CHARACTERS MODE ===
         // Row 0: Special symbols
@@ -132,7 +132,7 @@ void VirtualKeyboard::rebuildLayout()
         for (int i = 0; i < s1.size(); ++i) {
             createKey(1, i * 2 + 1, 2, s1[i]);
         }
-        createKey(1, 21, 3, "⌫", "kbKeyAction");
+        createKey(1, 21, 3, "Xóa", "kbKeyAction");
 
         // Row 2: Math and punctuation
         const QStringList s2 = {"<", ">", "?", "/", "+", "=", "-", "_", "*"};
@@ -147,7 +147,7 @@ void VirtualKeyboard::rebuildLayout()
             createKey(3, i * 2 + 2, 2, s3[i]);
         }
         createKey(3, 18, 3, "Clr", "kbKeyAction");
-        createKey(3, 21, 3, "▼", "kbKeyAction");
+        createKey(3, 21, 3, "Ẩn", "kbKeyAction");
 
         // Row 4: Mode switch, Space
         createKey(4, 0, 4, "ABC", "kbKeyMode");
@@ -239,12 +239,12 @@ VirtualKeyboardDialog::VirtualKeyboardDialog(QLineEdit *target, QWidget *parent,
     }
     topLayout->addWidget(m_previewEdit, 1);
 
-    auto *doneBtn = new QPushButton(tr("✓ Xong"), this);
+    auto *doneBtn = new QPushButton(tr("Xong"), this);
     doneBtn->setObjectName(QStringLiteral("kbDialogDoneBtn"));
     doneBtn->setCursor(Qt::PointingHandCursor);
     topLayout->addWidget(doneBtn);
 
-    auto *closeBtn = new QPushButton(tr("✕ Đóng"), this);
+    auto *closeBtn = new QPushButton(tr("Đóng"), this);
     closeBtn->setObjectName(QStringLiteral("kbDialogCloseBtn"));
     closeBtn->setCursor(Qt::PointingHandCursor);
     topLayout->addWidget(closeBtn);

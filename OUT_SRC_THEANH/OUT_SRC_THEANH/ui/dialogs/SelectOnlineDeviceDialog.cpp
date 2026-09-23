@@ -24,7 +24,7 @@ SelectOnlineDeviceDialog::SelectOnlineDeviceDialog(const QJsonArray &availableDe
 
     // --- Header ---
     auto *headerRow = new QHBoxLayout;
-    auto *titleIcon = new QLabel(QStringLiteral("📡"));
+    auto *titleIcon = new QLabel(QStringLiteral("")); titleIcon->hide();
     titleIcon->setStyleSheet("font-size: 14px;");
     auto *titleLbl = new QLabel(QStringLiteral("Danh Sách Thiết Bị Online"));
     titleLbl->setStyleSheet("color: #38bdf8; font-size: 13px; font-weight: 900;");
@@ -32,7 +32,7 @@ SelectOnlineDeviceDialog::SelectOnlineDeviceDialog(const QJsonArray &availableDe
     headerRow->addWidget(titleLbl);
     headerRow->addStretch();
 
-    auto *refreshBtn = new QPushButton(QStringLiteral("🔄 Làm Mới"));
+    auto *refreshBtn = new QPushButton(QStringLiteral("Làm Mới"));
     refreshBtn->setCursor(Qt::PointingHandCursor);
     refreshBtn->setStyleSheet(
         "QPushButton { background: #1e184a; color: #38bdf8; border: 1px solid #2b235c; border-radius: 6px; padding: 4px 10px; font-size: 10px; font-weight: 800; } "
@@ -44,7 +44,7 @@ SelectOnlineDeviceDialog::SelectOnlineDeviceDialog(const QJsonArray &availableDe
     });
     headerRow->addWidget(refreshBtn);
 
-    auto *closeBtn = new QPushButton(QStringLiteral("✕"));
+    auto *closeBtn = new QPushButton(QStringLiteral("Đóng"));
     closeBtn->setFixedSize(22, 22);
     closeBtn->setStyleSheet("background: #1e1435; color: #ef4444; border: 1px solid #3c2055; border-radius: 11px; font-weight: 900; font-size: 10px;");
     connect(closeBtn, &QPushButton::clicked, this, &QDialog::reject);
@@ -118,7 +118,7 @@ void SelectOnlineDeviceDialog::populateDeviceList(const QJsonArray &devices)
         cardLayout->setContentsMargins(8, 6, 8, 6);
         cardLayout->setSpacing(8);
 
-        auto *iconLbl = new QLabel(QStringLiteral("🖲"));
+        auto *iconLbl = new QLabel(QStringLiteral("")); iconLbl->hide();
         iconLbl->setStyleSheet("font-size: 16px; border: none; background: transparent;");
         cardLayout->addWidget(iconLbl);
 
@@ -128,7 +128,7 @@ void SelectOnlineDeviceDialog::populateDeviceList(const QJsonArray &devices)
         auto *titleRow = new QHBoxLayout;
         auto *nameLbl = new QLabel(name.isEmpty() ? devId : name);
         nameLbl->setStyleSheet("color: #ffffff; font-size: 11px; font-weight: 800; border: none; background: transparent;");
-        auto *onlineBadge = new QLabel(isOnline ? QStringLiteral("🟢 ONLINE") : QStringLiteral("🔴 OFFLINE"));
+        auto *onlineBadge = new QLabel(isOnline ? QStringLiteral("● ONLINE") : QStringLiteral("● OFFLINE"));
         onlineBadge->setStyleSheet(isOnline
             ? "color: #10b981; font-size: 8px; font-weight: 900; background: rgba(16, 185, 129, 0.15); border-radius: 3px; padding: 1px 4px;"
             : "color: #ef4444; font-size: 8px; font-weight: 900; background: rgba(239, 68, 68, 0.15); border-radius: 3px; padding: 1px 4px;");
