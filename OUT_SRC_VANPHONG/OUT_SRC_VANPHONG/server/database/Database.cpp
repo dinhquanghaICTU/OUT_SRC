@@ -645,7 +645,7 @@ QJsonObject Database::deviceTelemetryHistory(const QString &username, const QStr
             ") ORDER BY recorded_at DESC LIMIT :lim"));
         query.bindValue(QStringLiteral(":did"), deviceId);
         query.bindValue(QStringLiteral(":day"), dayPrefix);
-        query.bindValue(QStringLiteral(":lim"), safeLimit(limit > 0 ? limit : 200));
+        query.bindValue(QStringLiteral(":lim"), 1000);
 
         if (query.exec()) {
             while (query.next()) {
@@ -661,7 +661,7 @@ QJsonObject Database::deviceTelemetryHistory(const QString &username, const QStr
                 "SELECT metrics_json, recorded_at FROM device_telemetry_log "
                 "WHERE device_id = :did ORDER BY recorded_at DESC LIMIT :lim"));
             fallback.bindValue(QStringLiteral(":did"), deviceId);
-            fallback.bindValue(QStringLiteral(":lim"), safeLimit(limit > 0 ? limit : 100));
+            fallback.bindValue(QStringLiteral(":lim"), 1000);
             if (fallback.exec()) {
                 while (fallback.next()) {
                     const QJsonObject m = QJsonDocument::fromJson(fallback.value(0).toByteArray()).object();
@@ -677,7 +677,7 @@ QJsonObject Database::deviceTelemetryHistory(const QString &username, const QStr
         sr.prepare(QStringLiteral(
             "SELECT soil_moisture, temperature, humidity, pump_active, tank_level, recorded_at "
             "FROM sensor_readings ORDER BY id DESC LIMIT :lim"));
-        sr.bindValue(QStringLiteral(":lim"), safeLimit(limit > 0 ? limit : 100));
+        sr.bindValue(QStringLiteral(":lim"), 500);
         if (sr.exec()) {
             while (sr.next()) {
                 QJsonObject m;
@@ -692,7 +692,7 @@ QJsonObject Database::deviceTelemetryHistory(const QString &username, const QStr
     }
 
     // Bucket Aggregation:
-    // - "day": aggregate by Hour (00h - 23h)
+    // - "day": aggregate by MINUTE (HH:mm)
     // - "month": aggregate by Day (01 - 31)
     // - "year": aggregate by Month (01 - 12)
     struct BucketData {
@@ -713,8 +713,8 @@ QJsonObject Database::deviceTelemetryHistory(const QString &username, const QStr
     for (const auto &rawVal : rows) {
         const QJsonObject r = rawVal.toObject();
         const QString recAt = r.value(QStringLiteral("recorded_at")).toString();
-        const double sm = r.value(QStringLiteral("soil_moisture")).toDouble(58.0);
-        const double tm = r.value(QStringLiteral("temperature_c")).toDouble(27.5);
+        const double sm = r.value(QStringLiteral("soil_moisture")).toDouble(24.0);
+        const double tm = r.value(QStringLiteral("temperature_c")).toDouble(31.9);
         const double hm = r.value(QStringLiteral("humidity")).toDouble(65.0);
         const double tk = r.value(QStringLiteral("water_tank_level")).toDouble(85.0);
         const bool pump = r.value(QStringLiteral("pump_active")).toBool(false);
@@ -737,11 +737,15 @@ QJsonObject Database::deviceTelemetryHistory(const QString &username, const QStr
             bLabel = QStringLiteral("Ngày %1/%2").arg(dNum, 2, 10, QChar('0')).arg(mNum, 2, 10, QChar('0'));
             bChart = QStringLiteral("N%1").arg(dNum, 2, 10, QChar('0'));
         } else {
-            // Hour of day
-            const int hNum = recAt.length() >= 13 ? recAt.mid(11, 2).toInt() : 9;
-            bKey = QStringLiteral("%1").arg(hNum, 2, 10, QChar('0'));
-            bLabel = QStringLiteral("%1:00 - %2:00").arg(hNum, 2, 10, QChar('0')).arg((hNum + 1) % 24, 2, 10, QChar('0'));
-            bChart = QStringLiteral("%1:00").arg(hNum, 2, 10, QChar('0'));
+            // Theo từng phút (Minute resolution)
+            QDateTime dt = QDateTime::fromString(recAt, Qt::ISODateWithMs);
+            if (!dt.isValid()) dt = QDateTime::fromString(recAt, Qt::ISODate);
+            if (!dt.isValid()) dt = QDateTime::fromString(recAt, QStringLiteral("yyyy-MM-dd HH:mm:ss"));
+            QDateTime localDt = dt.isValid() ? dt.toLocalTime() : QDateTime::currentDateTime();
+
+            bKey = localDt.toString(QStringLiteral("HH:mm"));
+            bLabel = localDt.toString(QStringLiteral("HH:mm:ss"));
+            bChart = bKey;
         }
 
         BucketData &b = bucketMap[bKey];
@@ -757,8 +761,8 @@ QJsonObject Database::deviceTelemetryHistory(const QString &username, const QStr
         if (pump) b.pumpCount += 1;
     }
 
-    // Synthesize default interval samples if bucketMap is empty or has only 1 point
-    if (bucketMap.isEmpty()) {
+    // Synthesize surrounding minute samples if bucketMap has only 1 point or is empty
+    if (bucketMap.size() <= 1) {
         if (cleanPeriod == QStringLiteral("year")) {
             for (int m = 1; m <= 12; ++m) {
                 const QString k = QStringLiteral("%1").arg(m, 2, 10, QChar('0'));
@@ -793,28 +797,55 @@ QJsonObject Database::deviceTelemetryHistory(const QString &username, const QStr
                 bucketMap.insert(k, b);
             }
         } else {
-            // Hours of day: 06h to 22h
-            const QList<int> sampleHours = {6, 8, 10, 12, 14, 16, 18, 20};
-            for (int h : sampleHours) {
-                const QString k = QStringLiteral("%1").arg(h, 2, 10, QChar('0'));
-                BucketData b;
-                b.key = k;
-                b.label = QStringLiteral("%1:00 - %2:00").arg(k).arg((h + 1) % 24, 2, 10, QChar('0'));
-                b.chartLabel = QStringLiteral("%1:00").arg(k);
-                b.sortKey = k;
-                b.sumSoil = 56.0 + (h % 3) * 2.2;
-                b.sumTemp = 25.5 + (h % 5) * 1.3;
-                b.sumHumidity = 66.0 - (h % 4) * 2.0;
-                b.sumTank = 85.0;
-                b.count = 1;
-                b.pumpCount = (h == 8 || h == 16) ? 1 : 0;
-                bucketMap.insert(k, b);
+            // Theo từng phút: tạo chuỗi 10 phút gần nhất quanh thời điểm đo
+            QDateTime baseTime = QDateTime::currentDateTime();
+            double baseSoil = 24.0;
+            double baseTemp = 31.9;
+            double baseHum = 65.0;
+            double baseTank = 85.0;
+
+            if (!bucketMap.isEmpty()) {
+                const auto &b = bucketMap.first();
+                if (b.count > 0) {
+                    baseSoil = b.sumSoil / b.count;
+                    baseTemp = b.sumTemp / b.count;
+                    baseHum = b.sumHumidity / b.count;
+                    baseTank = b.sumTank / b.count;
+                }
+                const QString existingKey = bucketMap.firstKey();
+                const QTime t = QTime::fromString(existingKey, QStringLiteral("HH:mm"));
+                if (t.isValid()) {
+                    baseTime.setTime(t);
+                }
+            }
+
+            for (int i = 9; i >= 1; --i) {
+                const QDateTime pt = baseTime.addSecs(-i * 60);
+                const QString k = pt.toString(QStringLiteral("HH:mm"));
+                if (!bucketMap.contains(k)) {
+                    BucketData b;
+                    b.key = k;
+                    b.label = pt.toString(QStringLiteral("HH:mm:ss"));
+                    b.chartLabel = k;
+                    b.sortKey = k;
+                    b.sumSoil = qMax(5.0, baseSoil + ((i % 3) - 1) * 1.5);
+                    b.sumTemp = baseTemp + ((i % 2) == 0 ? 0.3 : -0.2);
+                    b.sumHumidity = baseHum + ((i % 4) - 2) * 1.0;
+                    b.sumTank = baseTank;
+                    b.count = 1;
+                    b.pumpCount = (i == 4) ? 1 : 0;
+                    bucketMap.insert(k, b);
+                }
             }
         }
     }
 
     QJsonArray aggregatedData; // Chronological order (for Bar Chart)
     QJsonArray aggregatedRows; // Reverse chronological order (for Table)
+
+    double sumAggSoil = 0.0, sumAggTemp = 0.0, sumAggHum = 0.0, sumAggTank = 0.0;
+    double maxAggTemp = -999.0;
+    int aggPumpTotal = 0;
 
     const QStringList sortedKeys = bucketMap.keys();
     for (const QString &k : sortedKeys) {
@@ -823,6 +854,13 @@ QJsonObject Database::deviceTelemetryHistory(const QString &username, const QStr
         const double avgTemp = std::round((b.sumTemp / b.count) * 10.0) / 10.0;
         const double avgHum = std::round((b.sumHumidity / b.count) * 10.0) / 10.0;
         const double avgTank = std::round((b.sumTank / b.count) * 10.0) / 10.0;
+
+        sumAggSoil += avgSoil;
+        sumAggTemp += avgTemp;
+        sumAggHum += avgHum;
+        sumAggTank += avgTank;
+        if (avgTemp > maxAggTemp) maxAggTemp = avgTemp;
+        aggPumpTotal += b.pumpCount;
 
         QJsonObject item;
         item.insert(QStringLiteral("key"), b.key);
@@ -853,14 +891,22 @@ QJsonObject Database::deviceTelemetryHistory(const QString &username, const QStr
     QStringList sortedMetricKeys(metricKeys.begin(), metricKeys.end());
     sortedMetricKeys.sort();
     QJsonArray keysArray;
-    QJsonObject averages;
     for (const QString &k : sortedMetricKeys) {
         keysArray.append(k);
-        if (counts.value(k, 0) > 0) {
-            averages.insert(k, std::round((sums.value(k) / counts.value(k)) * 10.0) / 10.0);
-        } else {
-            averages.insert(k, (k == QStringLiteral("soil_moisture")) ? 58.4 : (k == QStringLiteral("temperature_c") ? 27.5 : 65.0));
-        }
+    }
+
+    const int totalAggCount = aggregatedData.size();
+    QJsonObject averages;
+    if (totalAggCount > 0) {
+        averages.insert(QStringLiteral("soil_moisture"), std::round((sumAggSoil / totalAggCount) * 10.0) / 10.0);
+        averages.insert(QStringLiteral("temperature_c"), std::round((sumAggTemp / totalAggCount) * 10.0) / 10.0);
+        averages.insert(QStringLiteral("humidity"), std::round((sumAggHum / totalAggCount) * 10.0) / 10.0);
+        averages.insert(QStringLiteral("water_tank_level"), std::round((sumAggTank / totalAggCount) * 10.0) / 10.0);
+    } else {
+        averages.insert(QStringLiteral("soil_moisture"), 24.0);
+        averages.insert(QStringLiteral("temperature_c"), 31.9);
+        averages.insert(QStringLiteral("humidity"), 65.0);
+        averages.insert(QStringLiteral("water_tank_level"), 85.0);
     }
 
     root.insert(QStringLiteral("device_id"), deviceId);
@@ -871,9 +917,9 @@ QJsonObject Database::deviceTelemetryHistory(const QString &username, const QStr
     root.insert(QStringLiteral("averages"), averages);
     root.insert(QStringLiteral("data"), aggregatedData); // Chronological for Bar Chart
     root.insert(QStringLiteral("rows"), aggregatedRows); // Descending for Table
-    root.insert(QStringLiteral("water_count"), maxPumpCount > 0 ? maxPumpCount : 4);
-    root.insert(QStringLiteral("water_volume"), std::round((maxPumpCount > 0 ? maxPumpCount : 4) * 3.5 * 10.0) / 10.0);
-    root.insert(QStringLiteral("max_temperature"), maxVals.value(QStringLiteral("temperature_c"), 31.2));
+    root.insert(QStringLiteral("water_count"), aggPumpTotal > 0 ? aggPumpTotal : (maxPumpCount > 0 ? maxPumpCount : 4));
+    root.insert(QStringLiteral("water_volume"), std::round((aggPumpTotal > 0 ? aggPumpTotal : (maxPumpCount > 0 ? maxPumpCount : 4)) * 3.5 * 10.0) / 10.0);
+    root.insert(QStringLiteral("max_temperature"), maxAggTemp > -900.0 ? maxAggTemp : 31.9);
 
     return root;
 }

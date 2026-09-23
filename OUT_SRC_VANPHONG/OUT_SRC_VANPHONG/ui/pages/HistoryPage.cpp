@@ -227,9 +227,9 @@ void HistoryPage::setHistory(const QJsonObject &history)
     ui->valAvgSoil->setText(tr("%1 %").arg(QString::number(avgSoil, 'f', 1)));
     ui->valMaxTemp->setText(tr("%1 °C").arg(QString::number(maxTemp, 'f', 1)));
 
-    // Dynamic header based on period (Khoảng giờ cho Ngày, Ngày cho Tháng, Tháng cho Năm)
+    // Dynamic header based on period (Thời gian (Phút) cho Ngày, Ngày cho Tháng, Tháng cho Năm)
     const QString currentPeriod = history.value(QStringLiteral("period")).toString(ui->periodCombo->currentData().toString());
-    QString timeColHeader = tr("Khoảng giờ");
+    QString timeColHeader = tr("Thời gian (Phút)");
     if (currentPeriod == QStringLiteral("year")) {
         timeColHeader = tr("Tháng");
     } else if (currentPeriod == QStringLiteral("month")) {
