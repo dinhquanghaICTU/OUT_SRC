@@ -65,6 +65,7 @@ void DashboardPage::setupCharts()
     m_chart->addSeries(m_humiditySeries);
     m_chart->legend()->hide();
     m_chart->setBackgroundVisible(false);
+    m_chart->setAnimationOptions(QChart::NoAnimation);
     m_chart->setMargins(QMargins(4, 0, 4, 0));
 
     auto *axisX = new QValueAxis(m_chart);

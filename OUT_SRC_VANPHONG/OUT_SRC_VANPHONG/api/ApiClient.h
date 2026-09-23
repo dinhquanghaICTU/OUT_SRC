@@ -64,4 +64,5 @@ private:
     bool m_devicesRequestInFlight = false;
     bool m_availableRequestInFlight = false;
     bool m_usersRequestInFlight = false;
+    bool m_readingRequestInFlight = false;
 };

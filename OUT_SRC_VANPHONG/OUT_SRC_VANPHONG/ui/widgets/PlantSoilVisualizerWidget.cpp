@@ -13,29 +13,34 @@ PlantSoilVisualizerWidget::PlantSoilVisualizerWidget(QWidget *parent)
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
     connect(&m_animTimer, &QTimer::timeout, this, [this] {
-        m_leafFlutter += 0.05;
+        if (!m_pumpActive) {
+            m_animTimer.stop();
+            m_particles.clear();
+            update();
+            return;
+        }
 
-        if (m_pumpActive) {
-            if (m_particles.size() < 35 && QRandomGenerator::global()->bounded(10) > 2) {
-                WaterParticle p;
-                p.pos = QPointF(width() * 0.2 + QRandomGenerator::global()->bounded(static_cast<int>(width() * 0.6)), 20.0);
-                p.speedY = 3.0 + QRandomGenerator::global()->bounded(40) / 10.0;
-                p.size = 2.5 + QRandomGenerator::global()->bounded(20) / 10.0;
-                p.alpha = 200 + QRandomGenerator::global()->bounded(55);
-                m_particles.append(p);
-            }
+        m_leafFlutter += 0.1;
+
+        if (m_particles.size() < 12 && QRandomGenerator::global()->bounded(10) > 3) {
+            WaterParticle p;
+            p.pos = QPointF(width() * 0.25 + QRandomGenerator::global()->bounded(static_cast<int>(width() * 0.5)), 25.0);
+            p.speedY = 4.0 + QRandomGenerator::global()->bounded(30) / 10.0;
+            p.size = 2.5;
+            p.alpha = 220;
+            m_particles.append(p);
         }
 
         for (int i = m_particles.size() - 1; i >= 0; --i) {
             m_particles[i].pos.ry() += m_particles[i].speedY;
-            if (m_particles[i].pos.y() > height() - 40) {
+            if (m_particles[i].pos.y() > height() - 50) {
                 m_particles.removeAt(i);
             }
         }
 
         update();
     });
-    m_animTimer.start(40);
+    // Do NOT start m_animTimer here. It will only run when watering (pumpActive == true).
 }
 
 void PlantSoilVisualizerWidget::setSoilMoisture(double pct)
@@ -58,8 +63,16 @@ void PlantSoilVisualizerWidget::setHumidity(double humPct)
 
 void PlantSoilVisualizerWidget::setPumpActive(bool active)
 {
+    if (m_pumpActive == active) return;
     m_pumpActive = active;
-    if (!active) m_particles.clear();
+    if (active) {
+        if (!m_animTimer.isActive()) {
+            m_animTimer.start(200); // 5 FPS gentle animation only while watering
+        }
+    } else {
+        m_animTimer.stop();
+        m_particles.clear();
+    }
     update();
 }
 

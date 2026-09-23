@@ -69,9 +69,14 @@ void ApiClient::login(const QString &username, const QString &password) {
 }
 
 void ApiClient::requestLatestReading() {
+  if (m_readingRequestInFlight)
+    return;
+  m_readingRequestInFlight = true;
+
   auto *reply =
       m_networkManager.get(makeRequest(QStringLiteral("/api/readings/latest")));
   connect(reply, &QNetworkReply::finished, this, [this, reply] {
+    m_readingRequestInFlight = false;
     reply->deleteLater();
     if (reply->error() != QNetworkReply::NoError)
       return;
