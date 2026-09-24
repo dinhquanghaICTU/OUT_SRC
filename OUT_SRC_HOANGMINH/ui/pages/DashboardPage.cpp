@@ -476,9 +476,20 @@ void DashboardPage::setDevices(const QJsonArray &devices)
         return;
 
     const QJsonObject dev = devices.first().toObject();
-    m_deviceId = dev.value(QStringLiteral("device_id")).toString(QStringLiteral("190782"));
+    m_deviceId   = dev.value(QStringLiteral("device_id")).toString(QStringLiteral("190782"));
     m_deviceName = dev.value(QStringLiteral("name")).toString(tr("Trạm Làm Mát Tự Động"));
-    m_isOnline = dev.value(QStringLiteral("online")).toBool(true);
+    m_isOnline   = dev.value(QStringLiteral("online")).toBool(true);
+
+    // Load cooling thresholds từ config của thiết bị (nếu server trả về)
+    const QJsonObject cfg = dev.value(QStringLiteral("config")).toObject();
+    if (cfg.contains(QStringLiteral("fan_start_temp")))
+        m_fanStartTemp = cfg.value(QStringLiteral("fan_start_temp")).toDouble(m_fanStartTemp);
+    if (cfg.contains(QStringLiteral("fan_stop_temp")))
+        m_fanStopTemp = cfg.value(QStringLiteral("fan_stop_temp")).toDouble(m_fanStopTemp);
+    if (cfg.contains(QStringLiteral("max_sound_vpp")))
+        m_maxSoundVpp = cfg.value(QStringLiteral("max_sound_vpp")).toDouble(m_maxSoundVpp);
+    if (cfg.contains(QStringLiteral("sampling_interval_seconds")))
+        m_sampleIntervalSec = cfg.value(QStringLiteral("sampling_interval_seconds")).toInt(m_sampleIntervalSec);
 
     const QJsonObject metrics = dev.value(QStringLiteral("metrics")).toObject();
     if (metrics.contains(QStringLiteral("temperature_c")))
@@ -490,12 +501,13 @@ void DashboardPage::setDevices(const QJsonArray &devices)
 
     m_peakTemp = qMax(m_peakTemp, m_currentTemp);
 
-    appendPoint(m_tempSeries, m_tempHistory, m_currentTemp, m_tempAxisX, m_tempAxisY);
+    appendPoint(m_tempSeries,  m_tempHistory,  m_currentTemp,  m_tempAxisX,  m_tempAxisY);
     appendPoint(m_soundSeries, m_soundHistory, m_currentSound, m_soundAxisX, m_soundAxisY);
 
     updateDisplays();
     checkAutoCoolingLogic();
 }
+
 
 void DashboardPage::checkAutoCoolingLogic()
 {

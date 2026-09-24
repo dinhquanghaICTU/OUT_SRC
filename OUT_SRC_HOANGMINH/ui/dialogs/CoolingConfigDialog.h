@@ -3,9 +3,7 @@
 #include <QDialog>
 #include <QJsonObject>
 
-class QDoubleSpinBox;
-class QSpinBox;
-class QLineEdit;
+class QLabel;
 
 class CoolingConfigDialog : public QDialog
 {
@@ -20,8 +18,15 @@ public:
 private:
     void setupUi();
 
-    QDoubleSpinBox *m_fanStartSpin = nullptr;
-    QDoubleSpinBox *m_fanStopSpin = nullptr;
-    QDoubleSpinBox *m_soundMaxSpin = nullptr;
-    QSpinBox *m_intervalSpin = nullptr;
+    // Các giá trị thực (double để tránh cast, intervalSec lưu dạng double rồi cast khi trả ra)
+    double m_fanStartTemp = 35.0;
+    double m_fanStopTemp  = 28.0;
+    double m_maxSoundVpp  = 1.5;
+    double m_intervalSec  = 2.0;
+
+    // Label hiển thị giá trị hiện tại của mỗi field
+    QLabel *m_fanStartLabel = nullptr;
+    QLabel *m_fanStopLabel  = nullptr;
+    QLabel *m_soundMaxLabel = nullptr;
+    QLabel *m_intervalLabel = nullptr;
 };
