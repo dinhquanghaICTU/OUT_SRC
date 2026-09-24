@@ -62,6 +62,7 @@ private:
     void updateCurrentDisplay(double currentA);
     void updatePowerDisplay(double powerW);
     void updateRealtimeChart(double voltageV, double currentA, double powerW);
+    QJsonObject buildConfigPayload() const; // build JSON đúng format server
 
     Ui::DashboardPage *ui;
 
@@ -144,4 +145,5 @@ private:
     double m_currentMax = 20.0;
     double m_powerMin   = 0.0;
     double m_powerMax   = 2200.0;
+    int    m_samplingIntervalMs = 2000; // chu kỳ mặc định 2s
 };

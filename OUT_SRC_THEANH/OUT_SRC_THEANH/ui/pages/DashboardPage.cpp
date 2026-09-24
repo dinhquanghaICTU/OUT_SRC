@@ -727,15 +727,7 @@ void DashboardPage::openVoltageDetail()
             [this](double minVal, double maxVal) {
         m_voltageMin = minVal;
         m_voltageMax = maxVal;
-        const QJsonObject cfg{
-            {QStringLiteral("voltage_min"), m_voltageMin},
-            {QStringLiteral("voltage_max"), m_voltageMax},
-            {QStringLiteral("current_min"), m_currentMin},
-            {QStringLiteral("current_max"), m_currentMax},
-            {QStringLiteral("power_min"),   m_powerMin},
-            {QStringLiteral("power_max"),   m_powerMax}
-        };
-        emit deviceConfigRequested(m_deviceId, cfg);
+        emit deviceConfigRequested(m_deviceId, buildConfigPayload());
     });
     dlg->setAttribute(Qt::WA_DeleteOnClose);
     dlg->exec();
@@ -756,15 +748,7 @@ void DashboardPage::openCurrentDetail()
             [this](double minVal, double maxVal) {
         m_currentMin = minVal;
         m_currentMax = maxVal;
-        const QJsonObject cfg{
-            {QStringLiteral("voltage_min"), m_voltageMin},
-            {QStringLiteral("voltage_max"), m_voltageMax},
-            {QStringLiteral("current_min"), m_currentMin},
-            {QStringLiteral("current_max"), m_currentMax},
-            {QStringLiteral("power_min"),   m_powerMin},
-            {QStringLiteral("power_max"),   m_powerMax}
-        };
-        emit deviceConfigRequested(m_deviceId, cfg);
+        emit deviceConfigRequested(m_deviceId, buildConfigPayload());
     });
     dlg->setAttribute(Qt::WA_DeleteOnClose);
     dlg->exec();
@@ -785,15 +769,7 @@ void DashboardPage::openPowerDetail()
             [this](double minVal, double maxVal) {
         m_powerMin = minVal;
         m_powerMax = maxVal;
-        const QJsonObject cfg{
-            {QStringLiteral("voltage_min"), m_voltageMin},
-            {QStringLiteral("voltage_max"), m_voltageMax},
-            {QStringLiteral("current_min"), m_currentMin},
-            {QStringLiteral("current_max"), m_currentMax},
-            {QStringLiteral("power_min"),   m_powerMin},
-            {QStringLiteral("power_max"),   m_powerMax}
-        };
-        emit deviceConfigRequested(m_deviceId, cfg);
+        emit deviceConfigRequested(m_deviceId, buildConfigPayload());
     });
     dlg->setAttribute(Qt::WA_DeleteOnClose);
     dlg->exec();
@@ -810,4 +786,33 @@ void DashboardPage::openAddDeviceDialog()
     });
     dlg->exec();
     delete dlg;
+}
+
+QJsonObject DashboardPage::buildConfigPayload() const
+{
+    // Server va ESP yeu cau format:
+    // { "sampling_interval_ms": 2000,
+    //   "thresholds": {
+    //     "voltage": { "min": ..., "max": ... },
+    //     "current": { "min": ..., "max": ... },
+    //     "power":   { "min": ..., "max": ... }
+    //   }
+    // }
+    return QJsonObject{
+        {QStringLiteral("sampling_interval_ms"), m_samplingIntervalMs},
+        {QStringLiteral("thresholds"), QJsonObject{
+            {QStringLiteral("voltage"), QJsonObject{
+                {QStringLiteral("min"), m_voltageMin},
+                {QStringLiteral("max"), m_voltageMax}
+            }},
+            {QStringLiteral("current"), QJsonObject{
+                {QStringLiteral("min"), m_currentMin},
+                {QStringLiteral("max"), m_currentMax}
+            }},
+            {QStringLiteral("power"), QJsonObject{
+                {QStringLiteral("min"), m_powerMin},
+                {QStringLiteral("max"), m_powerMax}
+            }}
+        }}
+    };
 }
