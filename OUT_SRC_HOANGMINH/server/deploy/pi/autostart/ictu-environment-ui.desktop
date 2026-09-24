@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Name=ICTU Environmental Monitor
+Comment=Start ICTU local monitoring dashboard
+Exec=/usr/local/bin/OUT_SRC_TRUNGKIEN
+Terminal=false
+X-GNOME-Autostart-enabled=true
