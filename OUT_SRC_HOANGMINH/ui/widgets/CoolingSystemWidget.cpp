@@ -10,10 +10,6 @@ CoolingSystemWidget::CoolingSystemWidget(QWidget *parent)
 {
     setAttribute(Qt::WA_OpaquePaintEvent, false);
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-
-    connect(&m_animTimer, &QTimer::timeout, this, &CoolingSystemWidget::onAnimationTick);
-    m_animTimer.setInterval(33); // ~30 FPS
-    m_animTimer.start();
 }
 
 void CoolingSystemWidget::setTemperature(double tempC)
@@ -26,21 +22,24 @@ void CoolingSystemWidget::setTemperature(double tempC)
 
 void CoolingSystemWidget::setFanRunning(bool running)
 {
+    if (m_fanRunning == running)
+        return;
     m_fanRunning = running;
-    m_targetFanSpeed = running ? 14.0 : 0.0;
-    if (!m_animTimer.isActive())
-        m_animTimer.start();
     update();
 }
 
 void CoolingSystemWidget::setSoundVpp(double soundVpp)
 {
+    if (qFuzzyCompare(m_soundVpp, soundVpp))
+        return;
     m_soundVpp = soundVpp;
     update();
 }
 
 void CoolingSystemWidget::setThreshold(double triggerTempC)
 {
+    if (qFuzzyCompare(m_thresholdTempC, triggerTempC))
+        return;
     m_thresholdTempC = triggerTempC;
     update();
 }
@@ -48,12 +47,12 @@ void CoolingSystemWidget::setThreshold(double triggerTempC)
 QString CoolingSystemWidget::statusText() const
 {
     if (m_temperatureC >= 42.0)
-        return QStringLiteral("QUÁ NHIỆT!");
+        return m_fanRunning ? QStringLiteral("QUÁ NHIỆT - QUẠT BẬT") : QStringLiteral("QUÁ NHIỆT - QUẠT TẮT");
     if (m_temperatureC >= m_thresholdTempC)
-        return m_fanRunning ? QStringLiteral("LÀM MÁT KHẨN CẤP") : QStringLiteral("CẢNH BÁO NHIỆT ĐỘ");
+        return m_fanRunning ? QStringLiteral("CẢNH BÁO - QUẠT BẬT") : QStringLiteral("CẢNH BÁO NHIỆT ĐỘ");
     if (m_fanRunning)
-        return QStringLiteral("ĐANG TẢN NHIỆT");
-    return QStringLiteral("MÁT MẺ - BÌNH THƯỜNG");
+        return QStringLiteral("QUẠT: ĐANG BẬT");
+    return QStringLiteral("QUẠT: ĐANG TẮT");
 }
 
 QColor CoolingSystemWidget::statusColor() const
@@ -64,23 +63,7 @@ QColor CoolingSystemWidget::statusColor() const
         return QColor(245, 158, 11); // Amber
     if (m_fanRunning)
         return QColor(6, 182, 212); // Cyan
-    return QColor(16, 185, 129); // Emerald
-}
-
-void CoolingSystemWidget::onAnimationTick()
-{
-    // Smooth acceleration / deceleration
-    if (m_fanSpeed < m_targetFanSpeed) {
-        m_fanSpeed = qMin(m_targetFanSpeed, m_fanSpeed + 0.7);
-    } else if (m_fanSpeed > m_targetFanSpeed) {
-        m_fanSpeed = qMax(0.0, m_fanSpeed - 0.5);
-    }
-
-    if (m_fanSpeed > 0.01) {
-        m_fanAngle = std::fmod(m_fanAngle + m_fanSpeed, 360.0);
-        m_airFlowPhase = std::fmod(m_airFlowPhase + 0.08, 1.0);
-        update();
-    }
+    return QColor(100, 116, 139); // Slate Gray
 }
 
 void CoolingSystemWidget::paintEvent(QPaintEvent *)
@@ -102,7 +85,7 @@ void CoolingSystemWidget::paintEvent(QPaintEvent *)
     p.drawRoundedRect(outerRect, 14, 14);
 
     // Corner decorative industrial cyber brackets
-    p.setPen(QPen(QColor(56, 189, 248, 140), 1.5));
+    p.setPen(QPen(m_fanRunning ? QColor(56, 189, 248, 180) : QColor(71, 85, 105, 140), 1.5));
     p.drawLine(8, 6, 18, 6);
     p.drawLine(6, 8, 6, 18);
     p.drawLine(w - 18, 6, w - 8, 6);
@@ -117,32 +100,7 @@ void CoolingSystemWidget::paintEvent(QPaintEvent *)
     const double centerY = h * 0.44;
     const double radius = qMin(w * 0.40, h * 0.38);
 
-    // 2. Airflow Vortex Streams (when fan running)
-    if (m_fanSpeed > 0.5) {
-        p.save();
-        p.translate(centerX, centerY);
-        const int numRays = 10;
-        for (int i = 0; i < numRays; ++i) {
-            const double angleDeg = i * (360.0 / numRays) + m_fanAngle * 0.6;
-            const double angleRad = qDegreesToRadians(angleDeg);
-            const double startR = radius * 0.88;
-            const double endR = radius * (1.16 + 0.10 * qSin(m_airFlowPhase * 6.28 + i));
-            
-            QLinearGradient rayGrad(startR * qCos(angleRad), startR * qSin(angleRad),
-                                    endR * qCos(angleRad), endR * qSin(angleRad));
-            const int alpha = qMin(190, int(m_fanSpeed * 13.0));
-            rayGrad.setColorAt(0.0, QColor(6, 182, 212, 0));
-            rayGrad.setColorAt(0.5, QColor(56, 189, 248, alpha));
-            rayGrad.setColorAt(1.0, QColor(186, 230, 253, 0));
-
-            p.setPen(QPen(QBrush(rayGrad), 2.2, Qt::SolidLine, Qt::RoundCap));
-            p.drawLine(QPointF(startR * qCos(angleRad), startR * qSin(angleRad)),
-                       QPointF(endR * qCos(angleRad), endR * qSin(angleRad)));
-        }
-        p.restore();
-    }
-
-    // 3. Thermal Progress Gauge Arc (0°C to 60°C mapped to 240 degrees)
+    // 2. Thermal Progress Gauge Arc (0°C to 60°C mapped to 240 degrees)
     const double startAngleDeg = 150.0;
     const double totalSpanDeg = 240.0;
     const double clampedTemp = qBound(0.0, m_temperatureC, 60.0);
@@ -167,7 +125,7 @@ void CoolingSystemWidget::paintEvent(QPaintEvent *)
     p.setPen(QPen(QBrush(arcGrad), 5.0, Qt::SolidLine, Qt::RoundCap));
     p.drawArc(arcRect, int(-startAngleDeg * 16), int(-activeSpanDeg * 16));
 
-    // 4. Circular Turbine Housing & Rim
+    // 3. Circular Turbine Housing & Rim
     const double fanRadius = radius * 0.78;
     QRectF fanHousingRect(centerX - fanRadius, centerY - fanRadius, fanRadius * 2.0, fanRadius * 2.0);
     QRadialGradient housingGrad(centerX, centerY, fanRadius);
@@ -175,7 +133,7 @@ void CoolingSystemWidget::paintEvent(QPaintEvent *)
     housingGrad.setColorAt(0.82, QColor(22, 33, 56, 240));
     housingGrad.setColorAt(1.0, QColor(51, 65, 85, 255));
     p.setBrush(housingGrad);
-    p.setPen(QPen(QColor(71, 85, 105), 1.5));
+    p.setPen(QPen(m_fanRunning ? QColor(6, 182, 212, 180) : QColor(71, 85, 105, 120), 1.5));
     p.drawEllipse(fanHousingRect);
 
     // Outer turbine vent tick marks
@@ -183,15 +141,16 @@ void CoolingSystemWidget::paintEvent(QPaintEvent *)
         const double r1 = fanRadius * 0.88;
         const double r2 = fanRadius * 0.96;
         const double rad = qDegreesToRadians(double(deg));
-        p.setPen(QPen(QColor(71, 85, 105, 150), 1.2));
+        p.setPen(QPen(m_fanRunning ? QColor(6, 182, 212, 120) : QColor(71, 85, 105, 100), 1.2));
         p.drawLine(QPointF(centerX + r1 * qCos(rad), centerY + r1 * qSin(rad)),
                    QPointF(centerX + r2 * qCos(rad), centerY + r2 * qSin(rad)));
     }
 
-    // 5. Rotating 5-blade Turbine Impeller
+    // 4. Static 5-blade Turbine Impeller (Fixed orientation)
     p.save();
     p.translate(centerX, centerY);
-    p.rotate(m_fanAngle);
+    const double staticAngle = 18.0; // Clean, pleasing static angle
+    p.rotate(staticAngle);
 
     const double bladeLen = fanRadius * 0.76;
     const double bladeW = fanRadius * 0.34;
@@ -212,17 +171,17 @@ void CoolingSystemWidget::paintEvent(QPaintEvent *)
 
         QLinearGradient bladeGrad(0, 0, bladeW, -bladeLen);
         if (m_fanRunning) {
-            bladeGrad.setColorAt(0.0, QColor(6, 182, 212, 250)); // Active Cyan
-            bladeGrad.setColorAt(0.7, QColor(14, 116, 144, 230));
-            bladeGrad.setColorAt(1.0, QColor(2, 132, 199, 210));
+            bladeGrad.setColorAt(0.0, QColor(34, 211, 238, 255)); // Active Cyan / Neon
+            bladeGrad.setColorAt(0.6, QColor(6, 182, 212, 240));
+            bladeGrad.setColorAt(1.0, QColor(2, 132, 199, 220));
         } else {
-            bladeGrad.setColorAt(0.0, QColor(71, 85, 105, 210)); // Idle Slate
-            bladeGrad.setColorAt(0.7, QColor(51, 65, 85, 190));
-            bladeGrad.setColorAt(1.0, QColor(30, 41, 59, 170));
+            bladeGrad.setColorAt(0.0, QColor(71, 85, 105, 180));  // Idle Slate
+            bladeGrad.setColorAt(0.7, QColor(51, 65, 85, 160));
+            bladeGrad.setColorAt(1.0, QColor(30, 41, 59, 140));
         }
 
         p.setBrush(bladeGrad);
-        p.setPen(QPen(m_fanRunning ? QColor(56, 189, 248, 190) : QColor(100, 116, 139, 130), 0.8));
+        p.setPen(QPen(m_fanRunning ? QColor(56, 189, 248, 200) : QColor(100, 116, 139, 100), 1.0));
         p.drawPath(bladePath);
         p.restore();
     }
@@ -237,29 +196,30 @@ void CoolingSystemWidget::paintEvent(QPaintEvent *)
     p.setPen(QPen(QColor(15, 23, 42), 1.2));
     p.drawEllipse(QRectF(-hubRadius, -hubRadius, hubRadius * 2.0, hubRadius * 2.0));
 
-    // Center icon core
-    p.setBrush(m_fanRunning ? QColor(6, 182, 212) : QColor(148, 163, 184));
+    // Center indicator core
+    p.setBrush(m_fanRunning ? QColor(6, 182, 212) : QColor(100, 116, 139));
     p.setPen(Qt::NoPen);
-    p.drawEllipse(QRectF(-hubRadius * 0.4, -hubRadius * 0.4, hubRadius * 0.8, hubRadius * 0.8));
+    p.drawEllipse(QRectF(-hubRadius * 0.45, -hubRadius * 0.45, hubRadius * 0.9, hubRadius * 0.9));
 
     p.restore();
 
-    // 6. Status Pill Badge at bottom
+    // 5. Status Pill Badge at bottom (Illustrating ON/OFF clearly)
     const QColor col = statusColor();
     const double pillW = qMin(w - 20.0, 170.0);
-    const double pillH = 19.0;
+    const double pillH = 20.0;
     const double pillX = (w - pillW) / 2.0;
     const double pillY = h - pillH - 7.0;
 
     QRectF pillRect(pillX, pillY, pillW, pillH);
-    p.setBrush(QColor(col.red(), col.green(), col.blue(), 35));
-    p.setPen(QPen(QColor(col.red(), col.green(), col.blue(), 150), 1.2));
-    p.drawRoundedRect(pillRect, 9, 9);
+    p.setBrush(QColor(col.red(), col.green(), col.blue(), m_fanRunning ? 40 : 25));
+    p.setPen(QPen(QColor(col.red(), col.green(), col.blue(), m_fanRunning ? 180 : 100), 1.2));
+    p.drawRoundedRect(pillRect, 10, 10);
 
     QFont pillFont;
     pillFont.setBold(true);
-    pillFont.setPixelSize(9);
+    pillFont.setPixelSize(10);
     p.setFont(pillFont);
     p.setPen(col);
     p.drawText(pillRect, Qt::AlignCenter, statusText());
 }
+
