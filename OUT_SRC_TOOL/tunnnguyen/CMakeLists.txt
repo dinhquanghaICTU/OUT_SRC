@@ -24,10 +24,28 @@ set(PROJECT_SOURCES
         src/auth/HwidHelper.h
         src/core/ChromeLauncher.cpp
         src/core/ChromeLauncher.h
+        src/core/SyncManager.cpp
+        src/core/SyncManager.h
         src/cdp/CdpClient.cpp
         src/cdp/CdpClient.h
         src/ui/LoginDialog.cpp
         src/ui/LoginDialog.h
+        src/ui/CustomMessageBox.cpp
+        src/ui/CustomMessageBox.h
+        src/core/ProxyConfig.h
+        src/core/ProxyChecker.cpp
+        src/core/ProxyChecker.h
+        src/core/ChromeProfileItem.h
+        src/ui/ProxyInputWidget.cpp
+        src/ui/ProxyInputWidget.h
+        src/ui/CreateProfileDialog.cpp
+        src/ui/CreateProfileDialog.h
+        src/ui/EditProfileDialog.cpp
+        src/ui/EditProfileDialog.h
+        src/ui/QuickProxyDialog.cpp
+        src/ui/QuickProxyDialog.h
+        src/ui/ImportProfilesDialog.cpp
+        src/ui/ImportProfilesDialog.h
         resources.qrc
 )
 

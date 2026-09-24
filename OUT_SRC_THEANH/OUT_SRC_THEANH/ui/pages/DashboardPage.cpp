@@ -714,44 +714,89 @@ void DashboardPage::setDeviceId(const QString &deviceId)
 
 void DashboardPage::openVoltageDetail()
 {
-    SensorDetailDialog dlg(
+    auto *dlg = new SensorDetailDialog(
         tr("Điện Áp AC Lưới Điện (ZMPT101B)"),
         QStringLiteral("V"),
         QStringLiteral("#38bdf8"),
         m_voltageHistory,
         this,
-        10.0,
-        250.0
+        m_voltageMin,
+        m_voltageMax
     );
-    dlg.exec();
+    connect(dlg, &SensorDetailDialog::thresholdChanged, this,
+            [this](double minVal, double maxVal) {
+        m_voltageMin = minVal;
+        m_voltageMax = maxVal;
+        const QJsonObject cfg{
+            {QStringLiteral("voltage_min"), m_voltageMin},
+            {QStringLiteral("voltage_max"), m_voltageMax},
+            {QStringLiteral("current_min"), m_currentMin},
+            {QStringLiteral("current_max"), m_currentMax},
+            {QStringLiteral("power_min"),   m_powerMin},
+            {QStringLiteral("power_max"),   m_powerMax}
+        };
+        emit deviceConfigRequested(m_deviceId, cfg);
+    });
+    dlg->setAttribute(Qt::WA_DeleteOnClose);
+    dlg->exec();
 }
 
 void DashboardPage::openCurrentDetail()
 {
-    SensorDetailDialog dlg(
+    auto *dlg = new SensorDetailDialog(
         tr("Dòng Điện Phụ Tải (ACS712)"),
         QStringLiteral("A"),
         QStringLiteral("#f59e0b"),
         m_currentHistory,
         this,
-        0.0,
-        20.0
+        m_currentMin,
+        m_currentMax
     );
-    dlg.exec();
+    connect(dlg, &SensorDetailDialog::thresholdChanged, this,
+            [this](double minVal, double maxVal) {
+        m_currentMin = minVal;
+        m_currentMax = maxVal;
+        const QJsonObject cfg{
+            {QStringLiteral("voltage_min"), m_voltageMin},
+            {QStringLiteral("voltage_max"), m_voltageMax},
+            {QStringLiteral("current_min"), m_currentMin},
+            {QStringLiteral("current_max"), m_currentMax},
+            {QStringLiteral("power_min"),   m_powerMin},
+            {QStringLiteral("power_max"),   m_powerMax}
+        };
+        emit deviceConfigRequested(m_deviceId, cfg);
+    });
+    dlg->setAttribute(Qt::WA_DeleteOnClose);
+    dlg->exec();
 }
 
 void DashboardPage::openPowerDetail()
 {
-    SensorDetailDialog dlg(
+    auto *dlg = new SensorDetailDialog(
         tr("Công Suất Tiêu Thụ Tức Thời (W)"),
         QStringLiteral("W"),
         QStringLiteral("#10b981"),
         m_powerHistory,
         this,
-        0.0,
-        2200.0
+        m_powerMin,
+        m_powerMax
     );
-    dlg.exec();
+    connect(dlg, &SensorDetailDialog::thresholdChanged, this,
+            [this](double minVal, double maxVal) {
+        m_powerMin = minVal;
+        m_powerMax = maxVal;
+        const QJsonObject cfg{
+            {QStringLiteral("voltage_min"), m_voltageMin},
+            {QStringLiteral("voltage_max"), m_voltageMax},
+            {QStringLiteral("current_min"), m_currentMin},
+            {QStringLiteral("current_max"), m_currentMax},
+            {QStringLiteral("power_min"),   m_powerMin},
+            {QStringLiteral("power_max"),   m_powerMax}
+        };
+        emit deviceConfigRequested(m_deviceId, cfg);
+    });
+    dlg->setAttribute(Qt::WA_DeleteOnClose);
+    dlg->exec();
 }
 
 void DashboardPage::openAddDeviceDialog()

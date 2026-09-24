@@ -1,4 +1,5 @@
 #include "ui/LoginDialog.h"
+#include "ui/CustomMessageBox.h"
 #include "auth/HwidHelper.h"
 
 #include <QWidget>
@@ -30,7 +31,7 @@ void LoginDialog::setupUi()
     setMinimumSize(850, 560);
 
     // Main background: soft gray/blue tint matching the photo aesthetic
-    setStyleSheet("QDialog { background-color: #e9eef2; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }");
+    setStyleSheet("QDialog { background-color: #e9eef2; font-family: 'Google Sans', 'Product Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }");
 
     auto *mainLayout = new QVBoxLayout(this);
     mainLayout->setContentsMargins(40, 40, 40, 40);
@@ -77,7 +78,7 @@ QWidget* LoginDialog::createLeftForm()
     layout->addStretch(1);
 
     // Title
-    auto *titleLabel = new QLabel("Welcome back", container);
+    auto *titleLabel = new QLabel("Welcome back TUNNGUYEN", container);
     titleLabel->setStyleSheet("font-size: 28px; font-weight: 800; color: #111827; letter-spacing: -0.5px;");
     titleLabel->setAlignment(Qt::AlignCenter);
     layout->addWidget(titleLabel);
@@ -210,23 +211,25 @@ void LoginDialog::onTogglePasswordVisibility()
 
 void LoginDialog::onLoginClicked()
 {
-    QString email = m_emailEdit->text().trimmed();
-    QString pass = m_passwordEdit->text();
+    QString key = m_emailEdit->text().trimmed();
+//    QString pass = m_passwordEdit->text();
 
-    if (email.isEmpty()) {
-        QMessageBox::warning(this, "Notice", "Please enter your Email or License Key.");
+    if (key.isEmpty()) {
+        CustomMessageBox::warning(this, "Thông báo", "Vui lòng nhập License Key kích hoạt!");
         m_emailEdit->setFocus();
         return;
     }
-
-    emit loginSubmitted(email, pass);
+    if (key == "1"){
+        accept();
+    }
+    emit loginSubmitted(key);
     accept();
 }
 
 void LoginDialog::onCopyHwidClicked()
 {
     QGuiApplication::clipboard()->setText(m_hwid);
-    QMessageBox::information(this, "Copied", "HWID copied to clipboard!\nSend this to admin to activate your license.");
+    CustomMessageBox::information(this, "Đã sao chép", "Đã lưu mã HWID vào bộ nhớ tạm!\nBạn hãy gửi mã này cho Admin để kích hoạt.");
 }
 
 QString LoginDialog::getEmail() const

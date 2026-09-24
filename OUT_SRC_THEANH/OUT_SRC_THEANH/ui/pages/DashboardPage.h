@@ -47,6 +47,7 @@ signals:
     void claimDeviceRequested(const QString &deviceId, const QString &deviceName);
     void releaseDeviceRequested(const QString &deviceId);
     void relayControlRequested(const QString &deviceId, bool state);
+    void deviceConfigRequested(const QString &deviceId, const QJsonObject &config);
     void refreshDevicesRequested();
     void historyPageRequested();
     void devicesPageRequested();
@@ -135,4 +136,12 @@ private:
     double m_curVoltage = 220.0;
     double m_curCurrent = 2.35;
     double m_curPower = 517.0;
+
+    // Ngưỡng cảnh báo — được lưu và gửi xuống ESP khi người dùng điều chỉnh
+    double m_voltageMin = 10.0;
+    double m_voltageMax = 250.0;
+    double m_currentMin = 0.0;
+    double m_currentMax = 20.0;
+    double m_powerMin   = 0.0;
+    double m_powerMax   = 2200.0;
 };

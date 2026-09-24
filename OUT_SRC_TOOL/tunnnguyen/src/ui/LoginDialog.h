@@ -18,7 +18,7 @@ public:
     QString getPassword() const;
 
 signals:
-    void loginSubmitted(const QString &email, const QString &password);
+    void loginSubmitted(const QString &key);
 
 private slots:
     void onTogglePasswordVisibility();
