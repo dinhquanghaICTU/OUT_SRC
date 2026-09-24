@@ -7,91 +7,92 @@
 #include <QFrame>
 
 // ─────────────────────────────────────────────────────────────
-//  Helper: một hàng chỉnh giá trị với nút ▲/▼ lớn
+//  Helper: card 1 field - label trên, [−] value [+] dưới
 // ─────────────────────────────────────────────────────────────
-static QWidget *makeValueRow(QWidget *parent,
+static QFrame *makeFieldCard(QWidget *parent,
                               const QString &labelText,
                               double initVal,
                               double minVal,
                               double maxVal,
                               double step,
                               const QString &suffix,
-                              QLabel **outValLabel,   // label hiển thị giá trị
-                              double *outValuePtr)    // con trỏ giá trị thực
+                              QLabel **outValLabel,
+                              double *outValue)
 {
-    auto *row = new QFrame(parent);
-    row->setStyleSheet(
-        "QFrame { background: #0f172a; border-radius: 10px; border: 1px solid #1e293b; }"
+    *outValue = initVal;
+
+    auto *card = new QFrame(parent);
+    card->setStyleSheet(
+        "QFrame { background: #1e293b; border-radius: 10px; border: 1px solid #334155; }"
     );
 
-    auto *hLayout = new QHBoxLayout(row);
-    hLayout->setContentsMargins(12, 8, 12, 8);
-    hLayout->setSpacing(10);
+    auto *vlay = new QVBoxLayout(card);
+    vlay->setContentsMargins(10, 8, 10, 8);
+    vlay->setSpacing(6);
 
     // Tên field
-    auto *nameLabel = new QLabel(labelText, row);
-    nameLabel->setStyleSheet("font-size: 11px; font-weight: 700; color: #94a3b8;"
-                              "background: transparent; border: none;");
-    nameLabel->setFixedWidth(160);
-    hLayout->addWidget(nameLabel);
-    hLayout->addStretch();
-
-    // Nút ▼
-    auto *btnDown = new QPushButton(QStringLiteral("▼"), row);
-    btnDown->setFixedSize(38, 38);
-    btnDown->setCursor(Qt::PointingHandCursor);
-    btnDown->setStyleSheet(
-        "QPushButton { background: #1e293b; color: #94a3b8; border: 1px solid #334155;"
-        "border-radius: 8px; font-size: 16px; font-weight: 900; }"
-        "QPushButton:hover { background: #334155; color: #f8fafc; }"
-        "QPushButton:pressed { background: #475569; }"
+    auto *nameLabel = new QLabel(labelText, card);
+    nameLabel->setAlignment(Qt::AlignCenter);
+    nameLabel->setStyleSheet(
+        "font-size: 10px; font-weight: 700; color: #94a3b8;"
+        "background: transparent; border: none;"
     );
+    nameLabel->setWordWrap(true);
+    vlay->addWidget(nameLabel);
 
-    // Label giá trị
-    auto *valLabel = new QLabel(QString::number(initVal, 'f', (step < 1.0 ? 1 : 0)) + suffix, row);
+    // Hàng điều chỉnh: [−] [value] [+]
+    auto *hlay = new QHBoxLayout;
+    hlay->setSpacing(6);
+    hlay->setContentsMargins(0, 0, 0, 0);
+
+    const QString btnStyle =
+        "QPushButton { background: #0f172a; color: #38bdf8; border: 1px solid #334155;"
+        "border-radius: 8px; font-size: 18px; font-weight: 900; min-width: 36px; min-height: 36px; }"
+        "QPushButton:hover  { background: #0284c7; color: #ffffff; border-color: #0284c7; }"
+        "QPushButton:pressed { background: #0369a1; }";
+
+    auto *btnMinus = new QPushButton(QStringLiteral("−"), card);
+    btnMinus->setFixedSize(36, 36);
+    btnMinus->setCursor(Qt::PointingHandCursor);
+    btnMinus->setStyleSheet(btnStyle);
+
+    const int decimals = (step < 1.0) ? 1 : 0;
+    auto *valLabel = new QLabel(QString::number(initVal, 'f', decimals) + suffix, card);
     valLabel->setAlignment(Qt::AlignCenter);
-    valLabel->setFixedWidth(88);
-    valLabel->setStyleSheet("font-size: 16px; font-weight: 900; color: #38bdf8;"
-                             "background: transparent; border: none;");
+    valLabel->setFixedWidth(90);
+    valLabel->setStyleSheet(
+        "font-size: 15px; font-weight: 900; color: #38bdf8;"
+        "background: transparent; border: none;"
+    );
     *outValLabel = valLabel;
 
-    // Nút ▲
-    auto *btnUp = new QPushButton(QStringLiteral("▲"), row);
-    btnUp->setFixedSize(38, 38);
-    btnUp->setCursor(Qt::PointingHandCursor);
-    btnUp->setStyleSheet(
-        "QPushButton { background: #1e293b; color: #38bdf8; border: 1px solid #334155;"
-        "border-radius: 8px; font-size: 16px; font-weight: 900; }"
-        "QPushButton:hover { background: #0284c7; color: #ffffff; }"
-        "QPushButton:pressed { background: #0369a1; }"
-    );
+    auto *btnPlus = new QPushButton(QStringLiteral("+"), card);
+    btnPlus->setFixedSize(36, 36);
+    btnPlus->setCursor(Qt::PointingHandCursor);
+    btnPlus->setStyleSheet(btnStyle);
 
-    hLayout->addWidget(btnDown);
-    hLayout->addWidget(valLabel);
-    hLayout->addWidget(btnUp);
+    hlay->addStretch();
+    hlay->addWidget(btnMinus);
+    hlay->addWidget(valLabel);
+    hlay->addWidget(btnPlus);
+    hlay->addStretch();
+    vlay->addLayout(hlay);
 
-    // Kết nối nút
-    *outValuePtr = initVal;
-
-    QObject::connect(btnDown, &QPushButton::clicked, row, [=]() mutable {
-        double cur = *outValuePtr;
-        cur -= step;
+    // Connect buttons
+    QObject::connect(btnMinus, &QPushButton::clicked, card, [=]() mutable {
+        double cur = *outValue - step;
         if (cur < minVal) cur = minVal;
-        *outValuePtr = cur;
-        const int decimals = (step < 1.0) ? 1 : 0;
+        *outValue = cur;
         (*outValLabel)->setText(QString::number(cur, 'f', decimals) + suffix);
     });
-
-    QObject::connect(btnUp, &QPushButton::clicked, row, [=]() mutable {
-        double cur = *outValuePtr;
-        cur += step;
+    QObject::connect(btnPlus, &QPushButton::clicked, card, [=]() mutable {
+        double cur = *outValue + step;
         if (cur > maxVal) cur = maxVal;
-        *outValuePtr = cur;
-        const int decimals = (step < 1.0) ? 1 : 0;
+        *outValue = cur;
         (*outValLabel)->setText(QString::number(cur, 'f', decimals) + suffix);
     });
 
-    return row;
+    return card;
 }
 
 // ─────────────────────────────────────────────────────────────
@@ -102,20 +103,22 @@ CoolingConfigDialog::CoolingConfigDialog(const QJsonObject &currentConfig, QWidg
 {
     setWindowTitle(tr("Cấu Hình Hệ Thống Làm Mát"));
     setModal(true);
-    setFixedSize(480, 390);
+    setFixedSize(500, 360);
     setStyleSheet(
-        "QDialog { background-color: #0b1329; color: #f8fafc; font-family: 'Noto Sans', sans-serif; } "
-        "QPushButton { border-radius: 10px; font-weight: 700; font-size: 12px; padding: 10px 22px; } "
-        "QPushButton#saveBtn  { background-color: #06b6d4; color: #0b1329; border: none; } "
-        "QPushButton#saveBtn:hover  { background-color: #22d3ee; } "
-        "QPushButton#cancelBtn { background-color: #334155; color: #f8fafc; border: none; } "
-        "QPushButton#cancelBtn:hover { background-color: #475569; }"
+        "QDialog { background-color: #0b1329; color: #f8fafc;"
+        "font-family: 'Noto Sans', sans-serif; } "
+        "QPushButton#saveBtn   { background: #06b6d4; color: #0b1329; border: none;"
+        "border-radius: 10px; font-weight: 800; font-size: 12px; padding: 9px 24px; } "
+        "QPushButton#saveBtn:hover   { background: #22d3ee; } "
+        "QPushButton#cancelBtn { background: #334155; color: #f8fafc; border: none;"
+        "border-radius: 10px; font-weight: 700; font-size: 12px; padding: 9px 24px; } "
+        "QPushButton#cancelBtn:hover { background: #475569; }"
     );
 
-    m_fanStartTemp  = currentConfig.value(QStringLiteral("fan_start_temp")).toDouble(35.0);
-    m_fanStopTemp   = currentConfig.value(QStringLiteral("fan_stop_temp")).toDouble(28.0);
-    m_maxSoundVpp   = currentConfig.value(QStringLiteral("max_sound_vpp")).toDouble(1.5);
-    m_intervalSec   = currentConfig.value(QStringLiteral("sampling_interval_seconds")).toDouble(2.0);
+    m_fanStartTemp = currentConfig.value(QStringLiteral("fan_start_temp")).toDouble(35.0);
+    m_fanStopTemp  = currentConfig.value(QStringLiteral("fan_stop_temp")).toDouble(28.0);
+    m_maxSoundVpp  = currentConfig.value(QStringLiteral("max_sound_vpp")).toDouble(1.5);
+    m_intervalSec  = currentConfig.value(QStringLiteral("sampling_interval_seconds")).toDouble(2.0);
 
     setupUi();
 }
@@ -123,51 +126,55 @@ CoolingConfigDialog::CoolingConfigDialog(const QJsonObject &currentConfig, QWidg
 void CoolingConfigDialog::setupUi()
 {
     auto *mainLayout = new QVBoxLayout(this);
-    mainLayout->setContentsMargins(20, 18, 20, 18);
-    mainLayout->setSpacing(12);
+    mainLayout->setContentsMargins(18, 14, 18, 14);
+    mainLayout->setSpacing(10);
 
     // ── Header ──────────────────────────────────────────────
     auto *titleLabel = new QLabel(tr("⚙  Ngưỡng Tự Động Làm Mát"), this);
-    titleLabel->setStyleSheet("font-size: 15px; font-weight: 900; color: #f8fafc;");
-    auto *subLabel = new QLabel(tr("Nhấn ▲ / ▼ để điều chỉnh từng thông số"), this);
-    subLabel->setStyleSheet("font-size: 10px; color: #64748b;");
+    titleLabel->setStyleSheet(
+        "font-size: 14px; font-weight: 900; color: #f8fafc;"
+        "background: transparent;"
+    );
+    auto *subLabel = new QLabel(tr("Nhấn  −  /  +  để điều chỉnh từng thông số"), this);
+    subLabel->setStyleSheet(
+        "font-size: 10px; color: #64748b; background: transparent;"
+    );
     mainLayout->addWidget(titleLabel);
     mainLayout->addWidget(subLabel);
 
     // Separator
     auto *sep = new QFrame(this);
     sep->setFrameShape(QFrame::HLine);
-    sep->setStyleSheet("color: #1e293b;");
+    sep->setStyleSheet("QFrame { color: #1e293b; border: none;"
+                       "border-top: 1px solid #1e293b; background: transparent; }");
     mainLayout->addWidget(sep);
 
-    // ── Các hàng điều chỉnh ─────────────────────────────────
-    mainLayout->addWidget(makeValueRow(
-        this,
-        tr("Bật quạt khi nhiệt độ ≥"),
+    // ── Grid 2×2 các field ──────────────────────────────────
+    // Hàng 1: bật quạt | tắt quạt
+    auto *row1 = new QHBoxLayout;
+    row1->setSpacing(10);
+    row1->addWidget(makeFieldCard(this,
+        tr("Bật quạt khi\nnhiệt độ ≥"),
         m_fanStartTemp, 15.0, 70.0, 0.5, QStringLiteral(" °C"),
-        &m_fanStartLabel, &m_fanStartTemp
-    ));
-
-    mainLayout->addWidget(makeValueRow(
-        this,
-        tr("Tắt quạt khi nhiệt độ ≤"),
+        &m_fanStartLabel, &m_fanStartTemp));
+    row1->addWidget(makeFieldCard(this,
+        tr("Tắt quạt khi\nnhiệt độ ≤"),
         m_fanStopTemp, 10.0, 60.0, 0.5, QStringLiteral(" °C"),
-        &m_fanStopLabel, &m_fanStopTemp
-    ));
+        &m_fanStopLabel, &m_fanStopTemp));
+    mainLayout->addLayout(row1);
 
-    mainLayout->addWidget(makeValueRow(
-        this,
-        tr("Ngưỡng cảnh báo độ ồn"),
+    // Hàng 2: độ ồn | chu kỳ
+    auto *row2 = new QHBoxLayout;
+    row2->setSpacing(10);
+    row2->addWidget(makeFieldCard(this,
+        tr("Ngưỡng cảnh báo\nđộ ồn quạt"),
         m_maxSoundVpp, 0.1, 5.0, 0.1, QStringLiteral(" Vpp"),
-        &m_soundMaxLabel, &m_maxSoundVpp
-    ));
-
-    mainLayout->addWidget(makeValueRow(
-        this,
-        tr("Chu kỳ cập nhật mẫu"),
+        &m_soundMaxLabel, &m_maxSoundVpp));
+    row2->addWidget(makeFieldCard(this,
+        tr("Chu kỳ cập nhật\nmẫu dữ liệu"),
         m_intervalSec, 1.0, 60.0, 1.0, QStringLiteral(" giây"),
-        &m_intervalLabel, &m_intervalSec
-    ));
+        &m_intervalLabel, &m_intervalSec));
+    mainLayout->addLayout(row2);
 
     mainLayout->addStretch();
 
@@ -189,7 +196,8 @@ void CoolingConfigDialog::setupUi()
         if (m_fanStopTemp >= m_fanStartTemp) {
             m_fanStopTemp = m_fanStartTemp - 2.0;
             if (m_fanStopLabel)
-                m_fanStopLabel->setText(QString::number(m_fanStopTemp, 'f', 1) + QStringLiteral(" °C"));
+                m_fanStopLabel->setText(
+                    QString::number(m_fanStopTemp, 'f', 1) + QStringLiteral(" °C"));
         }
         accept();
     });
@@ -201,9 +209,9 @@ void CoolingConfigDialog::setupUi()
 QJsonObject CoolingConfigDialog::configData() const
 {
     return QJsonObject{
-        {QStringLiteral("fan_start_temp"),             m_fanStartTemp},
-        {QStringLiteral("fan_stop_temp"),              m_fanStopTemp},
-        {QStringLiteral("max_sound_vpp"),              m_maxSoundVpp},
-        {QStringLiteral("sampling_interval_seconds"),  static_cast<int>(m_intervalSec)}
+        {QStringLiteral("fan_start_temp"),            m_fanStartTemp},
+        {QStringLiteral("fan_stop_temp"),             m_fanStopTemp},
+        {QStringLiteral("max_sound_vpp"),             m_maxSoundVpp},
+        {QStringLiteral("sampling_interval_seconds"), static_cast<int>(m_intervalSec)}
     };
 }
