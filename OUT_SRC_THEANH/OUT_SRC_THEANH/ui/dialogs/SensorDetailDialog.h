@@ -11,8 +11,6 @@ class QTableWidget;
 class QStackedWidget;
 class QPushButton;
 class QLabel;
-class QDoubleSpinBox;
-class QSpinBox;
 class QCheckBox;
 
 struct SensorDataPoint {
@@ -47,10 +45,11 @@ private:
     QTableWidget *m_tableWidget = nullptr;
     QChartView *m_chartView = nullptr;
 
-    // Threshold widgets
-    QDoubleSpinBox *m_minThresholdSpin = nullptr;
-    QDoubleSpinBox *m_maxThresholdSpin = nullptr;
+    // Threshold controls - nút [−][+] thay cho SpinBox
+    double m_minValue = 0.0;
+    double m_maxValue = 100.0;
+    QLabel *m_minLabel = nullptr;
+    QLabel *m_maxLabel = nullptr;
     QCheckBox *m_autoRelayCheck = nullptr;
-    QSpinBox *m_intervalSpin = nullptr;
     QLabel *m_saveStatusLbl = nullptr;
 };

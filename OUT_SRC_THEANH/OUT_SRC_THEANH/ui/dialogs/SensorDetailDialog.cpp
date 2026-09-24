@@ -3,7 +3,6 @@
 #include <QChart>
 #include <QChartView>
 #include <QCheckBox>
-#include <QDoubleSpinBox>
 #include <QFrame>
 #include <QGridLayout>
 #include <QHBoxLayout>
@@ -12,7 +11,6 @@
 #include <QLineSeries>
 #include <QPainter>
 #include <QPushButton>
-#include <QSpinBox>
 #include <QStackedWidget>
 #include <QTableWidget>
 #include <QTimer>
@@ -122,69 +120,128 @@ void SensorDetailDialog::setupUI(const QString &sensorName, const QString &unit,
     auto *threshContainer = new QFrame;
     threshContainer->setStyleSheet("background: #130f30; border: 1px solid #2b235c; border-radius: 10px;");
     auto *threshLayout = new QVBoxLayout(threshContainer);
-    threshLayout->setContentsMargins(24, 18, 24, 18);
-    threshLayout->setSpacing(14);
+    threshLayout->setContentsMargins(20, 14, 20, 14);
+    threshLayout->setSpacing(12);
 
     auto *threshHead = new QLabel(QStringLiteral("Cài đặt ngưỡng bảo vệ & Cảnh báo (%1)").arg(sensorName));
-    threshHead->setStyleSheet("color: #38bdf8; font-size: 14px; font-weight: 900;");
+    threshHead->setStyleSheet("color: #38bdf8; font-size: 13px; font-weight: 900;");
     threshLayout->addWidget(threshHead);
 
-    auto *formGrid = new QGridLayout;
-    formGrid->setHorizontalSpacing(16);
-    formGrid->setVerticalSpacing(12);
+    auto *subHead = new QLabel(tr("Nhấn  −  /  +  để điều chỉnh ngưỡng"));
+    subHead->setStyleSheet("color: #64748b; font-size: 10px;");
+    threshLayout->addWidget(subHead);
 
-    // Min Threshold
-    formGrid->addWidget(new QLabel(QStringLiteral("Ngưỡng Dưới (Min %1):").arg(unit)), 0, 0);
-    m_minThresholdSpin = new QDoubleSpinBox;
-    m_minThresholdSpin->setRange(0.0, 9999.0);
-    m_minThresholdSpin->setValue(minThreshold);
-    m_minThresholdSpin->setDecimals(1);
-    formGrid->addWidget(m_minThresholdSpin, 0, 1);
+    // ── Helper lambda tạo 1 hàng điều chỉnh [−] value [+] ───
+    const QString adjBtnStyle =
+        "QPushButton { background: #1e293b; color: #38bdf8; border: 1px solid #2b235c;"
+        "border-radius: 8px; font-size: 20px; font-weight: 900;"
+        "min-width: 40px; min-height: 40px; max-width: 40px; max-height: 40px; } "
+        "QPushButton:hover  { background: #0284c7; color: #fff; border-color: #0284c7; } "
+        "QPushButton:pressed { background: #0369a1; }";
 
-    // Max Threshold
-    formGrid->addWidget(new QLabel(QStringLiteral("Ngưỡng Trên (Max %1):").arg(unit)), 1, 0);
-    m_maxThresholdSpin = new QDoubleSpinBox;
-    m_maxThresholdSpin->setRange(0.0, 9999.0);
-    m_maxThresholdSpin->setValue(maxThreshold);
-    m_maxThresholdSpin->setDecimals(1);
-    formGrid->addWidget(m_maxThresholdSpin, 1, 1);
+    auto makeAdjRow = [&](const QString &labelText, double initVal,
+                          double step, const QString &suffix,
+                          QLabel **outLbl, double *outVal) -> QWidget * {
+        *outVal = initVal;
+        auto *row = new QFrame(threshContainer);
+        row->setStyleSheet("QFrame { background: #1a1638; border-radius: 8px; border: 1px solid #2b235c; }");
+        auto *hlay = new QHBoxLayout(row);
+        hlay->setContentsMargins(12, 6, 12, 6);
+        hlay->setSpacing(10);
 
-    // Auto protect Relay trigger
-    formGrid->addWidget(new QLabel(QStringLiteral("Tự động ngắt Rơ-le khi quá ngưỡng:")), 2, 0);
-    m_autoRelayCheck = new QCheckBox(QStringLiteral("Kích hoạt bảo vệ quá tải / quá áp tự động"));
+        auto *nameLbl = new QLabel(labelText, row);
+        nameLbl->setStyleSheet("font-size: 11px; font-weight: 700; color: #94a3b8;"
+                                "background: transparent; border: none;");
+        nameLbl->setFixedWidth(170);
+        hlay->addWidget(nameLbl);
+        hlay->addStretch();
+
+        auto *btnM = new QPushButton(QStringLiteral("−"), row);
+        btnM->setStyleSheet(adjBtnStyle);
+        btnM->setCursor(Qt::PointingHandCursor);
+
+        const int dec = (step < 1.0) ? 1 : 0;
+        auto *valLbl = new QLabel(QString::number(initVal, 'f', dec) + suffix, row);
+        valLbl->setAlignment(Qt::AlignCenter);
+        valLbl->setFixedWidth(90);
+        valLbl->setStyleSheet("font-size: 15px; font-weight: 900; color: #f0abfc;"
+                               "background: transparent; border: none;");
+        *outLbl = valLbl;
+
+        auto *btnP = new QPushButton(QStringLiteral("+"), row);
+        btnP->setStyleSheet(adjBtnStyle);
+        btnP->setCursor(Qt::PointingHandCursor);
+
+        hlay->addWidget(btnM);
+        hlay->addWidget(valLbl);
+        hlay->addWidget(btnP);
+
+        QObject::connect(btnM, &QPushButton::clicked, row, [=]() mutable {
+            double v = *outVal - step;
+            if (v < 0.0) v = 0.0;
+            *outVal = v;
+            (*outLbl)->setText(QString::number(v, 'f', dec) + suffix);
+        });
+        QObject::connect(btnP, &QPushButton::clicked, row, [=]() mutable {
+            double v = *outVal + step;
+            if (v > 99999.0) v = 99999.0;
+            *outVal = v;
+            (*outLbl)->setText(QString::number(v, 'f', dec) + suffix);
+        });
+        return row;
+    };
+
+    // Bước điều chỉnh tùy đơn vị
+    const double step = (unit == QStringLiteral("V")) ? 1.0
+                      : (unit == QStringLiteral("A")) ? 0.1
+                      : (unit == QStringLiteral("W")) ? 10.0
+                      : 1.0;
+    const QString suffix = QStringLiteral(" ") + unit;
+
+    threshLayout->addWidget(makeAdjRow(
+        QStringLiteral("Ngưỡng Dưới (Min %1):").arg(unit),
+        minThreshold, step, suffix, &m_minLabel, &m_minValue));
+
+    threshLayout->addWidget(makeAdjRow(
+        QStringLiteral("Ngưỡng Trên (Max %1):").arg(unit),
+        maxThreshold, step, suffix, &m_maxLabel, &m_maxValue));
+
+    // Auto relay checkbox
+    auto *checkRow = new QHBoxLayout;
+    m_autoRelayCheck = new QCheckBox(
+        QStringLiteral("Tự động ngắt Rơ-le khi quá ngưỡng"), threshContainer);
     m_autoRelayCheck->setChecked(true);
-    formGrid->addWidget(m_autoRelayCheck, 2, 1);
+    m_autoRelayCheck->setStyleSheet(
+        "QCheckBox { color: #cbd5e1; font-size: 11px; font-weight: 700;"
+        "background: transparent; spacing: 8px; }");
+    checkRow->addWidget(m_autoRelayCheck);
+    checkRow->addStretch();
+    threshLayout->addLayout(checkRow);
 
-    // Sampling interval
-    formGrid->addWidget(new QLabel(QStringLiteral("Tần suất đo mẫu:")), 3, 0);
-    m_intervalSpin = new QSpinBox;
-    m_intervalSpin->setRange(1, 60);
-    m_intervalSpin->setValue(2);
-    m_intervalSpin->setSuffix(QStringLiteral(" giây"));
-    formGrid->addWidget(m_intervalSpin, 3, 1);
-
-    threshLayout->addLayout(formGrid);
+    threshLayout->addStretch();
 
     // Action buttons
     auto *btnRow = new QHBoxLayout;
-    auto *saveBtn = new QPushButton(QStringLiteral("Lưu Cấu Hình Ngưỡng"));
-    saveBtn->setCursor(Qt::PointingHandCursor);
-    saveBtn->setStyleSheet("QPushButton { background: #10b981; color: #ffffff; border: none; border-radius: 6px; font-size: 12px; font-weight: 900; padding: 8px 18px; } QPushButton:hover { background: #059669; }");
-
-    m_saveStatusLbl = new QLabel;
+    m_saveStatusLbl = new QLabel(threshContainer);
     m_saveStatusLbl->setStyleSheet("color: #10b981; font-weight: 800; font-size: 11px;");
 
+    auto *saveBtn = new QPushButton(QStringLiteral("✔  Lưu Ngưỡng"), threshContainer);
+    saveBtn->setCursor(Qt::PointingHandCursor);
+    saveBtn->setStyleSheet(
+        "QPushButton { background: #10b981; color: #ffffff; border: none;"
+        "border-radius: 8px; font-size: 12px; font-weight: 900; padding: 10px 22px; } "
+        "QPushButton:hover { background: #059669; }");
+
     connect(saveBtn, &QPushButton::clicked, this, [this] {
-        emit thresholdChanged(m_minThresholdSpin->value(), m_maxThresholdSpin->value());
-        m_saveStatusLbl->setText(QStringLiteral("Đã lưu cấu hình ngưỡng thành công!"));
-        QTimer::singleShot(2000, this, [this] { m_saveStatusLbl->clear(); });
+        emit thresholdChanged(m_minValue, m_maxValue);
+        m_saveStatusLbl->setText(QStringLiteral("✔ Đã gửi ngưỡng xuống thiết bị!"));
+        QTimer::singleShot(2500, this, [this] { m_saveStatusLbl->clear(); });
     });
 
     btnRow->addWidget(saveBtn);
     btnRow->addWidget(m_saveStatusLbl);
     btnRow->addStretch();
     threshLayout->addLayout(btnRow);
-    threshLayout->addStretch();
 
     m_viewStack->addWidget(threshContainer);
     mainLayout->addWidget(m_viewStack, 1);
