@@ -790,26 +790,29 @@ void DashboardPage::openAddDeviceDialog()
 
 QJsonObject DashboardPage::buildConfigPayload() const
 {
-    // Server va ESP yeu cau format:
-    // { "sampling_interval_ms": 2000,
+    // Firmware ESP parse key: "voltage_v", "current_a", "power_w"
+    // (strstr trong handle_config_payload t\u00ecm \u0111\u00fang c\u00e1c key n\u00e0y)
+    // Format:
+    // {
+    //   "sampling_interval_ms": 2000,
     //   "thresholds": {
-    //     "voltage": { "min": ..., "max": ... },
-    //     "current": { "min": ..., "max": ... },
-    //     "power":   { "min": ..., "max": ... }
+    //     "voltage_v": { "min": ..., "max": ... },
+    //     "current_a": { "max": ... },
+    //     "power_w":   { "max": ... }
     //   }
     // }
     return QJsonObject{
         {QStringLiteral("sampling_interval_ms"), m_samplingIntervalMs},
         {QStringLiteral("thresholds"), QJsonObject{
-            {QStringLiteral("voltage"), QJsonObject{
+            {QStringLiteral("voltage_v"), QJsonObject{
                 {QStringLiteral("min"), m_voltageMin},
                 {QStringLiteral("max"), m_voltageMax}
             }},
-            {QStringLiteral("current"), QJsonObject{
+            {QStringLiteral("current_a"), QJsonObject{
                 {QStringLiteral("min"), m_currentMin},
                 {QStringLiteral("max"), m_currentMax}
             }},
-            {QStringLiteral("power"), QJsonObject{
+            {QStringLiteral("power_w"), QJsonObject{
                 {QStringLiteral("min"), m_powerMin},
                 {QStringLiteral("max"), m_powerMax}
             }}
