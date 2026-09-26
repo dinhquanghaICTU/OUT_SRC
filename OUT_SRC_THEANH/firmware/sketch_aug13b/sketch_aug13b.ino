@@ -34,6 +34,7 @@ void setup() {
 }
 
 void loop() {
+  // buzzer_on();
   const uint32_t interval = mqtt_manager_get_sample_interval();
   if (millis() - lastSendMs >= interval) {
     lastSendMs = millis();

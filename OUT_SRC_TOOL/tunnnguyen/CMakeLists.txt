@@ -46,6 +46,26 @@ set(PROJECT_SOURCES
         src/ui/QuickProxyDialog.h
         src/ui/ImportProfilesDialog.cpp
         src/ui/ImportProfilesDialog.h
+        src/pages/dashboard/DashboardPage.cpp
+        src/pages/dashboard/DashboardPage.h
+        src/pages/account_parser/AccountParserPage.cpp
+        src/pages/account_parser/AccountParserPage.h
+        src/pages/chrome_profiles/ChromeProfilesPage.cpp
+        src/pages/chrome_profiles/ChromeProfilesPage.h
+        src/pages/proxy_pool/ProxyPoolPage.cpp
+        src/pages/proxy_pool/ProxyPoolPage.h
+        src/pages/task_runner/TaskRunnerPage.cpp
+        src/pages/task_runner/TaskRunnerPage.h
+        src/pages/task_runner/FreeFireLogic.cpp
+        src/pages/task_runner/FreeFireLogic.h
+        src/pages/license_key/LicenseKeyPage.cpp
+        src/pages/license_key/LicenseKeyPage.h
+        src/pages/cookie_manager/CookieManagerPage.cpp
+        src/pages/cookie_manager/CookieManagerPage.h
+        src/pages/reports_logs/ReportsLogsPage.cpp
+        src/pages/reports_logs/ReportsLogsPage.h
+        src/pages/settings/SettingsPage.cpp
+        src/pages/settings/SettingsPage.h
         resources.qrc
 )
 
@@ -72,7 +92,10 @@ else()
     endif()
 endif()
 
-target_include_directories(tunnnguyen PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+target_include_directories(tunnnguyen PRIVATE 
+    ${CMAKE_CURRENT_SOURCE_DIR}/src
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/pages
+)
 
 target_link_libraries(tunnnguyen PRIVATE 
     Qt${QT_VERSION_MAJOR}::Widgets

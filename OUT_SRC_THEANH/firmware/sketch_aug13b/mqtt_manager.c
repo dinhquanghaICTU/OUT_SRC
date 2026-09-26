@@ -120,6 +120,8 @@ static void handle_config_payload(const char *payload, int len)
     }
 
     const char *v_pos = strstr(json_buf, "\"voltage_v\"");
+    if (!v_pos)
+        v_pos = strstr(json_buf, "\"voltage\"");
     if (v_pos)
     {
         float v_min = 0, v_max = 0;
@@ -130,6 +132,8 @@ static void handle_config_payload(const char *payload, int len)
     }
 
     const char *i_pos = strstr(json_buf, "\"current_a\"");
+    if (!i_pos)
+        i_pos = strstr(json_buf, "\"current\"");
     if (i_pos)
     {
         float i_max = 0;
@@ -138,6 +142,8 @@ static void handle_config_payload(const char *payload, int len)
     }
 
     const char *p_pos = strstr(json_buf, "\"power_w\"");
+    if (!p_pos)
+        p_pos = strstr(json_buf, "\"power\"");
     if (p_pos)
     {
         float p_max = 0;
