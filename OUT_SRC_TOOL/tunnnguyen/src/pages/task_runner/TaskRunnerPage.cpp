@@ -1,5 +1,6 @@
-#include "TaskRunnerPage.h"
+﻿#include "TaskRunnerPage.h"
 #include "ui/CustomMessageBox.h"
+#include "FreeFireRunDialog.h"
 
 #include <QVBoxLayout>
 #include <QHBoxLayout>
@@ -257,7 +258,8 @@ QWidget *TaskRunnerPage::createStorePage() {
     cardFFLayout->addWidget(btnOpenFF);
 
     auto goToConfig = [this]() {
-        setSubPage(1);
+        FreeFireRunDialog dlg(m_cachedProfiles, this);
+        dlg.exec();
     };
     cardFF->onClicked = goToConfig;
     connect(btnOpenFF, &QPushButton::clicked, this, goToConfig);
@@ -953,3 +955,5 @@ void TaskRunnerPage::onRefreshAdbDevicesClicked() {
         }
     }
 }
+
+

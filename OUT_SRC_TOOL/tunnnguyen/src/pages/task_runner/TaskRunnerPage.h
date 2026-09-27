@@ -1,4 +1,4 @@
-#ifndef TASKRUNNERPAGE_H
+﻿#ifndef TASKRUNNERPAGE_H
 #define TASKRUNNERPAGE_H
 
 #include <QWidget>
@@ -68,8 +68,10 @@ private:
     int m_successCount = 0;
     int m_failCount = 0;
     bool m_isRunning = false;
+    bool m_skipPopupOnce = false;
 
     QList<ChromeProfileItem> m_cachedProfiles;
 };
 
 #endif // TASKRUNNERPAGE_H
+

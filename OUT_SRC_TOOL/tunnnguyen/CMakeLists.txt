@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.5)
+﻿cmake_minimum_required(VERSION 3.5)
 
 project(tunnnguyen VERSION 0.1 LANGUAGES CXX)
 
@@ -58,6 +58,8 @@ set(PROJECT_SOURCES
         src/pages/task_runner/TaskRunnerPage.h
         src/pages/task_runner/FreeFireLogic.cpp
         src/pages/task_runner/FreeFireLogic.h
+        src/pages/task_runner/FreeFireRunDialog.cpp
+        src/pages/task_runner/FreeFireRunDialog.h
         src/pages/license_key/LicenseKeyPage.cpp
         src/pages/license_key/LicenseKeyPage.h
         src/pages/cookie_manager/CookieManagerPage.cpp
@@ -119,3 +121,4 @@ install(TARGETS tunnnguyen
 if(QT_VERSION_MAJOR EQUAL 6)
     qt_finalize_executable(tunnnguyen)
 endif()
+
